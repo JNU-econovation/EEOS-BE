@@ -9,7 +9,6 @@ import com.blackcompany.eeos.program.application.model.converter.ProgramEntityCo
 import com.blackcompany.eeos.program.application.model.converter.ProgramRequestConverter;
 import com.blackcompany.eeos.program.application.usecase.CreateProgramUsecase;
 import com.blackcompany.eeos.program.application.usecase.GetProgramUsecase;
-import com.blackcompany.eeos.program.persistence.EventStatus;
 import com.blackcompany.eeos.program.persistence.ProgramEntity;
 import com.blackcompany.eeos.program.persistence.ProgramRepository;
 import lombok.RequiredArgsConstructor;

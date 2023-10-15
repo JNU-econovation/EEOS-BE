@@ -1,10 +1,10 @@
-package com.blackcompany.eeos.program.persistence;
+package com.blackcompany.eeos.program.application.model;
 
 public enum EventStatus {
 	ING("ing"),
 	END("end");
 
-	private String status;
+	private final String status;
 
 	EventStatus(String status) {
 		this.status = status;

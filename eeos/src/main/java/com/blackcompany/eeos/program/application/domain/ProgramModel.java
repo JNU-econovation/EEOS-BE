@@ -2,7 +2,7 @@ package com.blackcompany.eeos.program.application.domain;
 
 import com.blackcompany.eeos.common.support.AbstractModel;
 import com.blackcompany.eeos.common.support.converter.DateConverter;
-import com.blackcompany.eeos.program.persistence.EventStatus;
+import com.blackcompany.eeos.program.application.model.EventStatus;
 import java.time.Instant;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
