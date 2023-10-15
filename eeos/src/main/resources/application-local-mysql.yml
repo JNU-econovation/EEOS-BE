@@ -1,0 +1,19 @@
+spring:
+  config:
+    activate:
+      on-profile: local-mysql
+  datasource:
+    url: jdbc:mysql://localhost:13308/eeos?allowPublicKeyRetrieval=true&rewriteBatchedStatements=true
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+
+logging:
+  level:
+    sql: debug
