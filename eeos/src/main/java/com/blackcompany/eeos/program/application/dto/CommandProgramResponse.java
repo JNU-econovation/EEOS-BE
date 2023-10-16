@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder(toBuilder = true)
 public class CommandProgramResponse implements AbstractResponseDto {
-	private Long id;
+	private Long programId;
 }
