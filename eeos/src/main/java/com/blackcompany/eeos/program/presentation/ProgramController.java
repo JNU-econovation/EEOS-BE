@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/program")
+@RequestMapping("/api/programs")
 public class ProgramController {
 
 	private final CreateProgramUsecase createBoardUsecase;
@@ -38,16 +38,16 @@ public class ProgramController {
 		return ApiResponseGenerator.success(response, HttpStatus.CREATED, MessageCode.CREATE);
 	}
 
-	@GetMapping("/{eventId}")
+	@GetMapping("/{programId}")
 	public ApiResponse<SuccessBody<GetProgramResponse>> findOne(
-			@PathVariable("eventId") Long eventId) {
-		GetProgramResponse response = getProgramUsecase.getProgram(eventId);
+			@PathVariable("programId") Long programId) {
+		GetProgramResponse response = getProgramUsecase.getProgram(programId);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
 	}
 
-	@PutMapping("/{eventId}")
+	@PutMapping("/{programId}")
 	public ApiResponse<SuccessBody<CommandProgramResponse>> update(
-			@PathVariable("eventId") Long programId, @RequestBody @Valid UpdateProgramRequest request) {
+			@PathVariable("programId") Long programId, @RequestBody @Valid UpdateProgramRequest request) {
 		CommandProgramResponse response = updateProgramUsecase.update(programId, request);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.UPDATE);
 	}
