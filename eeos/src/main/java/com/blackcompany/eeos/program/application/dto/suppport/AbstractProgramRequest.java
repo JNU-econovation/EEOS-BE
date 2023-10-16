@@ -1,4 +1,4 @@
-package com.blackcompany.eeos.program.application.dto;
+package com.blackcompany.eeos.program.application.dto.suppport;
 
 import com.blackcompany.eeos.common.support.dto.AbstractRequestDto;
 

@@ -1,5 +1,6 @@
 package com.blackcompany.eeos.program.application.dto;
 
+import com.blackcompany.eeos.program.application.dto.suppport.AbstractProgramResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

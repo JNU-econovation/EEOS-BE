@@ -1,5 +1,6 @@
 package com.blackcompany.eeos.program.application.dto;
 
+import com.blackcompany.eeos.program.application.dto.suppport.AbstractProgramRequest;
 import com.blackcompany.eeos.program.presentation.annotation.OverDate;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

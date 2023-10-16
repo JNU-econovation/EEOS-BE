@@ -2,7 +2,7 @@ package com.blackcompany.eeos.program.application.model.converter;
 
 import com.blackcompany.eeos.common.support.converter.AbstractDtoConverter;
 import com.blackcompany.eeos.program.application.domain.ProgramModel;
-import com.blackcompany.eeos.program.application.dto.AbstractProgramRequest;
+import com.blackcompany.eeos.program.application.dto.suppport.AbstractProgramRequest;
 import org.springframework.stereotype.Component;
 
 @Component
