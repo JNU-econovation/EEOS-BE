@@ -17,4 +17,13 @@ public class ProgramRequestConverter
 				.programDate(Long.valueOf(source.getProgramDate()))
 				.build();
 	}
+
+	public ProgramModel from(Long programId, AbstractProgramRequest source) {
+		return ProgramModel.builder()
+				.id(programId)
+				.title(source.getTitle())
+				.content(source.getContent())
+				.programDate(Long.valueOf(source.getProgramDate()))
+				.build();
+	}
 }
