@@ -22,6 +22,7 @@ public class ProgramEntityConverter
 	@Override
 	public ProgramEntity toEntity(ProgramModel source) {
 		return ProgramEntity.builder()
+				.id(source.getId())
 				.title(source.getTitle())
 				.content(source.getContent())
 				.programDate(source.getProgramDate())
