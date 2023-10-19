@@ -20,6 +20,6 @@ public class ProgramResponseConverter {
 	}
 
 	public CommandProgramResponse from(Long id) {
-		return CommandProgramResponse.builder().id(id).build();
+		return CommandProgramResponse.builder().programId(id).build();
 	}
 }
