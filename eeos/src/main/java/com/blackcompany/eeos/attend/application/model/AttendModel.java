@@ -16,4 +16,13 @@ public class AttendModel implements AbstractModel {
 	private Long id;
 	private Long memberId;
 	private Long programId;
+	private AttendStatus status;
+
+	public void validateBeforeStatus(String beforeStatus) {
+		this.status.isEqualsStatus(beforeStatus);
+	}
+
+	public void changeStatus(String afterStatus) {
+		this.status = AttendStatus.findStatus(afterStatus);
+	}
 }
