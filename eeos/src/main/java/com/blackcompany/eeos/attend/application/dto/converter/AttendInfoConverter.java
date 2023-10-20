@@ -7,8 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class AttendInfoConverter {
 	public AttendInfoResponse from(final MemberModel target, final String attendStatus) {
-		return AttendInfoResponse
-				.builder()
+		return AttendInfoResponse.builder()
 				.id(target.getId())
 				.generation(target.getGeneration())
 				.name(target.getName())
