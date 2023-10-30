@@ -6,5 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public interface GetAttendantInfoUsecase {
-	List<AttendInfoResponse> findAttendInfo(Long programId);
+	List<AttendInfoResponse> findAttendInfo(final Long programId);
+
+	List<AttendInfoResponse> findAttendInfo(final Long programId, final String attendStatus);
 }

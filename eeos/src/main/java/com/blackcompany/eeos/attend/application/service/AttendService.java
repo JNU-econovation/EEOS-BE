@@ -11,6 +11,7 @@ import com.blackcompany.eeos.attend.application.usecase.GetAttendantInfoUsecase;
 import com.blackcompany.eeos.attend.persistence.AttendEntity;
 import com.blackcompany.eeos.attend.persistence.AttendRepository;
 import com.blackcompany.eeos.member.application.service.MemberService;
+import com.blackcompany.eeos.program.application.service.ProgramValidService;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -21,36 +22,54 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AttendService implements GetAttendantInfoUsecase, ChangeStatusUsecase {
+
 	private final AttendRepository attendRepository;
-	private final MemberService memberService;
+	private final ProgramValidService programValidService;
 	private final AttendInfoConverter infoConverter;
 	private final AttendEntityConverter entityConverter;
+	private final MemberService memberService;
 
 	@Override
 	public List<AttendInfoResponse> findAttendInfo(final Long programId) {
+		programValidService.validate(programId);
+
 		List<AttendEntity> attendEntities = attendRepository.findAllByProgramId(programId);
 		return attendEntities.stream()
 				.map(
 						attendEntity ->
 								infoConverter.from(
-										memberService.findMemberInfo(attendEntity.getId()),
-										attendEntity.getStatus().getStatus()))
+										memberService.findMemberInfo(attendEntity.getId()), attendEntity.getStatus()))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<AttendInfoResponse> findAttendInfo(final Long programId, final String status) {
+		programValidService.validate(programId);
+
+		List<AttendEntity> attendEntities = attendRepository.findAllByProgramId(programId);
+
+		return attendEntities.stream()
+				.map(entityConverter::from)
+				.filter(model -> model.isSame(status))
+				.map(
+						attendEntity ->
+								infoConverter.from(
+										memberService.findMemberInfo(attendEntity.getId()), attendEntity.getStatus()))
 				.collect(Collectors.toList());
 	}
 
 	@Transactional
 	@Override
 	public void changeStatus(final ChangeStatusRequest request, final Long programId) {
-		AttendEntity entity =
+		AttendModel model =
 				attendRepository
 						.findByProgramIdAndMemberId(programId, request.getMemberId())
+						.map(entityConverter::from)
 						.orElseThrow(NotFoundAttendException::new);
 
-		AttendModel attendModel = entityConverter.from(entity);
+		model.isSame(request.getBeforeAttendStatus());
 
-		attendModel.validateBeforeStatus(request.getBeforeAttendStatus());
-		attendModel.changeStatus(request.getAfterAttendStatus());
-
-		attendRepository.save(entityConverter.toEntity(attendModel));
+		model.changeStatus(request.getAfterAttendStatus());
+		attendRepository.save(entityConverter.toEntity(model));
 	}
 }
