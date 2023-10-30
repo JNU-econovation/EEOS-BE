@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -38,5 +39,12 @@ public class AttendController {
 			@PathVariable("programId") Long programId, @RequestBody ChangeStatusRequest request) {
 		changeStatusUsecase.changeStatus(request, programId);
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.UPDATE);
+	}
+
+	@GetMapping("/programs/{programId}/members")
+	public ApiResponse<SuccessBody<List<AttendInfoResponse>>> getAttendInfoByProgram(
+			@PathVariable("programId") Long programId, @RequestParam("status") String status) {
+		List<AttendInfoResponse> response = getAttendantInfoUsecase.findAttendInfo(programId, status);
+		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
 	}
 }
