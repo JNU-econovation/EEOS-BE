@@ -11,7 +11,7 @@ services:
     ports:
       - "13308:3306"
     volumes:
-      - ./mysql-init.d:/docker-entrypoint-initdb.d
+      - ./mysql-init.d/:/docker-entrypoint-initdb.d
 
   overflow-adminer: # mysql web admin
     container_name: eeos-adminer

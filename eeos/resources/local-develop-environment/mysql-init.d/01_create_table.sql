@@ -1,5 +1,4 @@
 use eeos;
-
 create table program
 (
     program_id      bigint       not null auto_increment,
