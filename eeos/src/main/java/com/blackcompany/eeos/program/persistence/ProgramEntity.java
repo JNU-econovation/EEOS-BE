@@ -22,6 +22,7 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @Table(name = ProgramEntity.ENTITY_PREFIX)
 public class ProgramEntity extends BaseEntity {
+
 	public static final String ENTITY_PREFIX = "program";
 
 	@Id
@@ -35,6 +36,6 @@ public class ProgramEntity extends BaseEntity {
 	@Column(name = ENTITY_PREFIX + "_content", nullable = false)
 	private String content;
 
-	@Column(name = ENTITY_PREFIX + "_programDate", nullable = false)
+	@Column(name = ENTITY_PREFIX + "_date", nullable = false)
 	private Long programDate;
 }
