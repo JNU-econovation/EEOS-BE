@@ -3,4 +3,6 @@ spring:
     group:
       local:
         - local-mysql
+      dev:
+        - dev-mysql
     active: local
