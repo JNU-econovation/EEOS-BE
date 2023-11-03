@@ -1,5 +1,6 @@
 package com.blackcompany.eeos.program.application.service;
 
+import com.blackcompany.eeos.attend.application.service.CandidateService;
 import com.blackcompany.eeos.program.application.domain.ProgramModel;
 import com.blackcompany.eeos.program.application.dto.CommandProgramResponse;
 import com.blackcompany.eeos.program.application.dto.GetProgramResponse;
@@ -24,6 +25,7 @@ public class ProgramService
 	private final ProgramEntityConverter entityConverter;
 	private final ProgramResponseConverter responseConverter;
 	private final ProgramRepository programRepository;
+	private final CandidateService candidateService;
 
 	@Override
 	public CommandProgramResponse create(AbstractProgramRequest request) {
@@ -31,15 +33,15 @@ public class ProgramService
 		ProgramEntity entity = entityConverter.toEntity(model);
 		ProgramEntity save = programRepository.save(entity);
 
+		candidateService.saveCandidate(save.getId());
+
 		return responseConverter.from(save.getId());
 	}
 
 	@Override
 	public GetProgramResponse getProgram(Long id) {
 		ProgramEntity programEntity =
-				programRepository
-						.findById(id)
-						.orElseThrow(() -> new NotFoundProgramException("존재하지 않는 프로그램입니다"));
+				programRepository.findById(id).orElseThrow(NotFoundProgramException::new);
 
 		ProgramModel model = entityConverter.from(programEntity);
 		return responseConverter.from(model, model.calculateEventStatus());

@@ -1,4 +1,4 @@
-package com.blackcompany.eeos.program.application.dto;
+package com.blackcompany.eeos.attend.application.dto;
 
 import com.blackcompany.eeos.common.support.dto.AbstractResponseDto;
 import lombok.AllArgsConstructor;
@@ -10,6 +10,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class CommandProgramResponse implements AbstractResponseDto {
-	private Long programId;
+public class AttendInfoResponse implements AbstractResponseDto {
+	private Long id;
+	private Long generation;
+	private String name;
+	private String attendStatus;
 }
