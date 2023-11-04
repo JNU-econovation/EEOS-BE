@@ -1,9 +1,14 @@
 package com.blackcompany.eeos.program.application.service;
 
+import com.blackcompany.eeos.attend.application.exception.NotFoundStatusException;
 import com.blackcompany.eeos.attend.application.service.CandidateService;
 import com.blackcompany.eeos.program.application.domain.ProgramModel;
+import com.blackcompany.eeos.program.application.domain.ProgramStatus;
 import com.blackcompany.eeos.program.application.dto.CommandProgramResponse;
 import com.blackcompany.eeos.program.application.dto.GetProgramResponse;
+import com.blackcompany.eeos.program.application.dto.GetProgramsResponse;
+import com.blackcompany.eeos.program.application.dto.PageResponse;
+import com.blackcompany.eeos.program.application.dto.converter.ProgramPageResponseConverter;
 import com.blackcompany.eeos.program.application.dto.converter.ProgramResponseConverter;
 import com.blackcompany.eeos.program.application.dto.suppport.AbstractProgramRequest;
 import com.blackcompany.eeos.program.application.exception.NotFoundProgramException;
@@ -11,21 +16,29 @@ import com.blackcompany.eeos.program.application.model.converter.ProgramEntityCo
 import com.blackcompany.eeos.program.application.model.converter.ProgramRequestConverter;
 import com.blackcompany.eeos.program.application.usecase.CreateProgramUsecase;
 import com.blackcompany.eeos.program.application.usecase.GetProgramUsecase;
+import com.blackcompany.eeos.program.application.usecase.GetProgramsUsecase;
 import com.blackcompany.eeos.program.application.usecase.UpdateProgramUsecase;
 import com.blackcompany.eeos.program.persistence.ProgramEntity;
 import com.blackcompany.eeos.program.persistence.ProgramRepository;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class ProgramService
-		implements CreateProgramUsecase, GetProgramUsecase, UpdateProgramUsecase {
+		implements CreateProgramUsecase, GetProgramUsecase, UpdateProgramUsecase, GetProgramsUsecase {
+
 	private final ProgramRequestConverter requestConverter;
 	private final ProgramEntityConverter entityConverter;
 	private final ProgramResponseConverter responseConverter;
 	private final ProgramRepository programRepository;
 	private final CandidateService candidateService;
+	private final ProgramPageResponseConverter pageResponseConverter;
 
 	@Override
 	public CommandProgramResponse create(AbstractProgramRequest request) {
@@ -54,5 +67,24 @@ public class ProgramService
 		ProgramEntity updateEntity = programRepository.save(entity);
 
 		return responseConverter.from(updateEntity.getId());
+	}
+
+	@Override
+	public PageResponse<GetProgramsResponse> getProgram(String status, int size, int page) {
+		LocalDate currentDate = LocalDate.now(ZoneId.of("Asia/Seoul")); // 한국 시간대로 현재 날짜 가져오기
+		Timestamp now = Timestamp.from(currentDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+		PageRequest pageRequest = PageRequest.of(page, size);
+
+		if (ProgramStatus.isSameStatus(status, ProgramStatus.ACTIVE)) {
+			Page<ProgramEntity> pages = programRepository.findAllByIng(now, pageRequest);
+			return pageResponseConverter.from(pages);
+		}
+		if (ProgramStatus.isSameStatus(status, ProgramStatus.END)) {
+			Page<ProgramEntity> pages = programRepository.findAllByEnd(now, pageRequest);
+			return pageResponseConverter.from(pages);
+		}
+
+		throw new NotFoundStatusException();
 	}
 }
