@@ -33,9 +33,7 @@ public class DateConverter {
 			return null;
 		}
 
-		return Instant.ofEpochSecond(epochSecond)
-				.atZone(ZoneId.of("Asia/Seoul"))
-				.toLocalDate();
+		return Instant.ofEpochSecond(epochSecond).atZone(ZoneId.of("Asia/Seoul")).toLocalDate();
 	}
 
 	public static LocalDateTime toLocalDateTime(Long epochSecond) {
