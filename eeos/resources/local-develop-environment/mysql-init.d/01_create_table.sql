@@ -6,7 +6,7 @@ create table program
     created_date    datetime     not null,
     is_deleted      boolean      not null,
     updated_date    datetime     not null,
-    program_content varchar(255) not null,
+    program_content TEXT         not null,
     program_date    TIMESTAMP    not null,
     program_title   varchar(255) not null,
     primary key (program_id)
