@@ -1,7 +1,7 @@
 package com.blackcompany.eeos.program.application.usecase;
 
 import com.blackcompany.eeos.program.application.dto.CommandProgramResponse;
-import com.blackcompany.eeos.program.application.dto.suppport.AbstractProgramRequest;
+import com.blackcompany.eeos.program.application.dto.CreateProgramRequest;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -13,5 +13,5 @@ public interface CreateProgramUsecase {
 	 * @param request 프로그램 저장을 하기 위한 request 객체
 	 * @return 프로그램 식별 id 전달
 	 */
-	CommandProgramResponse create(AbstractProgramRequest request);
+	CommandProgramResponse create(CreateProgramRequest request);
 }

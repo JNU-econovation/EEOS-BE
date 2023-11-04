@@ -5,12 +5,13 @@ import com.blackcompany.eeos.attend.application.service.CandidateService;
 import com.blackcompany.eeos.program.application.domain.ProgramModel;
 import com.blackcompany.eeos.program.application.domain.ProgramStatus;
 import com.blackcompany.eeos.program.application.dto.CommandProgramResponse;
+import com.blackcompany.eeos.program.application.dto.CreateProgramRequest;
 import com.blackcompany.eeos.program.application.dto.GetProgramResponse;
 import com.blackcompany.eeos.program.application.dto.GetProgramsResponse;
 import com.blackcompany.eeos.program.application.dto.PageResponse;
+import com.blackcompany.eeos.program.application.dto.UpdateProgramRequest;
 import com.blackcompany.eeos.program.application.dto.converter.ProgramPageResponseConverter;
 import com.blackcompany.eeos.program.application.dto.converter.ProgramResponseConverter;
-import com.blackcompany.eeos.program.application.dto.suppport.AbstractProgramRequest;
 import com.blackcompany.eeos.program.application.exception.NotFoundProgramException;
 import com.blackcompany.eeos.program.application.model.converter.ProgramEntityConverter;
 import com.blackcompany.eeos.program.application.model.converter.ProgramRequestConverter;
@@ -41,7 +42,7 @@ public class ProgramService
 	private final ProgramPageResponseConverter pageResponseConverter;
 
 	@Override
-	public CommandProgramResponse create(AbstractProgramRequest request) {
+	public CommandProgramResponse create(CreateProgramRequest request) {
 		ProgramModel model = requestConverter.from(request);
 		ProgramEntity entity = entityConverter.toEntity(model);
 		ProgramEntity save = programRepository.save(entity);
@@ -61,7 +62,7 @@ public class ProgramService
 	}
 
 	@Override
-	public CommandProgramResponse update(Long programId, AbstractProgramRequest request) {
+	public CommandProgramResponse update(Long programId, UpdateProgramRequest request) {
 		ProgramModel model = requestConverter.from(programId, request);
 		ProgramEntity entity = entityConverter.toEntity(model);
 		ProgramEntity updateEntity = programRepository.save(entity);
@@ -71,7 +72,7 @@ public class ProgramService
 
 	@Override
 	public PageResponse<GetProgramsResponse> getProgram(String status, int size, int page) {
-		LocalDate currentDate = LocalDate.now(ZoneId.of("Asia/Seoul")); // 한국 시간대로 현재 날짜 가져오기
+		LocalDate currentDate = LocalDate.now(ZoneId.of("Asia/Seoul"));
 		Timestamp now = Timestamp.from(currentDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
 		PageRequest pageRequest = PageRequest.of(page, size);
