@@ -1,30 +1,33 @@
-package com.blackcompany.eeos.common.presentation.respnose;
+package com.blackcompany.eeos.program.application.dto;
 
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class PageResponse<T> {
 
 	/** 페이지를 구성하는 일정 수의 크기 */
-	private final int pageSize;
+	private int size;
 	/** 데이터를 가져온 페이지 번호 */
-	private final int pageNumber;
+	private int page;
 	/** size 크기에 맞춰 페이징했을 때 나오는 총 페이지 개수 */
-	private final int totalPageCount;
-	/** 전체 데이터 개수 */
-	private final Long totalCount;
+	private int totalPage;
 
-	private final List<T> data;
+	private List<T> programs;
 
 	public PageResponse(final Page<T> source) {
 		final Pageable pageable = source.getPageable();
-		this.pageSize = pageable.getPageSize();
-		this.pageNumber = pageable.getPageNumber();
-		this.totalPageCount = source.getTotalPages();
-		this.totalCount = source.getTotalElements();
-		this.data = source.getContent();
+		this.size = pageable.getPageSize();
+		this.page = pageable.getPageNumber();
+		this.totalPage = source.getTotalPages();
+		this.programs = source.getContent();
 	}
 }

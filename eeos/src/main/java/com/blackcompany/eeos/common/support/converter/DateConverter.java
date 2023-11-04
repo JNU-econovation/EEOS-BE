@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import lombok.experimental.UtilityClass;
 
@@ -32,9 +33,7 @@ public class DateConverter {
 			return null;
 		}
 
-		return Instant.ofEpochSecond(epochSecond)
-				.atZone(ZoneOffset.of(KOREA_ZONE_OFFSET))
-				.toLocalDate();
+		return Instant.ofEpochSecond(epochSecond).atZone(ZoneId.of("Asia/Seoul")).toLocalDate();
 	}
 
 	public static LocalDateTime toLocalDateTime(Long epochSecond) {

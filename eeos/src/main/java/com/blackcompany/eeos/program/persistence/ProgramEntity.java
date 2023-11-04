@@ -1,11 +1,13 @@
 package com.blackcompany.eeos.program.persistence;
 
 import com.blackcompany.eeos.common.persistence.BaseEntity;
+import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -20,7 +22,9 @@ import lombok.experimental.SuperBuilder;
 @ToString
 @SuperBuilder(toBuilder = true)
 @Entity
-@Table(name = ProgramEntity.ENTITY_PREFIX)
+@Table(
+		name = ProgramEntity.ENTITY_PREFIX,
+		indexes = @Index(name = "idx_program_date", columnList = "program_date"))
 public class ProgramEntity extends BaseEntity {
 
 	public static final String ENTITY_PREFIX = "program";
@@ -37,5 +41,5 @@ public class ProgramEntity extends BaseEntity {
 	private String content;
 
 	@Column(name = ENTITY_PREFIX + "_date", nullable = false)
-	private Long programDate;
+	private Timestamp programDate;
 }
