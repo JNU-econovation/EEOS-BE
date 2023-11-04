@@ -1,5 +1,6 @@
 package com.blackcompany.eeos.common.presentation.respnose;
 
+import com.blackcompany.eeos.program.application.dto.PageResponse;
 import java.util.List;
 import lombok.experimental.UtilityClass;
 import org.springframework.data.domain.Page;
@@ -8,7 +9,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-
 @UtilityClass
 public class ApiResponseGenerator {
 
