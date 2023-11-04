@@ -1,6 +1,5 @@
 package com.blackcompany.eeos.program.application.dto;
 
-import com.blackcompany.eeos.program.application.dto.suppport.AbstractProgramRequest;
 import com.blackcompany.eeos.program.presentation.annotation.OverDate;
 import java.sql.Timestamp;
 import javax.validation.constraints.NotNull;
@@ -13,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class UpdateProgramRequest implements AbstractProgramRequest {
+public class UpdateProgramRequest {
 
 	private @NotNull String title;
 	private @NotNull String content;
