@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder(toBuilder = true)
 public class GetProgramsResponse {
 
-	private Long id;
+	private Long programId;
 	private String title;
 	private Timestamp programDate;
 	private String content;

@@ -13,7 +13,7 @@ public class ProgramResponseConverter {
 
 	public GetProgramResponse from(ProgramModel target, EventStatus status) {
 		return GetProgramResponse.builder()
-				.id(target.getId())
+				.programId(target.getId())
 				.title(target.getTitle())
 				.content(target.getContent())
 				.programDate(target.getProgramDate())
@@ -23,7 +23,7 @@ public class ProgramResponseConverter {
 
 	public GetProgramsResponse from(ProgramEntity target) {
 		return GetProgramsResponse.builder()
-				.id(target.getId())
+				.programId(target.getId())
 				.title(target.getTitle())
 				.content(target.getContent())
 				.programDate(target.getProgramDate())
