@@ -40,3 +40,6 @@ ALTER TABLE member
 
 ALTER TABLE attend
     ADD INDEX idx_program (attend_program_id);
+
+ALTER TABLE program
+    ADD INDEX idx_program_date (program_date);
