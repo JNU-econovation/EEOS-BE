@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder(toBuilder = true)
 public class AttendInfoResponse implements AbstractResponseDto {
-	private Long id;
+	private Long memberId;
 	private Long generation;
 	private String name;
 	private String attendStatus;

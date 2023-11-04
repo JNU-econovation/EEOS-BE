@@ -10,7 +10,7 @@ public class AttendInfoConverter {
 
 	public AttendInfoResponse from(final MemberEntity source, final AttendStatus attendStatus) {
 		return AttendInfoResponse.builder()
-				.id(source.getId())
+				.memberId(source.getId())
 				.generation(source.getGeneration())
 				.name(source.getName())
 				.attendStatus(attendStatus.getStatus())
@@ -19,7 +19,7 @@ public class AttendInfoConverter {
 
 	public AttendInfoResponse from(final MemberEntity source, final String status) {
 		return AttendInfoResponse.builder()
-				.id(source.getId())
+				.memberId(source.getId())
 				.generation(source.getGeneration())
 				.name(source.getName())
 				.attendStatus(status)
