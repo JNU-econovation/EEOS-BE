@@ -43,7 +43,7 @@ public class AttendController {
 
 	@GetMapping("/programs/{programId}/members")
 	public ApiResponse<SuccessBody<List<AttendInfoResponse>>> getAttendInfoByProgram(
-			@PathVariable("programId") Long programId, @RequestParam("AttendStatus") String status) {
+			@PathVariable("programId") Long programId, @RequestParam("attendStatus") String status) {
 		List<AttendInfoResponse> response = getAttendantInfoUsecase.findAttendInfo(programId, status);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
 	}
