@@ -27,7 +27,7 @@ public class AttendController {
 	private final GetAttendantInfoUsecase getAttendantInfoUsecase;
 	private final ChangeStatusUsecase changeStatusUsecase;
 
-	@GetMapping("/candidate/program/{programId}")
+	@GetMapping("/candidate/programs/{programId}")
 	public ApiResponse<SuccessBody<List<AttendInfoResponse>>> findAttendMemberInfo(
 			@PathVariable("programId") Long programId) {
 		List<AttendInfoResponse> response = getAttendantInfoUsecase.findAttendInfo(programId);
