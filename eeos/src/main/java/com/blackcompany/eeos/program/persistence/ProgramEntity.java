@@ -37,7 +37,7 @@ public class ProgramEntity extends BaseEntity {
 	@Column(name = ENTITY_PREFIX + "_title", nullable = false)
 	private String title;
 
-	@Column(name = ENTITY_PREFIX + "_content", nullable = false)
+	@Column(name = ENTITY_PREFIX + "_content", nullable = false, columnDefinition = "TEXT")
 	private String content;
 
 	@Column(name = ENTITY_PREFIX + "_date", nullable = false)
