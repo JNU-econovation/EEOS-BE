@@ -1,6 +1,7 @@
 package com.blackcompany.eeos.program.persistence;
 
 import com.blackcompany.eeos.common.persistence.BaseEntity;
+import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -37,5 +38,5 @@ public class ProgramEntity extends BaseEntity {
 	private String content;
 
 	@Column(name = ENTITY_PREFIX + "_date", nullable = false)
-	private Long programDate;
+	private Timestamp programDate;
 }

@@ -3,8 +3,9 @@ package com.blackcompany.eeos.program.application.domain;
 import com.blackcompany.eeos.common.support.AbstractModel;
 import com.blackcompany.eeos.common.support.converter.DateConverter;
 import com.blackcompany.eeos.program.application.model.EventStatus;
+import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,14 +25,14 @@ public class ProgramModel implements AbstractModel {
 
 	private Long userId;
 
-	private Long programDate;
+	private Timestamp programDate;
 	private String eventStatus;
 
 	public EventStatus calculateEventStatus() {
-		LocalDate nowDate = DateConverter.toLocalDate(Instant.now().getEpochSecond());
-		LocalDate programLocalDate = DateConverter.toLocalDate(programDate);
+		LocalDateTime nowDate = DateConverter.toLocalDateTime(Instant.now().getEpochSecond());
+		LocalDateTime programDate = DateConverter.toLocalDateTime(this.programDate.getTime());
 
-		if (programLocalDate.isBefore(nowDate)) {
+		if (programDate.isBefore(nowDate)) {
 			return EventStatus.END;
 		}
 		return EventStatus.ING;

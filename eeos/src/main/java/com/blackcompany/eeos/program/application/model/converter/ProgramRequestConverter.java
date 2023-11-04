@@ -14,7 +14,7 @@ public class ProgramRequestConverter
 		return ProgramModel.builder()
 				.title(source.getTitle())
 				.content(source.getContent())
-				.programDate(Long.valueOf(source.getProgramDate()))
+				.programDate(source.getProgramDate())
 				.build();
 	}
 
@@ -23,7 +23,7 @@ public class ProgramRequestConverter
 				.id(programId)
 				.title(source.getTitle())
 				.content(source.getContent())
-				.programDate(Long.valueOf(source.getProgramDate()))
+				.programDate(source.getProgramDate())
 				.build();
 	}
 }
