@@ -1,6 +1,7 @@
 package com.blackcompany.eeos.program.application.dto;
 
-import com.blackcompany.eeos.program.application.dto.suppport.AbstractProgramResponse;
+import com.blackcompany.eeos.common.support.dto.AbstractResponseDto;
+import java.sql.Timestamp;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,11 +11,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class GetProgramResponse implements AbstractProgramResponse {
+public class GetProgramResponse implements AbstractResponseDto {
 
-	private Long id;
+	private Long programId;
 	private String title;
-	private Long programDate;
+	private Timestamp programDate;
 	private String content;
 	private String eventStatus;
 }

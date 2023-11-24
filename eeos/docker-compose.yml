@@ -11,7 +11,8 @@ services:
     ports:
       - "13306:3306"
     volumes: #볼륨 지정
-      - ./resources/local-develop-environment/mysql-init.d:/docker-entrypoint-initdb.d
+      - ./resources/local-develop-environment/mysql-init.d/:/docker-entrypoint-initdb.d
+      - ./resources/local-develop-environment/mysql-data:/var/lib/mysql
     networks: #사용할 네트워크 지정
       - eeos-network
   backend:

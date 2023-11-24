@@ -9,6 +9,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -24,7 +25,9 @@ import lombok.experimental.SuperBuilder;
 @ToString
 @SuperBuilder(toBuilder = true)
 @Entity
-@Table(name = AttendEntity.ENTITY_PREFIX)
+@Table(
+		name = AttendEntity.ENTITY_PREFIX,
+		indexes = @Index(name = "idx_program", columnList = "attend_program_id"))
 public class AttendEntity extends BaseEntity {
 	public static final String ENTITY_PREFIX = "attend";
 

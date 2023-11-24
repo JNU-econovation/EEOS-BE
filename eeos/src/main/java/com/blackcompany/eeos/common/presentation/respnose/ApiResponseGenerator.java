@@ -1,5 +1,6 @@
 package com.blackcompany.eeos.common.presentation.respnose;
 
+import com.blackcompany.eeos.program.application.dto.PageResponse;
 import java.util.List;
 import lombok.experimental.UtilityClass;
 import org.springframework.data.domain.Page;
