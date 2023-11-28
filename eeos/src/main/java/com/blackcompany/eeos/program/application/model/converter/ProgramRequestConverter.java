@@ -1,6 +1,7 @@
 package com.blackcompany.eeos.program.application.model.converter;
 
 import com.blackcompany.eeos.common.support.converter.AbstractDtoConverter;
+import com.blackcompany.eeos.common.utils.DateConverter;
 import com.blackcompany.eeos.program.application.domain.ProgramModel;
 import com.blackcompany.eeos.program.application.dto.CreateProgramRequest;
 import com.blackcompany.eeos.program.application.dto.UpdateProgramRequest;
@@ -15,7 +16,7 @@ public class ProgramRequestConverter
 		return ProgramModel.builder()
 				.title(source.getTitle())
 				.content(source.getContent())
-				.programDate(source.getProgramDate())
+				.programDate(DateConverter.toEpochSecond(source.getProgramDate()))
 				.build();
 	}
 
