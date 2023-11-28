@@ -5,5 +5,5 @@ import com.blackcompany.eeos.program.application.dto.PageResponse;
 
 public interface GetProgramsUsecase {
 
-	PageResponse<GetProgramsResponse> getProgram(String status, int size, int page);
+	PageResponse<GetProgramsResponse> getPrograms(String status, int size, int page);
 }

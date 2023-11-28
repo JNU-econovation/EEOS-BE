@@ -73,7 +73,7 @@ public class ProgramService
 	}
 
 	@Override
-	public PageResponse<GetProgramsResponse> getProgram(String status, int size, int page) {
+	public PageResponse<GetProgramsResponse> getPrograms(String status, int size, int page) {
 		LocalDate currentDate = LocalDate.now(ZoneId.of("Asia/Seoul"));
 		Timestamp now = Timestamp.from(currentDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
 

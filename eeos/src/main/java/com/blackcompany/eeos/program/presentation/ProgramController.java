@@ -62,7 +62,7 @@ public class ProgramController {
 			@RequestParam("programStatus") String status,
 			@RequestParam("size") int size,
 			@RequestParam("page") int page) {
-		PageResponse<GetProgramsResponse> response = getProgramsUsecase.getProgram(status, size, page);
+		PageResponse<GetProgramsResponse> response = getProgramsUsecase.getPrograms(status, size, page);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
 	}
 }
