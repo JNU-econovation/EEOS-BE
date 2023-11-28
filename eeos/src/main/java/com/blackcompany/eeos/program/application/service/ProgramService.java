@@ -60,7 +60,7 @@ public class ProgramService
 				programRepository.findById(id).orElseThrow(NotFoundProgramException::new);
 
 		ProgramModel model = entityConverter.from(programEntity);
-		return responseConverter.from(model, model.calculateEventStatus());
+		return responseConverter.from(model, model.calculate());
 	}
 
 	@Override
