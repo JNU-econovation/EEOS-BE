@@ -1,9 +1,9 @@
-package com.blackcompany.eeos.common.support.converter;
+package com.blackcompany.eeos.common.utils;
 
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import lombok.experimental.UtilityClass;
@@ -12,20 +12,12 @@ import lombok.experimental.UtilityClass;
 public class DateConverter {
 	private static final String KOREA_ZONE_OFFSET = "+09:00";
 
-	public static Long toEpochSecond(LocalDateTime localDateTime) {
-		if (localDateTime == null) {
-			return null;
-		}
-
-		return localDateTime.toEpochSecond(ZoneOffset.of(KOREA_ZONE_OFFSET));
-	}
-
-	public static Long toEpochSecond(LocalDate localDate) {
+	public static Timestamp toEpochSecond(LocalDate localDate) {
 		if (localDate == null) {
 			return null;
 		}
 
-		return localDate.toEpochSecond(LocalTime.parse("00:00:00"), ZoneOffset.of(KOREA_ZONE_OFFSET));
+		return Timestamp.valueOf(localDate.atStartOfDay());
 	}
 
 	public static LocalDate toLocalDate(Long epochSecond) {
