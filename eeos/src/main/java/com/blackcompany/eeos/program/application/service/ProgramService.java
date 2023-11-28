@@ -1,6 +1,7 @@
 package com.blackcompany.eeos.program.application.service;
 
 import com.blackcompany.eeos.attend.application.service.CandidateService;
+import com.blackcompany.eeos.common.utils.DateConverter;
 import com.blackcompany.eeos.program.application.domain.ProgramModel;
 import com.blackcompany.eeos.program.application.domain.ProgramStatus;
 import com.blackcompany.eeos.program.application.dto.CommandProgramResponse;
@@ -23,7 +24,6 @@ import com.blackcompany.eeos.program.persistence.ProgramEntity;
 import com.blackcompany.eeos.program.persistence.ProgramRepository;
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -74,9 +74,7 @@ public class ProgramService
 
 	@Override
 	public PageResponse<GetProgramsResponse> getPrograms(String status, int size, int page) {
-		LocalDate currentDate = LocalDate.now(ZoneId.of("Asia/Seoul"));
-		Timestamp now = Timestamp.from(currentDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-
+		Timestamp now = DateConverter.toEpochSecond(LocalDate.now());
 		PageRequest pageRequest = PageRequest.of(page, size);
 
 		Map<ProgramStatus, ProgramStateService> programStatusStrategy = programStatusFactory.make();
