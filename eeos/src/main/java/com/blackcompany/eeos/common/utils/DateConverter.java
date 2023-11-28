@@ -3,45 +3,45 @@ package com.blackcompany.eeos.common.utils;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneOffset;
+import java.time.ZoneId;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class DateConverter {
-	private static final String KOREA_ZONE_OFFSET = "+09:00";
+    private static final String KST = "Asia/Seoul";
 
-	public static Timestamp toEpochSecond(LocalDate localDate) {
-		if (localDate == null) {
-			return null;
-		}
+    public static Timestamp toEpochSecond(LocalDate localDate) {
+        if (localDate == null) {
+            return null;
+        }
 
-		return Timestamp.valueOf(localDate.atStartOfDay());
-	}
+        return Timestamp.valueOf(localDate.atStartOfDay());
+    }
 
-	public static Timestamp toEpochSecond(Timestamp epochSecond) {
-		if (epochSecond == null) {
-			return null;
-		}
+    public static Timestamp toEpochSecond(Timestamp epochSecond) {
+        if (epochSecond == null) {
+            return null;
+        }
 
-		LocalDate localDate = toLocalDate(epochSecond);
-		return toEpochSecond(localDate);
-	}
+        LocalDate localDate = toLocalDate(epochSecond);
+        return toEpochSecond(localDate);
+    }
 
-	public static LocalDate toLocalDate(Timestamp epochSecond) {
-		if (epochSecond == null) {
-			return null;
-		}
+    private static LocalDate toLocalDate(Timestamp epochSecond) {
+        if (epochSecond == null) {
+            return null;
+        }
 
-		return epochSecond.toLocalDateTime().toLocalDate();
-	}
+        return epochSecond.toLocalDateTime().toLocalDate();
+    }
 
-	public static LocalDate toLocalDate(Long epochSecond) {
-		if (epochSecond == null) {
-			return null;
-		}
+    public static LocalDate toLocalDate(Long epochMilli) {
+        if (epochMilli == null) {
+            return null;
+        }
 
-		return Instant.ofEpochSecond(epochSecond)
-				.atZone(ZoneOffset.of(KOREA_ZONE_OFFSET))
-				.toLocalDate();
-	}
+        return Instant.ofEpochSecond(epochMilli / 1000)
+                .atZone(ZoneId.of(KST))
+                .toLocalDate();
+    }
 }
