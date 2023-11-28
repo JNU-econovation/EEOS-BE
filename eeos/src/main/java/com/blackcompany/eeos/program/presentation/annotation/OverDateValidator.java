@@ -1,6 +1,6 @@
 package com.blackcompany.eeos.program.presentation.annotation;
 
-import com.blackcompany.eeos.common.support.converter.DateConverter;
+import com.blackcompany.eeos.common.utils.DateConverter;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Objects;
