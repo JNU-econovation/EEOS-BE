@@ -23,6 +23,6 @@ public class OverDateValidator implements ConstraintValidator<OverDate, Timestam
 		LocalDate now = LocalDate.now();
 		LocalDate requestDate = DateConverter.toLocalDate(value.getTime());
 
-		return now.isAfter(requestDate);
+		return now.isBefore(requestDate) || now.isEqual(requestDate);
 	}
 }
