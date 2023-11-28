@@ -3,8 +3,6 @@ package com.blackcompany.eeos.common.utils;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import lombok.experimental.UtilityClass;
 
@@ -18,14 +16,6 @@ public class DateConverter {
 		}
 
 		return Timestamp.valueOf(localDate.atStartOfDay());
-	}
-
-	public static LocalDate toLocalDate(Long epochSecond) {
-		if (epochSecond == null) {
-			return null;
-		}
-
-		return Instant.ofEpochSecond(epochSecond).atZone(ZoneId.of("Asia/Seoul")).toLocalDate();
 	}
 
 	public static Timestamp toEpochSecond(Timestamp epochSecond) {
@@ -45,13 +35,13 @@ public class DateConverter {
 		return epochSecond.toLocalDateTime().toLocalDate();
 	}
 
-	public static LocalDateTime toLocalDateTime(Long epochSecond) {
+	public static LocalDate toLocalDate(Long epochSecond) {
 		if (epochSecond == null) {
 			return null;
 		}
 
 		return Instant.ofEpochSecond(epochSecond)
 				.atZone(ZoneOffset.of(KOREA_ZONE_OFFSET))
-				.toLocalDateTime();
+				.toLocalDate();
 	}
 }
