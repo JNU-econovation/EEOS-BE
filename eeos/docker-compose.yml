@@ -1,7 +1,7 @@
 version: '3.1'
 services:
   mysql:
-    container_name: eeos-mysql-dev
+    container_name: eeos-mysql
     image: mysql/mysql-server:8.0.27
     environment:
       - MYSQL_DATABASE=eeos
@@ -19,7 +19,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: eeos-app-dev
+    container_name: eeos-app
     ports:
       - "8080:8080"
     depends_on:
@@ -29,7 +29,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://eeos-mysql-dev:3306/eeos?useSSL=false&serverTimezone=Asia/Seoul&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
-      SPRING_PROFILES_ACTIVE: dev
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES}
     networks: #사용할 네트워크 지정
       - eeos-network
 networks:
