@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class HealthController {
 
-    @GetMapping("/health-check")
-    public ApiResponse<SuccessBody<Void>> checkHealth() {
-        return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.GET);
-    }
+	@GetMapping("/health-check")
+	public ApiResponse<SuccessBody<Void>> checkHealth() {
+		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.GET);
+	}
 }
