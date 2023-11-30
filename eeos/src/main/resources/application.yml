@@ -3,6 +3,11 @@ spring:
     group:
       local:
         - local-mysql
+        - local-api
       dev:
         - dev-mysql
+        - dev-api
+      prod:
+        - prod-mysql
+        - prod-api
     active: local

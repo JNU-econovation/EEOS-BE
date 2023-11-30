@@ -1,0 +1,3 @@
+cors:
+  allow-origin:
+    urls: https://localhost:3000/

@@ -1,0 +1,3 @@
+cors:
+  allow-origin:
+    urls: https://fe.dev.eeos.store/
