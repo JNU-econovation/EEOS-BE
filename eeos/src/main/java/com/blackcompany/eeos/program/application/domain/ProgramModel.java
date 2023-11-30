@@ -18,23 +18,23 @@ import lombok.ToString;
 @NoArgsConstructor
 @Builder(toBuilder = true)
 public class ProgramModel implements AbstractModel {
-    private Long id;
-    private String title;
+	private Long id;
+	private String title;
 
-    private String content;
+	private String content;
 
-    private Long userId;
+	private Long userId;
 
-    private Timestamp programDate;
-    private String eventStatus;
+	private Timestamp programDate;
+	private String eventStatus;
 
-    public EventStatus calculate() {
-        LocalDate now = DateConverter.toLocalDate(Instant.now().toEpochMilli());
-        LocalDate programDate = DateConverter.toLocalDate(this.programDate.getTime());
+	public EventStatus calculate() {
+		LocalDate now = DateConverter.toLocalDate(Instant.now().toEpochMilli());
+		LocalDate programDate = DateConverter.toLocalDate(this.programDate.getTime());
 
-        if (programDate.isBefore(now)) {
-            return EventStatus.END;
-        }
-        return EventStatus.ING;
-    }
+		if (programDate.isBefore(now)) {
+			return EventStatus.END;
+		}
+		return EventStatus.ING;
+	}
 }
