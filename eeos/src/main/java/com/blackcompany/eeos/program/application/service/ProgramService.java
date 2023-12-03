@@ -15,7 +15,7 @@ import com.blackcompany.eeos.program.application.dto.converter.ProgramResponseCo
 import com.blackcompany.eeos.program.application.exception.NotFoundProgramException;
 import com.blackcompany.eeos.program.application.model.converter.ProgramEntityConverter;
 import com.blackcompany.eeos.program.application.model.converter.ProgramRequestConverter;
-import com.blackcompany.eeos.program.application.support.ProgramStatusFactory;
+import com.blackcompany.eeos.program.application.support.ProgramStatusServiceComposite;
 import com.blackcompany.eeos.program.application.usecase.CreateProgramUsecase;
 import com.blackcompany.eeos.program.application.usecase.GetProgramUsecase;
 import com.blackcompany.eeos.program.application.usecase.GetProgramsUsecase;
@@ -24,7 +24,6 @@ import com.blackcompany.eeos.program.persistence.ProgramEntity;
 import com.blackcompany.eeos.program.persistence.ProgramRepository;
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -41,7 +40,7 @@ public class ProgramService
 	private final ProgramRepository programRepository;
 	private final CandidateService candidateService;
 	private final ProgramPageResponseConverter pageResponseConverter;
-	private final ProgramStatusFactory programStatusFactory;
+	private final ProgramStatusServiceComposite programStatusComposite;
 
 	@Override
 	public CommandProgramResponse create(CreateProgramRequest request) {
@@ -77,11 +76,8 @@ public class ProgramService
 		Timestamp now = DateConverter.toEpochSecond(LocalDate.now());
 		PageRequest pageRequest = PageRequest.of(page, size);
 
-		Map<ProgramStatus, ProgramStateService> programStatusStrategy = programStatusFactory.make();
-
-		ProgramStateService programStateService =
-				programStatusStrategy.get(ProgramStatus.getStatus(status));
-		Page<ProgramEntity> pages = programStateService.getPages(now, pageRequest);
+		Page<ProgramEntity> pages =
+				programStatusComposite.getPages(ProgramStatus.getStatus(status), now, pageRequest);
 		return pageResponseConverter.from(pages);
 	}
 }
