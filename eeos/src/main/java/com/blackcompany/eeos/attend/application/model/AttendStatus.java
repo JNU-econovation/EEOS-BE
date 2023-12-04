@@ -1,31 +1,32 @@
 package com.blackcompany.eeos.attend.application.model;
 
-import com.blackcompany.eeos.attend.application.exception.NotFoundStatusException;
+import com.blackcompany.eeos.attend.application.exception.NotFoundAttendStatusException;
 import java.util.Arrays;
+import lombok.Getter;
 
 public enum AttendStatus {
-	ATTEND("attend"),
-	ABSENT("absent"),
-	NONE("none");
+    ATTEND("attend"),
+    ABSENT("absent"),
+    NONE("none");
 
-	private final String status;
+    private final String status;
 
-	AttendStatus(String status) {
-		this.status = status;
-	}
+    AttendStatus(String status) {
+        this.status = status;
+    }
 
-	public String getStatus() {
-		return status;
-	}
+    public String getStatus() {
+        return status;
+    }
 
-	public static AttendStatus findByAttendStatus(String status) {
-		return Arrays.stream(AttendStatus.values())
-				.filter(attendStatus -> attendStatus.getStatus().equals(status))
-				.findAny()
-				.orElseThrow(NotFoundStatusException::new);
-	}
+    public static AttendStatus findByAttendStatus(String status) {
+        return Arrays.stream(AttendStatus.values())
+                .filter(attendStatus -> attendStatus.getStatus().equals(status))
+                .findAny()
+                .orElseThrow(() -> new NotFoundAttendStatusException(status));
+    }
 
-	public static boolean isSameAttendStatus(String source, AttendStatus actualStatus) {
-		return actualStatus.getStatus().equals(source);
-	}
+    public static boolean isSameAttendStatus(String source, AttendStatus actualStatus) {
+        return actualStatus.getStatus().equals(source);
+    }
 }

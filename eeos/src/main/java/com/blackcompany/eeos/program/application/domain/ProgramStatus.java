@@ -1,6 +1,6 @@
 package com.blackcompany.eeos.program.application.domain;
 
-import com.blackcompany.eeos.attend.application.exception.NotFoundStatusException;
+import com.blackcompany.eeos.attend.application.exception.NotFoundAttendStatusException;
 import java.util.Arrays;
 
 public enum ProgramStatus {
@@ -17,6 +17,6 @@ public enum ProgramStatus {
 		return Arrays.stream(ProgramStatus.values())
 				.filter(status -> status.status.equals(source))
 				.findAny()
-				.orElseThrow(NotFoundStatusException::new);
+				.orElseThrow(()-> new NotFoundAttendStatusException(source));
 	}
 }

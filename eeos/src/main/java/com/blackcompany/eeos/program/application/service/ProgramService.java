@@ -57,7 +57,7 @@ public class ProgramService
 	@Override
 	public GetProgramResponse getProgram(Long id) {
 		ProgramEntity programEntity =
-				programRepository.findById(id).orElseThrow(NotFoundProgramException::new);
+				programRepository.findById(id).orElseThrow(() -> new NotFoundProgramException(id));
 
 		ProgramModel model = entityConverter.from(programEntity);
 		return responseConverter.from(model, model.calculate());
