@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class GetProgramsResponse implements AbstractResponseDto {
+public class QueryProgramsResponse implements AbstractResponseDto {
 
 	private Long programId;
 	private String title;

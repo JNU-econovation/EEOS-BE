@@ -6,8 +6,8 @@ import com.blackcompany.eeos.program.application.domain.ProgramModel;
 import com.blackcompany.eeos.program.application.domain.ProgramStatus;
 import com.blackcompany.eeos.program.application.dto.CommandProgramResponse;
 import com.blackcompany.eeos.program.application.dto.CreateProgramRequest;
-import com.blackcompany.eeos.program.application.dto.GetProgramResponse;
-import com.blackcompany.eeos.program.application.dto.GetProgramsResponse;
+import com.blackcompany.eeos.program.application.dto.QueryProgramResponse;
+import com.blackcompany.eeos.program.application.dto.QueryProgramsResponse;
 import com.blackcompany.eeos.program.application.dto.PageResponse;
 import com.blackcompany.eeos.program.application.dto.UpdateProgramRequest;
 import com.blackcompany.eeos.program.application.dto.converter.ProgramPageResponseConverter;
@@ -54,7 +54,7 @@ public class ProgramService
 	}
 
 	@Override
-	public GetProgramResponse getProgram(Long id) {
+	public QueryProgramResponse getProgram(Long id) {
 		ProgramEntity programEntity =
 				programRepository.findById(id).orElseThrow(NotFoundProgramException::new);
 
@@ -72,7 +72,7 @@ public class ProgramService
 	}
 
 	@Override
-	public PageResponse<GetProgramsResponse> getPrograms(String status, int size, int page) {
+	public PageResponse<QueryProgramsResponse> getPrograms(String status, int size, int page) {
 		Timestamp now = DateConverter.toEpochSecond(LocalDate.now());
 		PageRequest pageRequest = PageRequest.of(page, size);
 

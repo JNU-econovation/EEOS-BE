@@ -1,6 +1,6 @@
 package com.blackcompany.eeos.program.application.dto.converter;
 
-import com.blackcompany.eeos.program.application.dto.GetProgramsResponse;
+import com.blackcompany.eeos.program.application.dto.QueryProgramsResponse;
 import com.blackcompany.eeos.program.application.dto.PageResponse;
 import com.blackcompany.eeos.program.persistence.ProgramEntity;
 import java.util.List;
@@ -15,11 +15,11 @@ import org.springframework.stereotype.Component;
 public class ProgramPageResponseConverter {
 	private final ProgramResponseConverter responseConverter;
 
-	public PageResponse<GetProgramsResponse> from(Page<ProgramEntity> page) {
+	public PageResponse<QueryProgramsResponse> from(Page<ProgramEntity> page) {
 		Pageable pageable = page.getPageable();
 		List<ProgramEntity> source = page.getContent();
 
-		return PageResponse.<GetProgramsResponse>builder()
+		return PageResponse.<QueryProgramsResponse>builder()
 				.size(pageable.getPageSize())
 				.page(pageable.getPageNumber())
 				.totalPage(page.getTotalPages())
