@@ -1,7 +1,7 @@
 package com.blackcompany.eeos.program.application.usecase;
 
-import com.blackcompany.eeos.program.application.dto.QueryProgramsResponse;
 import com.blackcompany.eeos.program.application.dto.PageResponse;
+import com.blackcompany.eeos.program.application.dto.QueryProgramsResponse;
 
 public interface GetProgramsUsecase {
 

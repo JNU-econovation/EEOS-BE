@@ -1,7 +1,7 @@
 package com.blackcompany.eeos.program.application.dto.converter;
 
-import com.blackcompany.eeos.program.application.dto.QueryProgramsResponse;
 import com.blackcompany.eeos.program.application.dto.PageResponse;
+import com.blackcompany.eeos.program.application.dto.QueryProgramsResponse;
 import com.blackcompany.eeos.program.persistence.ProgramEntity;
 import java.util.List;
 import java.util.stream.Collectors;
