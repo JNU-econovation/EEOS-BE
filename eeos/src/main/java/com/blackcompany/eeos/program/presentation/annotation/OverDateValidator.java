@@ -3,7 +3,6 @@ package com.blackcompany.eeos.program.presentation.annotation;
 import com.blackcompany.eeos.common.utils.DateConverter;
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.util.Objects;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import org.springframework.stereotype.Component;
@@ -18,8 +17,6 @@ public class OverDateValidator implements ConstraintValidator<OverDate, Timestam
 
 	@Override
 	public boolean isValid(Timestamp value, ConstraintValidatorContext context) {
-		Objects.requireNonNull(value);
-
 		LocalDate now = LocalDate.now();
 		LocalDate requestDate = DateConverter.toLocalDate(value.getTime());
 
