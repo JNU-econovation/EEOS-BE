@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class EndProgramStateService implements ProgramStateService {
+public class EndProgramStatusService implements ProgramStatusService {
 	private final ProgramRepository programRepository;
 
 	@Override

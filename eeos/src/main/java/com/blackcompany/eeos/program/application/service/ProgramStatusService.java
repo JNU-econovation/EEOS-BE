@@ -6,7 +6,7 @@ import java.sql.Timestamp;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
-public interface ProgramStateService {
+public interface ProgramStatusService {
 	ProgramStatus support();
 
 	Page<ProgramEntity> getPages(Timestamp now, PageRequest pageRequest);
