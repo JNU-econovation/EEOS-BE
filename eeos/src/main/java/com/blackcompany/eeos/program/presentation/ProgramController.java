@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/programs")
 public class ProgramController {
 
-	private final CreateProgramUsecase createBoardUsecase;
+	private final CreateProgramUsecase createProgramUsecase;
 	private final GetProgramUsecase getProgramUsecase;
 	private final UpdateProgramUsecase updateProgramUsecase;
 	private final GetProgramsUsecase getProgramsUsecase;
@@ -39,7 +39,7 @@ public class ProgramController {
 	@PostMapping
 	public ApiResponse<SuccessBody<CommandProgramResponse>> create(
 			@RequestBody @Valid CreateProgramRequest request) {
-		CommandProgramResponse response = createBoardUsecase.create(request);
+		CommandProgramResponse response = createProgramUsecase.create(request);
 		return ApiResponseGenerator.success(response, HttpStatus.CREATED, MessageCode.CREATE);
 	}
 
