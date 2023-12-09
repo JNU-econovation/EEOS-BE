@@ -2,9 +2,7 @@ package com.blackcompany.eeos.program.application.usecase;
 
 import com.blackcompany.eeos.program.application.dto.CommandProgramResponse;
 import com.blackcompany.eeos.program.application.dto.UpdateProgramRequest;
-import org.springframework.stereotype.Component;
 
-@Component
 public interface UpdateProgramUsecase {
 	/**
 	 * 프로그램을 수정한다.
