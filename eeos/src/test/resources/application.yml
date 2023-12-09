@@ -1,0 +1,7 @@
+spring:
+  profiles:
+    group:
+      test:
+        - test-mysql
+        - test-api
+    active: test
