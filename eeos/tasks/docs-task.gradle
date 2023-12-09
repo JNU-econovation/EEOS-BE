@@ -1,0 +1,18 @@
+/*convert snippet to swagger*/
+openapi3 {
+    servers = [ { url = "http://be.dev.eeos.store:8080" } , { url = "http://localhost:8080" }]
+    title = "${projectName}"
+    version = "${projectVersion}"
+    format = 'yaml'
+    snippetsDirectory = "build/generated-snippets/"
+    outputDirectory = "src/main/resources/static/"
+    outputFileNamePrefix = 'openapi3'
+}
+
+postman {
+    title = "${projectName}"
+    version = "${projectVersion}"
+    baseUrl = 'http://localhost:8080'
+    outputDirectory = "src/main/resources/static/"
+    outputFileNamePrefix = 'postman'
+}
