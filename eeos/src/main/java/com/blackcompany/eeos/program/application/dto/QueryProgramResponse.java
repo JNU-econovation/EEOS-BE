@@ -17,5 +17,5 @@ public class QueryProgramResponse implements AbstractResponseDto {
 	private String title;
 	private Timestamp programDate;
 	private String content;
-	private String eventStatus;
+	private String programStatus;
 }
