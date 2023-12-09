@@ -7,7 +7,7 @@ import com.blackcompany.eeos.attend.application.exception.NotFoundAttendExceptio
 import com.blackcompany.eeos.attend.application.model.AttendModel;
 import com.blackcompany.eeos.attend.application.model.AttendStatus;
 import com.blackcompany.eeos.attend.application.model.converter.AttendEntityConverter;
-import com.blackcompany.eeos.attend.application.usecase.ChangeStatusUsecase;
+import com.blackcompany.eeos.attend.application.usecase.ChangeAttendStatusUsecase;
 import com.blackcompany.eeos.attend.application.usecase.GetAttendantInfoUsecase;
 import com.blackcompany.eeos.attend.persistence.AttendEntity;
 import com.blackcompany.eeos.attend.persistence.AttendRepository;
@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class AttendService implements GetAttendantInfoUsecase, ChangeStatusUsecase {
+public class AttendService implements GetAttendantInfoUsecase, ChangeAttendStatusUsecase {
 
 	private final AttendRepository attendRepository;
 

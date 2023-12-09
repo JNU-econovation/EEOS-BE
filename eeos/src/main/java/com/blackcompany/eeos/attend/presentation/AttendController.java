@@ -2,7 +2,7 @@ package com.blackcompany.eeos.attend.presentation;
 
 import com.blackcompany.eeos.attend.application.dto.AttendInfoResponse;
 import com.blackcompany.eeos.attend.application.dto.ChangeStatusRequest;
-import com.blackcompany.eeos.attend.application.usecase.ChangeStatusUsecase;
+import com.blackcompany.eeos.attend.application.usecase.ChangeAttendStatusUsecase;
 import com.blackcompany.eeos.attend.application.usecase.GetAttendantInfoUsecase;
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponse;
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponseBody.SuccessBody;
@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AttendController {
 
 	private final GetAttendantInfoUsecase getAttendantInfoUsecase;
-	private final ChangeStatusUsecase changeStatusUsecase;
+	private final ChangeAttendStatusUsecase changeAttendStatusUsecase;
 
 	@GetMapping("/candidate/programs/{programId}")
 	public ApiResponse<SuccessBody<List<AttendInfoResponse>>> findAttendMemberInfo(
@@ -37,7 +37,7 @@ public class AttendController {
 	@PostMapping("/programs/{programId}")
 	public ApiResponse<SuccessBody<Void>> changeAttendStatus(
 			@PathVariable("programId") Long programId, @RequestBody ChangeStatusRequest request) {
-		changeStatusUsecase.changeStatus(request, programId);
+		changeAttendStatusUsecase.changeStatus(request, programId);
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.UPDATE);
 	}
 
