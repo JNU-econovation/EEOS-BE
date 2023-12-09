@@ -1,6 +1,6 @@
 package com.blackcompany.eeos.program.application.service;
 
-import com.blackcompany.eeos.program.application.domain.ProgramStatus;
+import com.blackcompany.eeos.program.application.model.ProgramStatus;
 import com.blackcompany.eeos.program.persistence.ProgramEntity;
 import com.blackcompany.eeos.program.persistence.ProgramRepository;
 import java.sql.Timestamp;

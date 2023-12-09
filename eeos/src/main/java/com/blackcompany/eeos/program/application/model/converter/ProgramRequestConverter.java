@@ -2,9 +2,9 @@ package com.blackcompany.eeos.program.application.model.converter;
 
 import com.blackcompany.eeos.common.support.converter.AbstractDtoConverter;
 import com.blackcompany.eeos.common.utils.DateConverter;
-import com.blackcompany.eeos.program.application.domain.ProgramModel;
 import com.blackcompany.eeos.program.application.dto.CreateProgramRequest;
 import com.blackcompany.eeos.program.application.dto.UpdateProgramRequest;
+import com.blackcompany.eeos.program.application.model.ProgramModel;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -1,7 +1,7 @@
 package com.blackcompany.eeos.program.application.model.converter;
 
 import com.blackcompany.eeos.common.support.converter.AbstractEntityConverter;
-import com.blackcompany.eeos.program.application.domain.ProgramModel;
+import com.blackcompany.eeos.program.application.model.ProgramModel;
 import com.blackcompany.eeos.program.persistence.ProgramEntity;
 import org.springframework.stereotype.Component;
 

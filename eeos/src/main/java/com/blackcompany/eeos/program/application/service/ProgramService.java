@@ -2,8 +2,6 @@ package com.blackcompany.eeos.program.application.service;
 
 import com.blackcompany.eeos.attend.application.service.CandidateService;
 import com.blackcompany.eeos.common.utils.DateConverter;
-import com.blackcompany.eeos.program.application.domain.ProgramModel;
-import com.blackcompany.eeos.program.application.domain.ProgramStatus;
 import com.blackcompany.eeos.program.application.dto.CommandProgramResponse;
 import com.blackcompany.eeos.program.application.dto.CreateProgramRequest;
 import com.blackcompany.eeos.program.application.dto.PageResponse;
@@ -13,6 +11,8 @@ import com.blackcompany.eeos.program.application.dto.UpdateProgramRequest;
 import com.blackcompany.eeos.program.application.dto.converter.ProgramPageResponseConverter;
 import com.blackcompany.eeos.program.application.dto.converter.ProgramResponseConverter;
 import com.blackcompany.eeos.program.application.exception.NotFoundProgramException;
+import com.blackcompany.eeos.program.application.model.ProgramModel;
+import com.blackcompany.eeos.program.application.model.ProgramStatus;
 import com.blackcompany.eeos.program.application.model.converter.ProgramEntityConverter;
 import com.blackcompany.eeos.program.application.model.converter.ProgramRequestConverter;
 import com.blackcompany.eeos.program.application.support.ProgramStatusServiceComposite;
@@ -28,9 +28,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ProgramService
 		implements CreateProgramUsecase, GetProgramUsecase, UpdateProgramUsecase, GetProgramsUsecase {
 
@@ -43,6 +45,7 @@ public class ProgramService
 	private final ProgramStatusServiceComposite programStatusComposite;
 
 	@Override
+	@Transactional
 	public CommandProgramResponse create(CreateProgramRequest request) {
 		ProgramModel model = requestConverter.from(request);
 		ProgramEntity entity = entityConverter.toEntity(model);
@@ -63,6 +66,7 @@ public class ProgramService
 	}
 
 	@Override
+	@Transactional
 	public CommandProgramResponse update(Long programId, UpdateProgramRequest request) {
 		ProgramModel model = requestConverter.from(programId, request);
 		ProgramEntity entity = entityConverter.toEntity(model);
