@@ -1,6 +1,5 @@
-/*convert snippet to swagger*/
 openapi3 {
-    servers = [ { url = "http://be.dev.eeos.store:8080" } , { url = "http://localhost:8080" }]
+    servers = [{ url = "https://be.dev.eeos.store" }, { url = "http://localhost:8080" }]
     title = "${projectName}"
     version = "${projectVersion}"
     format = 'yaml'
@@ -15,4 +14,27 @@ postman {
     baseUrl = 'http://localhost:8080'
     outputDirectory = "src/main/resources/static/"
     outputFileNamePrefix = 'postman'
+}
+
+swaggerSources {
+    sample {
+        setInputFile(file("src/main/resources/static/openapi3.yaml"))
+    }
+}
+
+tasks.withType(GenerateSwaggerUI) {
+    dependsOn 'openapi3'
+    doFirst {
+        def swaggerUIFile = file("${openapi3.outputDirectory}/openapi3.yaml")
+
+        def securitySchemesContent = "  securitySchemes:\n" +      \
+                                          "    APIKey:\n" +      \
+                                          "      type: apiKey\n" +      \
+                                          "      name: Authorization\n" +      \
+                                          "      in: header\n" +     \
+                                          "security:\n" +
+                "  - APIKey: []  # Apply the security scheme here"
+
+        swaggerUIFile.append securitySchemesContent
+    }
 }

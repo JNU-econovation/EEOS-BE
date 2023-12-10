@@ -10,6 +10,7 @@ buildscript {
         epagesRestDocsApiSpecVersion = '0.16.0'
         asciidoctorVersion = '3.3.2'
         swaggerUIVersion = '4.11.1'
+        swaggerGeneratorVersion ='2.18.2'
     }
 }
 plugins {
@@ -21,6 +22,7 @@ plugins {
 
     id 'com.epages.restdocs-api-spec' version "${epagesRestDocsApiSpecVersion}"
     id 'org.asciidoctor.jvm.convert' version "${asciidoctorVersion}"
+    id 'org.hidetake.swagger.generator' version "${swaggerGeneratorVersion}"
 }
 
 group = 'com.econovation'
@@ -34,6 +36,10 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+}
+
+repositories {
+    mavenCentral()
 }
 
 repositories {
@@ -64,9 +70,16 @@ dependencies {
 
     // apache commons
     implementation 'org.apache.commons:commons-lang3:3.0'
+
+    // swagger & restdocs
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testImplementation "com.epages:restdocs-api-spec-mockmvc:${epagesRestDocsApiSpecVersion}"
+    swaggerUI "org.webjars:swagger-ui:${swaggerUIVersion}"
 }
 
 test {
+    dependsOn spotlessApply
     useJUnitPlatform()
 
     testLogging {

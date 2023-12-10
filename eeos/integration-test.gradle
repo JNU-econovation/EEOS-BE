@@ -19,6 +19,7 @@ test {
     outputs.dir snippetsDir
 }
 
+
 asciidoctor {
     dependsOn test
     inputs.dir snippetsDir
@@ -26,8 +27,17 @@ asciidoctor {
 
 bootJar {
     dependsOn asciidoctor
-    copy {
-        from "${asciidoctor.outputDir}"
+    from("${asciidoctor.outputDir}") {
         into 'src/main/resources/static/docs'
     }
+}
+
+task copyDocument(type: Copy) {
+    dependsOn asciidoctor
+    from file("$buildDir/docs/asciidoc")
+    into file("src/main/resources/static/docs")
+}
+
+build {
+    dependsOn copyDocument
 }
