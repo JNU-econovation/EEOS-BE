@@ -1,6 +1,6 @@
 package com.blackcompany.eeos.attend.application.model;
 
-import com.blackcompany.eeos.attend.application.exception.NotFoundStatusException;
+import com.blackcompany.eeos.attend.application.exception.NotFoundAttendStatusException;
 import java.util.Arrays;
 
 public enum AttendStatus {
@@ -22,7 +22,7 @@ public enum AttendStatus {
 		return Arrays.stream(AttendStatus.values())
 				.filter(attendStatus -> attendStatus.getStatus().equals(status))
 				.findAny()
-				.orElseThrow(NotFoundStatusException::new);
+				.orElseThrow(() -> new NotFoundAttendStatusException(status));
 	}
 
 	public static boolean isSameAttendStatus(String source, AttendStatus actualStatus) {
