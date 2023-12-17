@@ -1,0 +1,13 @@
+spring:
+  config:
+    activate:
+      on-profile: token
+
+security:
+  jwt:
+    token:
+      secretKey: ${TOKEN_SECRET_KEY}
+      access:
+        validTime: ${ACCESS_VALID_TIME}
+      refresh:
+        validTime: ${REFRESH_VALID_TIME}
