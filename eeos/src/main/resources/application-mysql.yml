@@ -1,7 +1,7 @@
 spring:
   config:
     activate:
-      on-profile: prod-mysql
+      on-profile: mysql
   datasource:
     url: ${DATASOURCE_URL}
     username: ${DATASOURCE_USERNAME}
