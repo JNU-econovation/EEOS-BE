@@ -1,4 +1,4 @@
-package com.blackcompany.eeos.attend.application.exception;
+package com.blackcompany.eeos.member.application.exception;
 
 import com.blackcompany.eeos.common.exception.BusinessException;
 import org.springframework.http.HttpStatus;
