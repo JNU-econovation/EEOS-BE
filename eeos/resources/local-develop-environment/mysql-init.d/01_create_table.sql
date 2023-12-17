@@ -13,12 +13,12 @@ create table program
 
 create table member
 (
-    member_id         bigint       not null auto_increment,
-    created_date      datetime     not null,
-    is_deleted        boolean      not null,
-    updated_date      datetime     not null,
-    member_name       varchar(255) not null,
-    member_generation BIGINT       not null,
+    member_id               bigint       not null auto_increment,
+    created_date            datetime     not null,
+    is_deleted              boolean      not null,
+    updated_date            datetime     not null,
+    member_name             varchar(255) not null,
+    member_oath_server_type varchar(255) not null,
     primary key (member_id)
 ) engine = InnoDB;
 
@@ -35,7 +35,7 @@ create table attend
 ) engine = InnoDB;
 
 ALTER TABLE member
-    ADD INDEX idx_generation_name (member_generation, member_name);
+    ADD INDEX idx_name (member_name);
 
 ALTER TABLE attend
     ADD INDEX idx_program (attend_program_id);
