@@ -1,8 +1,11 @@
 package com.blackcompany.eeos.member.persistence;
 
+import com.blackcompany.eeos.auth.application.domain.OauthServerType;
 import com.blackcompany.eeos.common.persistence.BaseEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,7 +26,7 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @Table(
 		name = MemberEntity.ENTITY_PREFIX,
-		indexes = @Index(name = "idx_generation_name", columnList = "member_generation,member_name"))
+		indexes = @Index(name = "idx_name", columnList = "member_name"))
 public class MemberEntity extends BaseEntity {
 
 	public static final String ENTITY_PREFIX = "member";
@@ -36,6 +39,7 @@ public class MemberEntity extends BaseEntity {
 	@Column(name = ENTITY_PREFIX + "_name", nullable = false)
 	private String name;
 
-	@Column(name = ENTITY_PREFIX + "_generation", nullable = false)
-	private Long generation;
+	@Column(name = ENTITY_PREFIX + "_oath_server_type", nullable = false)
+	@Enumerated(EnumType.STRING)
+	private OauthServerType oauthServerType;
 }
