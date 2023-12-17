@@ -1,0 +1,8 @@
+spring:
+  config:
+    activate:
+      on-profile: api
+
+cors:
+  allow-origin:
+    urls: ${CORS_URL}
