@@ -1,6 +1,6 @@
 package com.blackcompany.eeos.member.application.service;
 
-import com.blackcompany.eeos.attend.application.exception.NotFoundMemberException;
+import com.blackcompany.eeos.member.application.exception.NotFoundMemberException;
 import com.blackcompany.eeos.member.application.model.MemberModel;
 import com.blackcompany.eeos.member.application.model.converter.MemberEntityConverter;
 import com.blackcompany.eeos.member.persistence.MemberEntity;
