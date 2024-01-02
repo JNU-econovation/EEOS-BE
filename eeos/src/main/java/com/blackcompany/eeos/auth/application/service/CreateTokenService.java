@@ -1,7 +1,7 @@
 package com.blackcompany.eeos.auth.application.service;
 
 import com.blackcompany.eeos.auth.application.domain.TokenModel;
-import com.blackcompany.eeos.auth.application.domain.converter.TokenConverter;
+import com.blackcompany.eeos.auth.application.domain.converter.TokenModelConverter;
 import com.blackcompany.eeos.auth.application.domain.token.TokenProvider;
 import com.blackcompany.eeos.auth.application.domain.token.TokenResolver;
 import com.blackcompany.eeos.auth.persistence.AuthInfoEntity;
@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class CreateTokenService {
 	private final TokenProvider tokenProvider;
-	private final TokenConverter tokenConverter;
+	private final TokenModelConverter tokenModelConverter;
 	private final TokenResolver tokenResolver;
 	private final AuthInfoRepository authInfoRepository;
 	private final AuthInfoEntityConverter authInfoEntityConverter;
@@ -28,7 +28,7 @@ public class CreateTokenService {
 
 		saveToken(memberId, refreshToken);
 
-		return tokenConverter.from(
+		return tokenModelConverter.from(
 				accessToken,
 				tokenResolver.getExpiredDate(accessToken),
 				refreshToken,

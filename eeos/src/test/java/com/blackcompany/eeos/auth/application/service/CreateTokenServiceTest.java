@@ -1,10 +1,9 @@
 package com.blackcompany.eeos.auth.application.service;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.blackcompany.eeos.auth.application.domain.converter.TokenConverter;
+import com.blackcompany.eeos.auth.application.domain.converter.TokenModelConverter;
 import com.blackcompany.eeos.auth.application.domain.token.TokenProvider;
 import com.blackcompany.eeos.auth.application.domain.token.TokenResolver;
 import com.blackcompany.eeos.auth.persistence.AuthInfoEntity;
@@ -21,7 +20,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class CreateTokenServiceTest {
 	@InjectMocks CreateTokenService createTokenService;
 	@Mock TokenResolver tokenResolver;
-	@Mock TokenConverter tokenConverter;
+	@Mock
+	TokenModelConverter tokenModelConverter;
 
 	@Mock TokenProvider tokenProvider;
 	@Mock AuthInfoRepository authInfoRepository;
