@@ -72,9 +72,6 @@ dependencies {
     // openfeign
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
-    // encryption
-    implementation group: 'org.mindrot', name: 'jbcrypt', version: '0.4'
-
     // jwt
     implementation "io.jsonwebtoken:jjwt-api:${jsonwebtokenVersion}"
     implementation "io.jsonwebtoken:jjwt-impl:${jsonwebtokenVersion}"
