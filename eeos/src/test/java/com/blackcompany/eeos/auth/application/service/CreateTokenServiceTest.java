@@ -14,14 +14,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class CreateTokenServiceTest {
 	@InjectMocks CreateTokenService createTokenService;
 	@Mock TokenResolver tokenResolver;
-	@Mock
-	TokenModelConverter tokenModelConverter;
+	@Spy TokenModelConverter tokeModelConverter;
 
 	@Mock TokenProvider tokenProvider;
 	@Mock AuthInfoRepository authInfoRepository;
