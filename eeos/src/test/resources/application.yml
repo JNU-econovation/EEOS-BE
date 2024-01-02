@@ -4,4 +4,6 @@ spring:
       test:
         - test-mysql
         - test-api
+        - test-token
+        - oauth
     active: test

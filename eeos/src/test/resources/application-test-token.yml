@@ -1,0 +1,13 @@
+spring:
+  config:
+    activate:
+      on-profile: test-token
+
+security:
+  jwt:
+    token:
+      secretKey: asccesssecretkeyoverflowsecrekey
+      access:
+        validTime: 1800000
+      refresh:
+        validTime: 3600000
