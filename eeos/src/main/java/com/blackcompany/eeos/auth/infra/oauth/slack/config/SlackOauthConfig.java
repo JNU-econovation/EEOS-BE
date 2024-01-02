@@ -3,11 +3,11 @@ package com.blackcompany.eeos.auth.infra.oauth.slack.config;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.stereotype.Component;
 
 @PropertySource("classpath:/env.properties")
-@Component
+@Configuration
 @Setter
 @Getter
 public class SlackOauthConfig {
