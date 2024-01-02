@@ -19,11 +19,12 @@ public class OauthMemberClientComposite {
 						.collect(Collectors.toMap(OauthMemberClient::support, Function.identity()));
 	}
 
-	public OauthMemberModel fetch(OauthServerType oauthServerType, String authCode) {
+	public OauthMemberModel fetch(String oauthServerType, String authCode) {
 		return getClient(oauthServerType).fetch(authCode);
 	}
 
-	private OauthMemberClient getClient(OauthServerType oauthServerType) {
+	private OauthMemberClient getClient(String type) {
+		OauthServerType oauthServerType = OauthServerType.find(type);
 		return clients.get(oauthServerType);
 	}
 }
