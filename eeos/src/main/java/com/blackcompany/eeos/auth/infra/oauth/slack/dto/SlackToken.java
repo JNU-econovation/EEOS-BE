@@ -25,6 +25,9 @@ public class SlackToken implements SlackApiResponse {
 	}
 
 	@Getter
+	@Builder
+	@AllArgsConstructor
+	@NoArgsConstructor
 	public static class AuthedUser {
 		@JsonProperty("id")
 		private String userId;
