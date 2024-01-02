@@ -11,8 +11,6 @@ import org.springframework.stereotype.Component;
 @Setter
 @Getter
 public class SlackOauthConfig {
-	@Value("${oauth.provider.slack.test}")
-	private String test;
 
 	@Value("${oauth.provider.slack.clientId}")
 	private String clientId;
