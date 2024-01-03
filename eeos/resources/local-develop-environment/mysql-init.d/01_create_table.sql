@@ -19,6 +19,7 @@ create table member
     updated_date            datetime     not null,
     member_name             varchar(255) not null,
     member_oath_server_type varchar(255) not null,
+    member_active_status    varchar(255) not null,
     primary key (member_id)
 ) engine = InnoDB;
 
@@ -42,3 +43,6 @@ ALTER TABLE attend
 
 ALTER TABLE program
     ADD INDEX idx_program_date (program_date);
+
+ALTER TABLE member
+    ADD INDEX idx_name (member_active_status);
