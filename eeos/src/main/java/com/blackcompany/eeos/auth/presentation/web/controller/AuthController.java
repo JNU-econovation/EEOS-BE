@@ -36,10 +36,10 @@ public class AuthController {
 				tokenResponseConverter.from(tokenModel.getAccessToken(), tokenModel.getAccessExpiredTime());
 
 		return ApiResponseGenerator.success(
-				response, HttpStatus.CREATED, MessageCode.CREATE, createCookieValue(tokenModel));
+				response, HttpStatus.CREATED, MessageCode.CREATE, setCookieValue(tokenModel));
 	}
 
-	private String createCookieValue(TokenModel model) {
+	private String setCookieValue(TokenModel model) {
 		return String.format(
 				"%s = %s; %s = %s; %s = %s; ",
 				"token",
