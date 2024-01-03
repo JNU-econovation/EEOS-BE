@@ -4,6 +4,7 @@ import com.blackcompany.eeos.attend.application.dto.AttendInfoResponse;
 import com.blackcompany.eeos.attend.application.dto.ChangeStatusRequest;
 import com.blackcompany.eeos.attend.application.dto.converter.AttendInfoConverter;
 import com.blackcompany.eeos.attend.application.exception.NotFoundAttendException;
+import com.blackcompany.eeos.attend.application.exception.NotSameBeforeAttendStatusException;
 import com.blackcompany.eeos.attend.application.model.AttendModel;
 import com.blackcompany.eeos.attend.application.model.AttendStatus;
 import com.blackcompany.eeos.attend.application.model.converter.AttendEntityConverter;
@@ -44,7 +45,7 @@ public class AttendService implements GetAttendantInfoUsecase, ChangeAttendStatu
 		return attendRepository
 				.findByProgramIdAndMemberId(programId, memberId)
 				.map(AttendEntity::getStatus)
-				.orElseThrow(NotFoundAttendException::new);
+				.orElseThrow(() -> new NotFoundAttendException(programId));
 	}
 
 	@Override
@@ -71,7 +72,7 @@ public class AttendService implements GetAttendantInfoUsecase, ChangeAttendStatu
 				attendRepository
 						.findByProgramIdAndMemberId(programId, request.getMemberId())
 						.map(attendEntityConverter::from)
-						.orElseThrow(NotFoundAttendException::new);
+						.orElseThrow(() -> new NotSameBeforeAttendStatusException(request.getMemberId()));
 
 		model.isSame(request.getBeforeAttendStatus());
 
