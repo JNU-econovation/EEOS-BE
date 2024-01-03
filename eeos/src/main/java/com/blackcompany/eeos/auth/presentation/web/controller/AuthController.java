@@ -10,7 +10,10 @@ import com.blackcompany.eeos.common.presentation.respnose.ApiResponse;
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponseBody.SuccessBody;
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponseGenerator;
 import com.blackcompany.eeos.common.presentation.respnose.MessageCode;
+import com.blackcompany.eeos.common.utils.TimeUtil;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -23,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
+	private static final String COOKIE_KEY = "token";
 
 	private final LoginUsecase loginUsecase;
 	private final ReissueUsecase reissueUsecase;
@@ -46,34 +50,40 @@ public class AuthController {
 
 	@PostMapping("/login/{oauthServerType}")
 	ApiResponse<SuccessBody<TokenResponse>> login(
-			@PathVariable String oauthServerType, @RequestParam("code") String code) {
+			@PathVariable String oauthServerType,
+			@RequestParam("code") String code,
+			HttpServletResponse httpResponse) {
 		TokenModel tokenModel = loginUsecase.login(oauthServerType, code);
-		TokenResponse response =
-				tokenResponseConverter.from(tokenModel.getAccessToken(), tokenModel.getAccessExpiredTime());
+		TokenResponse response = toResponse(tokenModel, httpResponse);
 
-		return ApiResponseGenerator.success(
-				response, HttpStatus.CREATED, MessageCode.CREATE, setCookieValue(tokenModel));
+		return ApiResponseGenerator.success(response, HttpStatus.CREATED, MessageCode.CREATE);
 	}
 
 	@PostMapping("/reissue")
-	ApiResponse<SuccessBody<TokenResponse>> reissue(HttpServletRequest request) {
+	ApiResponse<SuccessBody<TokenResponse>> reissue(
+			HttpServletRequest request, HttpServletResponse httpResponse) {
 		String token = tokenExtractor.extract(request);
 		TokenModel tokenModel = reissueUsecase.execute(token);
-		TokenResponse response =
-				tokenResponseConverter.from(tokenModel.getAccessToken(), tokenModel.getAccessExpiredTime());
+		TokenResponse response = toResponse(tokenModel, httpResponse);
 
-		return ApiResponseGenerator.success(
-				response, HttpStatus.CREATED, MessageCode.CREATE, setCookieValue(tokenModel));
+		return ApiResponseGenerator.success(response, HttpStatus.CREATED, MessageCode.CREATE);
 	}
 
-	private String setCookieValue(TokenModel model) {
-		return String.format(
-				"%s = %s; %s = %s; %s = %s; ",
-				"token",
-				model.getRefreshToken(),
-				"Max-Age",
-				model.getRefreshExpiredTime(),
-				"Domain",
-				domain);
+	private TokenResponse toResponse(TokenModel tokenModel, HttpServletResponse httpResponse) {
+		TokenResponse response =
+				tokenResponseConverter.from(tokenModel.getAccessToken(), tokenModel.getAccessExpiredTime());
+		setCookie(httpResponse, tokenModel);
+
+		return response;
+	}
+
+	private void setCookie(HttpServletResponse response, TokenModel tokenModel) {
+		Cookie cookie = new Cookie(COOKIE_KEY, tokenModel.getRefreshToken());
+		cookie.setDomain(domain);
+		cookie.setPath("/");
+		cookie.setMaxAge(TimeUtil.convertSecondsFromMillis(tokenModel.getRefreshExpiredTime()));
+		cookie.setHttpOnly(false);
+		cookie.setSecure(false);
+		response.addCookie(cookie);
 	}
 }
