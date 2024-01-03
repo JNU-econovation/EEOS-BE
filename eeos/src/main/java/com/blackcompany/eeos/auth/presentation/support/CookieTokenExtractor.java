@@ -6,7 +6,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component("cookie")
 public class CookieTokenExtractor implements TokenExtractor {
 	private static final String COOKIE_KEY = "token";
 
