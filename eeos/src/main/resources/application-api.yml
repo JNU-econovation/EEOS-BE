@@ -6,3 +6,6 @@ spring:
 cors:
   allow-origin:
     urls: ${CORS_URL}
+
+api:
+  domain: ${API_DOMAIN}
