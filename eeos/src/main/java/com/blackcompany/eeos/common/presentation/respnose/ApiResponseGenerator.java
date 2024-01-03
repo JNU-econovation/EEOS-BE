@@ -25,14 +25,6 @@ public class ApiResponseGenerator {
 				new ApiResponseBody.SuccessBody<>(data, code.getMessage(), code.getCode()), status);
 	}
 
-	public static <D> ApiResponse<ApiResponseBody.SuccessBody<D>> success(
-			final D data, final HttpStatus status, MessageCode code, String cookieValue) {
-		return new ApiResponse<>(
-				new ApiResponseBody.SuccessBody<>(data, code.getMessage(), code.getCode()),
-				setCookie(cookieValue),
-				status);
-	}
-
 	public static <D> ApiResponse<ApiResponseBody.SuccessBody<PageResponse<D>>> success(
 			final Page<D> data, final HttpStatus status, final MessageCode code) {
 		return new ApiResponse<>(
