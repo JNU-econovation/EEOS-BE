@@ -27,7 +27,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 				.addMapping("/api/**")
 				.allowedOriginPatterns(patterns)
 				.allowedMethods(ALLOWED_METHOD_NAMES.split(","))
-				.exposedHeaders("Authorization")
+				.exposedHeaders("Authorization", "Set-Cookie")
 				.allowCredentials(true)
 				.maxAge(MAX_AGE_SECS);
 	}
