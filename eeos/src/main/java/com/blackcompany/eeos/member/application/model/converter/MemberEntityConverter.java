@@ -11,12 +11,22 @@ public class MemberEntityConverter implements AbstractEntityConverter<MemberEnti
 
 	@Override
 	public MemberModel from(MemberEntity source) {
-		return MemberModel.builder().id(source.getId()).name(source.getName()).build();
+		return MemberModel.builder()
+				.id(source.getId())
+				.name(source.getName())
+				.activeStatus(source.getActiveStatus())
+				.oauthServerType(source.getOauthServerType())
+				.build();
 	}
 
 	@Override
 	public MemberEntity toEntity(MemberModel source) {
-		return MemberEntity.builder().id(source.getId()).name(source.getName()).build();
+		return MemberEntity.builder()
+				.id(source.getId())
+				.name(source.getName())
+				.activeStatus(source.getActiveStatus())
+				.oauthServerType(source.getOauthServerType())
+				.build();
 	}
 
 	public MemberEntity toEntity(String name, OauthServerType oauthServerType) {
