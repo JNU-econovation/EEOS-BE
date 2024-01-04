@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component("header")
 public class HeaderTokenExtractor implements TokenExtractor {
 	private static final String BEARER_TOKEN_PREFIX = "Bearer ";
 

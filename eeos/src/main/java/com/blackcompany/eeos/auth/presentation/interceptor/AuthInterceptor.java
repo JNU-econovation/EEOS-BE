@@ -4,15 +4,19 @@ import com.blackcompany.eeos.auth.application.domain.token.TokenValidator;
 import com.blackcompany.eeos.auth.presentation.support.TokenExtractor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class AuthInterceptor implements HandlerInterceptor {
 	private final TokenExtractor tokenExtractor;
 	private final TokenValidator tokenValidator;
+
+	public AuthInterceptor(
+			@Qualifier("header") TokenExtractor tokenExtractor, TokenValidator tokenValidator) {
+		this.tokenExtractor = tokenExtractor;
+		this.tokenValidator = tokenValidator;
+	}
 
 	public static AuthInterceptorBuilder builder() {
 		return new AuthInterceptorBuilder();
