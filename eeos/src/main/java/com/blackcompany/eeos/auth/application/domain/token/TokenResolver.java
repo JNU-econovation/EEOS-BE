@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class TokenResolver {
 
-	private static final String USER_ID_CLAIM_KEY = "memberId";
+	private static final String MEMBER_ID_CLAIM_KEY = "memberId";
 	private final SecretKey secretKey;
 
 	public TokenResolver(@Value("${security.jwt.token.secretKey}") String accessSecretKey) {
@@ -41,7 +41,6 @@ public class TokenResolver {
 
 	public Long getUserInfo(final String token) {
 		Objects.requireNonNull(token);
-
-		return Long.valueOf(String.valueOf(getClaims(token).get(USER_ID_CLAIM_KEY)));
+		return getClaims(token).get(MEMBER_ID_CLAIM_KEY, Long.class);
 	}
 }
