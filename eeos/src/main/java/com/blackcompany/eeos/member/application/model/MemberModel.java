@@ -1,5 +1,6 @@
 package com.blackcompany.eeos.member.application.model;
 
+import com.blackcompany.eeos.auth.application.domain.OauthServerType;
 import com.blackcompany.eeos.common.support.AbstractModel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,5 +16,11 @@ import lombok.ToString;
 public class MemberModel implements AbstractModel {
 	private Long id;
 	private String name;
-	private Long generation;
+	private ActiveStatus activeStatus;
+	private OauthServerType oauthServerType;
+
+	public MemberModel updateActiveStatus(String status) {
+		this.activeStatus = ActiveStatus.find(status);
+		return this;
+	}
 }
