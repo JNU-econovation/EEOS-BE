@@ -1,8 +1,8 @@
 package com.blackcompany.eeos.member.application.service;
 
-import com.blackcompany.eeos.member.application.dto.QueryMemberResponse;
-import com.blackcompany.eeos.member.application.dto.QueryMemberResponse.Members;
+import com.blackcompany.eeos.member.application.QueryMembersResponse;
 import com.blackcompany.eeos.member.application.dto.converter.QueryMemberResponseConverter;
+import com.blackcompany.eeos.member.application.model.ActiveStatus;
 import com.blackcompany.eeos.member.application.model.MemberModel;
 import com.blackcompany.eeos.member.application.model.converter.MemberEntityConverter;
 import com.blackcompany.eeos.member.application.usecase.GetMembersByActiveStatus;
@@ -27,13 +27,14 @@ public class QueryMemberService implements GetMembersByActiveStatus {
 	}
 
 	@Override
-	public QueryMemberResponse execute(String activeStatus) {
-		List<Members> members =
-				memberRepository.findMembersByActiveStatus(activeStatus).stream()
+	public QueryMembersResponse execute(final String activeStatus) {
+		ActiveStatus status = ActiveStatus.find(activeStatus);
+
+		List<MemberModel> models =
+				memberRepository.findMembersByActiveStatus(status).stream()
 						.map(entityConverter::from)
-						.map(responseConverter::from)
 						.collect(Collectors.toList());
 
-		return responseConverter.from(members);
+		return responseConverter.from(models);
 	}
 }

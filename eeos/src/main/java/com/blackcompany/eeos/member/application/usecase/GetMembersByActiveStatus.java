@@ -1,7 +1,7 @@
 package com.blackcompany.eeos.member.application.usecase;
 
-import com.blackcompany.eeos.member.application.dto.QueryMemberResponse;
+import com.blackcompany.eeos.member.application.QueryMembersResponse;
 
 public interface GetMembersByActiveStatus {
-	QueryMemberResponse execute(String activeStatus);
+	QueryMembersResponse execute(String activeStatus);
 }
