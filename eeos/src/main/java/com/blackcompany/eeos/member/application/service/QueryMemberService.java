@@ -1,11 +1,15 @@
 package com.blackcompany.eeos.member.application.service;
 
 import com.blackcompany.eeos.member.application.QueryMembersResponse;
+import com.blackcompany.eeos.member.application.dto.QueryMemberResponse;
 import com.blackcompany.eeos.member.application.dto.converter.QueryMemberResponseConverter;
+import com.blackcompany.eeos.member.application.exception.NotFoundMemberException;
 import com.blackcompany.eeos.member.application.model.ActiveStatus;
 import com.blackcompany.eeos.member.application.model.MemberModel;
 import com.blackcompany.eeos.member.application.model.converter.MemberEntityConverter;
+import com.blackcompany.eeos.member.application.usecase.GetMemberByActiveStatus;
 import com.blackcompany.eeos.member.application.usecase.GetMembersByActiveStatus;
+import com.blackcompany.eeos.member.persistence.MemberEntity;
 import com.blackcompany.eeos.member.persistence.MemberRepository;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,7 +18,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class QueryMemberService implements GetMembersByActiveStatus {
+public class QueryMemberService implements GetMembersByActiveStatus, GetMemberByActiveStatus {
 	private final MemberEntityConverter entityConverter;
 	private final MemberRepository memberRepository;
 	private final QueryMemberResponseConverter responseConverter;
@@ -36,5 +40,14 @@ public class QueryMemberService implements GetMembersByActiveStatus {
 						.collect(Collectors.toList());
 
 		return responseConverter.from(models);
+	}
+
+	@Override
+	public QueryMemberResponse execute(Long memberId) {
+		MemberEntity member =
+				memberRepository.findById(memberId).orElseThrow(NotFoundMemberException::new);
+
+		MemberModel model = entityConverter.from(member);
+		return responseConverter.from(model);
 	}
 }
