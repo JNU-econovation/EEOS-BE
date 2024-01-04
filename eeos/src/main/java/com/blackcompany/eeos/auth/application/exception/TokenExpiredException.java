@@ -1,9 +1,9 @@
 package com.blackcompany.eeos.auth.application.exception;
 
-import com.blackcompany.eeos.common.exception.BusinessException;
 import org.springframework.http.HttpStatus;
 
-public class TokenExpiredException extends BusinessException {
+/** 토큰이 만료되었을 때 발생하는 예외 */
+public class TokenExpiredException extends AuthorizationException {
 	private static final String MESSAGE = "토큰이 만료되었습니다.";
 
 	public TokenExpiredException() {

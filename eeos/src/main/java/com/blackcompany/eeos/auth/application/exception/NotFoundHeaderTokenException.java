@@ -1,10 +1,9 @@
 package com.blackcompany.eeos.auth.application.exception;
 
-import com.blackcompany.eeos.common.exception.BusinessException;
 import org.springframework.http.HttpStatus;
 
 /** 토큰이 헤더에 존재하지 않을 때 발생하는 예외 */
-public class NotFoundHeaderTokenException extends BusinessException {
+public class NotFoundHeaderTokenException extends AuthorizationException {
 	private static final String FAIL_CODE = "4000";
 
 	public NotFoundHeaderTokenException() {

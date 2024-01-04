@@ -1,10 +1,9 @@
 package com.blackcompany.eeos.auth.application.exception;
 
-import com.blackcompany.eeos.common.exception.BusinessException;
 import org.springframework.http.HttpStatus;
 
 /** 토큰이 유효하지 않을 때 발생하는 예외 */
-public class InvalidTokenException extends BusinessException {
+public class InvalidTokenException extends AuthorizationException {
 	private static final String FAIL_CODE = "4003";
 
 	public InvalidTokenException() {
