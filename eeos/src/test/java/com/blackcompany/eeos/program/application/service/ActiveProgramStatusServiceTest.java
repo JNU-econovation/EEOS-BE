@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 
 import com.blackcompany.eeos.program.application.model.ProgramStatus;
+import com.blackcompany.eeos.program.persistence.ProgramCategory;
 import com.blackcompany.eeos.program.persistence.ProgramEntity;
 import com.blackcompany.eeos.program.persistence.ProgramRepository;
 import java.sql.Timestamp;
@@ -43,9 +44,10 @@ class ActiveProgramStatusServiceTest {
 		PageRequest pageRequest = PageRequest.of(page, size);
 
 		// when
-		Page<ProgramEntity> pages = activeProgramStateService.getPages(now, pageRequest);
+		Page<ProgramEntity> pages =
+				activeProgramStateService.getPages(ProgramCategory.WEEKLY, now, pageRequest);
 
 		// then
-		verify(programRepository).findAllByIng(now, pageRequest);
+		verify(programRepository).findAllByIng(ProgramCategory.WEEKLY, now, pageRequest);
 	}
 }

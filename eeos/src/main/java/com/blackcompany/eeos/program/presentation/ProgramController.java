@@ -9,7 +9,6 @@ import com.blackcompany.eeos.program.application.dto.CommandProgramResponse;
 import com.blackcompany.eeos.program.application.dto.CreateProgramRequest;
 import com.blackcompany.eeos.program.application.dto.PageResponse;
 import com.blackcompany.eeos.program.application.dto.QueryProgramResponse;
-import com.blackcompany.eeos.program.application.dto.QueryProgramsResponse;
 import com.blackcompany.eeos.program.application.dto.UpdateProgramRequest;
 import com.blackcompany.eeos.program.application.usecase.CreateProgramUsecase;
 import com.blackcompany.eeos.program.application.usecase.GetProgramUsecase;
@@ -58,13 +57,14 @@ public class ProgramController {
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.UPDATE);
 	}
 
-	@GetMapping()
-	public ApiResponse<SuccessBody<PageResponse<QueryProgramsResponse>>> findAll(
+	@GetMapping
+	public ApiResponse<SuccessBody<PageResponse<QueryProgramResponse>>> findAll(
+			@RequestParam("category") String category,
 			@RequestParam("programStatus") String status,
 			@RequestParam("size") int size,
 			@RequestParam("page") int page) {
-		PageResponse<QueryProgramsResponse> response =
-				getProgramsUsecase.getPrograms(status, size, page);
+		PageResponse<QueryProgramResponse> response =
+				getProgramsUsecase.getPrograms(category, status, size, page);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
 	}
 }

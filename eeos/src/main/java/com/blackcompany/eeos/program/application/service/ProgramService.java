@@ -7,7 +7,6 @@ import com.blackcompany.eeos.program.application.dto.CreateProgramRequest;
 import com.blackcompany.eeos.program.application.dto.PageResponse;
 import com.blackcompany.eeos.program.application.dto.ProgramsResponse;
 import com.blackcompany.eeos.program.application.dto.QueryProgramResponse;
-import com.blackcompany.eeos.program.application.dto.QueryProgramsResponse;
 import com.blackcompany.eeos.program.application.dto.UpdateProgramRequest;
 import com.blackcompany.eeos.program.application.dto.converter.ProgramPageResponseConverter;
 import com.blackcompany.eeos.program.application.dto.converter.ProgramResponseConverter;
@@ -21,6 +20,7 @@ import com.blackcompany.eeos.program.application.usecase.CreateProgramUsecase;
 import com.blackcompany.eeos.program.application.usecase.GetProgramUsecase;
 import com.blackcompany.eeos.program.application.usecase.GetProgramsUsecase;
 import com.blackcompany.eeos.program.application.usecase.UpdateProgramUsecase;
+import com.blackcompany.eeos.program.persistence.ProgramCategory;
 import com.blackcompany.eeos.program.persistence.ProgramEntity;
 import com.blackcompany.eeos.program.persistence.ProgramRepository;
 import java.sql.Timestamp;
@@ -77,14 +77,17 @@ public class ProgramService
 	}
 
 	@Override
-	public PageResponse<QueryProgramsResponse> getPrograms(String status, int size, int page) {
+	public PageResponse<QueryProgramResponse> getPrograms(
+			final String category, final String status, final int size, final int page) {
 		Timestamp now = DateConverter.toEpochSecond(LocalDate.now());
 		PageRequest pageRequest = PageRequest.of(page, size);
+		ProgramCategory programCategory = ProgramCategory.find(category);
+		ProgramStatus programStatus = ProgramStatus.getStatus(status);
 
 		Page<ProgramEntity> pages =
-				programStatusComposite.getPages(ProgramStatus.getStatus(status), now, pageRequest);
+				programStatusComposite.getPages(programCategory, programStatus, now, pageRequest);
 
 		ProgramsResponse response = entityConverter.from(pages);
-		return pageResponseConverter.from(response);
+		return pageResponseConverter.from(response, programStatus);
 	}
 }

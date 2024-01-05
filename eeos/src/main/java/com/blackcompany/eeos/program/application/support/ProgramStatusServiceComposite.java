@@ -2,6 +2,7 @@ package com.blackcompany.eeos.program.application.support;
 
 import com.blackcompany.eeos.program.application.model.ProgramStatus;
 import com.blackcompany.eeos.program.application.service.ProgramStatusService;
+import com.blackcompany.eeos.program.persistence.ProgramCategory;
 import com.blackcompany.eeos.program.persistence.ProgramEntity;
 import java.sql.Timestamp;
 import java.util.Map;
@@ -23,8 +24,11 @@ public class ProgramStatusServiceComposite {
 	}
 
 	public Page<ProgramEntity> getPages(
-			ProgramStatus programStatus, Timestamp now, PageRequest pageRequest) {
-		return getProgramStatusService(programStatus).getPages(now, pageRequest);
+			ProgramCategory programCategory,
+			ProgramStatus programStatus,
+			Timestamp now,
+			PageRequest pageRequest) {
+		return getProgramStatusService(programStatus).getPages(programCategory, now, pageRequest);
 	}
 
 	private ProgramStatusService getProgramStatusService(ProgramStatus programStatus) {
