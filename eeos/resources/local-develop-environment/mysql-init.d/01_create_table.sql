@@ -46,3 +46,9 @@ ALTER TABLE program
 
 ALTER TABLE member
     ADD INDEX idx_name (member_active_status);
+
+ALTER TABLE program
+    ADD COLUMN program_category varchar(255) NOT NULL;
+
+ALTER TABLE program
+    ADD COLUMN program_type varchar(255) NOT NULL;
