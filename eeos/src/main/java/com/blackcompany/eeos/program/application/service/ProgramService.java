@@ -5,6 +5,7 @@ import com.blackcompany.eeos.common.utils.DateConverter;
 import com.blackcompany.eeos.program.application.dto.CommandProgramResponse;
 import com.blackcompany.eeos.program.application.dto.CreateProgramRequest;
 import com.blackcompany.eeos.program.application.dto.PageResponse;
+import com.blackcompany.eeos.program.application.dto.ProgramsResponse;
 import com.blackcompany.eeos.program.application.dto.QueryProgramResponse;
 import com.blackcompany.eeos.program.application.dto.QueryProgramsResponse;
 import com.blackcompany.eeos.program.application.dto.UpdateProgramRequest;
@@ -47,11 +48,11 @@ public class ProgramService
 	@Override
 	@Transactional
 	public CommandProgramResponse create(final Long memberId, final CreateProgramRequest request) {
-		ProgramModel model = requestConverter.from(request);
+		ProgramModel model = requestConverter.from(memberId, request);
 		ProgramEntity entity = entityConverter.toEntity(model);
-		ProgramEntity save = programRepository.save(entity);
 
-		candidateService.saveCandidate(save.getId());
+		ProgramEntity save = programRepository.save(entity);
+		candidateService.saveCandidate(save.getId(), request.getMembers());
 
 		return responseConverter.from(save.getId());
 	}
@@ -82,6 +83,8 @@ public class ProgramService
 
 		Page<ProgramEntity> pages =
 				programStatusComposite.getPages(ProgramStatus.getStatus(status), now, pageRequest);
-		return pageResponseConverter.from(pages);
+
+		ProgramsResponse response = entityConverter.from(pages);
+		return pageResponseConverter.from(response);
 	}
 }

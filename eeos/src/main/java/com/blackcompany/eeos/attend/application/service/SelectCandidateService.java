@@ -3,26 +3,24 @@ package com.blackcompany.eeos.attend.application.service;
 import com.blackcompany.eeos.attend.application.model.converter.AttendEntityConverter;
 import com.blackcompany.eeos.attend.persistence.AttendEntity;
 import com.blackcompany.eeos.attend.persistence.AttendRepository;
-import com.blackcompany.eeos.member.application.service.QueryMemberService;
+import com.blackcompany.eeos.program.application.dto.ProgramMembers;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+/** 관련있는 대상자를 지정하여 선택한다. */
 @Service
 @RequiredArgsConstructor
-@Transactional
-public class DefaultCandidateService implements CandidateService {
-	private final AttendEntityConverter entityConverter;
-	private final QueryMemberService queryMemberService;
+public class SelectCandidateService implements CandidateService {
 	private final AttendRepository attendRepository;
+	private final AttendEntityConverter entityConverter;
 
 	@Override
-	public void saveCandidate(final Long programId) {
+	public void saveCandidate(final Long programId, final List<ProgramMembers> members) {
 		List<AttendEntity> attendEntities =
-				queryMemberService.findAllMember().stream()
-						.map(memberModel -> entityConverter.toEntity(memberModel.getId(), programId))
+				members.stream()
+						.map(member -> entityConverter.toEntity(member.getMemberId(), programId))
 						.collect(Collectors.toList());
 
 		attendRepository.saveAll(attendEntities);

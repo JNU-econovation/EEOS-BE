@@ -1,6 +1,7 @@
 package com.blackcompany.eeos.attend.application.model.converter;
 
 import com.blackcompany.eeos.attend.application.model.AttendModel;
+import com.blackcompany.eeos.attend.application.model.AttendStatus;
 import com.blackcompany.eeos.attend.persistence.AttendEntity;
 import com.blackcompany.eeos.common.support.converter.AbstractEntityConverter;
 import org.springframework.stereotype.Component;
@@ -29,6 +30,10 @@ public class AttendEntityConverter implements AbstractEntityConverter<AttendEnti
 	}
 
 	public AttendEntity toEntity(Long memberId, Long programId) {
-		return AttendEntity.builder().memberId(memberId).programId(programId).build();
+		return AttendEntity.builder()
+				.memberId(memberId)
+				.programId(programId)
+				.status(AttendStatus.NONRESPONSE)
+				.build();
 	}
 }
