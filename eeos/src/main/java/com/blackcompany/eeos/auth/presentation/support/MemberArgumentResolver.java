@@ -36,7 +36,6 @@ public class MemberArgumentResolver implements HandlerMethodArgumentResolver {
 			WebDataBinderFactory binderFactory) {
 		HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
 		String token = tokenExtractor.extract(request);
-		log.error("호출했니?");
 		return tokenResolver.getUserInfo(token);
 	}
 }
