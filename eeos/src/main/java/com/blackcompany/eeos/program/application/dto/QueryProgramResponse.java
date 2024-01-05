@@ -12,10 +12,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder(toBuilder = true)
 public class QueryProgramResponse implements AbstractResponseDto {
-
 	private Long programId;
 	private String title;
-	private Timestamp programDate;
+	private Timestamp deadLine;
 	private String content;
+	private String category;
 	private String programStatus;
+	private String type;
 }

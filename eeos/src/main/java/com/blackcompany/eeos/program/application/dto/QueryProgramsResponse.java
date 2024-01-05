@@ -15,6 +15,8 @@ public class QueryProgramsResponse implements AbstractResponseDto {
 
 	private Long programId;
 	private String title;
-	private Timestamp programDate;
-	private String content;
+	private Timestamp deadLine;
+	private String category;
+	private String programStatus;
+	private String type;
 }
