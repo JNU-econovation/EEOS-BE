@@ -1,29 +1,34 @@
 package com.blackcompany.eeos.program.application.dto.converter;
 
 import com.blackcompany.eeos.program.application.dto.PageResponse;
-import com.blackcompany.eeos.program.application.dto.QueryProgramsResponse;
-import com.blackcompany.eeos.program.persistence.ProgramEntity;
+import com.blackcompany.eeos.program.application.dto.ProgramsResponse;
+import com.blackcompany.eeos.program.application.dto.QueryProgramResponse;
+import com.blackcompany.eeos.program.application.model.ProgramModel;
+import com.blackcompany.eeos.program.application.model.ProgramStatus;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class ProgramPageResponseConverter {
-	private final ProgramResponseConverter responseConverter;
+	private final ProgramResponseConverter programResponseConverter;
 
-	public PageResponse<QueryProgramsResponse> from(Page<ProgramEntity> page) {
-		Pageable pageable = page.getPageable();
-		List<ProgramEntity> source = page.getContent();
+	public PageResponse<QueryProgramResponse> from(
+			ProgramsResponse source, ProgramStatus programStatus) {
+		Page page = source.getPage();
+		List<ProgramModel> programs = source.getPrograms();
 
-		return PageResponse.<QueryProgramsResponse>builder()
-				.size(pageable.getPageSize())
-				.page(pageable.getPageNumber())
+		return PageResponse.<QueryProgramResponse>builder()
+				.size(page.getSize())
+				.page(page.getNumber())
 				.totalPage(page.getTotalPages())
-				.programs(source.stream().map(responseConverter::from).collect(Collectors.toList()))
+				.programs(
+						programs.stream()
+								.map(program -> programResponseConverter.from(program, programStatus))
+								.collect(Collectors.toList()))
 				.build();
 	}
 }
