@@ -52,3 +52,6 @@ ALTER TABLE program
 
 ALTER TABLE program
     ADD COLUMN program_type varchar(255) NOT NULL;
+
+ALTER TABLE program
+    ADD COLUMN program_writer BIGINT NOT NULL;
