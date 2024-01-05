@@ -1,5 +1,6 @@
 package com.blackcompany.eeos.program.presentation;
 
+import com.blackcompany.eeos.auth.presentation.support.Member;
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponse;
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponseBody.SuccessBody;
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponseGenerator;
@@ -38,8 +39,8 @@ public class ProgramController {
 
 	@PostMapping
 	public ApiResponse<SuccessBody<CommandProgramResponse>> create(
-			@RequestBody @Valid CreateProgramRequest request) {
-		CommandProgramResponse response = createProgramUsecase.create(request);
+			@Member Long memberId, @RequestBody @Valid CreateProgramRequest request) {
+		CommandProgramResponse response = createProgramUsecase.create(memberId, request);
 		return ApiResponseGenerator.success(response, HttpStatus.CREATED, MessageCode.CREATE);
 	}
 

@@ -46,7 +46,7 @@ public class ProgramService
 
 	@Override
 	@Transactional
-	public CommandProgramResponse create(CreateProgramRequest request) {
+	public CommandProgramResponse create(final Long memberId, final CreateProgramRequest request) {
 		ProgramModel model = requestConverter.from(request);
 		ProgramEntity entity = entityConverter.toEntity(model);
 		ProgramEntity save = programRepository.save(entity);

@@ -8,8 +8,9 @@ public interface CreateProgramUsecase {
 	/**
 	 * 프로그램을 저장시킨다.
 	 *
+	 * @param request 프로그램 생성자 id
 	 * @param request 프로그램 저장을 하기 위한 request 객체
 	 * @return 프로그램 식별 id 전달
 	 */
-	CommandProgramResponse create(CreateProgramRequest request);
+	CommandProgramResponse create(Long memberId, CreateProgramRequest request);
 }
