@@ -2,6 +2,8 @@ package com.blackcompany.eeos.program.application.model;
 
 import com.blackcompany.eeos.common.support.AbstractModel;
 import com.blackcompany.eeos.common.utils.DateConverter;
+import com.blackcompany.eeos.program.persistence.ProgramCategory;
+import com.blackcompany.eeos.program.persistence.ProgramType;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -26,6 +28,9 @@ public class ProgramModel implements AbstractModel {
 
 	private Timestamp programDate;
 	private String eventStatus;
+	private ProgramCategory programCategory;
+	private ProgramType programType;
+	private Long writer;
 
 	public ProgramStatus calculate() {
 		LocalDate now = DateConverter.toLocalDate(Instant.now().toEpochMilli());

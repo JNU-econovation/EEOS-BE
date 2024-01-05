@@ -42,4 +42,13 @@ public class ProgramEntity extends BaseEntity {
 
 	@Column(name = ENTITY_PREFIX + "_date", nullable = false)
 	private Timestamp programDate;
+
+	@Column(name = ENTITY_PREFIX + "_category", nullable = false)
+	private ProgramCategory programCategory;
+
+	@Column(name = ENTITY_PREFIX + "_type", nullable = false)
+	private ProgramType programType;
+
+	@Column(name = ENTITY_PREFIX + "_writer", nullable = false)
+	private Long writer;
 }
