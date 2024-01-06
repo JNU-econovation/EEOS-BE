@@ -9,4 +9,6 @@ public interface AttendRepository extends JpaRepository<AttendEntity, Long> {
 	List<AttendEntity> findAllByProgramIdAndStatus(Long programId, AttendStatus status);
 
 	Optional<AttendEntity> findByProgramIdAndMemberId(Long programId, Long memberId);
+
+	void deleteAllByProgramId(Long programId);
 }
