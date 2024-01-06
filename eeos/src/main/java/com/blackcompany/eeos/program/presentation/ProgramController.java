@@ -11,12 +11,14 @@ import com.blackcompany.eeos.program.application.dto.PageResponse;
 import com.blackcompany.eeos.program.application.dto.QueryProgramResponse;
 import com.blackcompany.eeos.program.application.dto.UpdateProgramRequest;
 import com.blackcompany.eeos.program.application.usecase.CreateProgramUsecase;
+import com.blackcompany.eeos.program.application.usecase.DeleteProgramUsecase;
 import com.blackcompany.eeos.program.application.usecase.GetProgramUsecase;
 import com.blackcompany.eeos.program.application.usecase.GetProgramsUsecase;
 import com.blackcompany.eeos.program.application.usecase.UpdateProgramUsecase;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,6 +37,7 @@ public class ProgramController {
 	private final GetProgramUsecase getProgramUsecase;
 	private final UpdateProgramUsecase updateProgramUsecase;
 	private final GetProgramsUsecase getProgramsUsecase;
+	private final DeleteProgramUsecase deleteProgramUsecase;
 
 	@PostMapping
 	public ApiResponse<SuccessBody<CommandProgramResponse>> create(
@@ -66,5 +69,12 @@ public class ProgramController {
 		PageResponse<QueryProgramResponse> response =
 				getProgramsUsecase.getPrograms(category, status, size, page);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
+	}
+
+	@DeleteMapping("/{programId}")
+	public ApiResponse<SuccessBody<Void>> delete(
+			@Member Long memberId, @PathVariable("programId") Long programId) {
+		deleteProgramUsecase.delete(memberId, programId);
+		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.UPDATE);
 	}
 }
