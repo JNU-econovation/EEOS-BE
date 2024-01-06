@@ -21,6 +21,7 @@ public class ProgramEntityConverter
 				.content(source.getContent())
 				.programCategory(source.getProgramCategory())
 				.programType(source.getProgramType())
+				.writer(source.getWriter())
 				.build();
 	}
 
