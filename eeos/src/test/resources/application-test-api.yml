@@ -1,3 +1,6 @@
 cors:
   allow-origin:
     urls: test
+
+api:
+  domain: domain
