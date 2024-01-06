@@ -41,7 +41,7 @@ class ProgramControllerTest {
 		CreateProgramRequest request =
 				CreateProgramRequest.builder()
 						.title("title")
-						.programDate(Timestamp.valueOf(LocalDateTime.now()))
+						.deadLine(Timestamp.valueOf(LocalDateTime.now()))
 						.content("content")
 						.build();
 
