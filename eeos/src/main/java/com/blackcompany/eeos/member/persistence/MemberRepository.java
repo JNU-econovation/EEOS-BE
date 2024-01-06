@@ -14,4 +14,7 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
 
 	@Query("SELECT m FROM MemberEntity m where m.activeStatus= :activeStatus ORDER BY m.name")
 	List<MemberEntity> findMembersByActiveStatus(@Param("activeStatus") ActiveStatus activeStatus);
+
+	@Query("SELECT m FROM MemberEntity  m WHERE m.id IN :ids")
+	List<MemberEntity> findUsersByIds(@Param("ids") List<Long> ids);
 }
