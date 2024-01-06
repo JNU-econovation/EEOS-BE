@@ -17,7 +17,8 @@ public class ProgramStatusServiceFixture implements ProgramStatusService {
 	}
 
 	@Override
-	public Page<ProgramEntity> getPages(ProgramCategory programCategory, Timestamp now, PageRequest pageRequest) {
+	public Page<ProgramEntity> getPages(
+			ProgramCategory programCategory, Timestamp now, PageRequest pageRequest) {
 		ProgramEntity program =
 				ProgramEntity.builder().programCategory(ProgramCategory.WEEKLY).programDate(now).build();
 
