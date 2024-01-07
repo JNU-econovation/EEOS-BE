@@ -1,6 +1,6 @@
 package com.blackcompany.eeos.attend.application.service;
 
-import com.blackcompany.eeos.program.application.dto.ChangeAttendStatusRequest;
+import com.blackcompany.eeos.program.application.dto.ChangeAllAttendStatusRequest;
 import com.blackcompany.eeos.program.application.dto.ProgramMembers;
 import java.util.List;
 
@@ -8,5 +8,5 @@ import java.util.List;
 public interface CandidateService {
 	void saveCandidate(final Long programId, final List<ProgramMembers> members);
 
-	void updateCandidate(final Long programId, final List<ChangeAttendStatusRequest> requests);
+	void updateCandidate(final Long programId, final List<ChangeAllAttendStatusRequest> requests);
 }

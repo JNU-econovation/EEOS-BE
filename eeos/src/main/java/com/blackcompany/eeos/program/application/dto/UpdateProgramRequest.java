@@ -20,5 +20,5 @@ public class UpdateProgramRequest implements CommandProgramRequest {
 	private @NotNull String content;
 	private @NotNull String category;
 	private @NotNull String type;
-	private List<ChangeAttendStatusRequest> members;
+	private List<ChangeAllAttendStatusRequest> members;
 }

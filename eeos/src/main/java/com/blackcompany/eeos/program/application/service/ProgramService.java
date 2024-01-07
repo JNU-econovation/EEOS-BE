@@ -2,7 +2,7 @@ package com.blackcompany.eeos.program.application.service;
 
 import com.blackcompany.eeos.attend.application.service.CandidateService;
 import com.blackcompany.eeos.common.utils.DateConverter;
-import com.blackcompany.eeos.program.application.dto.ChangeAttendStatusRequest;
+import com.blackcompany.eeos.program.application.dto.ChangeAllAttendStatusRequest;
 import com.blackcompany.eeos.program.application.dto.CommandProgramResponse;
 import com.blackcompany.eeos.program.application.dto.CreateProgramRequest;
 import com.blackcompany.eeos.program.application.dto.PageResponse;
@@ -133,7 +133,7 @@ public class ProgramService
 	}
 
 	private void updateAttend(
-			final List<ChangeAttendStatusRequest> members,
+			final List<ChangeAllAttendStatusRequest> members,
 			final ProgramModel model,
 			final Long memberId) {
 		if (members.isEmpty()) {

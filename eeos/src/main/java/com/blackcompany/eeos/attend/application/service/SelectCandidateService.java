@@ -9,7 +9,7 @@ import com.blackcompany.eeos.common.persistence.MemberIdEntity;
 import com.blackcompany.eeos.member.application.exception.NotFoundMemberException;
 import com.blackcompany.eeos.member.persistence.MemberEntity;
 import com.blackcompany.eeos.member.persistence.MemberRepository;
-import com.blackcompany.eeos.program.application.dto.ChangeAttendStatusRequest;
+import com.blackcompany.eeos.program.application.dto.ChangeAllAttendStatusRequest;
 import com.blackcompany.eeos.program.application.dto.ProgramMembers;
 import com.blackcompany.eeos.program.application.model.AttendManager;
 import java.util.List;
@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-/** 관련있는 대상자를 지정하여 선택한다. */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -44,7 +43,7 @@ public class SelectCandidateService implements CandidateService {
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED)
 	public void updateCandidate(
-			final Long programId, final List<ChangeAttendStatusRequest> requests) {
+			final Long programId, final List<ChangeAllAttendStatusRequest> requests) {
 		List<AttendModel> models =
 				findAttends(programId, requests).stream()
 						.map(entityConverter::from)
@@ -67,9 +66,11 @@ public class SelectCandidateService implements CandidateService {
 	}
 
 	private List<AttendEntity> findAttends(
-			final Long programId, final List<ChangeAttendStatusRequest> members) {
+			final Long programId, final List<ChangeAllAttendStatusRequest> requests) {
 		List<Long> memberIds =
-				members.stream().map(ChangeAttendStatusRequest::getMemberId).collect(Collectors.toList());
+				requests.stream()
+						.map(ChangeAllAttendStatusRequest::getMemberId)
+						.collect(Collectors.toList());
 
 		List<AttendEntity> attendMembers =
 				attendRepository.findAllByProgramMember(programId, memberIds);
@@ -97,29 +98,24 @@ public class SelectCandidateService implements CandidateService {
 	}
 
 	private void updateAttendStatus(
-			AttendModel model, List<ChangeAttendStatusRequest> requests, AttendManager attendManager) {
-		ChangeAttendStatusRequest request = findUpdateRequest(model.getMemberId(), requests);
-
-		validateSameBeforeStatus(model, request);
+			AttendModel model, List<ChangeAllAttendStatusRequest> requests, AttendManager attendManager) {
+		ChangeAllAttendStatusRequest request = findUpdateRequest(model.getMemberId(), requests);
+		model.changeStatus(request.getBeforeAttendStatus(), request.getAfterAttendStatus());
 
 		if (Objects.equals(request.getAfterAttendStatus(), AttendStatus.NONRELATED.getStatus())) {
 			attendManager.addNonRelated(model);
 			return;
 		}
-		model.changeStatus(request.getAfterAttendStatus());
+
 		attendManager.addRelated(model);
 	}
 
-	private ChangeAttendStatusRequest findUpdateRequest(
-			Long attendId, List<ChangeAttendStatusRequest> requests) {
+	private ChangeAllAttendStatusRequest findUpdateRequest(
+			Long attendId, List<ChangeAllAttendStatusRequest> requests) {
 		return requests.stream()
 				.filter(request -> request.getMemberId().equals(attendId))
 				.findAny()
 				.orElseThrow(NotFoundMemberException::new);
-	}
-
-	private void validateSameBeforeStatus(AttendModel model, ChangeAttendStatusRequest request) {
-		model.validateSame(request.getBeforeAttendStatus());
 	}
 
 	private void deleteNonRelated(AttendManager attendManager) {

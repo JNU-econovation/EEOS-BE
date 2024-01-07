@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class ChangeAttendStatusRequest implements AbstractRequestDto {
+public class ChangeAllAttendStatusRequest implements AbstractRequestDto {
 	private Long memberId;
 	private String beforeAttendStatus;
 	private String afterAttendStatus;
