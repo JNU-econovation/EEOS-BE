@@ -3,6 +3,7 @@ package com.blackcompany.eeos.attend.presentation;
 import com.blackcompany.eeos.attend.application.dto.AttendInfoResponse;
 import com.blackcompany.eeos.attend.application.dto.ChangeAttendStatusRequest;
 import com.blackcompany.eeos.attend.application.dto.ChangeAttendStatusResponse;
+import com.blackcompany.eeos.attend.application.dto.QueryAttendStatusResponse;
 import com.blackcompany.eeos.attend.application.usecase.ChangeAttendStatusUsecase;
 import com.blackcompany.eeos.attend.application.usecase.GetAttendStatusUsecase;
 import com.blackcompany.eeos.attend.application.usecase.GetAttendantInfoUsecase;
@@ -56,9 +57,9 @@ public class AttendController {
 	}
 
 	@GetMapping("/programs/{programId}/members")
-	public ApiResponse<SuccessBody<List<AttendInfoResponse>>> getAttendInfoByProgram(
+	public ApiResponse<SuccessBody<QueryAttendStatusResponse>> getAttendInfoByProgram(
 			@PathVariable("programId") Long programId, @RequestParam("attendStatus") String status) {
-		List<AttendInfoResponse> response = getAttendantInfoUsecase.findAttendInfo(programId, status);
+		QueryAttendStatusResponse response = getAttendantInfoUsecase.findAttendInfo(programId, status);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
 	}
 }
