@@ -88,16 +88,25 @@ public class AttendService
 
 	@Override
 	public ChangeAttendStatusResponse getStatus(Long memberId, Long programId) {
-		AttendModel model = attendEntityConverter.from(getAttend(memberId, programId));
+		boolean isAttend = getAttendDefault(memberId, programId);
 		String name = queryMemberService.getName(memberId);
 
-		return changeAttendStatusConverter.from(name, model.getStatus().getStatus());
+		if (isAttend) {
+			AttendModel model = attendEntityConverter.from(getAttend(memberId, programId));
+			return changeAttendStatusConverter.from(name, model.getStatus().getStatus());
+		}
+
+		return changeAttendStatusConverter.from(name, AttendStatus.NONRELATED.getStatus());
 	}
 
 	private AttendEntity getAttend(final Long memberId, final Long programId) {
 		return attendRepository
 				.findByProgramIdAndMemberId(programId, memberId)
 				.orElseThrow(() -> new NotFoundAttendException(programId));
+	}
+
+	private boolean getAttendDefault(final Long memberId, final Long programId) {
+		return attendRepository.findByProgramIdAndMemberId(programId, memberId).isPresent();
 	}
 
 	private AttendStatus getAttendStatus(final Long memberId, final Long programId) {
