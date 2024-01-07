@@ -2,6 +2,7 @@ package com.blackcompany.eeos.member.persistence;
 
 import com.blackcompany.eeos.auth.application.domain.OauthServerType;
 import com.blackcompany.eeos.common.persistence.BaseEntity;
+import com.blackcompany.eeos.common.persistence.MemberIdEntity;
 import com.blackcompany.eeos.member.application.model.ActiveStatus;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -32,7 +33,7 @@ import lombok.experimental.SuperBuilder;
 			@Index(name = "idx_name", columnList = "member_name"),
 			@Index(name = "idx_active_status", columnList = "member_active_status")
 		})
-public class MemberEntity extends BaseEntity {
+public class MemberEntity extends BaseEntity implements MemberIdEntity {
 
 	public static final String ENTITY_PREFIX = "member";
 
