@@ -8,11 +8,13 @@ import com.blackcompany.eeos.common.presentation.respnose.MessageCode;
 import com.blackcompany.eeos.program.application.dto.CommandProgramResponse;
 import com.blackcompany.eeos.program.application.dto.CreateProgramRequest;
 import com.blackcompany.eeos.program.application.dto.PageResponse;
+import com.blackcompany.eeos.program.application.dto.QueryAccessRightResponse;
 import com.blackcompany.eeos.program.application.dto.QueryProgramResponse;
 import com.blackcompany.eeos.program.application.dto.QueryProgramsResponse;
 import com.blackcompany.eeos.program.application.dto.UpdateProgramRequest;
 import com.blackcompany.eeos.program.application.usecase.CreateProgramUsecase;
 import com.blackcompany.eeos.program.application.usecase.DeleteProgramUsecase;
+import com.blackcompany.eeos.program.application.usecase.GetAccessRightUsecase;
 import com.blackcompany.eeos.program.application.usecase.GetProgramUsecase;
 import com.blackcompany.eeos.program.application.usecase.GetProgramsUsecase;
 import com.blackcompany.eeos.program.application.usecase.UpdateProgramUsecase;
@@ -39,6 +41,7 @@ public class ProgramController {
 	private final UpdateProgramUsecase updateProgramUsecase;
 	private final GetProgramsUsecase getProgramsUsecase;
 	private final DeleteProgramUsecase deleteProgramUsecase;
+	private final GetAccessRightUsecase getAccessRightUsecase;
 
 	@PostMapping
 	public ApiResponse<SuccessBody<CommandProgramResponse>> create(
@@ -79,5 +82,12 @@ public class ProgramController {
 			@Member Long memberId, @PathVariable("programId") Long programId) {
 		deleteProgramUsecase.delete(memberId, programId);
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.UPDATE);
+	}
+
+	@GetMapping("/{programId}/accessRight")
+	public ApiResponse<SuccessBody<QueryAccessRightResponse>> getAccessRight(
+			@Member Long memberId, @PathVariable("programId") Long programId) {
+		QueryAccessRightResponse response = getAccessRightUsecase.getAccessRight(memberId, programId);
+		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
 	}
 }
