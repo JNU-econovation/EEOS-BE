@@ -2,7 +2,8 @@ package com.blackcompany.eeos.program.application.model;
 
 import com.blackcompany.eeos.common.support.AbstractModel;
 import com.blackcompany.eeos.common.utils.DateConverter;
-import com.blackcompany.eeos.program.application.exception.ProgramEditDeniedException;
+import com.blackcompany.eeos.program.application.exception.DeniedProgramEditException;
+import com.blackcompany.eeos.program.application.exception.NotAllowedUpdatedProgramAttendException;
 import com.blackcompany.eeos.program.persistence.ProgramCategory;
 import com.blackcompany.eeos.program.persistence.ProgramType;
 import java.sql.Timestamp;
@@ -43,10 +44,21 @@ public class ProgramModel implements AbstractModel {
 		return ProgramStatus.ACTIVE;
 	}
 
-	public boolean canEdit(Long memberId) {
+	public void validateEditAttend(Long memberId) {
+		canEdit(memberId);
+		if (calculate() == ProgramStatus.ACTIVE) {
+			throw new NotAllowedUpdatedProgramAttendException(this.id);
+		}
+	}
+
+	public void validateDelete(Long memberId) {
+		canEdit(memberId);
+	}
+
+	private boolean canEdit(Long memberId) {
 		if (writer.equals(memberId)) {
 			return true;
 		}
-		throw new ProgramEditDeniedException(id);
+		throw new DeniedProgramEditException(id);
 	}
 }
