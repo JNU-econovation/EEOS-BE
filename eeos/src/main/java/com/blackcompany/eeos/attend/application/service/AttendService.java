@@ -2,7 +2,9 @@ package com.blackcompany.eeos.attend.application.service;
 
 import com.blackcompany.eeos.attend.application.dto.AttendInfoResponse;
 import com.blackcompany.eeos.attend.application.dto.ChangeAttendStatusRequest;
+import com.blackcompany.eeos.attend.application.dto.ChangeAttendStatusResponse;
 import com.blackcompany.eeos.attend.application.dto.converter.AttendInfoConverter;
+import com.blackcompany.eeos.attend.application.dto.converter.ChangeAttendStatusConverter;
 import com.blackcompany.eeos.attend.application.exception.NotFoundAttendException;
 import com.blackcompany.eeos.attend.application.model.AttendModel;
 import com.blackcompany.eeos.attend.application.model.AttendStatus;
@@ -11,6 +13,7 @@ import com.blackcompany.eeos.attend.application.usecase.ChangeAttendStatusUsecas
 import com.blackcompany.eeos.attend.application.usecase.GetAttendantInfoUsecase;
 import com.blackcompany.eeos.attend.persistence.AttendEntity;
 import com.blackcompany.eeos.attend.persistence.AttendRepository;
+import com.blackcompany.eeos.member.application.service.QueryMemberService;
 import com.blackcompany.eeos.member.persistence.MemberRepository;
 import com.blackcompany.eeos.program.application.service.ProgramValidService;
 import java.util.List;
@@ -30,6 +33,8 @@ public class AttendService implements GetAttendantInfoUsecase, ChangeAttendStatu
 	private final ProgramValidService programValidService;
 	private final AttendInfoConverter infoConverter;
 	private final AttendEntityConverter attendEntityConverter;
+	private final QueryMemberService queryMemberService;
+	private final ChangeAttendStatusConverter changeAttendStatusConverter;
 
 	@Override
 	public List<AttendInfoResponse> findAttendInfo(final Long programId) {
@@ -38,13 +43,6 @@ public class AttendService implements GetAttendantInfoUsecase, ChangeAttendStatu
 		return memberRepository.findMembersByProgramId(programId).stream()
 				.map(member -> infoConverter.from(member, getAttendStatus(member.getId(), programId)))
 				.collect(Collectors.toList());
-	}
-
-	private AttendStatus getAttendStatus(final Long memberId, final Long programId) {
-		return attendRepository
-				.findByProgramIdAndMemberId(programId, memberId)
-				.map(AttendEntity::getStatus)
-				.orElseThrow(() -> new NotFoundAttendException(programId));
 	}
 
 	@Override
@@ -66,16 +64,24 @@ public class AttendService implements GetAttendantInfoUsecase, ChangeAttendStatu
 
 	@Transactional
 	@Override
-	public void changeStatus(
+	public ChangeAttendStatusResponse changeStatus(
 			final Long memberId, final ChangeAttendStatusRequest request, final Long programId) {
-		AttendModel model =
-				attendRepository
-						.findByProgramIdAndMemberId(programId, memberId)
-						.map(attendEntityConverter::from)
-						.orElseThrow(() -> new NotFoundAttendException(programId));
+		AttendModel model = attendEntityConverter.from(getAttend(memberId, programId));
 
 		model.changeStatus(request.getBeforeAttendStatus(), request.getAfterAttendStatus());
+		AttendEntity updated = attendRepository.save(attendEntityConverter.toEntity(model));
 
-		attendRepository.save(attendEntityConverter.toEntity(model));
+		String name = queryMemberService.getName(memberId);
+		return changeAttendStatusConverter.from(name, updated.getStatus().getStatus());
+	}
+
+	private AttendEntity getAttend(final Long memberId, final Long programId) {
+		return attendRepository
+				.findByProgramIdAndMemberId(programId, memberId)
+				.orElseThrow(() -> new NotFoundAttendException(programId));
+	}
+
+	private AttendStatus getAttendStatus(final Long memberId, final Long programId) {
+		return getAttend(memberId, programId).getStatus();
 	}
 }
