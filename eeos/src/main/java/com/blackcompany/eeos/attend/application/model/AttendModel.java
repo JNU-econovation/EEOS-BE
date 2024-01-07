@@ -1,5 +1,6 @@
 package com.blackcompany.eeos.attend.application.model;
 
+import com.blackcompany.eeos.attend.application.exception.NotSameBeforeAttendStatusException;
 import com.blackcompany.eeos.common.support.AbstractModel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,8 +19,11 @@ public class AttendModel implements AbstractModel {
 	private Long programId;
 	private AttendStatus status;
 
-	public boolean isSame(String source) {
-		return AttendStatus.isSameAttendStatus(source, status);
+	public void validateSame(String status) {
+		if (AttendStatus.isSame(status, this.status)) {
+			return;
+		}
+		throw new NotSameBeforeAttendStatusException(memberId);
 	}
 
 	public void changeStatus(String status) {

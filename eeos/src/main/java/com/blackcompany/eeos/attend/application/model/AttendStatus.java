@@ -34,7 +34,7 @@ public enum AttendStatus {
 				.orElseThrow(() -> new NotFoundAttendStatusException(status));
 	}
 
-	public static boolean isSameAttendStatus(String source, AttendStatus actualStatus) {
+	public static boolean isSame(String source, AttendStatus actualStatus) {
 		return actualStatus.getStatus().equals(source);
 	}
 }
