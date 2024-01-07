@@ -19,8 +19,8 @@ public class OauthMemberClientComposite {
 						.collect(Collectors.toMap(OauthMemberClient::support, Function.identity()));
 	}
 
-	public OauthMemberModel fetch(String oauthServerType, String authCode) {
-		return getClient(oauthServerType).fetch(authCode);
+	public OauthMemberModel fetch(String oauthServerType, String authCode, String uri) {
+		return getClient(oauthServerType).fetch(authCode, uri);
 	}
 
 	private OauthMemberClient getClient(String type) {

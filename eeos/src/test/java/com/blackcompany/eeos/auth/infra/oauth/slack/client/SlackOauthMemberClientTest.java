@@ -31,7 +31,7 @@ class SlackOauthMemberClientTest {
 	@DisplayName("슬랙 api에 요청하여 슬랙 정보를 가져온다.")
 	void fetch() {
 		// when
-		OauthMemberModel model = slackOauthMemberClient.fetch("code");
+		OauthMemberModel model = slackOauthMemberClient.fetch("code", "uri");
 
 		// then
 		assertEquals(model.getOauthId(), FakeSlackApiClientFixture.successSlackToken().getUserId());

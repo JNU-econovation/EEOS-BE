@@ -16,6 +16,7 @@ class OauthMemberClientCompositeTest {
 		// given
 		String oauthServerType = "fake";
 		String authCode = "code";
+		String uri = "uri";
 		Set<OauthMemberClient> set = new HashSet<>();
 		FakeOauthMemberClient fakeOauthMemberClient = new FakeOauthMemberClient();
 		set.add(fakeOauthMemberClient);
@@ -23,13 +24,15 @@ class OauthMemberClientCompositeTest {
 		OauthMemberClientComposite oauthMemberClientComposite = new OauthMemberClientComposite(set);
 
 		// when
-		OauthMemberModel oauthMemberModel = oauthMemberClientComposite.fetch(oauthServerType, authCode);
+		OauthMemberModel oauthMemberModel =
+				oauthMemberClientComposite.fetch(oauthServerType, authCode, uri);
 
 		// then
-		assertEquals(oauthMemberModel.getOauthId(), fakeOauthMemberClient.fetch(authCode).getOauthId());
-		assertEquals(oauthMemberModel.getName(), fakeOauthMemberClient.fetch(authCode).getName());
+		assertEquals(
+				oauthMemberModel.getOauthId(), fakeOauthMemberClient.fetch(authCode, uri).getOauthId());
+		assertEquals(oauthMemberModel.getName(), fakeOauthMemberClient.fetch(authCode, uri).getName());
 		assertEquals(
 				oauthMemberModel.getOauthServerType(),
-				fakeOauthMemberClient.fetch(authCode).getOauthServerType());
+				fakeOauthMemberClient.fetch(authCode, uri).getOauthServerType());
 	}
 }

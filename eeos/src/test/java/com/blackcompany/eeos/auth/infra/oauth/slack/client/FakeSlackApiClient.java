@@ -7,7 +7,8 @@ import com.blackcompany.eeos.auth.infra.oauth.slack.dto.SlackToken;
 class FakeSlackApiClient implements SlackApiClient {
 
 	@Override
-	public SlackToken fetchToken(String client, String code, String clientSecret) {
+	public SlackToken fetchToken(
+			String client, String code, String clientSecret, String redirectUrl) {
 		return FakeSlackApiClientFixture.successSlackToken();
 	}
 

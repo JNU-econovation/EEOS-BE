@@ -11,7 +11,7 @@ public class FakeOauthMemberClient implements OauthMemberClient {
 	}
 
 	@Override
-	public OauthMemberModel fetch(String code) {
+	public OauthMemberModel fetch(String code, String uri) {
 		return OauthMemberModel.builder()
 				.oauthId("oauth_id")
 				.oauthServerType(OauthServerType.SLACK)

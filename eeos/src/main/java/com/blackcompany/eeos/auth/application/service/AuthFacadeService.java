@@ -16,8 +16,8 @@ public class AuthFacadeService implements LoginUsecase {
 	private final CreateTokenService createTokenService;
 
 	@Override
-	public TokenModel login(String oauthServerType, String authCode) {
-		OauthMemberModel model = oauthMemberClientComposite.fetch(oauthServerType, authCode);
+	public TokenModel login(String oauthServerType, String authCode, String uri) {
+		OauthMemberModel model = oauthMemberClientComposite.fetch(oauthServerType, authCode, uri);
 		OauthInfoEntity entity = authService.login(model);
 		return createTokenService.execute(entity.getMemberId());
 	}
