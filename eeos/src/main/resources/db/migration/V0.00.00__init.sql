@@ -1,36 +1,27 @@
-use eeos;
-
-CREATE TABLE program
+create table program
 (
-    program_id       bigint       not null auto_increment,
-    created_date     datetime     not null,
-    is_deleted       boolean      not null,
-    updated_date     datetime     not null,
-    program_content  TEXT         not null,
-    program_date     TIMESTAMP    not null,
-    program_title    varchar(255) not null,
-    program_category varchar(255) NOT NULL,
-    program_type     varchar(255) NOT NULL,
-    program_writer   BIGINT       NOT NULL,
+    program_id      bigint       not null auto_increment,
+    created_date    datetime     not null,
+    is_deleted      boolean      not null,
+    updated_date    datetime     not null,
+    program_content TEXT         not null,
+    program_date    TIMESTAMP    not null,
+    program_title   varchar(255) not null,
     primary key (program_id)
 ) engine = InnoDB;
 
-CREATE TABLE member
+create table member
 (
-    member_id               bigint       not null auto_increment,
-    created_date            datetime     not null,
-    is_deleted              boolean      not null,
-    updated_date            datetime     not null,
-    member_name             varchar(255) not null,
-    member_generation       BIGINT       not null,
-    member_oath_server_type varchar(255) NOT NULL,
-    member_active_status    varchar(255) NOT NULL,
-    primary key (member_id),
-    INDEX idx_name (member_name),
-    INDEX idx_active_status (member_active_status)
+    member_id         bigint       not null auto_increment,
+    created_date      datetime     not null,
+    is_deleted        boolean      not null,
+    updated_date      datetime     not null,
+    member_name       varchar(255) not null,
+    member_generation BIGINT       not null,
+    primary key (member_id)
 ) engine = InnoDB;
 
-CREATE TABLE attend
+create table attend
 (
     attend_id         bigint      not null auto_increment,
     created_date      datetime    not null,
@@ -42,22 +33,31 @@ CREATE TABLE attend
     primary key (attend_id)
 ) engine = InnoDB;
 
+ALTER TABLE member
+    ADD INDEX idx_generation_name (member_generation, member_name);
+
+ALTER TABLE attend
+    ADD INDEX idx_program (attend_program_id);
+
+ALTER TABLE program
+    ADD INDEX idx_program_date (program_date);
 
 ALTER TABLE program
     ADD COLUMN program_category varchar(255) NOT NULL,
-    ADD COLUMN program_type     varchar(255) NOT NULL,
-    ADD COLUMN program_writer   BIGINT       NOT NULL;
+    ADD COLUMN program_type varchar(255) NOT NULL,
+    ADD COLUMN program_writer BIGINT NOT NULL;
 
 ALTER TABLE member
     ADD COLUMN member_oath_server_type varchar(255) NOT NULL,
-    ADD COLUMN member_active_status    varchar(255) NOT NULL,
+    ADD COLUMN member_active_status varchar(255) NOT NULL,
     ADD INDEX idx_name (member_name),
     ADD INDEX idx_active_status (member_active_status);
 
 ALTER TABLE member
     DROP COLUMN member_generation;
 
-create table auth_info
+
+create table  auth_info
 (
     auth_info_id        bigint       not null auto_increment,
     created_date        datetime(6)  not null,
@@ -78,3 +78,4 @@ create table oauth_info
     oauth_info_oauth_id  varchar(255) not null,
     primary key (oauth_info_id)
 ) engine = InnoDB;
+
