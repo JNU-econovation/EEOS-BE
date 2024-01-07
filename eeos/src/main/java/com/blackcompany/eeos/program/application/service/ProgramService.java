@@ -7,11 +7,13 @@ import com.blackcompany.eeos.program.application.dto.CommandProgramResponse;
 import com.blackcompany.eeos.program.application.dto.CreateProgramRequest;
 import com.blackcompany.eeos.program.application.dto.PageResponse;
 import com.blackcompany.eeos.program.application.dto.ProgramsResponse;
+import com.blackcompany.eeos.program.application.dto.QueryAccessRightResponse;
 import com.blackcompany.eeos.program.application.dto.QueryProgramResponse;
 import com.blackcompany.eeos.program.application.dto.QueryProgramsResponse;
 import com.blackcompany.eeos.program.application.dto.UpdateProgramRequest;
 import com.blackcompany.eeos.program.application.dto.converter.ProgramPageResponseConverter;
 import com.blackcompany.eeos.program.application.dto.converter.ProgramResponseConverter;
+import com.blackcompany.eeos.program.application.dto.converter.QueryAccessRightResponseConverter;
 import com.blackcompany.eeos.program.application.event.DeletedProgramEvent;
 import com.blackcompany.eeos.program.application.exception.NotFoundProgramException;
 import com.blackcompany.eeos.program.application.model.ProgramModel;
@@ -21,6 +23,7 @@ import com.blackcompany.eeos.program.application.model.converter.ProgramRequestC
 import com.blackcompany.eeos.program.application.support.ProgramStatusServiceComposite;
 import com.blackcompany.eeos.program.application.usecase.CreateProgramUsecase;
 import com.blackcompany.eeos.program.application.usecase.DeleteProgramUsecase;
+import com.blackcompany.eeos.program.application.usecase.GetAccessRightUsecase;
 import com.blackcompany.eeos.program.application.usecase.GetProgramUsecase;
 import com.blackcompany.eeos.program.application.usecase.GetProgramsUsecase;
 import com.blackcompany.eeos.program.application.usecase.UpdateProgramUsecase;
@@ -45,7 +48,8 @@ public class ProgramService
 				GetProgramUsecase,
 				UpdateProgramUsecase,
 				GetProgramsUsecase,
-				DeleteProgramUsecase {
+				DeleteProgramUsecase,
+				GetAccessRightUsecase {
 
 	private final ProgramRequestConverter requestConverter;
 	private final ProgramEntityConverter entityConverter;
@@ -55,6 +59,7 @@ public class ProgramService
 	private final ProgramPageResponseConverter pageResponseConverter;
 	private final ProgramStatusServiceComposite programStatusComposite;
 	private final ApplicationEventPublisher applicationEventPublisher;
+	private final QueryAccessRightResponseConverter accessRightResponseConverter;
 
 	@Override
 	@Transactional
@@ -71,7 +76,7 @@ public class ProgramService
 	@Override
 	public QueryProgramResponse getProgram(final Long memberId, final Long programId) {
 		ProgramModel model = findProgram(programId);
-		return responseConverter.from(model, model.calculate(), model.getAccessRight(memberId));
+		return responseConverter.from(model, model.calculate(), findAccessRight(model, programId));
 	}
 
 	@Override
@@ -112,6 +117,14 @@ public class ProgramService
 		applicationEventPublisher.publishEvent(DeletedProgramEvent.of(programId));
 	}
 
+	@Override
+	public QueryAccessRightResponse getAccessRight(final Long memberId, final Long programId) {
+		ProgramModel model = findProgram(programId);
+		String accessRight = findAccessRight(model, memberId);
+
+		return accessRightResponseConverter.to(accessRight);
+	}
+
 	private ProgramModel findProgram(final Long programId) {
 		return programRepository
 				.findById(programId)
@@ -129,5 +142,9 @@ public class ProgramService
 
 		model.validateEditAttend(memberId);
 		candidateService.updateCandidate(model.getId(), members);
+	}
+
+	private String findAccessRight(final ProgramModel model, final Long memberId) {
+		return model.getAccessRight(memberId).getAccessRight();
 	}
 }

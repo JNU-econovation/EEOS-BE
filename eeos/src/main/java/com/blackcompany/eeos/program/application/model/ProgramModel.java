@@ -62,10 +62,10 @@ public class ProgramModel implements AbstractModel {
 		throw new DeniedProgramEditException(id);
 	}
 
-	public String getAccessRight(Long memberId) {
+	public AccessRights getAccessRight(Long memberId) {
 		if (writer.equals(memberId)) {
-			return AccessRights.EDIT.getAccessRight();
+			return AccessRights.EDIT;
 		}
-		return AccessRights.READ_ONLY.getAccessRight();
+		return AccessRights.READ_ONLY;
 	}
 }
