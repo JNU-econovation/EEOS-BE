@@ -4,6 +4,8 @@ import com.blackcompany.eeos.program.application.exception.NotFoundProgramCatego
 import java.util.Arrays;
 
 public enum ProgramCategory {
+	/** 전부 */
+	ALL("all"),
 	/** 주간발표 */
 	WEEKLY("weekly"),
 	/** 회장단 */
@@ -12,7 +14,6 @@ public enum ProgramCategory {
 	EVENT_TEAM("eventTeam"),
 	/** 기타 */
 	ETC("etc");
-
 	private final String category;
 
 	ProgramCategory(String category) {
@@ -28,5 +29,9 @@ public enum ProgramCategory {
 				.filter(programCategory -> programCategory.getCategory().equals(category))
 				.findAny()
 				.orElseThrow(() -> new NotFoundProgramCategoryException(category));
+	}
+
+	public boolean isAll() {
+		return category.equals(ProgramCategory.ALL.getCategory());
 	}
 }

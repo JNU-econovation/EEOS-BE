@@ -13,7 +13,8 @@ public interface SlackApiClientImpl extends SlackApiClient {
 	SlackToken fetchToken(
 			@RequestParam("client_id") String clientId,
 			@RequestParam("code") String code,
-			@RequestParam("client_secret") String clientSecret);
+			@RequestParam("client_secret") String clientSecret,
+			@RequestParam("redirect_uri") String uri);
 
 	@GetMapping(path = "/users.profile.get")
 	SlackMember fetchMember(@RequestHeader("Authorization") String token);

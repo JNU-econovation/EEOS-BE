@@ -52,8 +52,9 @@ public class AuthController {
 	ApiResponse<SuccessBody<TokenResponse>> login(
 			@PathVariable String oauthServerType,
 			@RequestParam("code") String code,
+			@RequestParam("redirect_uri") String uri,
 			HttpServletResponse httpResponse) {
-		TokenModel tokenModel = loginUsecase.login(oauthServerType, code);
+		TokenModel tokenModel = loginUsecase.login(oauthServerType, code, uri);
 		TokenResponse response = toResponse(tokenModel, httpResponse);
 
 		return ApiResponseGenerator.success(response, HttpStatus.CREATED, MessageCode.CREATE);

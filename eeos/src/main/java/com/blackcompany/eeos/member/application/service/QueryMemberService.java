@@ -34,11 +34,12 @@ public class QueryMemberService implements GetMembersByActiveStatus, GetMemberBy
 	public QueryMembersResponse execute(final String activeStatus) {
 		ActiveStatus status = ActiveStatus.find(activeStatus);
 
-		List<MemberModel> models =
-				memberRepository.findMembersByActiveStatus(status).stream()
-						.map(entityConverter::from)
-						.collect(Collectors.toList());
+		if (status.isAll()) {
+			List<MemberModel> models = findMembers();
+			return responseConverter.from(models);
+		}
 
+		List<MemberModel> models = findMembersByStatus(status);
 		return responseConverter.from(models);
 	}
 
@@ -56,5 +57,17 @@ public class QueryMemberService implements GetMembersByActiveStatus, GetMemberBy
 				.findById(memberId)
 				.map(MemberEntity::getName)
 				.orElseThrow(NotFoundMemberException::new);
+	}
+
+	private List<MemberModel> findMembers() {
+		return memberRepository.findMembers().stream()
+				.map(entityConverter::from)
+				.collect(Collectors.toList());
+	}
+
+	private List<MemberModel> findMembersByStatus(ActiveStatus activeStatus) {
+		return memberRepository.findMembersByActiveStatus(activeStatus).stream()
+				.map(entityConverter::from)
+				.collect(Collectors.toList());
 	}
 }

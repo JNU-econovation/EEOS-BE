@@ -9,8 +9,8 @@ import com.blackcompany.eeos.auth.infra.oauth.slack.dto.SlackApiResponse;
 import com.blackcompany.eeos.auth.infra.oauth.slack.dto.SlackMember;
 import com.blackcompany.eeos.auth.infra.oauth.slack.dto.SlackToken;
 import com.blackcompany.eeos.auth.infra.oauth.slack.exception.SlackApiException;
+import com.blackcompany.eeos.auth.infra.oauth.slack.support.SlackFourQuery;
 import com.blackcompany.eeos.auth.infra.oauth.slack.support.SlackQuery;
-import com.blackcompany.eeos.auth.infra.oauth.slack.support.SlackTriQuery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -31,15 +31,15 @@ public class SlackOauthMemberClient implements OauthMemberClient {
 	}
 
 	@Override
-	public OauthMemberModel fetch(String code) {
+	public OauthMemberModel fetch(String code, String uri) {
 		SlackToken slackToken =
 				execute(
 						slackApiClient::fetchToken,
 						TOKEN_METHOD_NAME,
 						oauthConfig.getClientId(),
 						code,
-						oauthConfig.getClientSecret());
-
+						oauthConfig.getClientSecret(),
+						uri);
 		SlackMember slackMember =
 				execute(
 						slackApiClient::fetchMember,
@@ -50,13 +50,14 @@ public class SlackOauthMemberClient implements OauthMemberClient {
 				slackToken.getUserId(), slackMember.getName(), OauthServerType.SLACK);
 	}
 
-	private <T extends SlackApiResponse, K, U, R> T execute(
-			final SlackTriQuery<T, K, U, R> slackFunction,
+	private <T extends SlackApiResponse, K, U, R, S> T execute(
+			final SlackFourQuery<T, K, U, R, S> slackFunction,
 			final String methodName,
 			final K param1,
 			final U param2,
-			final R param3) {
-		T result = slackFunction.execute(param1, param2, param3);
+			final R param3,
+			final S param4) {
+		T result = slackFunction.execute(param1, param2, param3, param4);
 		validateResponse(methodName, result);
 		return result;
 	}

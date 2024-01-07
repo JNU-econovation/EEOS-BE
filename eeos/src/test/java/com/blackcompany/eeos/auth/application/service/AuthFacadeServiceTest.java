@@ -32,15 +32,16 @@ class AuthFacadeServiceTest {
 		String type = "type";
 		String authCode = "code";
 		Long memberId = 1L;
+		String uri = "uri";
 
 		OauthMemberModel oauthMemberModel = FakeOauthMember.oauthMemberModel();
 		OauthInfoEntity oauthInfoEntity = FakeOauthMember.oauthInfoEntity();
 
-		when(oauthMemberClientComposite.fetch(type, authCode)).thenReturn(oauthMemberModel);
+		when(oauthMemberClientComposite.fetch(type, authCode, uri)).thenReturn(oauthMemberModel);
 		when(authService.login(oauthMemberModel)).thenReturn(oauthInfoEntity);
 
 		// when
-		authFacadeService.login(type, authCode);
+		authFacadeService.login(type, authCode, uri);
 
 		// then
 		Mockito.verify(createTokenService).execute(memberId);
