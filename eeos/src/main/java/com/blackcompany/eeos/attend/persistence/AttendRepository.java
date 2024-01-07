@@ -8,9 +8,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface AttendRepository extends JpaRepository<AttendEntity, Long> {
-	List<AttendEntity> findAllByProgramIdAndStatus(Long programId, AttendStatus status);
+	@Query(
+			"SELECT a FROM AttendEntity  a WHERE a.programId =:programId AND a.status=:status AND a.isDeleted=false")
+	List<AttendEntity> findAllByProgramIdAndStatus(
+			@Param("programId") Long programId, @Param("status") AttendStatus status);
 
-	Optional<AttendEntity> findByProgramIdAndMemberId(Long programId, Long memberId);
+	@Query(
+			"SELECT a FROM AttendEntity  a WHERE a.programId =:programId AND a.status=:status AND a.isDeleted=false")
+	Optional<AttendEntity> findByProgramIdAndMemberId(
+			@Param("programId") Long programId, @Param("memberId") Long memberId);
 
 	void deleteAllByProgramId(Long programId);
 

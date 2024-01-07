@@ -9,12 +9,13 @@ import org.springframework.data.repository.query.Param;
 public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
 
 	@Query(
-			"SELECT m FROM MemberEntity m inner join AttendEntity a on m.id = a.memberId where a.programId = :programId ORDER BY  m.name")
+			"SELECT m FROM MemberEntity m inner join AttendEntity a on m.id = a.memberId where a.programId = :programId AND m.isDeleted=false ORDER BY  m.name")
 	List<MemberEntity> findMembersByProgramId(@Param("programId") Long programId);
 
-	@Query("SELECT m FROM MemberEntity m where m.activeStatus= :activeStatus ORDER BY m.name")
+	@Query(
+			"SELECT m FROM MemberEntity m where m.activeStatus= :activeStatus AND m.isDeleted=false ORDER BY m.name")
 	List<MemberEntity> findMembersByActiveStatus(@Param("activeStatus") ActiveStatus activeStatus);
 
-	@Query("SELECT m FROM MemberEntity  m WHERE m.id IN :ids")
+	@Query("SELECT m FROM MemberEntity  m WHERE m.isDeleted=false AND m.id IN :ids")
 	List<MemberEntity> findUsersByIds(@Param("ids") List<Long> ids);
 }
