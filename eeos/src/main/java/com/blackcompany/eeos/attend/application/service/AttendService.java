@@ -10,6 +10,7 @@ import com.blackcompany.eeos.attend.application.model.AttendModel;
 import com.blackcompany.eeos.attend.application.model.AttendStatus;
 import com.blackcompany.eeos.attend.application.model.converter.AttendEntityConverter;
 import com.blackcompany.eeos.attend.application.usecase.ChangeAttendStatusUsecase;
+import com.blackcompany.eeos.attend.application.usecase.GetAttendStatusUsecase;
 import com.blackcompany.eeos.attend.application.usecase.GetAttendantInfoUsecase;
 import com.blackcompany.eeos.attend.persistence.AttendEntity;
 import com.blackcompany.eeos.attend.persistence.AttendRepository;
@@ -25,7 +26,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class AttendService implements GetAttendantInfoUsecase, ChangeAttendStatusUsecase {
+public class AttendService
+		implements GetAttendantInfoUsecase, ChangeAttendStatusUsecase, GetAttendStatusUsecase {
 
 	private final AttendRepository attendRepository;
 
@@ -83,5 +85,13 @@ public class AttendService implements GetAttendantInfoUsecase, ChangeAttendStatu
 
 	private AttendStatus getAttendStatus(final Long memberId, final Long programId) {
 		return getAttend(memberId, programId).getStatus();
+	}
+
+	@Override
+	public ChangeAttendStatusResponse getStatus(Long memberId, Long programId) {
+		AttendModel model = attendEntityConverter.from(getAttend(memberId, programId));
+		String name = queryMemberService.getName(memberId);
+
+		return changeAttendStatusConverter.from(name, model.getStatus().getStatus());
 	}
 }

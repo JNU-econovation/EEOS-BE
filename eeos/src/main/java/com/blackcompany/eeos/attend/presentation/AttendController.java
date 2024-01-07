@@ -4,6 +4,7 @@ import com.blackcompany.eeos.attend.application.dto.AttendInfoResponse;
 import com.blackcompany.eeos.attend.application.dto.ChangeAttendStatusRequest;
 import com.blackcompany.eeos.attend.application.dto.ChangeAttendStatusResponse;
 import com.blackcompany.eeos.attend.application.usecase.ChangeAttendStatusUsecase;
+import com.blackcompany.eeos.attend.application.usecase.GetAttendStatusUsecase;
 import com.blackcompany.eeos.attend.application.usecase.GetAttendantInfoUsecase;
 import com.blackcompany.eeos.auth.presentation.support.Member;
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponse;
@@ -28,6 +29,7 @@ public class AttendController {
 
 	private final GetAttendantInfoUsecase getAttendantInfoUsecase;
 	private final ChangeAttendStatusUsecase changeAttendStatusUsecase;
+	private final GetAttendStatusUsecase getAttendStatusUsecase;
 
 	@GetMapping("/candidate/programs/{programId}")
 	public ApiResponse<SuccessBody<List<AttendInfoResponse>>> findAttendMemberInfo(
@@ -43,6 +45,13 @@ public class AttendController {
 			@RequestBody ChangeAttendStatusRequest request) {
 		ChangeAttendStatusResponse response =
 				changeAttendStatusUsecase.changeStatus(memberId, request, programId);
+		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.UPDATE);
+	}
+
+	@GetMapping("/programs/{programId}")
+	public ApiResponse<SuccessBody<ChangeAttendStatusResponse>> getAttendStatus(
+			@Member Long memberId, @PathVariable("programId") Long programId) {
+		ChangeAttendStatusResponse response = getAttendStatusUsecase.getStatus(memberId, programId);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.UPDATE);
 	}
 
