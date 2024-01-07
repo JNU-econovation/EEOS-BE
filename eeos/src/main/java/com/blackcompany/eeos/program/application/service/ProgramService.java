@@ -8,6 +8,7 @@ import com.blackcompany.eeos.program.application.dto.CreateProgramRequest;
 import com.blackcompany.eeos.program.application.dto.PageResponse;
 import com.blackcompany.eeos.program.application.dto.ProgramsResponse;
 import com.blackcompany.eeos.program.application.dto.QueryProgramResponse;
+import com.blackcompany.eeos.program.application.dto.QueryProgramsResponse;
 import com.blackcompany.eeos.program.application.dto.UpdateProgramRequest;
 import com.blackcompany.eeos.program.application.dto.converter.ProgramPageResponseConverter;
 import com.blackcompany.eeos.program.application.dto.converter.ProgramResponseConverter;
@@ -68,9 +69,9 @@ public class ProgramService
 	}
 
 	@Override
-	public QueryProgramResponse getProgram(Long id) {
-		ProgramModel model = findProgram(id);
-		return responseConverter.from(model, model.calculate());
+	public QueryProgramResponse getProgram(final Long memberId, final Long programId) {
+		ProgramModel model = findProgram(programId);
+		return responseConverter.from(model, model.calculate(), model.getAccessRight(memberId));
 	}
 
 	@Override
@@ -87,7 +88,7 @@ public class ProgramService
 	}
 
 	@Override
-	public PageResponse<QueryProgramResponse> getPrograms(
+	public PageResponse<QueryProgramsResponse> getPrograms(
 			final String category, final String status, final int size, final int page) {
 		Timestamp now = DateConverter.toEpochSecond(LocalDate.now());
 		PageRequest pageRequest = PageRequest.of(page, size);

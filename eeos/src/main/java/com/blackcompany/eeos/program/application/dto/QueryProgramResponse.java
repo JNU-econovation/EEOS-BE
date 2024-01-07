@@ -19,4 +19,5 @@ public class QueryProgramResponse implements AbstractResponseDto {
 	private String category;
 	private String programStatus;
 	private String type;
+	private String accessRight;
 }
