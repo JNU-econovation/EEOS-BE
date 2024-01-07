@@ -14,7 +14,7 @@ public interface AttendRepository extends JpaRepository<AttendEntity, Long> {
 			@Param("programId") Long programId, @Param("status") AttendStatus status);
 
 	@Query(
-			"SELECT a FROM AttendEntity  a WHERE a.programId =:programId AND a.status=:status AND a.isDeleted=false")
+			"SELECT a FROM AttendEntity  a WHERE a.programId =:programId AND a.memberId=:memberId AND a.isDeleted=false")
 	Optional<AttendEntity> findByProgramIdAndMemberId(
 			@Param("programId") Long programId, @Param("memberId") Long memberId);
 
