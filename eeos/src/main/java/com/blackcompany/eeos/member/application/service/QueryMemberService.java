@@ -50,4 +50,11 @@ public class QueryMemberService implements GetMembersByActiveStatus, GetMemberBy
 		MemberModel model = entityConverter.from(member);
 		return responseConverter.from(model);
 	}
+
+	public String getName(final Long memberId) {
+		return memberRepository
+				.findById(memberId)
+				.map(MemberEntity::getName)
+				.orElseThrow(NotFoundMemberException::new);
+	}
 }
