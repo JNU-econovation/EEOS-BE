@@ -1,6 +1,5 @@
 package com.blackcompany.eeos.program.application.dto;
 
-import com.blackcompany.eeos.common.support.dto.AbstractRequestDto;
 import com.blackcompany.eeos.program.presentation.annotation.OverDate;
 import java.sql.Timestamp;
 import java.util.List;
@@ -14,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class CreateProgramRequest implements AbstractRequestDto {
+public class CreateProgramRequest implements CommandProgramRequest {
 
 	private @NotNull String title;
 	private @NotNull @OverDate Timestamp deadLine;

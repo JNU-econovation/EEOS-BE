@@ -1,8 +1,8 @@
 package com.blackcompany.eeos.program.application.dto;
 
-import com.blackcompany.eeos.common.support.dto.AbstractRequestDto;
 import com.blackcompany.eeos.program.presentation.annotation.OverDate;
 import java.sql.Timestamp;
+import java.util.List;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,9 +13,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class UpdateProgramRequest implements AbstractRequestDto {
+public class UpdateProgramRequest implements CommandProgramRequest {
 
 	private @NotNull String title;
+	private @NotNull @OverDate Timestamp deadLine;
 	private @NotNull String content;
-	private @NotNull @OverDate Timestamp programDate;
+	private @NotNull String category;
+	private @NotNull String type;
+	private List<ChangeAttendStatusRequest> members;
 }
