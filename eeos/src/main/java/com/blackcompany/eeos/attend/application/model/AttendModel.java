@@ -1,5 +1,6 @@
 package com.blackcompany.eeos.attend.application.model;
 
+import com.blackcompany.eeos.attend.application.exception.DeniedSaveAttendException;
 import com.blackcompany.eeos.attend.application.exception.NotSameBeforeAttendStatusException;
 import com.blackcompany.eeos.common.support.AbstractModel;
 import lombok.AllArgsConstructor;
@@ -19,14 +20,26 @@ public class AttendModel implements AbstractModel {
 	private Long programId;
 	private AttendStatus status;
 
-	public void validateSame(String status) {
+	public void changeStatus(String beforeStatus, String afterStatus) {
+		validateChange(beforeStatus);
+		this.status = AttendStatus.findByAttendStatus(afterStatus);
+	}
+
+	private void validateChange(String beforeStatus) {
+		validateCanChange(beforeStatus);
+		validateSame(beforeStatus);
+	}
+
+	private void validateCanChange(String beforeStatus) {
+		if (AttendStatus.isSame(beforeStatus, AttendStatus.NONRELATED)) {
+			throw new DeniedSaveAttendException();
+		}
+	}
+
+	private void validateSame(String status) {
 		if (AttendStatus.isSame(status, this.status)) {
 			return;
 		}
 		throw new NotSameBeforeAttendStatusException(memberId);
-	}
-
-	public void changeStatus(String status) {
-		this.status = AttendStatus.findByAttendStatus(status);
 	}
 }

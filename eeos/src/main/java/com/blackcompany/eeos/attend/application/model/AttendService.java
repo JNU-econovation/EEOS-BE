@@ -1,16 +1,15 @@
 package com.blackcompany.eeos.attend.application.model;
 
 import com.blackcompany.eeos.attend.application.dto.AttendInfoResponse;
+import com.blackcompany.eeos.attend.application.dto.ChangeAttendStatusRequest;
 import com.blackcompany.eeos.attend.application.dto.converter.AttendInfoConverter;
 import com.blackcompany.eeos.attend.application.exception.NotFoundAttendException;
-import com.blackcompany.eeos.attend.application.exception.NotSameBeforeAttendStatusException;
 import com.blackcompany.eeos.attend.application.model.converter.AttendEntityConverter;
 import com.blackcompany.eeos.attend.application.usecase.ChangeAttendStatusUsecase;
 import com.blackcompany.eeos.attend.application.usecase.GetAttendantInfoUsecase;
 import com.blackcompany.eeos.attend.persistence.AttendEntity;
 import com.blackcompany.eeos.attend.persistence.AttendRepository;
 import com.blackcompany.eeos.member.persistence.MemberRepository;
-import com.blackcompany.eeos.program.application.dto.ChangeAttendStatusRequest;
 import com.blackcompany.eeos.program.application.service.ProgramValidService;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -65,15 +64,15 @@ public class AttendService implements GetAttendantInfoUsecase, ChangeAttendStatu
 
 	@Transactional
 	@Override
-	public void changeStatus(final ChangeAttendStatusRequest request, final Long programId) {
+	public void changeStatus(
+			final Long memberId, final ChangeAttendStatusRequest request, final Long programId) {
 		AttendModel model =
 				attendRepository
-						.findByProgramIdAndMemberId(programId, request.getMemberId())
+						.findByProgramIdAndMemberId(programId, memberId)
 						.map(attendEntityConverter::from)
-						.orElseThrow(() -> new NotSameBeforeAttendStatusException(request.getMemberId()));
+						.orElseThrow(() -> new NotFoundAttendException(programId));
 
-		model.validateSame(request.getBeforeAttendStatus());
-		model.changeStatus(request.getAfterAttendStatus());
+		model.changeStatus(request.getBeforeAttendStatus(), request.getAfterAttendStatus());
 
 		attendRepository.save(attendEntityConverter.toEntity(model));
 	}
