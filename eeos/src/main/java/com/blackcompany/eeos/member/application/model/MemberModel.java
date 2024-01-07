@@ -23,4 +23,8 @@ public class MemberModel implements AbstractModel {
 		this.activeStatus = ActiveStatus.find(status);
 		return this;
 	}
+
+	public boolean validateSame(Long memberId) {
+		return id.equals(memberId);
+	}
 }
