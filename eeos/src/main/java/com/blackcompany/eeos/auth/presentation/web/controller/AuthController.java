@@ -83,8 +83,8 @@ public class AuthController {
 		cookie.setDomain(domain);
 		cookie.setPath("/");
 		cookie.setMaxAge(TimeUtil.convertSecondsFromMillis(tokenModel.getRefreshExpiredTime()));
-		cookie.setHttpOnly(false);
-		cookie.setSecure(false);
+		cookie.setHttpOnly(true);
+		cookie.setSecure(true);
 		response.addCookie(cookie);
 	}
 }
