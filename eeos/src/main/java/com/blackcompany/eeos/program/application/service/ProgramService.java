@@ -2,6 +2,7 @@ package com.blackcompany.eeos.program.application.service;
 
 import com.blackcompany.eeos.attend.application.service.CandidateService;
 import com.blackcompany.eeos.common.utils.DateConverter;
+import com.blackcompany.eeos.program.application.dto.ChangeAttendStatusRequest;
 import com.blackcompany.eeos.program.application.dto.CommandProgramResponse;
 import com.blackcompany.eeos.program.application.dto.CreateProgramRequest;
 import com.blackcompany.eeos.program.application.dto.PageResponse;
@@ -27,6 +28,7 @@ import com.blackcompany.eeos.program.persistence.ProgramEntity;
 import com.blackcompany.eeos.program.persistence.ProgramRepository;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
@@ -73,10 +75,13 @@ public class ProgramService
 
 	@Override
 	@Transactional
-	public CommandProgramResponse update(Long programId, UpdateProgramRequest request) {
-		ProgramModel model = requestConverter.from(programId, request);
+	public CommandProgramResponse update(
+			final Long memberId, final Long programId, final UpdateProgramRequest request) {
+		ProgramModel model = requestConverter.from(memberId, request, programId);
 		ProgramEntity entity = entityConverter.toEntity(model);
 		ProgramEntity updateEntity = programRepository.save(entity);
+
+		updateAttend(request.getMembers(), model, model.getWriter());
 
 		return responseConverter.from(updateEntity.getId());
 	}
@@ -100,10 +105,10 @@ public class ProgramService
 	@Transactional
 	public void delete(final Long memberId, final Long programId) {
 		ProgramModel program = findProgram(programId);
-		if (program.canEdit(memberId)) {
-			programRepository.deleteById(program.getId());
-			applicationEventPublisher.publishEvent(DeletedProgramEvent.of(programId));
-		}
+		program.validateDelete(memberId);
+
+		programRepository.deleteById(program.getId());
+		applicationEventPublisher.publishEvent(DeletedProgramEvent.of(programId));
 	}
 
 	private ProgramModel findProgram(final Long programId) {
@@ -111,5 +116,17 @@ public class ProgramService
 				.findById(programId)
 				.map(entityConverter::from)
 				.orElseThrow(() -> new NotFoundProgramException(programId));
+	}
+
+	private void updateAttend(
+			final List<ChangeAttendStatusRequest> members,
+			final ProgramModel model,
+			final Long memberId) {
+		if (members.isEmpty()) {
+			return;
+		}
+
+		model.validateEditAttend(memberId);
+		candidateService.updateCandidate(model.getId(), members);
 	}
 }
