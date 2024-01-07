@@ -76,7 +76,8 @@ public class ProgramService
 	@Override
 	public QueryProgramResponse getProgram(final Long memberId, final Long programId) {
 		ProgramModel model = findProgram(programId);
-		return responseConverter.from(model, model.calculate(), findAccessRight(model, programId));
+		return responseConverter.from(
+				model, model.findProgramStatus(), findAccessRight(model, memberId));
 	}
 
 	@Override
@@ -145,6 +146,6 @@ public class ProgramService
 	}
 
 	private String findAccessRight(final ProgramModel model, final Long memberId) {
-		return model.getAccessRight(memberId).getAccessRight();
+		return model.getAccessRight(memberId);
 	}
 }

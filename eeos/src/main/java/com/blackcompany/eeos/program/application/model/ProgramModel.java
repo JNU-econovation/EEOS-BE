@@ -34,7 +34,7 @@ public class ProgramModel implements AbstractModel {
 	private ProgramType programType;
 	private Long writer;
 
-	public ProgramStatus calculate() {
+	public ProgramStatus findProgramStatus() {
 		LocalDate now = DateConverter.toLocalDate(Instant.now().toEpochMilli());
 		LocalDate programDate = DateConverter.toLocalDate(this.programDate.getTime());
 
@@ -46,7 +46,7 @@ public class ProgramModel implements AbstractModel {
 
 	public void validateEditAttend(Long memberId) {
 		canEdit(memberId);
-		if (calculate() == ProgramStatus.ACTIVE) {
+		if (findProgramStatus() == ProgramStatus.ACTIVE) {
 			throw new NotAllowedUpdatedProgramAttendException(this.id);
 		}
 	}
@@ -56,16 +56,20 @@ public class ProgramModel implements AbstractModel {
 	}
 
 	private boolean canEdit(Long memberId) {
-		if (writer.equals(memberId)) {
+		if (isWriter(memberId)) {
 			return true;
 		}
 		throw new DeniedProgramEditException(id);
 	}
 
-	public AccessRights getAccessRight(Long memberId) {
-		if (writer.equals(memberId)) {
-			return AccessRights.EDIT;
+	public String getAccessRight(Long memberId) {
+		if (isWriter(memberId)) {
+			return AccessRights.EDIT.getAccessRight();
 		}
-		return AccessRights.READ_ONLY;
+		return AccessRights.READ_ONLY.getAccessRight();
+	}
+
+	private boolean isWriter(Long memberId) {
+		return writer.equals(memberId);
 	}
 }

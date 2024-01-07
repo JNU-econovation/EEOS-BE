@@ -4,6 +4,8 @@ import com.blackcompany.eeos.common.persistence.BaseEntity;
 import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -44,9 +46,11 @@ public class ProgramEntity extends BaseEntity {
 	private Timestamp programDate;
 
 	@Column(name = ENTITY_PREFIX + "_category", nullable = false)
+	@Enumerated(EnumType.STRING)
 	private ProgramCategory programCategory;
 
 	@Column(name = ENTITY_PREFIX + "_type", nullable = false)
+	@Enumerated(EnumType.STRING)
 	private ProgramType programType;
 
 	@Column(name = ENTITY_PREFIX + "_writer", nullable = false)
