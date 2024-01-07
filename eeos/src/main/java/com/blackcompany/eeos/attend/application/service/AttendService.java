@@ -1,9 +1,11 @@
-package com.blackcompany.eeos.attend.application.model;
+package com.blackcompany.eeos.attend.application.service;
 
 import com.blackcompany.eeos.attend.application.dto.AttendInfoResponse;
 import com.blackcompany.eeos.attend.application.dto.ChangeAttendStatusRequest;
 import com.blackcompany.eeos.attend.application.dto.converter.AttendInfoConverter;
 import com.blackcompany.eeos.attend.application.exception.NotFoundAttendException;
+import com.blackcompany.eeos.attend.application.model.AttendModel;
+import com.blackcompany.eeos.attend.application.model.AttendStatus;
 import com.blackcompany.eeos.attend.application.model.converter.AttendEntityConverter;
 import com.blackcompany.eeos.attend.application.usecase.ChangeAttendStatusUsecase;
 import com.blackcompany.eeos.attend.application.usecase.GetAttendantInfoUsecase;
