@@ -6,28 +6,28 @@ import lombok.Getter;
 
 @Getter
 public enum ActiveStatus {
-    ALL("all"),
-    AM("am"),
-    CM("cm"),
-    RM("rm");
-    private final String status;
+	ALL("all"),
+	AM("am"),
+	CM("cm"),
+	RM("rm");
+	private final String status;
 
-    ActiveStatus(String status) {
-        this.status = status;
-    }
+	ActiveStatus(String status) {
+		this.status = status;
+	}
 
-    public static ActiveStatus find(String status) {
-        return Arrays.stream(values())
-                .filter(activeStatus -> activeStatus.status.equals(status))
-                .findAny()
-                .orElseThrow(() -> new NotFoundOauthServerException(status));
-    }
+	public static ActiveStatus find(String status) {
+		return Arrays.stream(values())
+				.filter(activeStatus -> activeStatus.status.equals(status))
+				.findAny()
+				.orElseThrow(() -> new NotFoundOauthServerException(status));
+	}
 
-    public String getStatus() {
-        return status;
-    }
+	public String getStatus() {
+		return status;
+	}
 
-    public boolean isAll() {
-        return status.equals(ActiveStatus.ALL.getStatus());
-    }
+	public boolean isAll() {
+		return status.equals(ActiveStatus.ALL.getStatus());
+	}
 }
