@@ -2,7 +2,7 @@ package com.blackcompany.eeos.program.application.dto.converter;
 
 import com.blackcompany.eeos.program.application.dto.PageResponse;
 import com.blackcompany.eeos.program.application.dto.ProgramsResponse;
-import com.blackcompany.eeos.program.application.dto.QueryProgramResponse;
+import com.blackcompany.eeos.program.application.dto.QueryProgramsResponse;
 import com.blackcompany.eeos.program.application.model.ProgramModel;
 import com.blackcompany.eeos.program.application.model.ProgramStatus;
 import java.util.List;
@@ -16,12 +16,12 @@ import org.springframework.stereotype.Component;
 public class ProgramPageResponseConverter {
 	private final ProgramResponseConverter programResponseConverter;
 
-	public PageResponse<QueryProgramResponse> from(
+	public PageResponse<QueryProgramsResponse> from(
 			ProgramsResponse source, ProgramStatus programStatus) {
 		Page page = source.getPage();
 		List<ProgramModel> programs = source.getPrograms();
 
-		return PageResponse.<QueryProgramResponse>builder()
+		return PageResponse.<QueryProgramsResponse>builder()
 				.size(page.getSize())
 				.page(page.getNumber())
 				.totalPage(page.getTotalPages())

@@ -9,6 +9,7 @@ import com.blackcompany.eeos.program.application.dto.CommandProgramResponse;
 import com.blackcompany.eeos.program.application.dto.CreateProgramRequest;
 import com.blackcompany.eeos.program.application.dto.PageResponse;
 import com.blackcompany.eeos.program.application.dto.QueryProgramResponse;
+import com.blackcompany.eeos.program.application.dto.QueryProgramsResponse;
 import com.blackcompany.eeos.program.application.dto.UpdateProgramRequest;
 import com.blackcompany.eeos.program.application.usecase.CreateProgramUsecase;
 import com.blackcompany.eeos.program.application.usecase.DeleteProgramUsecase;
@@ -48,8 +49,8 @@ public class ProgramController {
 
 	@GetMapping("/{programId}")
 	public ApiResponse<SuccessBody<QueryProgramResponse>> findOne(
-			@PathVariable("programId") Long programId) {
-		QueryProgramResponse response = getProgramUsecase.getProgram(programId);
+			@Member Long memberId, @PathVariable("programId") Long programId) {
+		QueryProgramResponse response = getProgramUsecase.getProgram(memberId, programId);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
 	}
 
@@ -63,12 +64,12 @@ public class ProgramController {
 	}
 
 	@GetMapping
-	public ApiResponse<SuccessBody<PageResponse<QueryProgramResponse>>> findAll(
+	public ApiResponse<SuccessBody<PageResponse<QueryProgramsResponse>>> findAll(
 			@RequestParam("category") String category,
 			@RequestParam("programStatus") String status,
 			@RequestParam("size") int size,
 			@RequestParam("page") int page) {
-		PageResponse<QueryProgramResponse> response =
+		PageResponse<QueryProgramsResponse> response =
 				getProgramsUsecase.getPrograms(category, status, size, page);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
 	}
