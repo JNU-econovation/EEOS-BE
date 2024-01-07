@@ -21,7 +21,7 @@ class ProgramModelTest {
 				ProgramModel.builder().programDate(DateConverter.toEpochSecond(date)).build();
 
 		// when
-		ProgramStatus status = model.calculate();
+		ProgramStatus status = model.findProgramStatus();
 
 		// then
 		assertEquals(ProgramStatus.ACTIVE, status);
@@ -37,7 +37,7 @@ class ProgramModelTest {
 				ProgramModel.builder().programDate(DateConverter.toEpochSecond(date)).build();
 
 		// when
-		ProgramStatus status = model.calculate();
+		ProgramStatus status = model.findProgramStatus();
 
 		// then
 		assertEquals(ProgramStatus.ACTIVE, status);
@@ -53,7 +53,7 @@ class ProgramModelTest {
 				ProgramModel.builder().programDate(DateConverter.toEpochSecond(date)).build();
 
 		// when
-		ProgramStatus status = model.calculate();
+		ProgramStatus status = model.findProgramStatus();
 
 		// then
 		assertEquals(ProgramStatus.END, status);
