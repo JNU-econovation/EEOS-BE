@@ -1,13 +1,13 @@
 package com.blackcompany.eeos.attend.presentation;
 
 import com.blackcompany.eeos.attend.application.dto.AttendInfoResponse;
-import com.blackcompany.eeos.attend.application.dto.ChangeStatusRequest;
 import com.blackcompany.eeos.attend.application.usecase.ChangeAttendStatusUsecase;
 import com.blackcompany.eeos.attend.application.usecase.GetAttendantInfoUsecase;
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponse;
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponseBody.SuccessBody;
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponseGenerator;
 import com.blackcompany.eeos.common.presentation.respnose.MessageCode;
+import com.blackcompany.eeos.program.application.dto.ChangeAttendStatusRequest;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -36,7 +36,7 @@ public class AttendController {
 
 	@PostMapping("/programs/{programId}")
 	public ApiResponse<SuccessBody<Void>> changeAttendStatus(
-			@PathVariable("programId") Long programId, @RequestBody ChangeStatusRequest request) {
+			@PathVariable("programId") Long programId, @RequestBody ChangeAttendStatusRequest request) {
 		changeAttendStatusUsecase.changeStatus(request, programId);
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.UPDATE);
 	}

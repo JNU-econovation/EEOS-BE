@@ -1,4 +1,4 @@
-package com.blackcompany.eeos.attend.application.dto;
+package com.blackcompany.eeos.program.application.dto;
 
 import com.blackcompany.eeos.common.support.dto.AbstractRequestDto;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class ChangeStatusRequest implements AbstractRequestDto {
+public class ChangeAttendStatusRequest implements AbstractRequestDto {
 	private Long memberId;
 	private String beforeAttendStatus;
 	private String afterAttendStatus;
