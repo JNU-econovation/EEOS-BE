@@ -87,7 +87,7 @@ class ProgramControllerTest {
 		UpdateProgramRequest request =
 				UpdateProgramRequest.builder()
 						.title("title update")
-						.programDate(Timestamp.valueOf(LocalDateTime.now()))
+						.deadLine(Timestamp.valueOf(LocalDateTime.now()))
 						.content("content update")
 						.build();
 

@@ -55,8 +55,10 @@ public class ProgramController {
 
 	@PutMapping("/{programId}")
 	public ApiResponse<SuccessBody<CommandProgramResponse>> update(
-			@PathVariable("programId") Long programId, @RequestBody @Valid UpdateProgramRequest request) {
-		CommandProgramResponse response = updateProgramUsecase.update(programId, request);
+			@Member Long memberId,
+			@PathVariable("programId") Long programId,
+			@RequestBody @Valid UpdateProgramRequest request) {
+		CommandProgramResponse response = updateProgramUsecase.update(memberId, programId, request);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.UPDATE);
 	}
 
