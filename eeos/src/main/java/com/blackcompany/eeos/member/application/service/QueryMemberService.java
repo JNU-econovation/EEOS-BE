@@ -1,7 +1,7 @@
 package com.blackcompany.eeos.member.application.service;
 
-import com.blackcompany.eeos.member.application.QueryMembersResponse;
 import com.blackcompany.eeos.member.application.dto.QueryMemberResponse;
+import com.blackcompany.eeos.member.application.dto.QueryMembersResponse;
 import com.blackcompany.eeos.member.application.dto.converter.QueryMemberResponseConverter;
 import com.blackcompany.eeos.member.application.exception.NotFoundMemberException;
 import com.blackcompany.eeos.member.application.model.ActiveStatus;

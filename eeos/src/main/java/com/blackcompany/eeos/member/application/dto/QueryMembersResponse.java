@@ -1,7 +1,6 @@
-package com.blackcompany.eeos.member.application;
+package com.blackcompany.eeos.member.application.dto;
 
 import com.blackcompany.eeos.common.support.dto.AbstractResponseDto;
-import com.blackcompany.eeos.member.application.dto.QueryMemberResponse;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

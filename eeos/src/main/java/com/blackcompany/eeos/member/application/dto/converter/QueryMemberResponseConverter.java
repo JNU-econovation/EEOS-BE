@@ -1,7 +1,7 @@
 package com.blackcompany.eeos.member.application.dto.converter;
 
-import com.blackcompany.eeos.member.application.QueryMembersResponse;
 import com.blackcompany.eeos.member.application.dto.QueryMemberResponse;
+import com.blackcompany.eeos.member.application.dto.QueryMembersResponse;
 import com.blackcompany.eeos.member.application.model.MemberModel;
 import java.util.List;
 import java.util.stream.Collectors;
