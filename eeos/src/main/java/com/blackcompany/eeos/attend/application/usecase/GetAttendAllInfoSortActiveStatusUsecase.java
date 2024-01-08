@@ -1,7 +1,7 @@
 package com.blackcompany.eeos.attend.application.usecase;
 
-import com.blackcompany.eeos.attend.application.dto.QueryAttendStatusResponse;
+import com.blackcompany.eeos.attend.application.dto.QueryAttendActiveStatusResponse;
 
 public interface GetAttendAllInfoSortActiveStatusUsecase {
-	QueryAttendStatusResponse execute(final Long programId, final String activeStatus);
+	QueryAttendActiveStatusResponse execute(final Long programId, final String activeStatus);
 }
