@@ -24,4 +24,7 @@ public interface AttendRepository extends JpaRepository<AttendEntity, Long> {
 			"SELECT a FROM AttendEntity  a WHERE a.programId =:programId AND a.id IN :ids AND a.isDeleted=false")
 	List<AttendEntity> findAllByProgramMember(
 			@Param("programId") Long programId, @Param("ids") List<Long> memberIds);
+
+	@Query("SELECT a FROM AttendEntity  a WHERE a.programId =:programId AND a.isDeleted=false")
+	List<AttendEntity> findAllByProgramId(@Param("programId") Long programId);
 }
