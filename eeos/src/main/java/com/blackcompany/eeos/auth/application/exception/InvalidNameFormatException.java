@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 
 /** 멤버의 이름 형식이 올바르지 않을 떄 발생하는 예외 */
 public class InvalidNameFormatException extends BusinessException {
-	private static final String FAIL_CODE = "4004";
+	private static final String FAIL_CODE = "4006";
 	private final String name;
 
 	public InvalidNameFormatException(String name) {
