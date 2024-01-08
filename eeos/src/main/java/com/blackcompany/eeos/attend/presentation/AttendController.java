@@ -3,6 +3,7 @@ package com.blackcompany.eeos.attend.presentation;
 import com.blackcompany.eeos.attend.application.dto.AttendInfoResponse;
 import com.blackcompany.eeos.attend.application.dto.ChangeAttendStatusRequest;
 import com.blackcompany.eeos.attend.application.dto.ChangeAttendStatusResponse;
+import com.blackcompany.eeos.attend.application.dto.QueryAttendActiveStatusResponse;
 import com.blackcompany.eeos.attend.application.dto.QueryAttendStatusResponse;
 import com.blackcompany.eeos.attend.application.usecase.ChangeAttendStatusUsecase;
 import com.blackcompany.eeos.attend.application.usecase.GetAttendAllInfoSortActiveStatusUsecase;
@@ -62,17 +63,18 @@ public class AttendController {
 	public ApiResponse<SuccessBody<QueryAttendStatusResponse>> getAttendInfoByProgram(
 			@PathVariable("programId") Long programId,
 			@RequestParam("attendStatus") String attendStatus) {
+
 		QueryAttendStatusResponse response =
 				getAttendantInfoUsecase.findAttendInfo(programId, attendStatus);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
 	}
 
 	@GetMapping("/programs/{programId}/members")
-	public ApiResponse<SuccessBody<QueryAttendStatusResponse>>
+	public ApiResponse<SuccessBody<QueryAttendActiveStatusResponse>>
 			getAttendAllInfoByProgramSortActiveStatus(
 					@PathVariable("programId") Long programId,
 					@RequestParam("activeStatus") String activeStatus) {
-		QueryAttendStatusResponse response =
+		QueryAttendActiveStatusResponse response =
 				getAttendAllInfoSortActiveStatusUsecase.execute(programId, activeStatus);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
 	}

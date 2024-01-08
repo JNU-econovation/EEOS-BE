@@ -1,8 +1,6 @@
 package com.blackcompany.eeos.attend.application.dto;
 
-import com.blackcompany.eeos.attend.application.dto.AttendInfoResponse;
 import com.blackcompany.eeos.common.support.dto.AbstractResponseDto;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,6 +10,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class QueryAttendStatusResponse implements AbstractResponseDto {
-	private List<AttendInfoResponse> members;
+public class AttendInfoActiveStatusResponse implements AbstractResponseDto {
+	private Long memberId;
+	private String name;
+	private String activeStatus;
+	private String attendStatus;
 }

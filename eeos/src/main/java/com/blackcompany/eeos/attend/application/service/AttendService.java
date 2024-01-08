@@ -1,11 +1,15 @@
 package com.blackcompany.eeos.attend.application.service;
 
+import com.blackcompany.eeos.attend.application.dto.AttendInfoActiveStatusResponse;
 import com.blackcompany.eeos.attend.application.dto.AttendInfoResponse;
 import com.blackcompany.eeos.attend.application.dto.ChangeAttendStatusRequest;
 import com.blackcompany.eeos.attend.application.dto.ChangeAttendStatusResponse;
-import com.blackcompany.eeos.attend.application.dto.QueryAttendStatusResponse;
+import com.blackcompany.eeos.attend.application.dto.QueryAttendActiveStatusResponse;
+import com.blackcompany.eeos.attend.application.dto.converter.AttendInfoActiveStatusConverter;
 import com.blackcompany.eeos.attend.application.dto.converter.AttendInfoConverter;
 import com.blackcompany.eeos.attend.application.dto.converter.ChangeAttendStatusConverter;
+import com.blackcompany.eeos.attend.application.dto.converter.QueryAttendActiveStatusConverter;
+import com.blackcompany.eeos.attend.application.dto.QueryAttendStatusResponse;
 import com.blackcompany.eeos.attend.application.dto.converter.QueryAttendStatusResponseConverter;
 import com.blackcompany.eeos.attend.application.exception.NotFoundAttendException;
 import com.blackcompany.eeos.attend.application.model.AttendModel;
@@ -48,6 +52,8 @@ public class AttendService
 	private final MemberEntityConverter memberEntityConverter;
 	private final AttendInfoConverter attendInfoConverter;
 	private final QueryAttendStatusResponseConverter attendStatusResponseConverter;
+	private final AttendInfoActiveStatusConverter attendInfoActiveStatusConverter;
+	private final QueryAttendActiveStatusConverter queryAttendActiveStatusConverter;
 
 	@Override
 	public List<AttendInfoResponse> findAttendInfo(final Long programId) {
@@ -100,15 +106,15 @@ public class AttendService
 	}
 
 	@Override
-	public QueryAttendStatusResponse execute(Long programId, String activeStatus) {
+	public QueryAttendActiveStatusResponse execute(Long programId, String activeStatus) {
 		List<MemberModel> members = findMembers(activeStatus);
 
-		List<AttendInfoResponse> response =
+		List<AttendInfoActiveStatusResponse> response =
 				members.stream()
-						.map(member -> combine(member, findAttend(programId)))
+						.map(member -> combine(member, findAttend(programId), activeStatus))
 						.collect(Collectors.toList());
 
-		return attendStatusResponseConverter.of(response);
+		return queryAttendActiveStatusConverter.of(response);
 	}
 
 	private AttendModel getAttend(final Long memberId, final Long programId) {
@@ -138,7 +144,8 @@ public class AttendService
 		return attendInfoConverter.from(member, model.getStatus());
 	}
 
-	private AttendInfoResponse combine(MemberModel member, List<AttendModel> attends) {
+	private AttendInfoActiveStatusResponse combine(
+			MemberModel member, List<AttendModel> attends, String activeStatus) {
 
 		AttendModel model =
 				attends.stream()
@@ -146,7 +153,7 @@ public class AttendService
 						.findAny()
 						.orElse(AttendModel.of());
 
-		return attendInfoConverter.from(member, model.getStatus());
+		return attendInfoActiveStatusConverter.from(member, model.getStatus(), activeStatus);
 	}
 
 	private List<MemberModel> findMembers(List<AttendModel> attends) {
