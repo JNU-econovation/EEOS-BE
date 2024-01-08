@@ -24,6 +24,6 @@ public interface ProgramRepository extends JpaRepository<ProgramEntity, Long> {
 	Page<ProgramEntity> findAllByEnd(@Param("now") Timestamp now, Pageable pageable);
 
 	@Query(
-			"SELECT p FROM ProgramEntity p WHERE p.programDate > :now AND p.isDeleted=false ORDER BY p.programDate DESC, p.title ASC ")
+			"SELECT p FROM ProgramEntity p WHERE p.programDate >=:now AND p.isDeleted=false ORDER BY p.programDate DESC, p.title ASC ")
 	Page<ProgramEntity> findAllByIng(@Param("now") Timestamp now, Pageable pageable);
 }
