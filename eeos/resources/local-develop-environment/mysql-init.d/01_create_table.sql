@@ -1,7 +1,7 @@
 use eeos;
 create table program
 (
-    program_id      bigint       not null auto_increment,
+    program_id      BIGINT       not null auto_increment,
     created_date    datetime     not null,
     is_deleted      boolean      not null,
     updated_date    datetime     not null,
@@ -33,6 +33,28 @@ create table attend
     attend_member_id  BIGINT      not null,
     attend_status     VARCHAR(40) not null,
     primary key (attend_id)
+) engine = InnoDB;
+
+create table auth_info
+(
+    auth_info_id        bigint       not null auto_increment,
+    created_date        datetime(6)  not null,
+    is_deleted          bit          not null,
+    updated_date        datetime(6)  not null,
+    auth_info_member_id bigint       not null,
+    auth_info_token     varchar(255) not null,
+    primary key (auth_info_id)
+) engine = InnoDB;
+
+create table oauth_info
+(
+    oauth_info_id        bigint       not null auto_increment,
+    created_date         datetime(6)  not null,
+    is_deleted           bit          not null,
+    updated_date         datetime(6)  not null,
+    oauth_info_member_id bigint       not null,
+    oauth_info_oauth_id  varchar(255) not null,
+    primary key (oauth_info_id)
 ) engine = InnoDB;
 
 ALTER TABLE member
