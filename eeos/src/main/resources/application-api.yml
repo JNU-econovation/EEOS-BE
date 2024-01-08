@@ -9,3 +9,4 @@ cors:
 
 api:
   domain: ${API_DOMAIN}
+  cookie-key: ${COOKIE_KEY}
