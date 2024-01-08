@@ -60,7 +60,7 @@ public class SelectCandidateService implements CandidateService {
 		List<Long> requestMember =
 				members.stream().map(ProgramMembers::getMemberId).collect(Collectors.toList());
 
-		List<MemberEntity> findMembers = memberRepository.findUsersByIds(requestMember);
+		List<MemberEntity> findMembers = memberRepository.findMembersByIds(requestMember);
 		validateAllFind(requestMember, findMembers);
 		return findMembers;
 	}
