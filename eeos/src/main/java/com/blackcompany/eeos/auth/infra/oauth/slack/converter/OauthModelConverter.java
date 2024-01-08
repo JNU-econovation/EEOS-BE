@@ -8,10 +8,6 @@ import org.springframework.stereotype.Component;
 public class OauthModelConverter {
 	public OauthMemberModel from(
 			final String oauthId, final String name, final OauthServerType type) {
-		return OauthMemberModel.builder()
-				.oauthId(oauthId)
-				.name(name)
-				.oauthServerType(OauthServerType.find(type))
-				.build();
+		return OauthMemberModel.builder().oauthId(oauthId).name(name).oauthServerType(type).build();
 	}
 }

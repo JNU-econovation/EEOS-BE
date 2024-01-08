@@ -16,15 +16,8 @@ public enum OauthServerType {
 
 	public static OauthServerType find(String type) {
 		return Arrays.stream(values())
-				.filter(oauthServerType -> oauthServerType.oauthServer.equals(type))
+				.filter(oauthServerType -> oauthServerType.getOauthServer().equals(type))
 				.findAny()
 				.orElseThrow(() -> new NotFoundOauthServerException(type));
-	}
-
-	public static OauthServerType find(OauthServerType type) {
-		return Arrays.stream(values())
-				.filter(oauthServerType -> oauthServerType.equals(type))
-				.findAny()
-				.orElseThrow(() -> new NotFoundOauthServerException(type.getOauthServer()));
 	}
 }
