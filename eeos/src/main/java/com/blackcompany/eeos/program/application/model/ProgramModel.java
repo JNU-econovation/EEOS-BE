@@ -4,6 +4,8 @@ import com.blackcompany.eeos.common.support.AbstractModel;
 import com.blackcompany.eeos.common.utils.DateConverter;
 import com.blackcompany.eeos.program.application.exception.DeniedProgramEditException;
 import com.blackcompany.eeos.program.application.exception.NotAllowedUpdatedProgramAttendException;
+import com.blackcompany.eeos.program.application.exception.NotAllowedUpdatedProgramTypeException;
+import com.blackcompany.eeos.program.application.exception.NotFoundProgramCategoryException;
 import com.blackcompany.eeos.program.persistence.ProgramCategory;
 import com.blackcompany.eeos.program.persistence.ProgramType;
 import java.sql.Timestamp;
@@ -23,11 +25,7 @@ import lombok.ToString;
 public class ProgramModel implements AbstractModel {
 	private Long id;
 	private String title;
-
 	private String content;
-
-	private Long userId;
-
 	private Timestamp programDate;
 	private String eventStatus;
 	private ProgramCategory programCategory;
@@ -55,13 +53,6 @@ public class ProgramModel implements AbstractModel {
 		canEdit(memberId);
 	}
 
-	private boolean canEdit(Long memberId) {
-		if (isWriter(memberId)) {
-			return true;
-		}
-		throw new DeniedProgramEditException(id);
-	}
-
 	public String getAccessRight(Long memberId) {
 		if (isWriter(memberId)) {
 			return AccessRights.EDIT.getAccessRight();
@@ -69,7 +60,44 @@ public class ProgramModel implements AbstractModel {
 		return AccessRights.READ_ONLY.getAccessRight();
 	}
 
+	public ProgramModel update(ProgramModel requestModel) {
+		canEdit(requestModel.getWriter());
+		canUpdate(requestModel);
+
+		title = requestModel.getTitle();
+		content = requestModel.getContent();
+		programDate = requestModel.getProgramDate();
+		programCategory = requestModel.getProgramCategory();
+
+		return this;
+	}
+
+	private boolean canEdit(Long memberId) {
+		if (isWriter(memberId)) {
+			return true;
+		}
+		throw new DeniedProgramEditException(id);
+	}
+
 	private boolean isWriter(Long memberId) {
 		return writer.equals(memberId);
+	}
+
+	private void canUpdate(ProgramModel requestModel) {
+		validateUpdateType(requestModel.getProgramType());
+		validateUpdateCategory(requestModel.getProgramCategory());
+	}
+
+	private void validateUpdateType(ProgramType requestType) {
+		if (programType.equals(requestType)) {
+			return;
+		}
+		throw new NotAllowedUpdatedProgramTypeException();
+	}
+
+	private void validateUpdateCategory(ProgramCategory requestCategory) {
+		if (requestCategory.isAll()) {
+			throw new NotFoundProgramCategoryException(requestCategory.getCategory());
+		}
 	}
 }
