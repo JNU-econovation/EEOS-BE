@@ -83,14 +83,14 @@ public class ProgramService
 	@Override
 	@Transactional
 	public CommandProgramResponse update(
-			final Long memberId, final Long programId, final UpdateProgramRequest request) {
-		ProgramModel model = requestConverter.from(memberId, request, programId);
-		ProgramEntity entity = entityConverter.toEntity(model);
-		ProgramEntity updateEntity = programRepository.save(entity);
+			final Long writerId, final Long programId, final UpdateProgramRequest request) {
+		ProgramModel model = findProgram(programId);
+		ProgramModel requestModel = requestConverter.from(writerId, request, programId);
 
-		updateAttend(request.getMembers(), model, model.getWriter());
+		model.update(requestModel);
+		updateAttend(request.getMembers(), model);
 
-		return responseConverter.from(updateEntity.getId());
+		return responseConverter.from(model.getId());
 	}
 
 	@Override
@@ -134,14 +134,12 @@ public class ProgramService
 	}
 
 	private void updateAttend(
-			final List<ChangeAllAttendStatusRequest> members,
-			final ProgramModel model,
-			final Long memberId) {
+			final List<ChangeAllAttendStatusRequest> members, final ProgramModel model) {
+
 		if (members.isEmpty()) {
 			return;
 		}
 
-		model.validateEditAttend(memberId);
 		candidateService.updateCandidate(model.getId(), members);
 	}
 
