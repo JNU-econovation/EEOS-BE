@@ -5,6 +5,7 @@ import com.blackcompany.eeos.attend.application.dto.ChangeAttendStatusRequest;
 import com.blackcompany.eeos.attend.application.dto.ChangeAttendStatusResponse;
 import com.blackcompany.eeos.attend.application.dto.QueryAttendStatusResponse;
 import com.blackcompany.eeos.attend.application.usecase.ChangeAttendStatusUsecase;
+import com.blackcompany.eeos.attend.application.usecase.GetAttendAllInfoSortActiveStatusUsecase;
 import com.blackcompany.eeos.attend.application.usecase.GetAttendStatusUsecase;
 import com.blackcompany.eeos.attend.application.usecase.GetAttendantInfoUsecase;
 import com.blackcompany.eeos.auth.presentation.support.Member;
@@ -31,6 +32,7 @@ public class AttendController {
 	private final GetAttendantInfoUsecase getAttendantInfoUsecase;
 	private final ChangeAttendStatusUsecase changeAttendStatusUsecase;
 	private final GetAttendStatusUsecase getAttendStatusUsecase;
+	private final GetAttendAllInfoSortActiveStatusUsecase getAttendAllInfoSortActiveStatusUsecase;
 
 	@GetMapping("/candidate/programs/{programId}")
 	public ApiResponse<SuccessBody<List<AttendInfoResponse>>> findAttendMemberInfo(
@@ -58,8 +60,20 @@ public class AttendController {
 
 	@GetMapping("/programs/{programId}/members")
 	public ApiResponse<SuccessBody<QueryAttendStatusResponse>> getAttendInfoByProgram(
-			@PathVariable("programId") Long programId, @RequestParam("attendStatus") String status) {
-		QueryAttendStatusResponse response = getAttendantInfoUsecase.findAttendInfo(programId, status);
+			@PathVariable("programId") Long programId,
+			@RequestParam("attendStatus") String attendStatus) {
+		QueryAttendStatusResponse response =
+				getAttendantInfoUsecase.findAttendInfo(programId, attendStatus);
+		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
+	}
+
+	@GetMapping("candidate/programs/{programId}/members")
+	public ApiResponse<SuccessBody<QueryAttendStatusResponse>>
+			getAttendAllInfoByProgramSortActiveStatus(
+					@PathVariable("programId") Long programId,
+					@RequestParam("activeStatus") String activeStatus) {
+		QueryAttendStatusResponse response =
+				getAttendAllInfoSortActiveStatusUsecase.execute(programId, activeStatus);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
 	}
 }
