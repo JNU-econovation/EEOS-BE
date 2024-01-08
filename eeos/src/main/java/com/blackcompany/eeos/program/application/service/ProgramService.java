@@ -87,7 +87,7 @@ public class ProgramService
 		ProgramModel model = findProgram(programId);
 		ProgramModel requestModel = requestConverter.from(writerId, request, programId);
 
-		model.update(requestModel);
+		updateProgram(model, requestModel);
 		updateAttend(request.getMembers(), model);
 
 		return responseConverter.from(model.getId());
@@ -131,6 +131,12 @@ public class ProgramService
 				.findById(programId)
 				.map(entityConverter::from)
 				.orElseThrow(() -> new NotFoundProgramException(programId));
+	}
+
+	private void updateProgram(ProgramModel model, ProgramModel requestModel) {
+		ProgramModel update = model.update(requestModel);
+		ProgramEntity entity = entityConverter.toEntity(update);
+		programRepository.save(entity);
 	}
 
 	private void updateAttend(
