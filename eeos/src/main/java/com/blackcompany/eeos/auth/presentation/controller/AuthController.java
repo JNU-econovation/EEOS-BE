@@ -1,4 +1,4 @@
-package com.blackcompany.eeos.auth.presentation.web.controller;
+package com.blackcompany.eeos.auth.presentation.controller;
 
 import com.blackcompany.eeos.auth.application.domain.TokenModel;
 import com.blackcompany.eeos.auth.application.dto.converter.TokenResponseConverter;
