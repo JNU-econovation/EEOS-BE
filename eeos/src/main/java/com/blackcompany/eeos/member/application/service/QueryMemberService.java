@@ -23,13 +23,6 @@ public class QueryMemberService implements GetMembersByActiveStatus, GetMemberBy
 	private final MemberRepository memberRepository;
 	private final QueryMemberResponseConverter responseConverter;
 
-	@Deprecated
-	public List<MemberModel> findAllMember() {
-		return memberRepository.findAll().stream()
-				.map(entityConverter::from)
-				.collect(Collectors.toList());
-	}
-
 	@Override
 	public QueryMembersResponse execute(final String activeStatus) {
 		ActiveStatus status = ActiveStatus.find(activeStatus);
