@@ -22,7 +22,15 @@ public class AttendModel implements AbstractModel {
 
 	public void changeStatus(String beforeStatus, String afterStatus) {
 		validateChange(beforeStatus);
-		this.status = AttendStatus.findByAttendStatus(afterStatus);
+		this.status = AttendStatus.find(afterStatus);
+	}
+
+	public String getStatus() {
+		return status.getStatus();
+	}
+
+	public static AttendModel of() {
+		return AttendModel.builder().status(AttendStatus.NONRELATED).build();
 	}
 
 	private void validateChange(String beforeStatus) {
