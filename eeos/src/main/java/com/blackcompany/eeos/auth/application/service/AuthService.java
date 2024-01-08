@@ -9,6 +9,7 @@ import com.blackcompany.eeos.member.persistence.MemberEntity;
 import com.blackcompany.eeos.member.persistence.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -21,7 +22,7 @@ public class AuthService {
 	private final MemberEntityConverter memberEntityConverter;
 	private final OauthInfoEntityConverter oauthInfoEntityConverter;
 
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED)
 	public OauthInfoEntity login(final OauthMemberModel model) {
 		return oauthInfoRepository
 				.findByOauthId(model.getOauthId())
