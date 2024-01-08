@@ -31,4 +31,30 @@ class ActiveStatusTest {
 		// then
 		assertEquals(ActiveStatus.AM, activeStatus);
 	}
+
+	@Test
+	@DisplayName("주어진 활동 상태가 일치하면 true를 반환한다.")
+	void true_valid_same_active_status() {
+		// given
+		String status = "am";
+
+		// when
+		boolean isSame = ActiveStatus.isSame(status, ActiveStatus.AM);
+
+		// then
+		assertEquals(true, isSame);
+	}
+
+	@Test
+	@DisplayName("주어진 활동 상태가 일치하지 않으면 false를 반환한다.")
+	void false_valid_same_active_status() {
+		// given
+		String status = "am";
+
+		// when
+		boolean isSame = ActiveStatus.isSame(status, ActiveStatus.RM);
+
+		// then
+		assertEquals(false, isSame);
+	}
 }

@@ -31,4 +31,8 @@ public enum ActiveStatus {
 	public boolean isAll() {
 		return status.equals(ActiveStatus.ALL.getStatus());
 	}
+
+	public static boolean isSame(String activeStatus, ActiveStatus status) {
+		return status.getStatus().equals(activeStatus);
+	}
 }
