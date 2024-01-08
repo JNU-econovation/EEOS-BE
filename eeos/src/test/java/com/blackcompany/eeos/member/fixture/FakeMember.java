@@ -6,7 +6,7 @@ import com.blackcompany.eeos.member.application.model.MemberModel;
 import com.blackcompany.eeos.member.persistence.MemberEntity;
 
 public class FakeMember {
-	public static MemberEntity AmMemberEntity() {
+	public static MemberEntity AmMandoEntity() {
 		return MemberEntity.builder()
 				.id(1L)
 				.name("mando")
@@ -15,8 +15,21 @@ public class FakeMember {
 				.build();
 	}
 
-	public static MemberModel AmMemberModel() {
+	public static MemberEntity AmBadaEntity() {
+		return MemberEntity.builder()
+				.id(2L)
+				.name("bada")
+				.oauthServerType(OauthServerType.SLACK)
+				.activeStatus(ActiveStatus.AM)
+				.build();
+	}
+
+	public static MemberModel AmMandoMemberModel() {
 		return MemberModel.builder().id(1L).name("mando").activeStatus(ActiveStatus.AM).build();
+	}
+
+	public static MemberModel AmBadaMemberModel() {
+		return MemberModel.builder().id(1L).name("bada").activeStatus(ActiveStatus.AM).build();
 	}
 
 	public static MemberEntity RmMemberEntity() {

@@ -14,7 +14,7 @@ class MemberModelTest {
 	void update_active_status() {
 		// given
 		String status = "rm";
-		MemberModel memberModel = FakeMember.AmMemberModel();
+		MemberModel memberModel = FakeMember.AmMandoMemberModel();
 
 		// when
 		MemberModel updatedMemberModel = memberModel.updateActiveStatus(status);
@@ -28,7 +28,7 @@ class MemberModelTest {
 	void fail_update_active_status() {
 		// given
 		String status = "all";
-		MemberModel memberModel = FakeMember.AmMemberModel();
+		MemberModel memberModel = FakeMember.AmBadaMemberModel();
 
 		// when & then
 		assertThrows(DeniedUpdateActiveException.class, () -> memberModel.updateActiveStatus(status));
