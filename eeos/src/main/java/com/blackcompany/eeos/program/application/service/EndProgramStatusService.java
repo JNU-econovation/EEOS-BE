@@ -24,9 +24,9 @@ public class EndProgramStatusService implements ProgramStatusService {
 	public Page<ProgramEntity> getPages(
 			ProgramCategory programCategory, Timestamp now, PageRequest pageRequest) {
 		if (programCategory.isAll()) {
-			return programRepository.findAllCategoryByEnd(now, pageRequest);
+			return programRepository.findAllByEnd(now, pageRequest);
 		}
 
-		return programRepository.findAllByEnd(programCategory, now, pageRequest);
+		return programRepository.findAllByEndAndCategory(programCategory, now, pageRequest);
 	}
 }

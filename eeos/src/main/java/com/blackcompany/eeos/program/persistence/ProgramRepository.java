@@ -11,19 +11,19 @@ public interface ProgramRepository extends JpaRepository<ProgramEntity, Long> {
 
 	@Query(
 			"SELECT p FROM ProgramEntity p WHERE p.programDate < :now AND p.programCategory =:category AND p.isDeleted=false ORDER BY p.programDate DESC, p.title ASC ")
-	Page<ProgramEntity> findAllByEnd(
+	Page<ProgramEntity> findAllByEndAndCategory(
 			@Param("category") ProgramCategory category, @Param("now") Timestamp now, Pageable pageable);
 
 	@Query(
 			"SELECT p FROM ProgramEntity p WHERE p.programDate >= :now AND p.programCategory =:category AND p.isDeleted=false ORDER BY p.programDate ASC, p.title ASC")
-	Page<ProgramEntity> findAllByIng(
+	Page<ProgramEntity> findAllByIngAndCategory(
 			@Param("category") ProgramCategory category, @Param("now") Timestamp now, Pageable pageable);
 
 	@Query(
 			"SELECT p FROM ProgramEntity p WHERE p.programDate < :now AND p.isDeleted=false ORDER BY p.programDate DESC, p.title ASC ")
-	Page<ProgramEntity> findAllCategoryByEnd(@Param("now") Timestamp now, Pageable pageable);
+	Page<ProgramEntity> findAllByEnd(@Param("now") Timestamp now, Pageable pageable);
 
 	@Query(
-			"SELECT p FROM ProgramEntity p WHERE p.programDate < :now AND p.isDeleted=false ORDER BY p.programDate DESC, p.title ASC ")
-	Page<ProgramEntity> findAllCategoryByAll(@Param("now") Timestamp now, Pageable pageable);
+			"SELECT p FROM ProgramEntity p WHERE p.programDate > :now AND p.isDeleted=false ORDER BY p.programDate DESC, p.title ASC ")
+	Page<ProgramEntity> findAllByIng(@Param("now") Timestamp now, Pageable pageable);
 }

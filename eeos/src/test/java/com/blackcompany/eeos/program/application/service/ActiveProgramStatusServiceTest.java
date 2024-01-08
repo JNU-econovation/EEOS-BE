@@ -35,8 +35,8 @@ class ActiveProgramStatusServiceTest {
 	}
 
 	@Test
-	@DisplayName("진행중인 프로그램을 불러온다.")
-	void getPages() {
+	@DisplayName("카테고리가 전체가 아닌 경우 특정 카테고리에서 진행중인 프로그램을 불러온다.")
+	void get_pages_by_category() {
 		// given
 		Timestamp now = Timestamp.from(Instant.now());
 		int page = 0;
@@ -48,6 +48,23 @@ class ActiveProgramStatusServiceTest {
 				activeProgramStateService.getPages(ProgramCategory.WEEKLY, now, pageRequest);
 
 		// then
-		verify(programRepository).findAllByIng(ProgramCategory.WEEKLY, now, pageRequest);
+		verify(programRepository).findAllByIngAndCategory(ProgramCategory.WEEKLY, now, pageRequest);
+	}
+
+	@Test
+	@DisplayName("카테고리가 전체인 경우 전체 중에서 진행중인 프로그램을 불러온다.")
+	void get_pages_by_all_category() {
+		// given
+		Timestamp now = Timestamp.from(Instant.now());
+		int page = 0;
+		int size = 1;
+		PageRequest pageRequest = PageRequest.of(page, size);
+
+		// when
+		Page<ProgramEntity> pages =
+				activeProgramStateService.getPages(ProgramCategory.ALL, now, pageRequest);
+
+		// then
+		verify(programRepository).findAllByIng(now, pageRequest);
 	}
 }

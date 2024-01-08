@@ -36,8 +36,8 @@ class EndProgramStatusServiceTest {
 	}
 
 	@Test
-	@DisplayName("완료된 프로그램을 불러온다.")
-	void getPages() {
+	@DisplayName("카테고리가 전체가 아닌 경우 특정 카테고리에서 완료된 프로그램을 불러온다.")
+	void get_pages_end_category() {
 		// given
 		Timestamp now = Timestamp.from(Instant.now());
 		int page = 0;
@@ -49,6 +49,23 @@ class EndProgramStatusServiceTest {
 				endProgramStateService.getPages(ProgramCategory.WEEKLY, now, pageRequest);
 
 		// then
-		verify(programRepository).findAllByEnd(ProgramCategory.WEEKLY, now, pageRequest);
+		verify(programRepository).findAllByEndAndCategory(ProgramCategory.WEEKLY, now, pageRequest);
+	}
+
+	@Test
+	@DisplayName("카테고리가 전체인 경우 전체 중에서 완료된 프로그램을 불러온다.")
+	void get_pages_end_all() {
+		// given
+		Timestamp now = Timestamp.from(Instant.now());
+		int page = 0;
+		int size = 1;
+		PageRequest pageRequest = PageRequest.of(page, size);
+
+		// when
+		Page<ProgramEntity> pages =
+				endProgramStateService.getPages(ProgramCategory.ALL, now, pageRequest);
+
+		// then
+		verify(programRepository).findAllByEnd(now, pageRequest);
 	}
 }

@@ -24,9 +24,9 @@ public class ActiveProgramStatusService implements ProgramStatusService {
 	public Page<ProgramEntity> getPages(
 			ProgramCategory programCategory, Timestamp now, PageRequest pageRequest) {
 		if (programCategory.isAll()) {
-			return programRepository.findAllCategoryByEnd(now, pageRequest);
+			return programRepository.findAllByIng(now, pageRequest);
 		}
 
-		return programRepository.findAllByIng(programCategory, now, pageRequest);
+		return programRepository.findAllByIngAndCategory(programCategory, now, pageRequest);
 	}
 }
