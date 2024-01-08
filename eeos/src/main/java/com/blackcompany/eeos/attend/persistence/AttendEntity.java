@@ -46,5 +46,5 @@ public class AttendEntity extends BaseEntity implements MemberIdEntity {
 	@Enumerated(EnumType.STRING)
 	@Column(name = ENTITY_PREFIX + "_status", nullable = false)
 	@Builder.Default
-	private AttendStatus status = AttendStatus.NONE;
+	private AttendStatus status = AttendStatus.NONRELATED;
 }

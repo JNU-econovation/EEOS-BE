@@ -14,9 +14,7 @@ public enum AttendStatus {
 	/** 관련있음, 미응답 */
 	NONRESPONSE("nonResponse"),
 	/** 관련없음 */
-	NONRELATED("nonRelated"),
-	NONE("none");
-
+	NONRELATED("nonRelated");
 	private final String status;
 
 	AttendStatus(String status) {
