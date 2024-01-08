@@ -9,7 +9,8 @@ public enum ActiveStatus {
 	ALL("all"),
 	AM("am"),
 	CM("cm"),
-	RM("rm");
+	RM("rm"),
+	OB("ob");
 	private final String status;
 
 	ActiveStatus(String status) {

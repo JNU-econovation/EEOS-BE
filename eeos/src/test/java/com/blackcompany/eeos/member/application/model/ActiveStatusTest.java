@@ -2,7 +2,7 @@ package com.blackcompany.eeos.member.application.model;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.blackcompany.eeos.member.application.exception.NotFoundActiveStatusException;
+import com.blackcompany.eeos.member.application.exception.DeniedUpdateActiveException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,7 @@ class ActiveStatusTest {
 		String status = "known";
 
 		// when & then
-		Assertions.assertThrows(NotFoundActiveStatusException.class, () -> ActiveStatus.find(status));
+		Assertions.assertThrows(DeniedUpdateActiveException.class, () -> ActiveStatus.find(status));
 	}
 
 	@Test
