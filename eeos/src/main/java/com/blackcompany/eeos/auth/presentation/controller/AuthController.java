@@ -11,12 +11,12 @@ import com.blackcompany.eeos.common.presentation.respnose.ApiResponseBody.Succes
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponseGenerator;
 import com.blackcompany.eeos.common.presentation.respnose.MessageCode;
 import com.blackcompany.eeos.common.utils.TimeUtil;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,26 +26,23 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
-	private static final String COOKIE_KEY = "token";
-
 	private final LoginUsecase loginUsecase;
 	private final ReissueUsecase reissueUsecase;
 	private final TokenExtractor tokenExtractor;
 	private final TokenResponseConverter tokenResponseConverter;
-
-	private final String domain;
+	private final String cookieKey;
 
 	public AuthController(
 			LoginUsecase loginUsecase,
 			ReissueUsecase reissueUsecase,
 			@Qualifier("cookie") TokenExtractor tokenExtractor,
 			TokenResponseConverter tokenResponseConverter,
-			@Value("${api.domain}") String domain) {
+			@Value("${api.cookie-key}") String cookieKey) {
 		this.loginUsecase = loginUsecase;
 		this.reissueUsecase = reissueUsecase;
 		this.tokenExtractor = tokenExtractor;
 		this.tokenResponseConverter = tokenResponseConverter;
-		this.domain = domain;
+		this.cookieKey = cookieKey;
 	}
 
 	@PostMapping("/login/{oauthServerType}")
@@ -79,12 +76,15 @@ public class AuthController {
 	}
 
 	private void setCookie(HttpServletResponse response, TokenModel tokenModel) {
-		Cookie cookie = new Cookie(COOKIE_KEY, tokenModel.getRefreshToken());
-		cookie.setDomain(domain);
-		cookie.setPath("/");
-		cookie.setMaxAge(TimeUtil.convertSecondsFromMillis(tokenModel.getRefreshExpiredTime()));
-		cookie.setHttpOnly(true);
-		cookie.setSecure(true);
-		response.addCookie(cookie);
+		ResponseCookie cookie =
+				ResponseCookie.from(cookieKey, tokenModel.getRefreshToken())
+						.path("/")
+						.sameSite("None")
+						.httpOnly(false)
+						.secure(true)
+						.maxAge(TimeUtil.convertSecondsFromMillis(tokenModel.getRefreshExpiredTime()))
+						.build();
+
+		response.addHeader("Set-Cookie", cookie.toString());
 	}
 }
