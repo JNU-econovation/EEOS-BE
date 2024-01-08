@@ -27,7 +27,7 @@ public class CommandMemberController {
 	@PutMapping("/activeStatus")
 	public ApiResponse<SuccessBody<CommandMemberResponse>> changeActiveStatus(
 			@Member Long memberId, @RequestBody @Valid ChangeActiveStatusRequest request) {
-		CommandMemberResponse response = changeActiveStatusUsecase.execute(memberId, request);
+		CommandMemberResponse response = changeActiveStatusUsecase.changeStatus(memberId, request);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.UPDATE);
 	}
 }

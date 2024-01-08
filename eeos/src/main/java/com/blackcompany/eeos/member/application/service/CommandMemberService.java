@@ -22,7 +22,7 @@ public class CommandMemberService implements ChangeActiveStatusUsecase {
 
 	@Transactional
 	@Override
-	public CommandMemberResponse execute(
+	public CommandMemberResponse changeStatus(
 			final Long memberId, final ChangeActiveStatusRequest request) {
 		MemberModel model =
 				memberRepository

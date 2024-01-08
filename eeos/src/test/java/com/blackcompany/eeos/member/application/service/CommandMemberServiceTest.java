@@ -38,6 +38,6 @@ class CommandMemberServiceTest {
 
 		// when & then
 		Assertions.assertThrows(
-				NotFoundMemberException.class, () -> commandMemberService.execute(1L, request));
+				NotFoundMemberException.class, () -> commandMemberService.changeStatus(1L, request));
 	}
 }
