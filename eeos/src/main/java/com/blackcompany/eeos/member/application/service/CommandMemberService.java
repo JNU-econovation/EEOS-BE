@@ -37,8 +37,7 @@ public class CommandMemberService implements ChangeActiveStatusUsecase {
 	}
 
 	private MemberEntity updateActiveStatus(final MemberModel model, final String status) {
-		model.updateActiveStatus(status);
-		MemberEntity updatedMember = memberConverter.toEntity(model);
-		return memberRepository.save(updatedMember);
+		MemberModel memberModel = model.updateActiveStatus(status);
+		return memberRepository.save(memberConverter.toEntity(memberModel));
 	}
 }
