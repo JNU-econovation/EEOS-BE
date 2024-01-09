@@ -65,19 +65,20 @@ public class ProgramService
 	@Transactional
 	public CommandProgramResponse create(final Long memberId, final CreateProgramRequest request) {
 		ProgramModel model = requestConverter.from(memberId, request);
-		ProgramEntity entity = entityConverter.toEntity(model);
 
-		ProgramEntity save = programRepository.save(entity);
-		candidateService.saveCandidate(save.getId(), request.getMembers());
+		model.validateCreate();
+		Long saveId = createProgram(model);
 
-		return responseConverter.from(save.getId());
+		candidateService.saveCandidate(saveId, request.getMembers());
+
+		return responseConverter.from(saveId);
 	}
 
 	@Override
 	public QueryProgramResponse getProgram(final Long memberId, final Long programId) {
 		ProgramModel model = findProgram(programId);
 		return responseConverter.from(
-				model, model.findProgramStatus(), findAccessRight(model, memberId));
+				model, model.getProgramStatus(), findAccessRight(model, memberId));
 	}
 
 	@Override
@@ -131,6 +132,13 @@ public class ProgramService
 				.findById(programId)
 				.map(entityConverter::from)
 				.orElseThrow(() -> new NotFoundProgramException(programId));
+	}
+
+	private Long createProgram(ProgramModel model) {
+		ProgramEntity entity = entityConverter.toEntity(model);
+		ProgramEntity save = programRepository.save(entity);
+
+		return save.getId();
 	}
 
 	private void updateProgram(ProgramModel model, ProgramModel requestModel) {
