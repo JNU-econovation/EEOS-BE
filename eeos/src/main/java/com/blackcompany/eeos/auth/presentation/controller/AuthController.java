@@ -32,6 +32,7 @@ public class AuthController {
 	private final TokenResponseConverter tokenResponseConverter;
 	private final String cookieKey;
 	private final String domain;
+	private final long validTime;
 
 	public AuthController(
 			LoginUsecase loginUsecase,
@@ -39,13 +40,15 @@ public class AuthController {
 			@Qualifier("cookie") TokenExtractor tokenExtractor,
 			TokenResponseConverter tokenResponseConverter,
 			@Value("${api.cookie-key}") String cookieKey,
-			@Value("${api.domain}") String domain) {
+			@Value("${api.domain}") String domain,
+			@Value("${security.jwt.refresh.validTime}") long validTime) {
 		this.loginUsecase = loginUsecase;
 		this.reissueUsecase = reissueUsecase;
 		this.tokenExtractor = tokenExtractor;
 		this.tokenResponseConverter = tokenResponseConverter;
 		this.cookieKey = cookieKey;
 		this.domain = domain;
+		this.validTime = validTime;
 	}
 
 	@PostMapping("/login/{oauthServerType}")
@@ -86,7 +89,7 @@ public class AuthController {
 						.httpOnly(true)
 						.secure(true)
 						.sameSite("None")
-						.maxAge(TimeUtil.convertSecondsFromMillis(tokenModel.getRefreshExpiredTime()))
+						.maxAge(TimeUtil.convertSecondsFromMillis(validTime))
 						.build();
 
 		response.addHeader("Set-Cookie", cookie.toString());
