@@ -75,7 +75,7 @@ public class AttendController {
 					@PathVariable("programId") Long programId,
 					@RequestParam("activeStatus") String activeStatus) {
 		QueryAttendActiveStatusResponse response =
-				getAttendAllInfoSortActiveStatusUsecase.execute(programId, activeStatus);
+				getAttendAllInfoSortActiveStatusUsecase.getAttendInfo(programId, activeStatus);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
 	}
 }
