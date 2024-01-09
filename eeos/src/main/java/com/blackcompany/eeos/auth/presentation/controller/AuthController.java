@@ -85,6 +85,7 @@ public class AuthController {
 						.domain(domain)
 						.httpOnly(true)
 						.secure(true)
+						.sameSite("None")
 						.maxAge(TimeUtil.convertSecondsFromMillis(tokenModel.getRefreshExpiredTime()))
 						.build();
 
