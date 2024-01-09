@@ -34,7 +34,7 @@ public class SelectAttendTargetService implements AttendTargetService {
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED)
-	public void saveCandidate(final Long programId, final List<ProgramMembers> members) {
+	public void save(final Long programId, final List<ProgramMembers> members) {
 		List<AttendEntity> attendEntities =
 				findMembers(members).stream()
 						.map(member -> entityConverter.toEntity(member.getId(), programId))
@@ -45,8 +45,7 @@ public class SelectAttendTargetService implements AttendTargetService {
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED)
-	public void updateCandidate(
-			final Long programId, final List<ChangeAllAttendStatusRequest> requests) {
+	public void update(final Long programId, final List<ChangeAllAttendStatusRequest> requests) {
 		List<AttendModel> requestAttends = findAttends(programId, requests);
 
 		AttendManager attendManager = new AttendManager();

@@ -69,7 +69,7 @@ public class ProgramService
 		model.validateCreate();
 		Long saveId = createProgram(model);
 
-		attendTargetService.saveCandidate(saveId, request.getMembers());
+		attendTargetService.save(saveId, request.getMembers());
 
 		return responseConverter.from(saveId);
 	}
@@ -155,7 +155,7 @@ public class ProgramService
 		}
 
 		model.validateEditAttend(model.getWriter());
-		attendTargetService.updateCandidate(model.getId(), members);
+		attendTargetService.update(model.getId(), members);
 	}
 
 	private String findAccessRight(final ProgramModel model, final Long memberId) {
