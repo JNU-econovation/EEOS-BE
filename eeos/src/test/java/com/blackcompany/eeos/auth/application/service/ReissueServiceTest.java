@@ -35,7 +35,7 @@ class ReissueServiceTest {
 
 		AuthInfoEntity authInfoEntity = FakeAuthInfo.authInfoEntity();
 
-		when(tokenResolver.getUserInfo(token)).thenReturn(memberId);
+		when(tokenResolver.getUserInfoByCookie(token)).thenReturn(memberId);
 		when(authInfoRepository.findByMemberIdAndToken(memberId, token))
 				.thenReturn(Optional.ofNullable(null));
 		when(authInfoRepository.findByToken(token)).thenReturn(Optional.ofNullable(authInfoEntity));
@@ -55,7 +55,7 @@ class ReissueServiceTest {
 
 		AuthInfoEntity authInfoEntity = FakeAuthInfo.authInfoEntity();
 
-		when(tokenResolver.getUserInfo(token)).thenReturn(memberId);
+		when(tokenResolver.getUserInfoByCookie(token)).thenReturn(memberId);
 		when(authInfoRepository.findByMemberIdAndToken(memberId, token))
 				.thenReturn(Optional.ofNullable(authInfoEntity));
 
