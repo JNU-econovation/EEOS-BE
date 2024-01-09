@@ -1,6 +1,5 @@
 package com.blackcompany.eeos.program.application.dto;
 
-import com.blackcompany.eeos.program.presentation.annotation.OverDate;
 import java.sql.Timestamp;
 import java.util.List;
 import javax.validation.constraints.NotNull;
@@ -16,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class CreateProgramRequest implements CommandProgramRequest {
 
 	private @NotNull String title;
-	private @NotNull @OverDate Timestamp deadLine;
+	private @NotNull Timestamp deadLine;
 	private @NotNull String content;
 	private @NotNull String category;
 	private @NotNull String type;
