@@ -30,7 +30,7 @@ public class AttendModel implements AbstractModel, MemberIdModel {
 		return this;
 	}
 
-	public AttendModel changeStatusByManager(String beforeStatus, String afterStatus) {
+	public AttendModel changeStatus(String afterStatus) {
 		this.status = AttendStatus.find(afterStatus);
 
 		return this;
@@ -44,12 +44,16 @@ public class AttendModel implements AbstractModel, MemberIdModel {
 		return AttendModel.builder().status(AttendStatus.NONRELATED).build();
 	}
 
-	public static List<AttendModel> of(List<Long> memberIds) {
-		return memberIds.stream().map(AttendModel::of).collect(Collectors.toList());
+	public static List<AttendModel> of(List<Long> memberIds, Long programId) {
+		return memberIds.stream().map(memberId -> of(memberId, programId)).collect(Collectors.toList());
 	}
 
-	public static AttendModel of(Long memberId) {
-		return AttendModel.builder().memberId(memberId).status(AttendStatus.NONRELATED).build();
+	public static AttendModel of(Long memberId, Long programId) {
+		return AttendModel.builder()
+				.memberId(memberId)
+				.programId(programId)
+				.status(AttendStatus.NONRELATED)
+				.build();
 	}
 
 	private void validateChange(String beforeStatus) {
