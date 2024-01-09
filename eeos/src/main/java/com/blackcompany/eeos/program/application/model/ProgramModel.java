@@ -6,6 +6,7 @@ import com.blackcompany.eeos.program.application.exception.DeniedProgramEditExce
 import com.blackcompany.eeos.program.application.exception.NotAllowedUpdatedProgramAttendException;
 import com.blackcompany.eeos.program.application.exception.NotAllowedUpdatedProgramTypeException;
 import com.blackcompany.eeos.program.application.exception.NotFoundProgramCategoryException;
+import com.blackcompany.eeos.program.application.exception.OverDateException;
 import com.blackcompany.eeos.program.persistence.ProgramCategory;
 import com.blackcompany.eeos.program.persistence.ProgramType;
 import java.sql.Timestamp;
@@ -32,14 +33,11 @@ public class ProgramModel implements AbstractModel {
 	private ProgramType programType;
 	private Long writer;
 
-	public ProgramStatus findProgramStatus() {
-		LocalDate now = DateConverter.toLocalDate(Instant.now().toEpochMilli());
-		LocalDate programDate = DateConverter.toLocalDate(this.programDate.getTime());
-
-		if (programDate.isBefore(now)) {
-			return ProgramStatus.END;
+	public void validateCreate() {
+		if (findProgramStatus().equals(ProgramStatus.ACTIVE)) {
+			return;
 		}
-		return ProgramStatus.ACTIVE;
+		throw new OverDateException();
 	}
 
 	public void validateEditAttend(Long memberId) {
@@ -60,6 +58,10 @@ public class ProgramModel implements AbstractModel {
 		return AccessRights.READ_ONLY.getAccessRight();
 	}
 
+	public String getProgramStatus() {
+		return findProgramStatus().getStatus();
+	}
+
 	public ProgramModel update(ProgramModel requestModel) {
 		canEdit(requestModel.getWriter());
 		canUpdate(requestModel);
@@ -70,6 +72,16 @@ public class ProgramModel implements AbstractModel {
 		programCategory = requestModel.getProgramCategory();
 
 		return this;
+	}
+
+	private ProgramStatus findProgramStatus() {
+		LocalDate now = DateConverter.toLocalDate(Instant.now().toEpochMilli());
+		LocalDate programDate = DateConverter.toLocalDate(this.programDate.getTime());
+
+		if (programDate.isBefore(now)) {
+			return ProgramStatus.END;
+		}
+		return ProgramStatus.ACTIVE;
 	}
 
 	private boolean canEdit(Long memberId) {

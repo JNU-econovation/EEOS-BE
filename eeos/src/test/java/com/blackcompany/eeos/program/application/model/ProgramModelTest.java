@@ -7,6 +7,7 @@ import com.blackcompany.eeos.program.application.exception.DeniedProgramEditExce
 import com.blackcompany.eeos.program.application.exception.NotAllowedUpdatedProgramAttendException;
 import com.blackcompany.eeos.program.application.exception.NotAllowedUpdatedProgramTypeException;
 import com.blackcompany.eeos.program.application.exception.NotFoundProgramCategoryException;
+import com.blackcompany.eeos.program.application.exception.OverDateException;
 import com.blackcompany.eeos.program.persistence.ProgramCategory;
 import com.blackcompany.eeos.program.persistence.ProgramType;
 import java.time.LocalDate;
@@ -25,10 +26,10 @@ class ProgramModelTest {
 				ProgramModel.builder().programDate(DateConverter.toEpochSecond(date)).build();
 
 		// when
-		ProgramStatus status = model.findProgramStatus();
+		String programStatus = model.getProgramStatus();
 
 		// then
-		assertEquals(ProgramStatus.ACTIVE, status);
+		assertEquals(ProgramStatus.ACTIVE.getStatus(), programStatus);
 	}
 
 	@Test
@@ -41,10 +42,10 @@ class ProgramModelTest {
 				ProgramModel.builder().programDate(DateConverter.toEpochSecond(date)).build();
 
 		// when
-		ProgramStatus status = model.findProgramStatus();
+		String prgramStatus = model.getProgramStatus();
 
 		// then
-		assertEquals(ProgramStatus.ACTIVE, status);
+		assertEquals(ProgramStatus.ACTIVE.getStatus(), prgramStatus);
 	}
 
 	@Test
@@ -57,10 +58,10 @@ class ProgramModelTest {
 				ProgramModel.builder().programDate(DateConverter.toEpochSecond(date)).build();
 
 		// when
-		ProgramStatus status = model.findProgramStatus();
+		String programStatus = model.getProgramStatus();
 
 		// then
-		assertEquals(ProgramStatus.END, status);
+		assertEquals(ProgramStatus.END.getStatus(), programStatus);
 	}
 
 	@Test
@@ -190,7 +191,7 @@ class ProgramModelTest {
 	}
 
 	@Test
-	@DisplayName("프로그램 작성자이며 프로그램 타입을 수정하지 않을 떄는 프로그램 수정이 가능하다..")
+	@DisplayName("프로그램 작성자이며 프로그램 타입을 수정하지 않을 떄는 프로그램 수정이 가능하다.")
 	void cannot_edit_program() {
 		// given
 		LocalDate date = LocalDate.now().plusDays(1L);
@@ -219,24 +220,109 @@ class ProgramModelTest {
 
 		// then
 		assertAll(
-				() -> assertEquals(requestModel.getProgramCategory(), model.getProgramCategory()),
-				() -> assertEquals(requestModel.getProgramType(), model.getProgramType()),
-				() -> assertEquals(requestModel.getTitle(), model.getTitle()),
-				() -> assertEquals(requestModel.getContent(), model.getContent()),
-				() -> assertEquals(requestModel.getProgramDate(), model.getProgramDate()));
+				() -> assertEquals(update.getProgramCategory(), model.getProgramCategory()),
+				() -> assertEquals(update.getProgramType(), model.getProgramType()),
+				() -> assertEquals(update.getTitle(), model.getTitle()),
+				() -> assertEquals(update.getContent(), model.getContent()),
+				() -> assertEquals(update.getProgramDate(), model.getProgramDate()));
 	}
 
-	/**
-	 * private void canUpdate(ProgramModel requestModel) {
-	 * validateUpdateType(requestModel.getProgramType());
-	 * validateUpdateCategory(requestModel.getProgramCategory()); }
-	 *
-	 * <p>private void validateUpdateType(ProgramType requestType) { if
-	 * (programType.equals(requestType)) { return; } throw new
-	 * NotAllowedUpdatedProgramTypeException(); }
-	 *
-	 * <p>private void validateUpdateCategory(ProgramCategory requestCategory) { if
-	 * (programCategory.isAll()) { throw new
-	 * NotFoundProgramCategoryException(requestCategory.getCategory()); } }
-	 */
+	@Test
+	@DisplayName("프로그램 수정은 수정 기준 이전 날짜도 가능하다.")
+	void can_edit_program_before_date() {
+		// given
+		LocalDate date = LocalDate.now().plusDays(1L);
+		ProgramModel model =
+				ProgramModel.builder()
+						.title("title")
+						.content("content")
+						.programDate(DateConverter.toEpochSecond(date))
+						.programCategory(ProgramCategory.WEEKLY)
+						.programType(ProgramType.DEMAND)
+						.writer(2L)
+						.build();
+
+		LocalDate beforeDate = LocalDate.now().minusDays(1L);
+
+		ProgramModel requestModel =
+				ProgramModel.builder()
+						.title("title 변경")
+						.content("content 변경")
+						.programDate(DateConverter.toEpochSecond(beforeDate))
+						.programCategory(ProgramCategory.EVENT_TEAM)
+						.programType(ProgramType.DEMAND)
+						.writer(2L)
+						.build();
+
+		// when
+		ProgramModel update = model.update(requestModel);
+
+		// then
+		assertAll(
+				() -> assertEquals(update.getProgramCategory(), model.getProgramCategory()),
+				() -> assertEquals(update.getProgramType(), model.getProgramType()),
+				() -> assertEquals(update.getTitle(), model.getTitle()),
+				() -> assertEquals(update.getContent(), model.getContent()),
+				() -> assertEquals(update.getProgramDate(), model.getProgramDate()));
+	}
+
+	@Test
+	@DisplayName("프로그램 생성은 생성 기준 이전 날짜는 불가능하다.")
+	void can_create_program_before_date() {
+		// given
+		LocalDate beforeDate = LocalDate.now().minusDays(1L);
+
+		ProgramModel model =
+				ProgramModel.builder()
+						.title("title 변경")
+						.content("content 변경")
+						.programDate(DateConverter.toEpochSecond(beforeDate))
+						.programCategory(ProgramCategory.EVENT_TEAM)
+						.programType(ProgramType.DEMAND)
+						.writer(2L)
+						.build();
+
+		// when & then
+		assertThrows(OverDateException.class, model::validateCreate);
+	}
+
+	@Test
+	@DisplayName("프로그램 생성은 생성 기준 이후 날짜는 가능하다.")
+	void can_create_program_over_date() {
+		// given
+		LocalDate beforeDate = LocalDate.now().plusDays(1L);
+
+		ProgramModel model =
+				ProgramModel.builder()
+						.title("title 변경")
+						.content("content 변경")
+						.programDate(DateConverter.toEpochSecond(beforeDate))
+						.programCategory(ProgramCategory.EVENT_TEAM)
+						.programType(ProgramType.DEMAND)
+						.writer(2L)
+						.build();
+
+		// when & then
+		assertDoesNotThrow(model::validateCreate);
+	}
+
+	@Test
+	@DisplayName("프로그램 생성은 생성 기준 당일 날짜는 가능하다.")
+	void can_create_program_date() {
+		// given
+		LocalDate beforeDate = LocalDate.now();
+
+		ProgramModel model =
+				ProgramModel.builder()
+						.title("title 변경")
+						.content("content 변경")
+						.programDate(DateConverter.toEpochSecond(beforeDate))
+						.programCategory(ProgramCategory.EVENT_TEAM)
+						.programType(ProgramType.DEMAND)
+						.writer(2L)
+						.build();
+
+		// when & then
+		assertDoesNotThrow(model::validateCreate);
+	}
 }
