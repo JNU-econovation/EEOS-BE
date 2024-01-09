@@ -43,7 +43,7 @@ public class ProgramModel implements AbstractModel {
 	public void validateEditAttend(Long memberId) {
 		canEdit(memberId);
 		if (findProgramStatus() == ProgramStatus.ACTIVE) {
-			throw new NotAllowedUpdatedProgramAttendException(this.id);
+			throw new NotAllowedUpdatedProgramAttendException(id);
 		}
 	}
 
