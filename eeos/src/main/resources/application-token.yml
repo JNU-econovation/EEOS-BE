@@ -5,9 +5,9 @@ spring:
 
 security:
   jwt:
-    token:
-      secretKey: ${TOKEN_SECRET_KEY}
-      access:
-        validTime: ${ACCESS_VALID_TIME}
-      refresh:
-        validTime: ${REFRESH_VALID_TIME}
+    access:
+      validTime: ${AT_VALID_TIME}
+      secretKey: ${AT_TOKEN_SECRET_KEY}
+    refresh:
+      validTime: ${RT_VALID_TIME}
+      secretKey: ${RT_TOKEN_SECRET_KEY}
