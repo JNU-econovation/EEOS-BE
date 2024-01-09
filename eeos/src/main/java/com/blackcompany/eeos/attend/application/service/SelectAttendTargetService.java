@@ -26,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class SelectCandidateService implements CandidateService {
+public class SelectAttendTargetService implements AttendTargetService {
 	private final AttendRepository attendRepository;
 	private final AttendEntityConverter entityConverter;
 	private final MemberRepository memberRepository;

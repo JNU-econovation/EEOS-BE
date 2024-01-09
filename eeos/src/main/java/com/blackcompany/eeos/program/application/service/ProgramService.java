@@ -1,6 +1,6 @@
 package com.blackcompany.eeos.program.application.service;
 
-import com.blackcompany.eeos.attend.application.service.CandidateService;
+import com.blackcompany.eeos.attend.application.service.AttendTargetService;
 import com.blackcompany.eeos.common.utils.DateConverter;
 import com.blackcompany.eeos.program.application.dto.ChangeAllAttendStatusRequest;
 import com.blackcompany.eeos.program.application.dto.CommandProgramResponse;
@@ -55,7 +55,7 @@ public class ProgramService
 	private final ProgramEntityConverter entityConverter;
 	private final ProgramResponseConverter responseConverter;
 	private final ProgramRepository programRepository;
-	private final CandidateService candidateService;
+	private final AttendTargetService attendTargetService;
 	private final ProgramPageResponseConverter pageResponseConverter;
 	private final ProgramStatusServiceComposite programStatusComposite;
 	private final ApplicationEventPublisher applicationEventPublisher;
@@ -69,7 +69,7 @@ public class ProgramService
 		model.validateCreate();
 		Long saveId = createProgram(model);
 
-		candidateService.saveCandidate(saveId, request.getMembers());
+		attendTargetService.saveCandidate(saveId, request.getMembers());
 
 		return responseConverter.from(saveId);
 	}
@@ -155,7 +155,7 @@ public class ProgramService
 		}
 
 		model.validateEditAttend(model.getWriter());
-		candidateService.updateCandidate(model.getId(), members);
+		attendTargetService.updateCandidate(model.getId(), members);
 	}
 
 	private String findAccessRight(final ProgramModel model, final Long memberId) {
