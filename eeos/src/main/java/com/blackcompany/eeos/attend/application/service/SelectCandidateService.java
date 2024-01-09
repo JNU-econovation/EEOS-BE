@@ -5,9 +5,10 @@ import com.blackcompany.eeos.attend.application.model.AttendStatus;
 import com.blackcompany.eeos.attend.application.model.converter.AttendEntityConverter;
 import com.blackcompany.eeos.attend.persistence.AttendEntity;
 import com.blackcompany.eeos.attend.persistence.AttendRepository;
-import com.blackcompany.eeos.common.persistence.MemberIdEntity;
+import com.blackcompany.eeos.common.application.model.MemberIdModel;
 import com.blackcompany.eeos.member.application.exception.NotFoundMemberException;
-import com.blackcompany.eeos.member.persistence.MemberEntity;
+import com.blackcompany.eeos.member.application.model.MemberModel;
+import com.blackcompany.eeos.member.application.model.converter.MemberEntityConverter;
 import com.blackcompany.eeos.member.persistence.MemberRepository;
 import com.blackcompany.eeos.program.application.dto.ChangeAllAttendStatusRequest;
 import com.blackcompany.eeos.program.application.dto.ProgramMembers;
@@ -15,6 +16,7 @@ import com.blackcompany.eeos.program.application.model.AttendManager;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,7 @@ public class SelectCandidateService implements CandidateService {
 	private final AttendRepository attendRepository;
 	private final AttendEntityConverter entityConverter;
 	private final MemberRepository memberRepository;
+	private final MemberEntityConverter memberEntityConverter;
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -44,63 +47,78 @@ public class SelectCandidateService implements CandidateService {
 	@Transactional(propagation = Propagation.REQUIRED)
 	public void updateCandidate(
 			final Long programId, final List<ChangeAllAttendStatusRequest> requests) {
-		List<AttendModel> models =
-				findAttends(programId, requests).stream()
-						.map(entityConverter::from)
-						.collect(Collectors.toList());
+		List<AttendModel> requestAttends = findAttends(programId, requests);
 
 		AttendManager attendManager = new AttendManager();
-		models.forEach(model -> updateAttendStatus(model, requests, attendManager));
+		requestAttends.forEach(attend -> updateAttendStatus(attend, requests, attendManager));
 
 		deleteNonRelated(attendManager);
 		updateRelated(attendManager);
 	}
 
-	private List<MemberEntity> findMembers(final List<ProgramMembers> members) {
-		List<Long> requestMember =
+	private List<MemberModel> findMembers(final List<ProgramMembers> members) {
+		List<Long> requestMemberIds =
 				members.stream().map(ProgramMembers::getMemberId).collect(Collectors.toList());
 
-		List<MemberEntity> findMembers = memberRepository.findMembersByIds(requestMember);
-		validateAllFind(requestMember, findMembers);
+		List<MemberModel> findMembers = findMembersByIds(requestMemberIds);
+		validateAllFind(requestMemberIds, findMembers);
 		return findMembers;
 	}
 
-	private List<AttendEntity> findAttends(
+	private List<MemberModel> findMembersByIds(List<Long> requestMembers) {
+		return memberRepository.findMembersByIds(requestMembers).stream()
+				.map(memberEntityConverter::from)
+				.collect(Collectors.toList());
+	}
+
+	private List<AttendModel> findAttends(
 			final Long programId, final List<ChangeAllAttendStatusRequest> requests) {
 		List<Long> memberIds =
 				requests.stream()
 						.map(ChangeAllAttendStatusRequest::getMemberId)
 						.collect(Collectors.toList());
 
-		List<AttendEntity> attendMembers =
-				attendRepository.findAllByProgramMember(programId, memberIds);
-		validateAllFind(memberIds, attendMembers);
-		return attendMembers;
+		List<AttendModel> existingAttends = findExistingAttends(programId, memberIds);
+		List<AttendModel> notExistingAttends = findNotExistingAttends(memberIds, existingAttends);
+
+		return Stream.concat(existingAttends.stream(), notExistingAttends.stream())
+				.collect(Collectors.toList());
 	}
 
-	private <T extends MemberIdEntity> void validateAllFind(
+	private List<AttendModel> findExistingAttends(Long programId, List<Long> memberIds) {
+		return attendRepository.findAllByProgramMember(programId, memberIds).stream()
+				.map(entityConverter::from)
+				.collect(Collectors.toList());
+	}
+
+	private List<AttendModel> findNotExistingAttends(
+			final List<Long> memberIds, final List<AttendModel> existingAttends) {
+		List<Long> notExistingAttendMemberIds = findDifferent(memberIds, existingAttends);
+		return AttendModel.of(notExistingAttendMemberIds);
+	}
+
+	private <T extends MemberIdModel> void validateAllFind(
 			List<Long> requestEntities, List<T> findEntities) {
 		if (requestEntities.size() == findEntities.size()) {
 			return;
 		}
-		log.error(String.valueOf(findDifferent(requestEntities, findEntities)));
+		log.info(String.valueOf(findDifferent(requestEntities, findEntities).size()));
 		throw new NotFoundMemberException();
 	}
 
-	private <T extends MemberIdEntity> List<Long> findDifferent(
-			List<Long> requestEntities, List<T> findEntities) {
-		List<Long> findEntitiesId =
-				findEntities.stream().map(MemberIdEntity::getId).collect(Collectors.toList());
+	private <T extends MemberIdModel> List<Long> findDifferent(
+			List<Long> requestIds, List<T> findModels) {
+		List<Long> findModelIds =
+				findModels.stream().map(MemberIdModel::getId).collect(Collectors.toList());
 
-		requestEntities.removeAll(findEntitiesId);
-
-		return requestEntities;
+		requestIds.removeAll(findModelIds);
+		return requestIds;
 	}
 
 	private void updateAttendStatus(
 			AttendModel model, List<ChangeAllAttendStatusRequest> requests, AttendManager attendManager) {
 		ChangeAllAttendStatusRequest request = findUpdateRequest(model.getMemberId(), requests);
-		model.changeStatus(request.getBeforeAttendStatus(), request.getAfterAttendStatus());
+		model.changeStatusByManager(request.getBeforeAttendStatus(), request.getAfterAttendStatus());
 
 		if (Objects.equals(request.getAfterAttendStatus(), AttendStatus.NONRELATED.getStatus())) {
 			attendManager.addNonRelated(model);
@@ -124,6 +142,7 @@ public class SelectCandidateService implements CandidateService {
 						.map(entityConverter::toEntity)
 						.collect(Collectors.toList());
 
+		System.out.println(nonRelated.size());
 		attendRepository.deleteAll(nonRelated);
 	}
 
@@ -132,6 +151,7 @@ public class SelectCandidateService implements CandidateService {
 				attendManager.getRelated().stream()
 						.map(entityConverter::toEntity)
 						.collect(Collectors.toList());
+		System.out.println(related.size());
 
 		attendRepository.saveAll(related);
 	}
