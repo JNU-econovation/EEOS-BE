@@ -27,13 +27,17 @@ public class MemberModel implements AbstractModel {
 		return this;
 	}
 
+	public boolean validateSame(Long memberId) {
+		return id.equals(memberId);
+	}
+
+	public String getActiveStatus() {
+		return activeStatus.getStatus();
+	}
+
 	private void canEdit(ActiveStatus requestStatus) {
 		if (requestStatus.isAll()) {
 			throw new DeniedUpdateActiveException(requestStatus.getStatus());
 		}
-	}
-
-	public boolean validateSame(Long memberId) {
-		return id.equals(memberId);
 	}
 }

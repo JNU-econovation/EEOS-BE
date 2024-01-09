@@ -13,7 +13,7 @@ public class QueryMemberResponseConverter {
 		return QueryMemberResponse.builder()
 				.memberId(source.getId())
 				.name(source.getName())
-				.activeStatus(source.getActiveStatus().getStatus())
+				.activeStatus(source.getActiveStatus())
 				.build();
 	}
 

@@ -1,6 +1,5 @@
 package com.blackcompany.eeos.attend.application.dto;
 
-import com.blackcompany.eeos.attend.application.dto.AttendInfoResponse;
 import com.blackcompany.eeos.common.support.dto.AbstractResponseDto;
 import java.util.List;
 import lombok.AllArgsConstructor;
