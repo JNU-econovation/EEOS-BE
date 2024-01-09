@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 class AttendModelTest {
 
 	@Test
-	@DisplayName("이전 참석 정보가 변경전 참석정보와 일치하지 않으면 참석 상태를 변경한다.")
+	@DisplayName("이전 참석 정보가 변경전 참석정보와 일치하지 않으면 예외가 발생한다.")
 	void fail_change_status() {
 		// given
 		AttendModel model = AttendModel.builder().status(AttendStatus.NONRESPONSE).build();
@@ -28,10 +28,10 @@ class AttendModelTest {
 		AttendModel model = AttendModel.builder().status(AttendStatus.NONRESPONSE).build();
 
 		// when
-		model.changeStatus("nonResponse", "attend");
+		AttendModel attendModel = model.changeStatus("nonResponse", "attend");
 
 		// then
-		assertEquals(AttendStatus.ATTEND, model.getStatus());
+		assertEquals(AttendStatus.ATTEND.getStatus(), attendModel.getStatus());
 	}
 
 	@Test

@@ -20,9 +20,11 @@ public class AttendModel implements AbstractModel {
 	private Long programId;
 	private AttendStatus status;
 
-	public void changeStatus(String beforeStatus, String afterStatus) {
+	public AttendModel changeStatus(String beforeStatus, String afterStatus) {
 		validateChange(beforeStatus);
 		this.status = AttendStatus.find(afterStatus);
+
+		return this;
 	}
 
 	public String getStatus() {
@@ -34,17 +36,17 @@ public class AttendModel implements AbstractModel {
 	}
 
 	private void validateChange(String beforeStatus) {
-		validateCanChange(beforeStatus);
-		validateSame(beforeStatus);
+		canChange(beforeStatus);
+		isSameBeforeStatus(beforeStatus);
 	}
 
-	private void validateCanChange(String beforeStatus) {
+	private void canChange(String beforeStatus) {
 		if (AttendStatus.isSame(beforeStatus, AttendStatus.NONRELATED)) {
 			throw new DeniedSaveAttendException();
 		}
 	}
 
-	private void validateSame(String status) {
+	private void isSameBeforeStatus(String status) {
 		if (AttendStatus.isSame(status, this.status)) {
 			return;
 		}
