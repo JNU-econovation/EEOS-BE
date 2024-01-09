@@ -21,7 +21,7 @@ public interface AttendRepository extends JpaRepository<AttendEntity, Long> {
 	void deleteAllByProgramId(Long programId);
 
 	@Query(
-			"SELECT a FROM AttendEntity  a WHERE a.programId =:programId AND a.id IN :ids AND a.isDeleted=false")
+			"SELECT a FROM AttendEntity  a WHERE a.programId =:programId AND a.memberId IN :ids AND a.isDeleted=false")
 	List<AttendEntity> findAllByProgramMember(
 			@Param("programId") Long programId, @Param("ids") List<Long> memberIds);
 
