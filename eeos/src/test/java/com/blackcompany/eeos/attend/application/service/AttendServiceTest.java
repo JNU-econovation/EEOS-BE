@@ -4,10 +4,14 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
+import com.blackcompany.eeos.attend.application.dto.AttendInfoActiveStatusResponse;
 import com.blackcompany.eeos.attend.application.dto.AttendInfoResponse;
+import com.blackcompany.eeos.attend.application.dto.QueryAttendActiveStatusResponse;
 import com.blackcompany.eeos.attend.application.dto.QueryAttendStatusResponse;
+import com.blackcompany.eeos.attend.application.dto.converter.AttendInfoActiveStatusConverter;
 import com.blackcompany.eeos.attend.application.dto.converter.AttendInfoConverter;
 import com.blackcompany.eeos.attend.application.dto.converter.ChangeAttendStatusConverter;
+import com.blackcompany.eeos.attend.application.dto.converter.QueryAttendActiveStatusConverter;
 import com.blackcompany.eeos.attend.application.dto.converter.QueryAttendStatusResponseConverter;
 import com.blackcompany.eeos.attend.application.model.AttendStatus;
 import com.blackcompany.eeos.attend.application.model.converter.AttendEntityConverter;
@@ -42,6 +46,8 @@ class AttendServiceTest {
 	@Spy private MemberEntityConverter memberEntityConverter;
 	@Spy private AttendInfoConverter attendInfoConverter;
 	@Spy private QueryAttendStatusResponseConverter attendStatusResponseConverter;
+	@Spy private AttendInfoActiveStatusConverter attendInfoActiveStatusConverter;
+	@Spy private QueryAttendActiveStatusConverter queryAttendActiveStatusConverter;
 	@InjectMocks private AttendService attendService;
 
 	@Test
@@ -94,10 +100,10 @@ class AttendServiceTest {
 		when(attendRepository.findAllByProgramId(programId)).thenReturn(List.of(mandoAttend));
 
 		// when
-		QueryAttendStatusResponse response = attendService.execute(programId, activeStatus);
+		QueryAttendActiveStatusResponse response = attendService.getAttendInfo(programId, activeStatus);
 
 		// then
-		List<AttendInfoResponse> members = response.getMembers();
+		List<AttendInfoActiveStatusResponse> members = response.getMembers();
 
 		assertAll(
 				() -> {
@@ -107,6 +113,43 @@ class AttendServiceTest {
 				() -> {
 					assertEquals(members.get(1).getMemberId(), bada.getId());
 					assertEquals(members.get(1).getAttendStatus(), AttendStatus.NONRELATED.getStatus());
+				});
+	}
+
+	@Test
+	@DisplayName("참석 상태를 멤버의 활동 상태 기준으로 조회 시 해당 프로그램의 참여 정보 반환")
+	void find_attend_info_by_active_status_include_nonRelated() {
+		// given
+		Long programId = 1L;
+		String activeStatus = "all";
+		MemberEntity mando = FakeMember.AmMandoEntity();
+		MemberEntity bada = FakeMember.AmBadaEntity();
+
+		AttendEntity mandoAttend = FakeAttend.attendMandoEntity();
+		AttendEntity badaAttend = FakeAttend.attendBadaEntity();
+
+		when(memberRepository.findMembers()).thenReturn(List.of(mando, bada));
+		when(attendRepository.findAllByProgramId(programId))
+				.thenReturn(List.of(mandoAttend, badaAttend));
+
+		// when
+		QueryAttendActiveStatusResponse response = attendService.getAttendInfo(programId, activeStatus);
+
+		// then
+		List<AttendInfoActiveStatusResponse> members = response.getMembers();
+
+		assertAll(
+				() -> {
+					assertEquals(members.get(0).getMemberId(), mandoAttend.getMemberId());
+					assertEquals(members.get(0).getAttendStatus(), mandoAttend.getStatus().getStatus());
+					assertEquals(members.get(0).getName(), mando.getName());
+					assertEquals(members.get(0).getActiveStatus(), mando.getActiveStatus().getStatus());
+				},
+				() -> {
+					assertEquals(members.get(1).getMemberId(), badaAttend.getId());
+					assertEquals(members.get(1).getAttendStatus(), badaAttend.getStatus().getStatus());
+					assertEquals(members.get(1).getName(), bada.getName());
+					assertEquals(members.get(1).getActiveStatus(), bada.getActiveStatus().getStatus());
 				});
 	}
 }

@@ -5,11 +5,11 @@ import com.blackcompany.eeos.attend.application.dto.AttendInfoResponse;
 import com.blackcompany.eeos.attend.application.dto.ChangeAttendStatusRequest;
 import com.blackcompany.eeos.attend.application.dto.ChangeAttendStatusResponse;
 import com.blackcompany.eeos.attend.application.dto.QueryAttendActiveStatusResponse;
+import com.blackcompany.eeos.attend.application.dto.QueryAttendStatusResponse;
 import com.blackcompany.eeos.attend.application.dto.converter.AttendInfoActiveStatusConverter;
 import com.blackcompany.eeos.attend.application.dto.converter.AttendInfoConverter;
 import com.blackcompany.eeos.attend.application.dto.converter.ChangeAttendStatusConverter;
 import com.blackcompany.eeos.attend.application.dto.converter.QueryAttendActiveStatusConverter;
-import com.blackcompany.eeos.attend.application.dto.QueryAttendStatusResponse;
 import com.blackcompany.eeos.attend.application.dto.converter.QueryAttendStatusResponseConverter;
 import com.blackcompany.eeos.attend.application.exception.NotFoundAttendException;
 import com.blackcompany.eeos.attend.application.model.AttendModel;
@@ -85,8 +85,9 @@ public class AttendService
 			final Long memberId, final ChangeAttendStatusRequest request, final Long programId) {
 		AttendModel model = getAttend(memberId, programId);
 
-		model.changeStatus(request.getBeforeAttendStatus(), request.getAfterAttendStatus());
-		AttendEntity updated = attendRepository.save(attendEntityConverter.toEntity(model));
+		AttendModel changedModel =
+				model.changeStatus(request.getBeforeAttendStatus(), request.getAfterAttendStatus());
+		AttendEntity updated = attendRepository.save(attendEntityConverter.toEntity(changedModel));
 
 		String name = queryMemberService.getName(memberId);
 		return changeAttendStatusConverter.from(name, updated.getStatus().getStatus());
@@ -94,24 +95,24 @@ public class AttendService
 
 	@Override
 	public ChangeAttendStatusResponse getStatus(Long memberId, Long programId) {
-		boolean isAttend = getAttendDefault(memberId, programId);
+		boolean isAttend = isExistAttend(memberId, programId);
 		String name = queryMemberService.getName(memberId);
 
 		if (isAttend) {
-			AttendModel model = getAttend(memberId, programId);
-			return changeAttendStatusConverter.from(name, model.getStatus());
+			AttendModel existModel = getAttend(memberId, programId);
+			return changeAttendStatusConverter.from(name, existModel.getStatus());
 		}
 
 		return changeAttendStatusConverter.from(name, AttendStatus.NONRELATED.getStatus());
 	}
 
 	@Override
-	public QueryAttendActiveStatusResponse execute(Long programId, String activeStatus) {
-		List<MemberModel> members = findMembers(activeStatus);
+	public QueryAttendActiveStatusResponse getAttendInfo(Long programId, String activeStatus) {
+		List<MemberModel> members = findMembersByActiveStatus(activeStatus);
 
 		List<AttendInfoActiveStatusResponse> response =
 				members.stream()
-						.map(member -> combine(member, findAttend(programId), activeStatus))
+						.map(member -> combine(member, findAttend(programId), member.getActiveStatus()))
 						.collect(Collectors.toList());
 
 		return queryAttendActiveStatusConverter.of(response);
@@ -124,7 +125,7 @@ public class AttendService
 				.orElseThrow(() -> new NotFoundAttendException(programId));
 	}
 
-	private boolean getAttendDefault(final Long memberId, final Long programId) {
+	private boolean isExistAttend(final Long memberId, final Long programId) {
 		return attendRepository.findByProgramIdAndMemberId(programId, memberId).isPresent();
 	}
 
@@ -178,7 +179,7 @@ public class AttendService
 				.collect(Collectors.toList());
 	}
 
-	private List<MemberModel> findMembers(final String activeStatus) {
+	private List<MemberModel> findMembersByActiveStatus(final String activeStatus) {
 		if (ActiveStatus.isSame(activeStatus, ActiveStatus.ALL)) {
 			return memberRepository.findMembers().stream()
 					.map(memberEntityConverter::from)
