@@ -1,6 +1,7 @@
 package com.blackcompany.eeos.member.application.model;
 
 import com.blackcompany.eeos.auth.application.domain.OauthServerType;
+import com.blackcompany.eeos.common.application.model.MemberIdModel;
 import com.blackcompany.eeos.common.support.AbstractModel;
 import com.blackcompany.eeos.member.application.exception.DeniedUpdateActiveException;
 import lombok.AllArgsConstructor;
@@ -14,7 +15,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class MemberModel implements AbstractModel {
+public class MemberModel implements AbstractModel, MemberIdModel {
 	private Long id;
 	private String name;
 	private ActiveStatus activeStatus;
