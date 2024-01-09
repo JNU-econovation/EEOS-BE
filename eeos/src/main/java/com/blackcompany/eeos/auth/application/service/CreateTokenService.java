@@ -30,9 +30,9 @@ public class CreateTokenService {
 
 		return tokenModelConverter.from(
 				accessToken,
-				tokenResolver.getExpiredDate(accessToken),
+				tokenResolver.getExpiredDateByHeader(accessToken),
 				refreshToken,
-				tokenResolver.getExpiredDate(refreshToken));
+				tokenResolver.getExpiredDateByCookie(refreshToken));
 	}
 
 	private void saveToken(final Long memberId, final String token) {

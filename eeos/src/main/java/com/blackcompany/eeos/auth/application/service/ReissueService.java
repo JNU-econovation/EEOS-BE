@@ -24,7 +24,7 @@ public class ReissueService implements ReissueUsecase {
 	@Transactional
 	@Override
 	public TokenModel execute(final String token) {
-		Long memberId = tokenResolver.getUserInfo(token);
+		Long memberId = tokenResolver.getUserInfoByCookie(token);
 		validateToken(memberId, token);
 
 		return createTokenService.execute(memberId);

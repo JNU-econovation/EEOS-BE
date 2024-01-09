@@ -15,15 +15,18 @@ import org.springframework.stereotype.Component;
 public class TokenProvider {
 
 	private static final String MEMBER_ID_CLAIM_KEY = "memberId";
-	private final SecretKey secretKey;
+	private final SecretKey accessSecretKey;
+	private final SecretKey refreshSecretKey;
 	private final long accessValidTime;
 	private final long refreshValidTime;
 
 	public TokenProvider(
-			@Value("${security.jwt.token.secretKey}") String secretKey,
-			@Value("${security.jwt.token.access.validTime}") long accessValidTime,
-			@Value("${security.jwt.token.refresh.validTime}") long refreshValidTime) {
-		this.secretKey = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+			@Value("${security.jwt.access.secretKey}") String accessSecretKey,
+			@Value("${security.jwt.refresh.secretKey}") String refreshSecretKey,
+			@Value("${security.jwt.access.validTime}") long accessValidTime,
+			@Value("${security.jwt.refresh.validTime}") long refreshValidTime) {
+		this.accessSecretKey = Keys.hmacShaKeyFor(accessSecretKey.getBytes(StandardCharsets.UTF_8));
+		this.refreshSecretKey = Keys.hmacShaKeyFor(refreshSecretKey.getBytes(StandardCharsets.UTF_8));
 		this.accessValidTime = accessValidTime;
 		this.refreshValidTime = refreshValidTime;
 	}
@@ -36,7 +39,7 @@ public class TokenProvider {
 				.claim(MEMBER_ID_CLAIM_KEY, memberId)
 				.setIssuedAt(now)
 				.setExpiration(new Date(now.getTime() + accessValidTime))
-				.signWith(secretKey)
+				.signWith(accessSecretKey)
 				.compact();
 	}
 
@@ -48,7 +51,7 @@ public class TokenProvider {
 				.claim(MEMBER_ID_CLAIM_KEY, memberId)
 				.setIssuedAt(now)
 				.setExpiration(new Date(now.getTime() + refreshValidTime))
-				.signWith(secretKey)
+				.signWith(refreshSecretKey)
 				.compact();
 	}
 }

@@ -1,6 +1,6 @@
 package com.blackcompany.eeos.auth.presentation.interceptor;
 
-import com.blackcompany.eeos.auth.application.domain.token.TokenValidator;
+import com.blackcompany.eeos.auth.application.domain.token.TokenResolver;
 import com.blackcompany.eeos.auth.presentation.support.TokenExtractor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -10,12 +10,12 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 public class AuthInterceptor implements HandlerInterceptor {
 	private final TokenExtractor tokenExtractor;
-	private final TokenValidator tokenValidator;
+	private final TokenResolver tokenResolver;
 
 	public AuthInterceptor(
-			@Qualifier("header") TokenExtractor tokenExtractor, TokenValidator tokenValidator) {
+			@Qualifier("header") TokenExtractor tokenExtractor, TokenResolver tokenResolver) {
 		this.tokenExtractor = tokenExtractor;
-		this.tokenValidator = tokenValidator;
+		this.tokenResolver = tokenResolver;
 	}
 
 	public static AuthInterceptorBuilder builder() {
@@ -29,32 +29,28 @@ public class AuthInterceptor implements HandlerInterceptor {
 			return true;
 		}
 
-		canExtractToken(request);
-		return true;
-	}
-
-	private void canExtractToken(HttpServletRequest request) {
 		String token = tokenExtractor.extract(request);
-		tokenValidator.valid(token);
+		tokenResolver.getUserInfoByHeader(token);
+		return true;
 	}
 
 	public static class AuthInterceptorBuilder {
 
 		private TokenExtractor tokenExtractor;
-		private TokenValidator tokenValidator;
+		private TokenResolver tokenResolver;
 
 		public AuthInterceptorBuilder tokenExtractor(TokenExtractor tokenExtractor) {
 			this.tokenExtractor = tokenExtractor;
 			return this;
 		}
 
-		public AuthInterceptorBuilder tokenValidator(TokenValidator tokenValidator) {
-			this.tokenValidator = tokenValidator;
+		public AuthInterceptorBuilder tokenResolver(TokenResolver tokenResolver) {
+			this.tokenResolver = tokenResolver;
 			return this;
 		}
 
 		public AuthInterceptor build() {
-			return new AuthInterceptor(tokenExtractor, tokenValidator);
+			return new AuthInterceptor(tokenExtractor, tokenResolver);
 		}
 	}
 }
