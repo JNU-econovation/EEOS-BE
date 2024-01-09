@@ -154,6 +154,7 @@ public class ProgramService
 			return;
 		}
 
+		model.validateEditAttend(model.getWriter());
 		candidateService.updateCandidate(model.getId(), members);
 	}
 
