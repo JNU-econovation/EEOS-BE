@@ -21,7 +21,7 @@ public class ProgramResponseConverter {
 				.build();
 	}
 
-	public QueryProgramResponse from(ProgramModel target, ProgramStatus status, String accessRight) {
+	public QueryProgramResponse from(ProgramModel target, String status, String accessRight) {
 		return QueryProgramResponse.builder()
 				.programId(target.getId())
 				.title(target.getTitle())
@@ -29,7 +29,7 @@ public class ProgramResponseConverter {
 				.deadLine(target.getProgramDate())
 				.category(target.getProgramCategory().getCategory())
 				.type(target.getProgramType().getType())
-				.programStatus(status.getStatus())
+				.programStatus(status)
 				.accessRight(accessRight)
 				.build();
 	}
