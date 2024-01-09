@@ -31,18 +31,21 @@ public class AuthController {
 	private final TokenExtractor tokenExtractor;
 	private final TokenResponseConverter tokenResponseConverter;
 	private final String cookieKey;
+	private final String domain;
 
 	public AuthController(
 			LoginUsecase loginUsecase,
 			ReissueUsecase reissueUsecase,
 			@Qualifier("cookie") TokenExtractor tokenExtractor,
 			TokenResponseConverter tokenResponseConverter,
-			@Value("${api.cookie-key}") String cookieKey) {
+			@Value("${api.cookie-key}") String cookieKey,
+			@Value("${api.domain}") String domain) {
 		this.loginUsecase = loginUsecase;
 		this.reissueUsecase = reissueUsecase;
 		this.tokenExtractor = tokenExtractor;
 		this.tokenResponseConverter = tokenResponseConverter;
 		this.cookieKey = cookieKey;
+		this.domain = domain;
 	}
 
 	@PostMapping("/login/{oauthServerType}")
@@ -79,8 +82,8 @@ public class AuthController {
 		ResponseCookie cookie =
 				ResponseCookie.from(cookieKey, tokenModel.getRefreshToken())
 						.path("/")
-						.sameSite("None")
-						.httpOnly(false)
+						.domain(domain)
+						.httpOnly(true)
 						.secure(true)
 						.maxAge(TimeUtil.convertSecondsFromMillis(tokenModel.getRefreshExpiredTime()))
 						.build();
