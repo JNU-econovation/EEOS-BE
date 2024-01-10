@@ -1,7 +1,6 @@
 package com.blackcompany.eeos.member.persistence;
 
 import com.blackcompany.eeos.auth.application.domain.OauthServerType;
-import com.blackcompany.eeos.common.application.model.MemberIdModel;
 import com.blackcompany.eeos.common.persistence.BaseEntity;
 import com.blackcompany.eeos.member.application.model.ActiveStatus;
 import javax.persistence.Column;
@@ -37,7 +36,7 @@ import org.hibernate.annotations.Where;
 		})
 @SQLDelete(sql = "UPDATE member SET is_deleted=true where member_id=?")
 @Where(clause = "is_deleted=false")
-public class MemberEntity extends BaseEntity implements MemberIdModel {
+public class MemberEntity extends BaseEntity {
 
 	public static final String ENTITY_PREFIX = "member";
 
