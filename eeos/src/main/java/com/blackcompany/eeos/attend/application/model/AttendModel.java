@@ -30,12 +30,6 @@ public class AttendModel implements AbstractModel, MemberIdModel {
 		return this;
 	}
 
-	public AttendModel changeStatus(String afterStatus) {
-		this.status = AttendStatus.find(afterStatus);
-
-		return this;
-	}
-
 	public String getStatus() {
 		return status.getStatus();
 	}

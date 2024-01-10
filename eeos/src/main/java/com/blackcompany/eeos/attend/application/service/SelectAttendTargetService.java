@@ -118,7 +118,7 @@ public class SelectAttendTargetService implements AttendTargetService {
 	private void updateAttendStatus(
 			AttendModel model, List<ChangeAllAttendStatusRequest> requests, AttendManager attendManager) {
 		ChangeAllAttendStatusRequest request = findUpdateRequest(model.getMemberId(), requests);
-		model.changeStatus(request.getAfterAttendStatus());
+		model.changeStatus(request.getBeforeAttendStatus(), request.getAfterAttendStatus());
 
 		if (Objects.equals(request.getAfterAttendStatus(), AttendStatus.NONRELATED.getStatus())) {
 			attendManager.addNonRelated(model);
