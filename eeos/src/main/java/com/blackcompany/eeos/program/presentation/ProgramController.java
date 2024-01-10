@@ -81,7 +81,7 @@ public class ProgramController {
 	public ApiResponse<SuccessBody<Void>> delete(
 			@Member Long memberId, @PathVariable("programId") Long programId) {
 		deleteProgramUsecase.delete(memberId, programId);
-		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.UPDATE);
+		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.DELETE);
 	}
 
 	@GetMapping("/{programId}/accessRight")
