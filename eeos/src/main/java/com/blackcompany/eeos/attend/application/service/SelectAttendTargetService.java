@@ -18,14 +18,12 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class SelectAttendTargetService implements AttendTargetService {
 	private final AttendRepository attendRepository;
 	private final AttendEntityConverter entityConverter;
@@ -102,15 +100,13 @@ public class SelectAttendTargetService implements AttendTargetService {
 		if (requestEntities.size() == findEntities.size()) {
 			return;
 		}
-		log.info(String.valueOf(findDifferent(requestEntities, findEntities).size()));
 		throw new NotFoundMemberException();
 	}
 
 	private <T extends MemberIdModel> List<Long> findDifferent(
 			List<Long> requestIds, List<T> findModels) {
 		List<Long> findModelIds =
-				findModels.stream().map(MemberIdModel::getId).collect(Collectors.toList());
-
+				findModels.stream().map(MemberIdModel::getMemberId).collect(Collectors.toList());
 		requestIds.removeAll(findModelIds);
 		return requestIds;
 	}
@@ -118,7 +114,7 @@ public class SelectAttendTargetService implements AttendTargetService {
 	private void updateAttendStatus(
 			AttendModel model, List<ChangeAllAttendStatusRequest> requests, AttendManager attendManager) {
 		ChangeAllAttendStatusRequest request = findUpdateRequest(model.getMemberId(), requests);
-		model.changeStatus(request.getBeforeAttendStatus(), request.getAfterAttendStatus());
+		model.changeStatusByManager(request.getBeforeAttendStatus(), request.getAfterAttendStatus());
 
 		if (Objects.equals(request.getAfterAttendStatus(), AttendStatus.NONRELATED.getStatus())) {
 			attendManager.addNonRelated(model);
