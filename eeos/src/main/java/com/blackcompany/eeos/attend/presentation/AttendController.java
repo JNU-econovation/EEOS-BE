@@ -56,7 +56,7 @@ public class AttendController {
 	public ApiResponse<SuccessBody<ChangeAttendStatusResponse>> getAttendStatus(
 			@Member Long memberId, @PathVariable("programId") Long programId) {
 		ChangeAttendStatusResponse response = getAttendStatusUsecase.getStatus(memberId, programId);
-		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.UPDATE);
+		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
 	}
 
 	@GetMapping("/attend/programs/{programId}/members")
