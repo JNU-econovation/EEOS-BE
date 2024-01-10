@@ -20,6 +20,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -33,6 +35,8 @@ import lombok.experimental.SuperBuilder;
 			@Index(name = "idx_name", columnList = "member_name"),
 			@Index(name = "idx_active_status", columnList = "member_active_status")
 		})
+@SQLDelete(sql = "UPDATE member SET is_deleted=true where member_id=?")
+@Where(clause = "is_deleted=false")
 public class MemberEntity extends BaseEntity implements MemberIdModel {
 
 	public static final String ENTITY_PREFIX = "member";

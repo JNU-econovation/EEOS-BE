@@ -18,6 +18,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -28,6 +30,8 @@ import lombok.experimental.SuperBuilder;
 @Table(
 		name = AttendEntity.ENTITY_PREFIX,
 		indexes = @Index(name = "idx_program", columnList = "attend_program_id"))
+@SQLDelete(sql = "UPDATE attend SET is_deleted=true where attend_id=?")
+@Where(clause = "is_deleted=false")
 public class AttendEntity extends BaseEntity {
 	public static final String ENTITY_PREFIX = "attend";
 

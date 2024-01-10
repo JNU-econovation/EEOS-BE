@@ -17,6 +17,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -27,6 +29,8 @@ import lombok.experimental.SuperBuilder;
 @Table(
 		name = ProgramEntity.ENTITY_PREFIX,
 		indexes = @Index(name = "idx_program_date", columnList = "program_date"))
+@SQLDelete(sql = "UPDATE program SET is_deleted=true where program_id=?")
+@Where(clause = "is_deleted=false")
 public class ProgramEntity extends BaseEntity {
 
 	public static final String ENTITY_PREFIX = "program";
