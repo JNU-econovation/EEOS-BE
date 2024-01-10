@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface OauthInfoRepository extends JpaRepository<OauthInfoEntity, Long> {
-	@Query("SELECT o FROM OauthInfoEntity  o WHERE o.isDeleted=false AND o.oauthId=:oauthId")
+	@Query("SELECT o FROM OauthInfoEntity  o WHERE o.oauthId=:oauthId")
 	Optional<OauthInfoEntity> findByOauthId(@Param("oauthId") String oauthId);
 }
