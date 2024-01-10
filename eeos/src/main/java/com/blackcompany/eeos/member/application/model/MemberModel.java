@@ -41,4 +41,9 @@ public class MemberModel implements AbstractModel, MemberIdModel {
 			throw new DeniedUpdateActiveException(requestStatus.getStatus());
 		}
 	}
+
+	@Override
+	public Long getMemberId() {
+		return id;
+	}
 }
