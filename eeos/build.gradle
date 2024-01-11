@@ -24,6 +24,9 @@ plugins {
     id 'org.asciidoctor.jvm.convert' version "${asciidoctorVersion}"
     id 'com.epages.restdocs-api-spec' version "${epagesRestDocsApiSpecVersion}"
     id 'org.hidetake.swagger.generator' version '2.18.2'
+
+    // flyway
+    id 'org.flywaydb.flyway' version '8.5.13'
 }
 
 group = 'com.econovation'
@@ -68,6 +71,8 @@ dependencies {
     // database
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'mysql:mysql-connector-java'
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-mysql'
 
     // openfeign
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
