@@ -11,3 +11,6 @@ spring:
     hibernate:
       ddl-auto: validate
     generate-ddl: false
+logging:
+  level:
+    root: info
