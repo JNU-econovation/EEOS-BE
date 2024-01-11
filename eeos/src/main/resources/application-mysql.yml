@@ -3,14 +3,22 @@ spring:
     activate:
       on-profile: mysql
   datasource:
-    url: ${DATASOURCE_URL}
-    username: ${DATASOURCE_USERNAME}
-    password: ${DATASOURCE_PASSWORD}
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: validate
-    generate-ddl: false
+    generate-ddl: true
+  flyway:
+    baseline-on-migrate: true
+    enabled: true
+    baseline-version: 0
+    out-of-order: true
+    url: ${SPRING_FLYWAY_URL}
+    user: ${SPRING_FLYWAY_URL}
+    password: ${SPRING_FLYWAY_URL}
 logging:
   level:
     root: info
