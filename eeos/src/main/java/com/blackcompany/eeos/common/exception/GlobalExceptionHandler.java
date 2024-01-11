@@ -19,7 +19,7 @@ public class GlobalExceptionHandler {
 	/** javax.validation.Valid 또는 @Validated binding error가 발생할 경우 */
 	@ExceptionHandler(BindException.class)
 	protected ApiResponse<FailureBody> handleBindException(BindException e) {
-		log.error("handleBindException", e);
+		log.warn("handleBindException", e);
 		String code = String.valueOf(HttpStatus.BAD_REQUEST.value());
 		return ApiResponseGenerator.fail(e.getBindingResult(), code, HttpStatus.BAD_REQUEST);
 	}
@@ -28,7 +28,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
 	protected ApiResponse<FailureBody> handleMethodArgumentTypeMismatchException(
 			MethodArgumentTypeMismatchException e) {
-		log.error("handleMethodArgumentTypeMismatchException", e);
+		log.warn("handleMethodArgumentTypeMismatchException", e);
 		String code = String.valueOf(HttpStatus.BAD_REQUEST.value());
 		return ApiResponseGenerator.fail(e.getMessage(), code, HttpStatus.BAD_REQUEST);
 	}
@@ -37,7 +37,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
 	protected ApiResponse<FailureBody> handleHttpRequestMethodNotSupportedException(
 			HttpRequestMethodNotSupportedException e) {
-		log.error("handleHttpRequestMethodNotSupportedException", e);
+		log.warn("handleHttpRequestMethodNotSupportedException", e);
 		String code = String.valueOf(HttpStatus.METHOD_NOT_ALLOWED.value());
 		return ApiResponseGenerator.fail(e.getMessage(), code, HttpStatus.METHOD_NOT_ALLOWED);
 	}
@@ -45,7 +45,7 @@ public class GlobalExceptionHandler {
 	/** 비즈니스 로직 실행 중 오류 발생 */
 	@ExceptionHandler(value = {BusinessException.class})
 	protected ApiResponse<FailureBody> handleConflict(BusinessException e) {
-		log.error("BusinessException", e);
+		log.warn("BusinessException", e);
 		return ApiResponseGenerator.fail(e.getMessage(), e.getCode(), e.getHttpStatus());
 	}
 
@@ -61,6 +61,7 @@ public class GlobalExceptionHandler {
 	protected ApiResponse<FailureBody> handleMethodArgumentNotValidException(
 			MethodArgumentNotValidException e) {
 		String code = String.valueOf(HttpStatus.BAD_REQUEST.value());
+		log.warn("MethodArgumentNotValidException", e);
 		return ApiResponseGenerator.fail(
 				e.getBindingResult().getFieldErrors().get(0).getDefaultMessage(),
 				code,
