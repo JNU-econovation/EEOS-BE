@@ -22,7 +22,8 @@ public class DeletedProgramEventListener {
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void handleDeletedProgram(DeletedProgramEvent event) {
 		log.info(
-				"Transaction committed: {}", TransactionSynchronizationManager.isActualTransactionActive());
+				"프로그램 삭제 Transaction committed: {}",
+				TransactionSynchronizationManager.isActualTransactionActive());
 		attendService.deleteByProgram(event.getProgramId());
 	}
 }
