@@ -31,8 +31,8 @@ import org.hibernate.annotations.Where;
 @Table(
 		name = MemberEntity.ENTITY_PREFIX,
 		indexes = {
-			@Index(name = "idx_name", columnList = "member_name"),
-			@Index(name = "idx_active_status", columnList = "member_active_status")
+			@Index(name = "idx_member_name", columnList = "member_name"),
+			@Index(name = "idx_member_active_status", columnList = "member_active_status")
 		})
 @SQLDelete(sql = "UPDATE member SET is_deleted=true where member_id=?")
 @Where(clause = "is_deleted=false")

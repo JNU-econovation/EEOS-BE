@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -20,7 +21,9 @@ import lombok.experimental.SuperBuilder;
 @ToString
 @SuperBuilder(toBuilder = true)
 @Entity
-@Table(name = AuthInfoEntity.ENTITY_PREFIX)
+@Table(
+		name = AuthInfoEntity.ENTITY_PREFIX,
+		indexes = @Index(name = "idx_auth_info_member_id", columnList = "auth_info_member_id"))
 public class AuthInfoEntity extends BaseEntity {
 
 	public static final String ENTITY_PREFIX = "auth_info";

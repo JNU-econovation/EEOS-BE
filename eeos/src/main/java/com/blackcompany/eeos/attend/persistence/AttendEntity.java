@@ -29,7 +29,10 @@ import org.hibernate.annotations.Where;
 @Entity
 @Table(
 		name = AttendEntity.ENTITY_PREFIX,
-		indexes = @Index(name = "idx_program", columnList = "attend_program_id"))
+		indexes = {
+			@Index(name = "idx_attend_program", columnList = "attend_program_id"),
+			@Index(name = "idx_attend_status", columnList = "attend_status")
+		})
 @SQLDelete(sql = "UPDATE attend SET is_deleted=true where attend_id=?")
 @Where(clause = "is_deleted=false")
 public class AttendEntity extends BaseEntity {
