@@ -33,5 +33,8 @@ out/
 /nbdist/
 /.nb-gradle/
 
-### VS Code ###
-.vscode/
+### log
+./logs/
+
+### data
+./resources/local-develop-environment/mysql-data/
