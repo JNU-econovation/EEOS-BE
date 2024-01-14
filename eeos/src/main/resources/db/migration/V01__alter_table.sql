@@ -1,14 +1,5 @@
 use eeos;
 
-ALTER TABLE program
-    ADD COLUMN program_category VARCHAR(255) NOT NULL;
-ALTER TABLE program
-    ADD COLUMN program_type VARCHAR(255) NOT NULL;
-ALTER TABLE program
-    ADD COLUMN program_writer BIGINT NOT NULL;
-ALTER TABLE program
-    ADD COLUMN program_writer BIGINT NOT NULL;
-
 ALTER TABLE member
     ADD COLUMN member_oath_server_type VARCHAR(255) NOT NULL;
 ALTER TABLE member

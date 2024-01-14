@@ -16,9 +16,4 @@ spring:
     enabled: true
     baseline-version: 0
     out-of-order: true
-    url: ${SPRING_FLYWAY_URL}
-    user: ${SPRING_FLYWAY_URL}
-    password: ${SPRING_FLYWAY_URL}
-logging:
-  level:
-    root: info
+    locations: classpath:db/migration,classpath:db/callback

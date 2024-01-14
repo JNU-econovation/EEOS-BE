@@ -10,11 +10,20 @@ services:
     command: [ "--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci", "--skip-character-set-client-handshake", "--lower_case_table_names=1", "--max_connections=2048", "--wait_timeout=3600" ]
     ports:
       - "13306:3306"
-    volumes: #볼륨 지정
-      - ./resources/local-develop-environment/mysql-init.d/:/docker-entrypoint-initdb.d
+    volumes:
       - ./resources/local-develop-environment/mysql-data:/var/lib/mysql
-    networks: #사용할 네트워크 지정
+    networks:
       - eeos-network
+  flyway:
+    container_name: eeos-flyway
+    command: -url=jdbc:mysql://eeos-mysql:3306/eeos?useSSL=false&allowPublicKeyRetrieval=true  -user=root -password=root migrate
+    volumes:
+    - ./flyway/conf/:/flyway/conf
+    - ./flyway/sql/:/flyway/sql
+    networks:
+    - eeos-network
+    depends_on:
+    - mysql
   backend:
     build:
       context: .
@@ -24,14 +33,12 @@ services:
       - "8080:8080"
     depends_on:
       - mysql
+      - flyway
     restart: always
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://eeos-mysql:3306/eeos?useSSL=false&serverTimezone=Asia/Seoul&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
-      SPRING_FLYWAY_URL: jdbc:mysql://eeos-mysql:3306/eeos?useSSL=false&serverTimezone=Asia/Seoul&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true
-      SPRING_FLWYAY_USERNAME: root
-      SPRING_FLYWAY_PASSWORD: root
       SPRING_PROFILES_ACTIVE: dev
     networks: #사용할 네트워크 지정
       - eeos-network
