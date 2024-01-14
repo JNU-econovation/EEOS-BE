@@ -1,0 +1,10 @@
+spring:
+  config:
+    activate:
+      on-profile: log
+log:
+  config:
+    path: ./logs
+    filename: eeos-log
+    maxHistory: 14
+    totalSizeCap: 1GB

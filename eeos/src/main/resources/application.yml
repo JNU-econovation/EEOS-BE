@@ -11,9 +11,11 @@ spring:
         - api
         - oauth
         - token
+        - log
       prod:
         - mysql
         - api
         - oauth
         - token
+        - log
     active: local
