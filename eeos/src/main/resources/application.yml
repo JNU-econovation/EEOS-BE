@@ -6,16 +6,19 @@ spring:
         - api
         - oauth
         - token
+        - actuator
       dev:
         - mysql
         - api
         - oauth
         - token
         - log
+        - actuator
       prod:
         - mysql
         - api
         - oauth
         - token
         - log
+        - actuator
     active: local

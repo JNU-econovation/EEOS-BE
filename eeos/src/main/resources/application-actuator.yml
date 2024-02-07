@@ -1,0 +1,13 @@
+spring:
+  config:
+    activate:
+      on-profile: actuator
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+      base-path: "/manage"
+  server:
+    port: 8081
