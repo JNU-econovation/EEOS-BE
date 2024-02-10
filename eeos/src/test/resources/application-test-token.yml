@@ -5,9 +5,9 @@ spring:
 
 security:
   jwt:
-    token:
-      secretKey: asccesssecretkeyoverflowsecrekey
-      access:
-        validTime: 1800000
-      refresh:
-        validTime: 3600000
+    access:
+      validTime: 36000
+      secretKey: accesstokensecretkeyaccesstokensecretkey
+    refresh:
+      validTime: 36000
+      secretKey: refreshtokensecretkeyrefreshtokensecretkey

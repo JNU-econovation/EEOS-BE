@@ -8,3 +8,4 @@ cors:
 
 api:
   domain: domain
+  cookie-key: key

@@ -1,7 +1,7 @@
 spring:
   config:
     activate:
-      on-profile: oauth
+      on-profile: test-oauth
 oauth:
   provider:
     slack:
