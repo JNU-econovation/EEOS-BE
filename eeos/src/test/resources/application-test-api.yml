@@ -1,3 +1,7 @@
+spring:
+  config:
+    activate:
+      on-profile: test-api
 cors:
   allow-origin:
     urls: test

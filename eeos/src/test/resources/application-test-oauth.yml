@@ -1,0 +1,9 @@
+spring:
+  config:
+    activate:
+      on-profile: oauth
+oauth:
+  provider:
+    slack:
+      clientId: clientIdclientId
+      clientSecret: clientSecretclientSecret
