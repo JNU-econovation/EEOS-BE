@@ -9,8 +9,10 @@ import com.blackcompany.eeos.member.persistence.MemberRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class SelectTeamBuildingTargetService extends SelectTargetService implements TargetService {
 	private final TeamBuildingTargetEntityConverter entityConverter;
 	private final TeamBuildingTargetRepository targetRepository;
@@ -26,6 +28,7 @@ public class SelectTeamBuildingTargetService extends SelectTargetService impleme
 	}
 
 	@Override
+	@Transactional
 	public <T extends TargetMember> void save(Long eventId, List<T> members) {
 		List<TeamBuildingTargetEntity> targetEntities =
 				findMembers(members).stream()
