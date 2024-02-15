@@ -1,6 +1,6 @@
 package com.blackcompany.eeos.program.application.service;
 
-import com.blackcompany.eeos.attend.application.service.AttendTargetService;
+import com.blackcompany.eeos.attend.application.service.SelectAttendTargetService;
 import com.blackcompany.eeos.common.utils.DateConverter;
 import com.blackcompany.eeos.program.application.dto.ChangeAllAttendStatusRequest;
 import com.blackcompany.eeos.program.application.dto.CommandProgramResponse;
@@ -55,7 +55,7 @@ public class ProgramService
 	private final ProgramEntityConverter entityConverter;
 	private final ProgramResponseConverter responseConverter;
 	private final ProgramRepository programRepository;
-	private final AttendTargetService attendTargetService;
+	private final SelectAttendTargetService attendTargetService;
 	private final ProgramPageResponseConverter pageResponseConverter;
 	private final ProgramStatusServiceComposite programStatusComposite;
 	private final ApplicationEventPublisher applicationEventPublisher;
@@ -65,8 +65,6 @@ public class ProgramService
 	@Transactional
 	public CommandProgramResponse create(final Long memberId, final CreateProgramRequest request) {
 		ProgramModel model = requestConverter.from(memberId, request);
-
-		model.validateCreate();
 		Long saveId = createProgram(model);
 
 		attendTargetService.save(saveId, request.getMembers());
@@ -135,6 +133,7 @@ public class ProgramService
 	}
 
 	private Long createProgram(ProgramModel model) {
+		model.validateCreate();
 		ProgramEntity entity = entityConverter.toEntity(model);
 		ProgramEntity save = programRepository.save(entity);
 
