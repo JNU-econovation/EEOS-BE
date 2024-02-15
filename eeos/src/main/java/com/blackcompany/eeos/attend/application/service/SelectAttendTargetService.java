@@ -1,5 +1,6 @@
 package com.blackcompany.eeos.attend.application.service;
 
+import com.blackcompany.eeos.attend.application.dto.TargetMember;
 import com.blackcompany.eeos.attend.application.model.AttendModel;
 import com.blackcompany.eeos.attend.application.model.AttendStatus;
 import com.blackcompany.eeos.attend.application.model.converter.AttendEntityConverter;
@@ -7,35 +8,40 @@ import com.blackcompany.eeos.attend.persistence.AttendEntity;
 import com.blackcompany.eeos.attend.persistence.AttendRepository;
 import com.blackcompany.eeos.common.application.model.MemberIdModel;
 import com.blackcompany.eeos.member.application.exception.NotFoundMemberException;
-import com.blackcompany.eeos.member.application.model.MemberModel;
 import com.blackcompany.eeos.member.application.model.converter.MemberEntityConverter;
 import com.blackcompany.eeos.member.persistence.MemberRepository;
 import com.blackcompany.eeos.program.application.dto.ChangeAllAttendStatusRequest;
-import com.blackcompany.eeos.program.application.dto.ProgramMembers;
 import com.blackcompany.eeos.program.application.model.AttendManager;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@RequiredArgsConstructor
-public class SelectAttendTargetService implements AttendTargetService {
+public class SelectAttendTargetService extends SelectTargetService
+		implements TargetService, AttendTargetService {
 	private final AttendRepository attendRepository;
 	private final AttendEntityConverter entityConverter;
-	private final MemberRepository memberRepository;
-	private final MemberEntityConverter memberEntityConverter;
+
+	public SelectAttendTargetService(
+			MemberRepository memberRepository,
+			MemberEntityConverter memberEntityConverter,
+			AttendRepository attendRepository,
+			AttendEntityConverter entityConverter) {
+		super(memberRepository, memberEntityConverter);
+		this.attendRepository = attendRepository;
+		this.entityConverter = entityConverter;
+	}
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED)
-	public void save(final Long programId, final List<ProgramMembers> members) {
+	public <T extends TargetMember> void save(Long eventId, List<T> members) {
 		List<AttendEntity> attendEntities =
 				findMembers(members).stream()
-						.map(member -> entityConverter.toEntity(member.getId(), programId))
+						.map(member -> entityConverter.toEntity(member.getId(), eventId))
 						.collect(Collectors.toList());
 
 		attendRepository.saveAll(attendEntities);
@@ -51,21 +57,6 @@ public class SelectAttendTargetService implements AttendTargetService {
 
 		deleteNonRelated(attendManager);
 		updateRelated(attendManager);
-	}
-
-	private List<MemberModel> findMembers(final List<ProgramMembers> members) {
-		List<Long> requestMemberIds =
-				members.stream().map(ProgramMembers::getMemberId).collect(Collectors.toList());
-
-		List<MemberModel> findMembers = findMembersByIds(requestMemberIds);
-		validateAllFind(requestMemberIds, findMembers);
-		return findMembers;
-	}
-
-	private List<MemberModel> findMembersByIds(List<Long> requestMembers) {
-		return memberRepository.findMembersByIds(requestMembers).stream()
-				.map(memberEntityConverter::from)
-				.collect(Collectors.toList());
 	}
 
 	private List<AttendModel> findAttends(
@@ -93,14 +84,6 @@ public class SelectAttendTargetService implements AttendTargetService {
 			final List<Long> memberIds, final List<AttendModel> existingAttends, final Long programId) {
 		List<Long> notExistingAttendMemberIds = findDifferent(memberIds, existingAttends);
 		return AttendModel.of(notExistingAttendMemberIds, programId);
-	}
-
-	private <T extends MemberIdModel> void validateAllFind(
-			List<Long> requestEntities, List<T> findEntities) {
-		if (requestEntities.size() == findEntities.size()) {
-			return;
-		}
-		throw new NotFoundMemberException();
 	}
 
 	private <T extends MemberIdModel> List<Long> findDifferent(
