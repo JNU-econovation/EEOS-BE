@@ -1,6 +1,5 @@
 package com.blackcompany.eeos.attend.application.model;
 
-import com.blackcompany.eeos.attend.application.dto.TargetMember;
 import com.blackcompany.eeos.common.application.model.MemberIdModel;
 import com.blackcompany.eeos.common.support.AbstractModel;
 import lombok.AllArgsConstructor;
@@ -14,7 +13,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class TeamBuildingTargetModel implements AbstractModel, MemberIdModel{
+public class TeamBuildingTargetModel implements AbstractModel, MemberIdModel {
 	private Long id;
 	private Long memberId;
 	private Long teamBuildingId;
