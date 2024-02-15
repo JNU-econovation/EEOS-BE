@@ -1,4 +1,4 @@
-package com.blackcompany.eeos.program.application.dto;
+package com.blackcompany.eeos.teamBuilding.application.dto;
 
 import com.blackcompany.eeos.attend.application.dto.TargetMember;
 import lombok.AllArgsConstructor;
@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class ProgramMembers implements TargetMember {
+public class TeamBuildingMember implements TargetMember {
 	private Long memberId;
 }
