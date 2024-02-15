@@ -19,4 +19,4 @@ create table oauth_info
     oauth_info_member_id BIGINT       not null,
     oauth_info_oauth_id  VARCHAR(255) not null,
     primary key (oauth_info_id)
-) engine = InnoDB;:wq":"
+) engine = InnoDB;
