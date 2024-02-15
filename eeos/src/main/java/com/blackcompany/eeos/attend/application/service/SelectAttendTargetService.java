@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class SelectAttendTargetService extends SelectTargetService
 		implements TargetService, AttendTargetService {
 	private final AttendRepository attendRepository;

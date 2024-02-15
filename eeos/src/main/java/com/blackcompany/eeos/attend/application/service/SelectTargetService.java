@@ -9,8 +9,10 @@ import com.blackcompany.eeos.member.persistence.MemberRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public abstract class SelectTargetService {
 	private final MemberRepository memberRepository;
 	private final MemberEntityConverter memberEntityConverter;

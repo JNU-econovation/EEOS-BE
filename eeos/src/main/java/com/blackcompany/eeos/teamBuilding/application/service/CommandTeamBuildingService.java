@@ -10,9 +10,11 @@ import com.blackcompany.eeos.teamBuilding.persistence.TeamBuildingEntity;
 import com.blackcompany.eeos.teamBuilding.persistence.TeamBuildingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class CommandTeamBuildingService implements CreateTeamBuildingUsecase {
 	private final TeamBuildingRequestConverter requestConverter;
 	private final TeamBuildingEntityConverter entityConverter;
@@ -20,6 +22,7 @@ public class CommandTeamBuildingService implements CreateTeamBuildingUsecase {
 	private final SelectTeamBuildingTargetService teamBuildingTargetService;
 
 	@Override
+	@Transactional
 	public void create(Long memberId, CreateTeamBuildingRequest request) {
 		TeamBuildingModel model = requestConverter.from(request);
 		TeamBuildingEntity savedEntity = repository.save(entityConverter.toEntity(model));
