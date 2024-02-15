@@ -34,7 +34,7 @@ public abstract class SelectTargetService {
 	 *
 	 * @param requestMemberIds 멤버 id 리스트
 	 */
-	protected List<MemberModel> findMembersByIds(List<Long> requestMemberIds) {
+	private List<MemberModel> findMembersByIds(List<Long> requestMemberIds) {
 		return memberRepository.findMembersByIds(requestMemberIds).stream()
 				.map(memberEntityConverter::from)
 				.collect(Collectors.toList());
@@ -46,7 +46,7 @@ public abstract class SelectTargetService {
 	 * @param requestMemberIds 요청한 member id 리스트
 	 * @param findMembers 요청한 member is로 찾은 member 리스트
 	 */
-	protected <T extends MemberIdModel> void validateAllFind(
+	private <T extends MemberIdModel> void validateAllFind(
 			List<Long> requestMemberIds, List<T> findMembers) {
 		if (requestMemberIds.size() == findMembers.size()) {
 			return;
