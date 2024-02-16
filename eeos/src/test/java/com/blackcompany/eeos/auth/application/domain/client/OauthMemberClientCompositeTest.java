@@ -3,6 +3,7 @@ package com.blackcompany.eeos.auth.application.domain.client;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.blackcompany.eeos.auth.application.domain.OauthMemberModel;
+import com.blackcompany.eeos.auth.application.domain.OauthServerType;
 import com.blackcompany.eeos.auth.fixture.FakeOauthMemberClient;
 import java.util.HashSet;
 import java.util.Set;
@@ -14,7 +15,7 @@ class OauthMemberClientCompositeTest {
 	@DisplayName("전달받은 인증 서버에게 인증된 유저 정보를 요청하여 유저 정보를 받는다.")
 	void fetch() {
 		// given
-		String oauthServerType = "fake";
+		String oauthServerType = OauthServerType.SLACK.getOauthServer();
 		String authCode = "code";
 		String uri = "uri";
 		Set<OauthMemberClient> set = new HashSet<>();
