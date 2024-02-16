@@ -17,11 +17,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class AuthFacadeServiceTest {
-	@Mock OauthMemberClientComposite oauthMemberClientComposite;
-
 	@Mock CreateTokenService createTokenService;
 
 	@Mock AuthService authService;
+	@Mock OauthClientService oauthClientService;
 
 	@InjectMocks AuthFacadeService authFacadeService;
 
@@ -37,7 +36,7 @@ class AuthFacadeServiceTest {
 		OauthMemberModel oauthMemberModel = FakeOauthMember.oauthMemberModel();
 		OauthInfoEntity oauthInfoEntity = FakeOauthMember.oauthInfoEntity();
 
-		when(oauthMemberClientComposite.fetch(type, authCode, uri)).thenReturn(oauthMemberModel);
+		when(oauthClientService.getOauthMember(type, authCode, uri)).thenReturn(oauthMemberModel);
 		when(authService.login(oauthMemberModel)).thenReturn(oauthInfoEntity);
 
 		// when
