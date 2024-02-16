@@ -1,6 +1,6 @@
 package com.blackcompany.eeos.member.application.model;
 
-import com.blackcompany.eeos.auth.application.exception.NotFoundOauthServerException;
+import com.blackcompany.eeos.member.application.exception.NotFoundActiveStatusException;
 import java.util.Arrays;
 import lombok.Getter;
 
@@ -21,7 +21,7 @@ public enum ActiveStatus {
 		return Arrays.stream(values())
 				.filter(activeStatus -> activeStatus.status.equals(status))
 				.findAny()
-				.orElseThrow(() -> new NotFoundOauthServerException(status));
+				.orElseThrow(() -> new NotFoundActiveStatusException((status)));
 	}
 
 	public String getStatus() {
