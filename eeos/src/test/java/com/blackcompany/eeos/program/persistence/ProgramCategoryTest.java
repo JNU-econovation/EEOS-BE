@@ -2,7 +2,7 @@ package com.blackcompany.eeos.program.persistence;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.blackcompany.eeos.program.application.exception.NotFoundProgramTypeException;
+import com.blackcompany.eeos.program.application.exception.NotFoundProgramCategoryException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,7 @@ class ProgramCategoryTest {
 
 		// when & then
 		Assertions.assertThrows(
-				NotFoundProgramTypeException.class, () -> ProgramCategory.find(category));
+				NotFoundProgramCategoryException.class, () -> ProgramCategory.find(category));
 	}
 
 	@Test
@@ -29,6 +29,6 @@ class ProgramCategoryTest {
 		ProgramCategory programCategory = ProgramCategory.find(category);
 
 		// then
-		assertEquals(ProgramType.DEMAND, programCategory);
+		assertEquals(ProgramCategory.EVENT_TEAM, programCategory);
 	}
 }
