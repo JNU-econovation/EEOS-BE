@@ -4,20 +4,18 @@ import com.blackcompany.eeos.auth.application.exception.NotFoundCookieException;
 import java.util.Objects;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component("cookie")
 public class CookieTokenExtractor implements TokenExtractor {
-	@Value("${api.cookie-key}")
-	private String key;
+	private static final String cookieKey = "eeos_token";
 
 	@Override
 	public String extract(HttpServletRequest request) {
 		Cookie[] cookies = getCookies(request);
 
 		for (Cookie cookie : cookies) {
-			if (Objects.equals(key, cookie.getName())) {
+			if (Objects.equals(cookieKey, cookie.getName())) {
 				return getValue(cookie.getValue());
 			}
 		}

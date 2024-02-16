@@ -51,7 +51,7 @@ class CookieTokenExtractorTest {
 	@DisplayName("토큰을 키로 가지고 있는 쿠키가 있을 때 쿠키의 값을 반환한다.")
 	void existing_token_cookie() {
 		// given
-		String key = "token";
+		String key = "eeos_token";
 		String value = "value";
 
 		Cookie[] cookies = new Cookie[1];
@@ -59,8 +59,8 @@ class CookieTokenExtractorTest {
 		cookies[0] = cookie;
 
 		when(request.getCookies()).thenReturn(cookies);
+		System.out.println(request.getCookies().length);
 
-		// when
 		String extract = cookieTokenExtractor.extract(request);
 
 		// then
