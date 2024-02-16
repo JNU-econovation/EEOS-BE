@@ -9,11 +9,11 @@ class FakeSlackApiClient implements SlackApiClient {
 	@Override
 	public SlackToken fetchToken(
 			String client, String code, String clientSecret, String redirectUrl) {
-		return FakeSlackApiClientFixture.successSlackToken();
+		return FakeSlackApiClientFixture.토큰_가져오기_성공_응답();
 	}
 
 	@Override
 	public SlackMember fetchMember(String token) {
-		return FakeSlackApiClientFixture.successSlackMember();
+		return FakeSlackApiClientFixture.멤버_가져오기_성공_응답();
 	}
 }

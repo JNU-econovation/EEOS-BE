@@ -6,11 +6,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.blackcompany.eeos.auth.application.domain.converter.OauthInfoEntityConverter;
-import com.blackcompany.eeos.auth.fixture.FakeMember;
 import com.blackcompany.eeos.auth.fixture.FakeOauthMember;
 import com.blackcompany.eeos.auth.persistence.OauthInfoEntity;
 import com.blackcompany.eeos.auth.persistence.OauthInfoRepository;
+import com.blackcompany.eeos.member.application.model.ActiveStatus;
 import com.blackcompany.eeos.member.application.model.converter.MemberEntityConverter;
+import com.blackcompany.eeos.member.fixture.MemberFixture;
 import com.blackcompany.eeos.member.persistence.MemberRepository;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -37,7 +38,8 @@ class AuthServiceTest {
 		// given
 		when(oauthInfoRepository.findByOauthId(FakeOauthMember.oauthMemberModel().getOauthId()))
 				.thenReturn(Optional.ofNullable(null));
-		when(memberRepository.save(Mockito.any())).thenReturn(FakeMember.memberEntity());
+		when(memberRepository.save(Mockito.any()))
+				.thenReturn(MemberFixture.멤버_엔티티(1L, ActiveStatus.AM));
 
 		// when
 		authService.login(FakeOauthMember.oauthMemberModel());

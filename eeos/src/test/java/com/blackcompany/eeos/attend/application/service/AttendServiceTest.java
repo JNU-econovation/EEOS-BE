@@ -15,13 +15,12 @@ import com.blackcompany.eeos.attend.application.dto.converter.QueryAttendActiveS
 import com.blackcompany.eeos.attend.application.dto.converter.QueryAttendStatusResponseConverter;
 import com.blackcompany.eeos.attend.application.model.AttendStatus;
 import com.blackcompany.eeos.attend.application.model.converter.AttendEntityConverter;
-import com.blackcompany.eeos.attend.fixture.FakeAttend;
 import com.blackcompany.eeos.attend.persistence.AttendEntity;
 import com.blackcompany.eeos.attend.persistence.AttendRepository;
 import com.blackcompany.eeos.member.application.model.ActiveStatus;
 import com.blackcompany.eeos.member.application.model.converter.MemberEntityConverter;
 import com.blackcompany.eeos.member.application.service.QueryMemberService;
-import com.blackcompany.eeos.member.fixture.FakeMember;
+import com.blackcompany.eeos.member.fixture.MemberFixture;
 import com.blackcompany.eeos.member.persistence.MemberEntity;
 import com.blackcompany.eeos.member.persistence.MemberRepository;
 import com.blackcompany.eeos.program.application.service.ProgramValidService;
@@ -57,17 +56,18 @@ class AttendServiceTest {
 		Long programId = 1L;
 		String attendStatus = "attend";
 
-		MemberEntity mando = FakeMember.AmMandoEntity();
-		MemberEntity bada = FakeMember.AmBadaEntity();
-		AttendEntity mandoAttend = FakeAttend.attendMandoEntity();
-		AttendEntity badaAttend = FakeAttend.attendBadaEntity();
+		MemberEntity 수민 = MemberFixture.멤버_엔티티(1L, ActiveStatus.RM);
+		MemberEntity 바다 = MemberFixture.멤버_엔티티(2L, ActiveStatus.RM);
+		AttendEntity 수민_참석 =
+				com.blackcompany.eeos.attend.fixture.AttendFixture.참석대상자_엔티티(1L, AttendStatus.ATTEND);
+		AttendEntity 바다_참석 =
+				com.blackcompany.eeos.attend.fixture.AttendFixture.참석대상자_엔티티(2L, AttendStatus.ATTEND);
 
 		doNothing().when(programValidService).validate(programId);
 		when(attendRepository.findAllByProgramIdAndStatus(programId, AttendStatus.find(attendStatus)))
-				.thenReturn(List.of(mandoAttend, badaAttend));
-		when(memberRepository.findMembersByIds(
-						List.of(mandoAttend.getMemberId(), badaAttend.getMemberId())))
-				.thenReturn(List.of(mando, bada));
+				.thenReturn(List.of(수민_참석, 바다_참석));
+		when(memberRepository.findMembersByIds(List.of(수민_참석.getMemberId(), 바다_참석.getMemberId())))
+				.thenReturn(List.of(수민, 바다));
 
 		// when
 		QueryAttendStatusResponse response = attendService.findAttendInfo(programId, attendStatus);
@@ -76,28 +76,25 @@ class AttendServiceTest {
 		List<AttendInfoResponse> members = response.getMembers();
 		assertAll(
 				() -> {
-					assertEquals(members.get(0).getMemberId(), mandoAttend.getMemberId());
+					assertEquals(members.get(0).getMemberId(), 수민_참석.getMemberId());
 					assertEquals(members.get(0).getAttendStatus(), attendStatus);
 				},
 				() -> {
-					assertEquals(members.get(1).getMemberId(), bada.getId());
+					assertEquals(members.get(1).getMemberId(), 바다_참석.getMemberId());
 					assertEquals(members.get(1).getAttendStatus(), attendStatus);
 				});
 	}
 
 	@Test
-	@DisplayName("참석 상태를 멤버의 활동 상태 기준으로 조회 시 해당 프로그램의 참여 정보가 없으면 관련 없음 참석 상태를 반환한다.")
+	@DisplayName("참석 상태를 멤버의 활동 상태 기준으로 조회 시 해당 프로그램의 참석 대상자가 아니면 관련 없음 참석 상태를 반환한다.")
 	void find_attend_info_by_active_status() {
 		// given
 		Long programId = 1L;
 		String activeStatus = "am";
-		MemberEntity mando = FakeMember.AmMandoEntity();
-		MemberEntity bada = FakeMember.AmBadaEntity();
-		AttendEntity mandoAttend = FakeAttend.attendMandoEntity();
+		MemberEntity bada = MemberFixture.멤버_엔티티(1L, ActiveStatus.AM);
 
-		when(memberRepository.findMembersByActiveStatus(ActiveStatus.AM))
-				.thenReturn(List.of(mando, bada));
-		when(attendRepository.findAllByProgramId(programId)).thenReturn(List.of(mandoAttend));
+		when(memberRepository.findMembersByActiveStatus(ActiveStatus.AM)).thenReturn(List.of(bada));
+		when(attendRepository.findAllByProgramId(programId)).thenReturn(List.of());
 
 		// when
 		QueryAttendActiveStatusResponse response = attendService.getAttendInfo(programId, activeStatus);
@@ -107,12 +104,8 @@ class AttendServiceTest {
 
 		assertAll(
 				() -> {
-					assertEquals(members.get(0).getMemberId(), mandoAttend.getMemberId());
-					assertEquals(members.get(0).getAttendStatus(), mandoAttend.getStatus().getStatus());
-				},
-				() -> {
-					assertEquals(members.get(1).getMemberId(), bada.getId());
-					assertEquals(members.get(1).getAttendStatus(), AttendStatus.NONRELATED.getStatus());
+					assertEquals(members.get(0).getMemberId(), bada.getId());
+					assertEquals(members.get(0).getAttendStatus(), AttendStatus.NONRELATED.getStatus());
 				});
 	}
 
@@ -122,15 +115,16 @@ class AttendServiceTest {
 		// given
 		Long programId = 1L;
 		String activeStatus = "all";
-		MemberEntity mando = FakeMember.AmMandoEntity();
-		MemberEntity bada = FakeMember.AmBadaEntity();
+		MemberEntity 수민 = MemberFixture.멤버_엔티티(1L, ActiveStatus.RM);
+		MemberEntity 바다 = MemberFixture.멤버_엔티티(2L, ActiveStatus.RM);
 
-		AttendEntity mandoAttend = FakeAttend.attendMandoEntity();
-		AttendEntity badaAttend = FakeAttend.attendBadaEntity();
+		AttendEntity 수민_참석 =
+				com.blackcompany.eeos.attend.fixture.AttendFixture.참석대상자_엔티티(1L, AttendStatus.ATTEND);
+		AttendEntity 바다_미응답 =
+				com.blackcompany.eeos.attend.fixture.AttendFixture.참석대상자_엔티티(2L, AttendStatus.NONRESPONSE);
 
-		when(memberRepository.findMembers()).thenReturn(List.of(mando, bada));
-		when(attendRepository.findAllByProgramId(programId))
-				.thenReturn(List.of(mandoAttend, badaAttend));
+		when(memberRepository.findMembers()).thenReturn(List.of(수민, 바다));
+		when(attendRepository.findAllByProgramId(programId)).thenReturn(List.of(수민_참석, 바다_미응답));
 
 		// when
 		QueryAttendActiveStatusResponse response = attendService.getAttendInfo(programId, activeStatus);
@@ -140,16 +134,16 @@ class AttendServiceTest {
 
 		assertAll(
 				() -> {
-					assertEquals(members.get(0).getMemberId(), mandoAttend.getMemberId());
-					assertEquals(members.get(0).getAttendStatus(), mandoAttend.getStatus().getStatus());
-					assertEquals(members.get(0).getName(), mando.getName());
-					assertEquals(members.get(0).getActiveStatus(), mando.getActiveStatus().getStatus());
+					assertEquals(members.get(0).getMemberId(), 수민_참석.getMemberId());
+					assertEquals(members.get(0).getAttendStatus(), 수민_참석.getStatus().getStatus());
+					assertEquals(members.get(0).getName(), 수민.getName());
+					assertEquals(members.get(0).getActiveStatus(), 수민.getActiveStatus().getStatus());
 				},
 				() -> {
-					assertEquals(members.get(1).getMemberId(), badaAttend.getId());
-					assertEquals(members.get(1).getAttendStatus(), badaAttend.getStatus().getStatus());
-					assertEquals(members.get(1).getName(), bada.getName());
-					assertEquals(members.get(1).getActiveStatus(), bada.getActiveStatus().getStatus());
+					assertEquals(members.get(1).getMemberId(), 바다_미응답.getMemberId());
+					assertEquals(members.get(1).getAttendStatus(), 바다_미응답.getStatus().getStatus());
+					assertEquals(members.get(1).getName(), 바다.getName());
+					assertEquals(members.get(1).getActiveStatus(), 바다.getActiveStatus().getStatus());
 				});
 	}
 }

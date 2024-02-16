@@ -34,8 +34,8 @@ class SlackOauthMemberClientTest {
 		OauthMemberModel model = slackOauthMemberClient.fetch("code", "uri");
 
 		// then
-		assertEquals(model.getOauthId(), FakeSlackApiClientFixture.successSlackToken().getUserId());
+		assertEquals(model.getOauthId(), FakeSlackApiClientFixture.토큰_가져오기_성공_응답().getUserId());
 		assertEquals(model.getOauthServerType(), OauthServerType.SLACK);
-		assertEquals(model.getName(), FakeSlackApiClientFixture.successSlackMember().getName());
+		assertEquals(model.getName(), FakeSlackApiClientFixture.멤버_가져오기_성공_응답().getName());
 	}
 }

@@ -10,7 +10,7 @@ public class FakeSlackApiClientFixture {
 	private static final String token = "token";
 	private static final String name = "oauth_name";
 
-	public static SlackToken successSlackToken() {
+	public static SlackToken 토큰_가져오기_성공_응답() {
 		return SlackToken.builder()
 				.ok(true)
 				.authedUser(AuthedUser.builder().userId(userId).accessToken(token).build())
@@ -18,23 +18,7 @@ public class FakeSlackApiClientFixture {
 				.build();
 	}
 
-	public SlackToken failSlackToken(String client, String code, String clientSecret) {
-		return SlackToken.builder()
-				.ok(false)
-				.authedUser(AuthedUser.builder().userId("userId").accessToken("access_token").build())
-				.error("error_message")
-				.build();
-	}
-
-	public SlackMember failSlackMember(String token) {
-		return SlackMember.builder()
-				.ok(false)
-				.profile(UserProfile.builder().displayName("oauth_name").build())
-				.error("error_message")
-				.build();
-	}
-
-	public static SlackMember successSlackMember() {
+	public static SlackMember 멤버_가져오기_성공_응답() {
 		return SlackMember.builder()
 				.ok(true)
 				.profile(UserProfile.builder().displayName(name).build())
