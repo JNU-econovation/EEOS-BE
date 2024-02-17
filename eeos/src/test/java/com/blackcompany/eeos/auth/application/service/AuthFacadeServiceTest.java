@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 import com.blackcompany.eeos.auth.application.domain.OauthMemberModel;
-import com.blackcompany.eeos.auth.application.domain.client.OauthMemberClientComposite;
 import com.blackcompany.eeos.auth.fixture.FakeOauthMember;
 import com.blackcompany.eeos.auth.persistence.OauthInfoEntity;
 import org.junit.jupiter.api.DisplayName;
