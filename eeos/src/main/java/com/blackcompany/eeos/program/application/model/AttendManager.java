@@ -1,6 +1,6 @@
 package com.blackcompany.eeos.program.application.model;
 
-import com.blackcompany.eeos.attend.application.model.AttendModel;
+import com.blackcompany.eeos.target.application.model.AttendModel;
 import java.util.ArrayList;
 import java.util.List;
 

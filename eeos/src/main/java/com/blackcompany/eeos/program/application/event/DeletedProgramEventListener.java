@@ -1,6 +1,6 @@
 package com.blackcompany.eeos.program.application.event;
 
-import com.blackcompany.eeos.attend.application.service.CommandAttendService;
+import com.blackcompany.eeos.target.application.service.CommandAttendService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;

@@ -1,6 +1,6 @@
 package com.blackcompany.eeos.program.application.service;
 
-import com.blackcompany.eeos.attend.application.service.SelectAttendTargetService;
+import com.blackcompany.eeos.target.application.service.SelectAttendTargetService;
 import com.blackcompany.eeos.common.utils.DateConverter;
 import com.blackcompany.eeos.program.application.dto.ChangeAllAttendStatusRequest;
 import com.blackcompany.eeos.program.application.dto.CommandProgramResponse;
