@@ -2,15 +2,15 @@ package com.blackcompany.eeos.target.application.service;
 
 import static org.mockito.Mockito.*;
 
-import com.blackcompany.eeos.target.application.dto.TargetMember;
-import com.blackcompany.eeos.target.application.model.converter.AttendEntityConverter;
-import com.blackcompany.eeos.target.fixture.TargetMemberFixture;
-import com.blackcompany.eeos.target.persistence.AttendRepository;
 import com.blackcompany.eeos.member.application.model.ActiveStatus;
 import com.blackcompany.eeos.member.application.model.converter.MemberEntityConverter;
 import com.blackcompany.eeos.member.fixture.MemberFixture;
 import com.blackcompany.eeos.member.persistence.MemberRepository;
 import com.blackcompany.eeos.program.application.dto.ProgramMembers;
+import com.blackcompany.eeos.target.application.dto.TargetMember;
+import com.blackcompany.eeos.target.application.model.converter.AttendEntityConverter;
+import com.blackcompany.eeos.target.fixture.TargetMemberFixture;
+import com.blackcompany.eeos.target.persistence.AttendRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;

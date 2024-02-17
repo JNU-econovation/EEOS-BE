@@ -3,14 +3,14 @@ package com.blackcompany.eeos.target.application.service;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-import com.blackcompany.eeos.target.application.dto.TargetMember;
-import com.blackcompany.eeos.target.fixture.TargetMemberFixture;
 import com.blackcompany.eeos.member.application.exception.NotFoundMemberException;
 import com.blackcompany.eeos.member.application.model.ActiveStatus;
 import com.blackcompany.eeos.member.application.model.MemberModel;
 import com.blackcompany.eeos.member.application.model.converter.MemberEntityConverter;
 import com.blackcompany.eeos.member.fixture.MemberFixture;
 import com.blackcompany.eeos.member.persistence.MemberRepository;
+import com.blackcompany.eeos.target.application.dto.TargetMember;
+import com.blackcompany.eeos.target.fixture.TargetMemberFixture;
 import com.blackcompany.eeos.teamBuilding.application.dto.TeamBuildingMember;
 import java.util.List;
 import java.util.stream.Collectors;

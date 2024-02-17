@@ -1,5 +1,10 @@
 package com.blackcompany.eeos.target.presentation;
 
+import com.blackcompany.eeos.auth.presentation.support.Member;
+import com.blackcompany.eeos.common.presentation.respnose.ApiResponse;
+import com.blackcompany.eeos.common.presentation.respnose.ApiResponseBody.SuccessBody;
+import com.blackcompany.eeos.common.presentation.respnose.ApiResponseGenerator;
+import com.blackcompany.eeos.common.presentation.respnose.MessageCode;
 import com.blackcompany.eeos.target.application.dto.AttendInfoResponse;
 import com.blackcompany.eeos.target.application.dto.ChangeAttendStatusRequest;
 import com.blackcompany.eeos.target.application.dto.ChangeAttendStatusResponse;
@@ -9,11 +14,6 @@ import com.blackcompany.eeos.target.application.usecase.ChangeAttendStatusUsecas
 import com.blackcompany.eeos.target.application.usecase.GetAttendAllInfoSortActiveStatusUsecase;
 import com.blackcompany.eeos.target.application.usecase.GetAttendStatusUsecase;
 import com.blackcompany.eeos.target.application.usecase.GetAttendantInfoUsecase;
-import com.blackcompany.eeos.auth.presentation.support.Member;
-import com.blackcompany.eeos.common.presentation.respnose.ApiResponse;
-import com.blackcompany.eeos.common.presentation.respnose.ApiResponseBody.SuccessBody;
-import com.blackcompany.eeos.common.presentation.respnose.ApiResponseGenerator;
-import com.blackcompany.eeos.common.presentation.respnose.MessageCode;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

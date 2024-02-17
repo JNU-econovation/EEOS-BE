@@ -1,5 +1,11 @@
 package com.blackcompany.eeos.target.application.service;
 
+import com.blackcompany.eeos.member.application.model.ActiveStatus;
+import com.blackcompany.eeos.member.application.model.MemberModel;
+import com.blackcompany.eeos.member.application.model.converter.MemberEntityConverter;
+import com.blackcompany.eeos.member.application.service.QueryMemberService;
+import com.blackcompany.eeos.member.persistence.MemberRepository;
+import com.blackcompany.eeos.program.application.service.ProgramValidService;
 import com.blackcompany.eeos.target.application.dto.AttendInfoActiveStatusResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfoResponse;
 import com.blackcompany.eeos.target.application.dto.ChangeAttendStatusRequest;
@@ -21,12 +27,6 @@ import com.blackcompany.eeos.target.application.usecase.GetAttendStatusUsecase;
 import com.blackcompany.eeos.target.application.usecase.GetAttendantInfoUsecase;
 import com.blackcompany.eeos.target.persistence.AttendEntity;
 import com.blackcompany.eeos.target.persistence.AttendRepository;
-import com.blackcompany.eeos.member.application.model.ActiveStatus;
-import com.blackcompany.eeos.member.application.model.MemberModel;
-import com.blackcompany.eeos.member.application.model.converter.MemberEntityConverter;
-import com.blackcompany.eeos.member.application.service.QueryMemberService;
-import com.blackcompany.eeos.member.persistence.MemberRepository;
-import com.blackcompany.eeos.program.application.service.ProgramValidService;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -38,9 +38,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class AttendService
 		implements GetAttendantInfoUsecase,
-		ChangeAttendStatusUsecase,
-		GetAttendStatusUsecase,
-		GetAttendAllInfoSortActiveStatusUsecase {
+				ChangeAttendStatusUsecase,
+				GetAttendStatusUsecase,
+				GetAttendAllInfoSortActiveStatusUsecase {
 
 	private final AttendRepository attendRepository;
 	private final MemberRepository memberRepository;

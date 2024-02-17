@@ -1,7 +1,7 @@
 package com.blackcompany.eeos.target.persistence;
 
-import com.blackcompany.eeos.target.application.model.AttendStatus;
 import com.blackcompany.eeos.common.persistence.BaseEntity;
+import com.blackcompany.eeos.target.application.model.AttendStatus;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;

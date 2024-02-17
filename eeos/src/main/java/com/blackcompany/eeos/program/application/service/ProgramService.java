@@ -1,6 +1,5 @@
 package com.blackcompany.eeos.program.application.service;
 
-import com.blackcompany.eeos.target.application.service.SelectAttendTargetService;
 import com.blackcompany.eeos.common.utils.DateConverter;
 import com.blackcompany.eeos.program.application.dto.ChangeAllAttendStatusRequest;
 import com.blackcompany.eeos.program.application.dto.CommandProgramResponse;
@@ -30,6 +29,7 @@ import com.blackcompany.eeos.program.application.usecase.UpdateProgramUsecase;
 import com.blackcompany.eeos.program.persistence.ProgramCategory;
 import com.blackcompany.eeos.program.persistence.ProgramEntity;
 import com.blackcompany.eeos.program.persistence.ProgramRepository;
+import com.blackcompany.eeos.target.application.service.SelectAttendTargetService;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;

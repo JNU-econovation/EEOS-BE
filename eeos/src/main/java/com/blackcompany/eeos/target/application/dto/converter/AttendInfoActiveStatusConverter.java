@@ -1,7 +1,7 @@
 package com.blackcompany.eeos.target.application.dto.converter;
 
-import com.blackcompany.eeos.target.application.dto.AttendInfoActiveStatusResponse;
 import com.blackcompany.eeos.member.application.model.MemberModel;
+import com.blackcompany.eeos.target.application.dto.AttendInfoActiveStatusResponse;
 import org.springframework.stereotype.Component;
 
 @Component

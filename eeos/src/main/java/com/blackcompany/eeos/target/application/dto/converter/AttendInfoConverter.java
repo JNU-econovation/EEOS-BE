@@ -1,8 +1,8 @@
 package com.blackcompany.eeos.target.application.dto.converter;
 
-import com.blackcompany.eeos.target.application.dto.AttendInfoResponse;
 import com.blackcompany.eeos.member.application.model.MemberModel;
 import com.blackcompany.eeos.member.persistence.MemberEntity;
+import com.blackcompany.eeos.target.application.dto.AttendInfoResponse;
 import org.springframework.stereotype.Component;
 
 @Component

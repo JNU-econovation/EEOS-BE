@@ -1,11 +1,11 @@
 package com.blackcompany.eeos.target.application.service;
 
-import com.blackcompany.eeos.target.application.dto.TargetMember;
 import com.blackcompany.eeos.common.application.model.MemberIdModel;
 import com.blackcompany.eeos.member.application.exception.NotFoundMemberException;
 import com.blackcompany.eeos.member.application.model.MemberModel;
 import com.blackcompany.eeos.member.application.model.converter.MemberEntityConverter;
 import com.blackcompany.eeos.member.persistence.MemberRepository;
+import com.blackcompany.eeos.target.application.dto.TargetMember;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;

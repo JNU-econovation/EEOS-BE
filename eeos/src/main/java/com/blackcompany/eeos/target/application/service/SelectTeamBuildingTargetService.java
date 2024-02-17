@@ -1,11 +1,11 @@
 package com.blackcompany.eeos.target.application.service;
 
+import com.blackcompany.eeos.member.application.model.converter.MemberEntityConverter;
+import com.blackcompany.eeos.member.persistence.MemberRepository;
 import com.blackcompany.eeos.target.application.dto.TargetMember;
 import com.blackcompany.eeos.target.application.model.converter.TeamBuildingTargetEntityConverter;
 import com.blackcompany.eeos.target.persistence.TeamBuildingTargetEntity;
 import com.blackcompany.eeos.target.persistence.TeamBuildingTargetRepository;
-import com.blackcompany.eeos.member.application.model.converter.MemberEntityConverter;
-import com.blackcompany.eeos.member.persistence.MemberRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;

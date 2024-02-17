@@ -1,9 +1,9 @@
 package com.blackcompany.eeos.target.application.model.converter;
 
+import com.blackcompany.eeos.common.support.converter.AbstractEntityConverter;
 import com.blackcompany.eeos.target.application.model.AttendModel;
 import com.blackcompany.eeos.target.application.model.AttendStatus;
 import com.blackcompany.eeos.target.persistence.AttendEntity;
-import com.blackcompany.eeos.common.support.converter.AbstractEntityConverter;
 import org.springframework.stereotype.Component;
 
 @Component
