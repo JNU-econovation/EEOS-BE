@@ -1,6 +1,5 @@
 package com.blackcompany.eeos.attend.application.service;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -9,8 +8,9 @@ import com.blackcompany.eeos.attend.application.dto.TargetMember;
 import com.blackcompany.eeos.attend.application.model.converter.TeamBuildingTargetEntityConverter;
 import com.blackcompany.eeos.attend.fixture.TargetMemberFixture;
 import com.blackcompany.eeos.attend.persistence.TeamBuildingTargetRepository;
+import com.blackcompany.eeos.member.application.model.ActiveStatus;
 import com.blackcompany.eeos.member.application.model.converter.MemberEntityConverter;
-import com.blackcompany.eeos.member.fixture.FakeMember;
+import com.blackcompany.eeos.member.fixture.MemberFixture;
 import com.blackcompany.eeos.member.persistence.MemberRepository;
 import com.blackcompany.eeos.teamBuilding.application.dto.TeamBuildingMember;
 import java.util.List;
@@ -38,7 +38,10 @@ class SelectTeamBuildingTargetServiceTest {
 		List<TeamBuildingMember> 수민_바다_팀빌딩_대상자 = TargetMemberFixture.수민_바다_팀빌딩_대상자();
 		when(memberRepository.findMembersByIds(
 						수민_바다_팀빌딩_대상자.stream().map(TargetMember::getMemberId).collect(Collectors.toList())))
-				.thenReturn(FakeMember.am_수민_바다());
+				.thenReturn(
+						List.of(
+								MemberFixture.멤버_엔티티(1L, ActiveStatus.AM),
+								MemberFixture.멤버_엔티티(2L, ActiveStatus.AM)));
 
 		// when
 		selectTeamBuildingTargetService.save(1L, 수민_바다_팀빌딩_대상자);

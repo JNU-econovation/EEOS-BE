@@ -6,8 +6,9 @@ import com.blackcompany.eeos.attend.application.dto.TargetMember;
 import com.blackcompany.eeos.attend.application.model.converter.AttendEntityConverter;
 import com.blackcompany.eeos.attend.fixture.TargetMemberFixture;
 import com.blackcompany.eeos.attend.persistence.AttendRepository;
+import com.blackcompany.eeos.member.application.model.ActiveStatus;
 import com.blackcompany.eeos.member.application.model.converter.MemberEntityConverter;
-import com.blackcompany.eeos.member.fixture.FakeMember;
+import com.blackcompany.eeos.member.fixture.MemberFixture;
 import com.blackcompany.eeos.member.persistence.MemberRepository;
 import com.blackcompany.eeos.program.application.dto.ProgramMembers;
 import java.util.List;
@@ -35,7 +36,10 @@ class SelectAttendTargetServiceTest {
 		List<ProgramMembers> 수민_바다_프로그램_대상자 = TargetMemberFixture.수민_바다_프로그램_대상자();
 		when(memberRepository.findMembersByIds(
 						수민_바다_프로그램_대상자.stream().map(TargetMember::getMemberId).collect(Collectors.toList())))
-				.thenReturn(FakeMember.am_수민_바다());
+				.thenReturn(
+						List.of(
+								MemberFixture.멤버_엔티티(1L, ActiveStatus.AM),
+								MemberFixture.멤버_엔티티(2L, ActiveStatus.AM)));
 
 		// when
 		selectAttendTargetService.save(1L, 수민_바다_프로그램_대상자);
