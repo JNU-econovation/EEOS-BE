@@ -2,6 +2,7 @@ package com.blackcompany.eeos.teamBuilding.application.service;
 
 import com.blackcompany.eeos.attend.application.service.SelectTeamBuildingTargetService;
 import com.blackcompany.eeos.teamBuilding.application.dto.CreateTeamBuildingRequest;
+import com.blackcompany.eeos.teamBuilding.application.model.RestrictTeamBuilding;
 import com.blackcompany.eeos.teamBuilding.application.model.TeamBuildingModel;
 import com.blackcompany.eeos.teamBuilding.application.model.converter.TeamBuildingEntityConverter;
 import com.blackcompany.eeos.teamBuilding.application.model.converter.TeamBuildingRequestConverter;
@@ -16,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class CommandTeamBuildingService implements CreateTeamBuildingUsecase {
+	private static final RestrictTeamBuilding RESTRICT_TEAM_BUILDING = RestrictTeamBuilding.of();
+
 	private final TeamBuildingRequestConverter requestConverter;
 	private final TeamBuildingEntityConverter entityConverter;
 	private final TeamBuildingRepository repository;
@@ -24,7 +27,9 @@ public class CommandTeamBuildingService implements CreateTeamBuildingUsecase {
 	@Override
 	@Transactional
 	public void create(Long memberId, CreateTeamBuildingRequest request) {
-		TeamBuildingModel model = requestConverter.from(request);
+		RESTRICT_TEAM_BUILDING.addActiveCount();
+
+		TeamBuildingModel model = requestConverter.from(memberId, request);
 		TeamBuildingEntity savedEntity = repository.save(entityConverter.toEntity(model));
 
 		teamBuildingTargetService.save(savedEntity.getId(), request.getMembers());
