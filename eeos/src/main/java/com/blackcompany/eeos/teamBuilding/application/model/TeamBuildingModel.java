@@ -1,6 +1,7 @@
 package com.blackcompany.eeos.teamBuilding.application.model;
 
 import com.blackcompany.eeos.common.support.AbstractModel;
+import com.blackcompany.eeos.teamBuilding.application.exception.DeniedEditTeamBuilding;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,4 +23,10 @@ public class TeamBuildingModel implements AbstractModel {
 	private int maxTeamSize;
 	private String status;
 	private Long memberId;
+
+	public void validateEdit(Long memberId) {
+		if (!this.memberId.equals(memberId)) {
+			throw new DeniedEditTeamBuilding();
+		}
+	}
 }
