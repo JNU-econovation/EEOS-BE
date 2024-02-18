@@ -35,7 +35,8 @@ class SelectTeamBuildingTargetServiceTest {
 	@DisplayName("대상자를 전달받아 팀빌딩 대상자로 저장한다.")
 	void save_team_building_target() {
 		// given
-		List<TeamBuildingMember> 수민_바다_팀빌딩_대상자 = TargetMemberFixture.수민_바다_팀빌딩_대상자();
+		List<TeamBuildingMember> 수민_바다_팀빌딩_대상자 =
+				List.of(TargetMemberFixture.팀빌딩_대상자(1L), TargetMemberFixture.팀빌딩_대상자(2L));
 		when(memberRepository.findMembersByIds(
 						수민_바다_팀빌딩_대상자.stream().map(TargetMember::getMemberId).collect(Collectors.toList())))
 				.thenReturn(

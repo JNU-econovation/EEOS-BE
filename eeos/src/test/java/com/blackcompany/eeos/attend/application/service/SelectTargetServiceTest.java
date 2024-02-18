@@ -32,7 +32,8 @@ class SelectTargetServiceTest {
 	@DisplayName("주어진 대상 멤버들로 멤버를 조회한다.")
 	void find_members_all() {
 		// given
-		List<TeamBuildingMember> 수민_바다_팀빌딩_대상자 = TargetMemberFixture.수민_바다_팀빌딩_대상자();
+		List<TeamBuildingMember> 수민_바다_팀빌딩_대상자 =
+				List.of(TargetMemberFixture.팀빌딩_대상자(1L), TargetMemberFixture.팀빌딩_대상자(2L));
 		when(memberRepository.findMembersByIds(
 						수민_바다_팀빌딩_대상자.stream()
 								.map(TeamBuildingMember::getMemberId)
@@ -60,7 +61,8 @@ class SelectTargetServiceTest {
 	@DisplayName("주어진 대상 멤버들로 모든 멤버들을 조회하지 못 했다.")
 	void find_members_not_all() {
 		// given
-		List<TeamBuildingMember> 수민_바다_팀빌딩_대상자 = TargetMemberFixture.수민_바다_팀빌딩_대상자();
+		List<TeamBuildingMember> 수민_바다_팀빌딩_대상자 =
+				List.of(TargetMemberFixture.팀빌딩_대상자(1L), TargetMemberFixture.팀빌딩_대상자(2L));
 		when(memberRepository.findMembersByIds(
 						수민_바다_팀빌딩_대상자.stream()
 								.map(TeamBuildingMember::getMemberId)

@@ -33,7 +33,8 @@ class SelectAttendTargetServiceTest {
 	@DisplayName("대상자를 전달받아 참석 대상자로 저장한다.")
 	void save_attend() {
 		// given
-		List<ProgramMembers> 수민_바다_프로그램_대상자 = TargetMemberFixture.수민_바다_프로그램_대상자();
+		List<ProgramMembers> 수민_바다_프로그램_대상자 =
+				List.of(TargetMemberFixture.프로그램_대상자(1L), TargetMemberFixture.프로그램_대상자(2L));
 		when(memberRepository.findMembersByIds(
 						수민_바다_프로그램_대상자.stream().map(TargetMember::getMemberId).collect(Collectors.toList())))
 				.thenReturn(
