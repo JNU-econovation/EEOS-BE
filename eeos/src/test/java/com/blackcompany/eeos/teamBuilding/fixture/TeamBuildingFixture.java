@@ -1,6 +1,6 @@
 package com.blackcompany.eeos.teamBuilding.fixture;
 
-import com.blackcompany.eeos.attend.fixture.TargetMemberFixture;
+import com.blackcompany.eeos.target.fixture.TargetMemberFixture;
 import com.blackcompany.eeos.teamBuilding.application.dto.CreateTeamBuildingRequest;
 import com.blackcompany.eeos.teamBuilding.persistence.TeamBuildingEntity;
 import com.blackcompany.eeos.teamBuilding.persistence.TeamBuildingStatus;

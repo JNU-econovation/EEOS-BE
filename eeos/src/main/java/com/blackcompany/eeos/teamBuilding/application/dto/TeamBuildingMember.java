@@ -1,6 +1,6 @@
 package com.blackcompany.eeos.teamBuilding.application.dto;
 
-import com.blackcompany.eeos.attend.application.dto.TargetMember;
+import com.blackcompany.eeos.target.application.dto.TargetMember;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

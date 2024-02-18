@@ -1,6 +1,6 @@
 package com.blackcompany.eeos.teamBuilding.application.service;
 
-import com.blackcompany.eeos.attend.application.service.SelectTeamBuildingTargetService;
+import com.blackcompany.eeos.target.application.service.SelectTeamBuildingTargetService;
 import com.blackcompany.eeos.teamBuilding.application.dto.CreateTeamBuildingRequest;
 import com.blackcompany.eeos.teamBuilding.application.model.RestrictTeamBuilding;
 import com.blackcompany.eeos.teamBuilding.application.model.TeamBuildingModel;
