@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 
 import com.blackcompany.eeos.target.application.service.SelectTeamBuildingTargetService;
 import com.blackcompany.eeos.teamBuilding.application.dto.CreateTeamBuildingRequest;
+import com.blackcompany.eeos.teamBuilding.application.exception.DeniedEditTeamBuilding;
 import com.blackcompany.eeos.teamBuilding.application.model.converter.TeamBuildingEntityConverter;
 import com.blackcompany.eeos.teamBuilding.application.model.converter.TeamBuildingRequestConverter;
 import com.blackcompany.eeos.teamBuilding.fixture.TeamBuildingFixture;
@@ -13,6 +14,8 @@ import com.blackcompany.eeos.teamBuilding.persistence.TeamBuildingEntity;
 import com.blackcompany.eeos.teamBuilding.persistence.TeamBuildingRepository;
 import com.blackcompany.eeos.teamBuilding.persistence.TeamBuildingStatus;
 import java.util.List;
+import java.util.Optional;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,5 +45,18 @@ class CommandTeamBuildingServiceTest {
 
 		// then
 		verify(teamBuildingTargetService).save(생성한_팀빌딩.getId(), 팀빌딩_생성_요청.getMembers());
+	}
+
+	@Test
+	@DisplayName("진행 중인 팀빌딩의 작성자가 아니라면 수정 권한이 없음 예외가 발생한다.")
+	void denied_edit_team_building() {
+		// given
+		TeamBuildingEntity 생성된_팀빌딩 = TeamBuildingFixture.팀빌딩(TeamBuildingStatus.PROGRESS, 1L);
+		when(teamBuildingRepository.findByStatus(TeamBuildingStatus.PROGRESS))
+				.thenReturn(Optional.of(생성된_팀빌딩));
+
+		// when & then
+		Assertions.assertThrows(
+				DeniedEditTeamBuilding.class, () -> commandTeamBuildingService.delete(2L));
 	}
 }
