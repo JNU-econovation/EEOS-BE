@@ -20,4 +20,6 @@ public class TeamBuildingModel implements AbstractModel {
 	private String content;
 
 	private int maxTeamSize;
+	private String status;
+	private Long memberId;
 }
