@@ -1,7 +1,9 @@
 package com.blackcompany.eeos.teamBuilding.application.model;
 
 import com.blackcompany.eeos.common.support.AbstractModel;
+import com.blackcompany.eeos.target.application.exception.DeniedSaveAttendTeamBuildingException;
 import com.blackcompany.eeos.teamBuilding.application.exception.DeniedEditTeamBuilding;
+import com.blackcompany.eeos.teamBuilding.persistence.TeamBuildingStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,6 +29,16 @@ public class TeamBuildingModel implements AbstractModel {
 	public void validateEdit(Long memberId) {
 		if (!this.memberId.equals(memberId)) {
 			throw new DeniedEditTeamBuilding();
+		}
+	}
+
+	public void validateAttend() {
+		validateStatus();
+	}
+
+	private void validateStatus() {
+		if (!TeamBuildingStatus.validateSame(status, TeamBuildingStatus.PROGRESS)) {
+			throw new DeniedSaveAttendTeamBuildingException();
 		}
 	}
 }
