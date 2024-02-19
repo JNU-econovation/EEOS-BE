@@ -32,7 +32,7 @@ public class SelectTeamBuildingTargetService extends SelectTargetService impleme
 	public <T extends TargetMember> void save(Long eventId, List<T> members) {
 		List<TeamBuildingTargetEntity> targetEntities =
 				findMembers(members).stream()
-						.map(member -> entityConverter.toEntity(member.getId(), eventId))
+						.map(member -> entityConverter.toEntity(eventId, member.getMemberId()))
 						.collect(Collectors.toList());
 
 		targetRepository.saveAll(targetEntities);
