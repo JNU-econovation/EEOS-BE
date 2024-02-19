@@ -3,9 +3,9 @@ package com.blackcompany.eeos.teamBuilding.application.exception;
 import com.blackcompany.eeos.common.exception.BusinessException;
 import org.springframework.http.HttpStatus;
 
-/** 존재하지 않는 팀빌딩 타입일 때 발생하는 예외 */
+/** 요청한 상태의 팀빌딩이 존재하지 않을 때 발생하는 예외 */
 public class NotFoundTeamBuildingStatusException extends BusinessException {
-	private static final String FAIL_CODE = "1003";
+	private static final String FAIL_CODE = "6002";
 	private final String status;
 
 	public NotFoundTeamBuildingStatusException(String status) {
@@ -15,6 +15,6 @@ public class NotFoundTeamBuildingStatusException extends BusinessException {
 
 	@Override
 	public String getMessage() {
-		return String.format("%s 는 존재하지 않는 팀빌딩 상태입니다.", status);
+		return String.format("%s 인 팀빌딩이 존재하지 않습니다.", status);
 	}
 }

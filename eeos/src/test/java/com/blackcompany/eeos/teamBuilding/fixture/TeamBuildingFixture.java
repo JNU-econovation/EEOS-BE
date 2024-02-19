@@ -2,6 +2,7 @@ package com.blackcompany.eeos.teamBuilding.fixture;
 
 import com.blackcompany.eeos.target.fixture.TargetMemberFixture;
 import com.blackcompany.eeos.teamBuilding.application.dto.CreateTeamBuildingRequest;
+import com.blackcompany.eeos.teamBuilding.application.model.RestrictTeamBuildingModel;
 import com.blackcompany.eeos.teamBuilding.application.model.TeamBuildingModel;
 import com.blackcompany.eeos.teamBuilding.persistence.TeamBuildingEntity;
 import com.blackcompany.eeos.teamBuilding.persistence.TeamBuildingStatus;
@@ -38,5 +39,13 @@ public class TeamBuildingFixture {
 				.status(status.getStatus())
 				.memberId(writerId)
 				.build();
+	}
+
+	public static RestrictTeamBuildingModel 진행중인_팀빌딩_없음() {
+		return RestrictTeamBuildingModel.builder().id(1L).totalActiveCount(0L).version(0L).build();
+	}
+
+	public static RestrictTeamBuildingModel 진행중인_팀빌딩_있음() {
+		return RestrictTeamBuildingModel.builder().id(1L).totalActiveCount(1L).version(0L).build();
 	}
 }

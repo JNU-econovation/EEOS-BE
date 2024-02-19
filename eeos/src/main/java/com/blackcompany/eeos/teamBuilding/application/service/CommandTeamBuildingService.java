@@ -2,8 +2,7 @@ package com.blackcompany.eeos.teamBuilding.application.service;
 
 import com.blackcompany.eeos.target.application.service.SelectTeamBuildingTargetService;
 import com.blackcompany.eeos.teamBuilding.application.dto.CreateTeamBuildingRequest;
-import com.blackcompany.eeos.teamBuilding.application.exception.NotFoundProgressTeamBuildingException;
-import com.blackcompany.eeos.teamBuilding.application.model.RestrictTeamBuilding;
+import com.blackcompany.eeos.teamBuilding.application.exception.NotFoundTeamBuildingStatusException;
 import com.blackcompany.eeos.teamBuilding.application.model.TeamBuildingModel;
 import com.blackcompany.eeos.teamBuilding.application.model.converter.TeamBuildingEntityConverter;
 import com.blackcompany.eeos.teamBuilding.application.model.converter.TeamBuildingRequestConverter;
@@ -21,8 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class CommandTeamBuildingService
 		implements CreateTeamBuildingUsecase, EndTeamBuildingUsecase {
-	private static final RestrictTeamBuilding RESTRICT_TEAM_BUILDING = RestrictTeamBuilding.of();
-
+	private final RestrictTeamBuildingService restrictTeamBuildingService;
 	private final TeamBuildingRequestConverter requestConverter;
 	private final TeamBuildingEntityConverter entityConverter;
 	private final TeamBuildingRepository teamBuildingRepository;
@@ -31,9 +29,9 @@ public class CommandTeamBuildingService
 	@Override
 	@Transactional
 	public void create(Long memberId, CreateTeamBuildingRequest request) {
-		RESTRICT_TEAM_BUILDING.addActiveCount();
+		restrictTeamBuildingService.addTeamBuilding();
 
-		TeamBuildingModel model = requestConverter.from(memberId, request);
+		TeamBuildingModel model = requestConverter.from(memberId, request, TeamBuildingStatus.PROGRESS);
 		TeamBuildingEntity savedEntity = teamBuildingRepository.save(entityConverter.toEntity(model));
 
 		teamBuildingTargetService.save(savedEntity.getId(), request.getMembers());
@@ -42,15 +40,17 @@ public class CommandTeamBuildingService
 	@Override
 	@Transactional
 	public void delete(Long memberId) {
+		TeamBuildingStatus status = TeamBuildingStatus.PROGRESS;
+
 		TeamBuildingModel model =
 				teamBuildingRepository
-						.findByStatus(TeamBuildingStatus.PROGRESS)
+						.findByStatus(status)
 						.map(entityConverter::from)
-						.orElseThrow(NotFoundProgressTeamBuildingException::new);
+						.orElseThrow(() -> new NotFoundTeamBuildingStatusException(status.getStatus()));
 		model.validateEdit(memberId);
 
 		teamBuildingRepository.delete(entityConverter.toEntity(model));
 
-		RESTRICT_TEAM_BUILDING.subtractActiveCount();
+		restrictTeamBuildingService.subtractTeamBuilding();
 	}
 }

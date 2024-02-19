@@ -30,6 +30,7 @@ class CommandTeamBuildingServiceTest {
 	@Spy private TeamBuildingEntityConverter entityConverter;
 	@Mock private TeamBuildingRepository teamBuildingRepository;
 	@Mock private SelectTeamBuildingTargetService teamBuildingTargetService;
+	@Mock private RestrictTeamBuildingService restrictTeamBuildingService;
 	@InjectMocks private CommandTeamBuildingService commandTeamBuildingService;
 
 	@Test
