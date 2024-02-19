@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -40,5 +41,6 @@ public class TeamBuildingTargetEntity extends BaseEntity {
 	@Column(name = ENTITY_PREFIX + "_member_id", nullable = false)
 	private Long memberId;
 
-	@Embedded private TeamBuildingInputDataEntity inputData;
+	@Embedded @Builder.Default
+	private TeamBuildingInputDataEntity inputData = TeamBuildingInputDataEntity.init();
 }
