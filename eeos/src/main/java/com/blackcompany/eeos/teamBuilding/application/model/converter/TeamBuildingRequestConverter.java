@@ -19,12 +19,13 @@ public class TeamBuildingRequestConverter
 				.build();
 	}
 
-	public TeamBuildingModel from(Long memberId, CommandTeamBuildingRequest source) {
+	public TeamBuildingModel from(
+			Long memberId, CommandTeamBuildingRequest source, TeamBuildingStatus status) {
 		return TeamBuildingModel.builder()
 				.title(source.getTitle())
 				.content(source.getContent())
 				.maxTeamSize(source.getMaxTeamSize())
-				.status(TeamBuildingStatus.PROGRESS.getStatus())
+				.status(status.getStatus())
 				.memberId(memberId)
 				.build();
 	}
