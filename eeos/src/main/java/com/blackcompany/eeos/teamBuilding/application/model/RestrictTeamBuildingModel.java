@@ -18,6 +18,7 @@ import lombok.ToString;
 public class RestrictTeamBuildingModel implements AbstractModel {
 	private static final Long UPPER_LIMIT = 1L;
 	private static final Long LOWER_LIMIT = 0L;
+
 	private Long id;
 	private Long totalActiveCount;
 	private Long version;
