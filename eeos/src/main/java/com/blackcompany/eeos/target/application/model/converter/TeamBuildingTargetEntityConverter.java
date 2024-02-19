@@ -3,6 +3,7 @@ package com.blackcompany.eeos.target.application.model.converter;
 import com.blackcompany.eeos.common.support.converter.AbstractEntityConverter;
 import com.blackcompany.eeos.target.application.model.TeamBuildingTargetModel;
 import com.blackcompany.eeos.target.persistence.TeamBuildingInputDataEntity;
+import com.blackcompany.eeos.target.persistence.TeamBuildingInputStatus;
 import com.blackcompany.eeos.target.persistence.TeamBuildingTargetEntity;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +17,7 @@ public class TeamBuildingTargetEntityConverter
 				.teamBuildingId(entity.getTeamBuildingId())
 				.memberId(entity.getMemberId())
 				.content(entity.getInputData().getContent())
+				.inputStatus(entity.getInputData().getInputStatus().getStatus())
 				.build();
 	}
 
@@ -25,7 +27,7 @@ public class TeamBuildingTargetEntityConverter
 				.id(model.getId())
 				.teamBuildingId(model.getTeamBuildingId())
 				.memberId(model.getMemberId())
-				.inputData(toEntity(model.getContent()))
+				.inputData(toInputDataEntity(model))
 				.build();
 	}
 
@@ -36,7 +38,10 @@ public class TeamBuildingTargetEntityConverter
 				.build();
 	}
 
-	private TeamBuildingInputDataEntity toEntity(String content) {
-		return TeamBuildingInputDataEntity.builder().content(content).build();
+	private TeamBuildingInputDataEntity toInputDataEntity(TeamBuildingTargetModel model) {
+		return TeamBuildingInputDataEntity.builder()
+				.content(model.getContent())
+				.inputStatus(TeamBuildingInputStatus.find(model.getInputStatus()))
+				.build();
 	}
 }
