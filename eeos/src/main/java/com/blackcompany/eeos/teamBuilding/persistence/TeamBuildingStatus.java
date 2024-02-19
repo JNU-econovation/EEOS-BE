@@ -27,4 +27,8 @@ public enum TeamBuildingStatus {
 				.findAny()
 				.orElseThrow(() -> new NotFoundTeamBuildingStatusException(status));
 	}
+
+	public static boolean validateSame(String status, TeamBuildingStatus targetStatus) {
+		return status.equals(targetStatus.getStatus());
+	}
 }
