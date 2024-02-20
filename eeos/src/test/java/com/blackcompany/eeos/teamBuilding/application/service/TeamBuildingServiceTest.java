@@ -25,13 +25,13 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class CommandTeamBuildingServiceTest {
+class TeamBuildingServiceTest {
 	@Spy private TeamBuildingRequestConverter requestConverter;
 	@Spy private TeamBuildingEntityConverter entityConverter;
 	@Mock private TeamBuildingRepository teamBuildingRepository;
 	@Mock private SelectTeamBuildingTargetService teamBuildingTargetService;
 	@Mock private RestrictTeamBuildingService restrictTeamBuildingService;
-	@InjectMocks private CommandTeamBuildingService commandTeamBuildingService;
+	@InjectMocks private TeamBuildingService teamBuildingService;
 
 	@Test
 	@DisplayName("팀빌딩 생성 시 팀빌딩 대상자를 선정한다.")
@@ -42,7 +42,7 @@ class CommandTeamBuildingServiceTest {
 		when(teamBuildingRepository.save(any())).thenReturn(생성한_팀빌딩);
 
 		// when
-		commandTeamBuildingService.create(1L, 팀빌딩_생성_요청);
+		teamBuildingService.create(1L, 팀빌딩_생성_요청);
 
 		// then
 		verify(teamBuildingTargetService).save(생성한_팀빌딩.getId(), 팀빌딩_생성_요청.getMembers());
@@ -57,7 +57,6 @@ class CommandTeamBuildingServiceTest {
 				.thenReturn(Optional.of(생성된_팀빌딩));
 
 		// when & then
-		Assertions.assertThrows(
-				DeniedEditTeamBuilding.class, () -> commandTeamBuildingService.delete(2L));
+		Assertions.assertThrows(DeniedEditTeamBuilding.class, () -> teamBuildingService.delete(2L));
 	}
 }
