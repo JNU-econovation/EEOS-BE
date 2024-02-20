@@ -32,6 +32,13 @@ public class TeamBuildingModel implements AbstractModel {
 		}
 	}
 
+	public TeamBuildingModel updateStatus(String status, Long memberId) {
+		validateEdit(memberId);
+
+		this.status = status;
+		return this;
+	}
+
 	public void validateAttend() {
 		validateStatus();
 	}
