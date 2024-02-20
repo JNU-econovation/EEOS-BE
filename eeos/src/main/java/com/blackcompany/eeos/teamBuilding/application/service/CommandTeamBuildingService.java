@@ -6,6 +6,7 @@ import com.blackcompany.eeos.teamBuilding.application.exception.NotFoundTeamBuil
 import com.blackcompany.eeos.teamBuilding.application.model.TeamBuildingModel;
 import com.blackcompany.eeos.teamBuilding.application.model.converter.TeamBuildingEntityConverter;
 import com.blackcompany.eeos.teamBuilding.application.model.converter.TeamBuildingRequestConverter;
+import com.blackcompany.eeos.teamBuilding.application.usecase.CompleteTeamBuildingUsecase;
 import com.blackcompany.eeos.teamBuilding.application.usecase.CreateTeamBuildingUsecase;
 import com.blackcompany.eeos.teamBuilding.application.usecase.EndTeamBuildingUsecase;
 import com.blackcompany.eeos.teamBuilding.persistence.TeamBuildingEntity;
@@ -19,12 +20,13 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class CommandTeamBuildingService
-		implements CreateTeamBuildingUsecase, EndTeamBuildingUsecase {
+		implements CreateTeamBuildingUsecase, EndTeamBuildingUsecase, CompleteTeamBuildingUsecase {
 	private final RestrictTeamBuildingService restrictTeamBuildingService;
 	private final TeamBuildingRequestConverter requestConverter;
 	private final TeamBuildingEntityConverter entityConverter;
 	private final TeamBuildingRepository teamBuildingRepository;
 	private final SelectTeamBuildingTargetService teamBuildingTargetService;
+	private final QueryTeamBuildingService queryTeamBuildingService;
 
 	@Override
 	@Transactional
@@ -52,5 +54,21 @@ public class CommandTeamBuildingService
 		teamBuildingRepository.delete(entityConverter.toEntity(model));
 
 		restrictTeamBuildingService.subtractTeamBuilding();
+	}
+
+	@Override
+	public void complete(Long memberId) {
+		updateStatus(memberId);
+		restrictTeamBuildingService.subtractTeamBuilding();
+	}
+
+	private void updateStatus(Long memberId) {
+		TeamBuildingEntity entity = queryTeamBuildingService.getByStatus(TeamBuildingStatus.PROGRESS);
+		TeamBuildingModel model = entityConverter.from(entity);
+
+		TeamBuildingModel updateStatus =
+				model.updateStatus(TeamBuildingStatus.COMPLETE.getStatus(), memberId);
+
+		entityConverter.toEntity(updateStatus);
 	}
 }
