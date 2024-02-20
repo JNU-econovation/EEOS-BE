@@ -6,10 +6,12 @@ import com.blackcompany.eeos.common.presentation.respnose.ApiResponseBody.Succes
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponseGenerator;
 import com.blackcompany.eeos.common.presentation.respnose.MessageCode;
 import com.blackcompany.eeos.teamBuilding.application.dto.CreateTeamBuildingRequest;
+import com.blackcompany.eeos.teamBuilding.application.dto.ResultTeamBuildingResponse;
 import com.blackcompany.eeos.teamBuilding.application.dto.ValidateTeamBuildingResponse;
 import com.blackcompany.eeos.teamBuilding.application.usecase.CompleteTeamBuildingUsecase;
 import com.blackcompany.eeos.teamBuilding.application.usecase.CreateTeamBuildingUsecase;
 import com.blackcompany.eeos.teamBuilding.application.usecase.EndTeamBuildingUsecase;
+import com.blackcompany.eeos.teamBuilding.application.usecase.GetResultTeamBuildingUsecase;
 import com.blackcompany.eeos.teamBuilding.application.usecase.ValidateTeamBuildingUsecase;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +32,7 @@ public class TeamBuildingController {
 	private final EndTeamBuildingUsecase endTeamBuildingUsecase;
 	private final ValidateTeamBuildingUsecase validateTeamBuildingUsecase;
 	private final CompleteTeamBuildingUsecase completeTeamBuildingUsecase;
+	private final GetResultTeamBuildingUsecase getResultTeamBuildingUsecase;
 
 	@PostMapping("/team-building")
 	public ApiResponse<SuccessBody<Void>> create(
@@ -55,5 +58,11 @@ public class TeamBuildingController {
 	public ApiResponse<SuccessBody<Void>> complete(@Member Long memberId) {
 		completeTeamBuildingUsecase.complete(memberId);
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.DELETE);
+	}
+
+	@GetMapping("/team-building/result")
+	public ApiResponse<SuccessBody<ResultTeamBuildingResponse>> getResult(@Member Long memberId) {
+		ResultTeamBuildingResponse response = getResultTeamBuildingUsecase.getResult(memberId);
+		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
 	}
 }
