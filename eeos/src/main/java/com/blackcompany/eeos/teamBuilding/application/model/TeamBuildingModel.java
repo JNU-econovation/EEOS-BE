@@ -43,6 +43,13 @@ public class TeamBuildingModel implements AbstractModel {
 		validateStatus();
 	}
 
+	public TeamBuildingAccessRights getAccessRight(Long memberId) {
+		if (this.memberId.equals(memberId)) {
+			return TeamBuildingAccessRights.EDIT;
+		}
+		return TeamBuildingAccessRights.READ_ONLY;
+	}
+
 	private void validateStatus() {
 		if (!TeamBuildingStatus.validateSame(status, TeamBuildingStatus.PROGRESS)) {
 			throw new DeniedSaveAttendTeamBuildingException();
