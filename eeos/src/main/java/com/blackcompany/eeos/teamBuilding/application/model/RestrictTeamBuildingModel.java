@@ -24,8 +24,8 @@ public class RestrictTeamBuildingModel implements AbstractModel {
 	private Long version;
 
 	public RestrictTeamBuildingModel addActiveCount() {
-		totalActiveCount++;
 		validateCreation();
+		totalActiveCount++;
 
 		return this;
 	}
