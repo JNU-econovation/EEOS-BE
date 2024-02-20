@@ -52,9 +52,7 @@ public class CommandAttendTeamBuildingService
 	private TeamBuildingTargetModel getTargetByActiveBuilding(Long memberId) {
 		Long teamBuildingId = find(TeamBuildingStatus.PROGRESS).getId();
 
-		TeamBuildingTargetEntity entity =
-				queryTeamBuildingTargetService.getTarget(memberId, teamBuildingId);
-		return entityConverter.from(entity);
+		return queryTeamBuildingTargetService.getTarget(memberId, teamBuildingId);
 	}
 
 	private void validateAttendTeamBuilding() {
