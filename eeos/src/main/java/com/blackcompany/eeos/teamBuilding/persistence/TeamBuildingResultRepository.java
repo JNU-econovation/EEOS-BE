@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TeamBuildingResultRepository
 		extends JpaRepository<TeamBuildingResultEntity, Long> {
-	List<TeamBuildingResultEntity> findTopByStatus(TeamBuildingStatus status);
+	List<TeamBuildingResultEntity> findAllByTeamBuildingId(Long id);
 }

@@ -12,7 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -42,6 +41,5 @@ public class TeamBuildingResultEntity extends BaseEntity {
 	private List<Long> memberIds;
 
 	@Column(name = ENTITY_PREFIX + "_status", nullable = false)
-	@Builder.Default
-	private TeamBuildingStatus status = TeamBuildingStatus.COMPLETE;
+	private Long teamBuildingId;
 }

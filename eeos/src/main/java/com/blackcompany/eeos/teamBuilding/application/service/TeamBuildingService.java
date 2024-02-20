@@ -19,7 +19,6 @@ import com.blackcompany.eeos.teamBuilding.application.usecase.CreateTeamBuilding
 import com.blackcompany.eeos.teamBuilding.application.usecase.EndTeamBuildingUsecase;
 import com.blackcompany.eeos.teamBuilding.application.usecase.GetResultTeamBuildingUsecase;
 import com.blackcompany.eeos.teamBuilding.infra.client.ClusteringTeamApiClient;
-import com.blackcompany.eeos.teamBuilding.infra.dto.ClusteringResponse;
 import com.blackcompany.eeos.teamBuilding.infra.dto.converter.ParticipantRequestConverter;
 import com.blackcompany.eeos.teamBuilding.persistence.TeamBuildingEntity;
 import com.blackcompany.eeos.teamBuilding.persistence.TeamBuildingRepository;
@@ -95,14 +94,16 @@ public class TeamBuildingService
 
 	@Override
 	public ResultTeamBuildingResponse getResult(Long memberId) {
+		Long teamBuildingId = queryTeamBuildingService.getByStatus(TeamBuildingStatus.COMPLETE).getId();
+
 		List<List<Long>> memberIds =
-				teamBuildingResultRepository.findTopByStatus(TeamBuildingStatus.COMPLETE).stream()
+				teamBuildingResultRepository.findAllByTeamBuildingId(teamBuildingId).stream()
 						.map(TeamBuildingResultEntity::getMemberIds)
 						.collect(Collectors.toList());
 
 		List<List<MemberEntity>> members = getMembers(memberIds);
 
-		TeamBuildingEntity entity = queryTeamBuildingService.getByStatus(TeamBuildingStatus.PROGRESS);
+		TeamBuildingEntity entity = queryTeamBuildingService.getByStatus(TeamBuildingStatus.COMPLETE);
 		TeamBuildingModel model = entityConverter.from(entity);
 
 		return responseConverter.from(
@@ -131,11 +132,13 @@ public class TeamBuildingService
 		List<TeamBuildingTargetModel> targetModels =
 				queryTeamBuildingTargetService.getTarget(model.getId());
 
-		List<List<String>> datas = clusteringTeamApiClient.fetchResult(
-				apiClientRequestConverter.from(targetModels, model.getMaxTeamSize()));
+		List<List<String>> datas =
+				clusteringTeamApiClient.fetchResult(
+						apiClientRequestConverter.from(targetModels, model.getMaxTeamSize()));
 
-		List<TeamBuildingResultEntity> results = datas.stream()
-						.map(teamBuildingResultConverter::from)
+		List<TeamBuildingResultEntity> results =
+				datas.stream()
+						.map(ids -> teamBuildingResultConverter.from(ids, model.getId()))
 						.collect(Collectors.toList());
 
 		teamBuildingResultRepository.saveAll(results);
