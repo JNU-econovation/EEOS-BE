@@ -18,11 +18,13 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api")
 public class TeamBuildingController {
 	private final CreateTeamBuildingUsecase createTeamBuildingUsecase;
 	private final EndTeamBuildingUsecase endTeamBuildingUsecase;
@@ -52,6 +54,6 @@ public class TeamBuildingController {
 	@PostMapping("/team-building/complete")
 	public ApiResponse<SuccessBody<Void>> complete(@Member Long memberId) {
 		completeTeamBuildingUsecase.complete(memberId);
-		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.GET);
+		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.DELETE);
 	}
 }
