@@ -57,6 +57,7 @@ public class CommandTeamBuildingService
 	}
 
 	@Override
+	@Transactional
 	public void complete(Long memberId) {
 		updateStatus(memberId);
 		restrictTeamBuildingService.subtractTeamBuilding();
@@ -69,6 +70,6 @@ public class CommandTeamBuildingService
 		TeamBuildingModel updateStatus =
 				model.updateStatus(TeamBuildingStatus.COMPLETE.getStatus(), memberId);
 
-		entityConverter.toEntity(updateStatus);
+		teamBuildingRepository.save(entityConverter.toEntity(updateStatus));
 	}
 }
