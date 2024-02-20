@@ -37,8 +37,15 @@ public class RestrictTeamBuildingModel implements AbstractModel {
 		return this;
 	}
 
+	public Accessibility getCreatableAccessibility() {
+		if (isOver()) {
+			return Accessibility.NONCREATABLE;
+		}
+		return Accessibility.CREATABLE;
+	}
+
 	private void validateCreation() {
-		if (totalActiveCount > UPPER_LIMIT) {
+		if (isOver()) {
 			throw new DeniedOverUpperLimitException();
 		}
 	}
@@ -47,5 +54,9 @@ public class RestrictTeamBuildingModel implements AbstractModel {
 		if (totalActiveCount < LOWER_LIMIT) {
 			throw new NotFoundTeamBuildingStatusException(TeamBuildingStatus.PROGRESS.getStatus());
 		}
+	}
+
+	private boolean isOver() {
+		return totalActiveCount >= UPPER_LIMIT;
 	}
 }
