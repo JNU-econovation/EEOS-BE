@@ -67,7 +67,7 @@ public class TeamBuildingService
 	@Override
 	@Transactional
 	public void delete(Long memberId) {
-		TeamBuildingStatus status = TeamBuildingStatus.PROGRESS;
+		TeamBuildingStatus status = TeamBuildingStatus.COMPLETE;
 
 		TeamBuildingModel model =
 				teamBuildingRepository
@@ -76,7 +76,7 @@ public class TeamBuildingService
 						.orElseThrow(() -> new NotFoundTeamBuildingStatusException(status.getStatus()));
 		model.validateEdit(memberId);
 
-		teamBuildingRepository.delete(entityConverter.toEntity(model));
+		teamBuildingRepository.delete(entityConverter.toEntity(model, status));
 
 		restrictTeamBuildingService.subtractTeamBuilding();
 	}
@@ -89,7 +89,6 @@ public class TeamBuildingService
 
 		requestResult(model);
 		updateStatus(memberId);
-		restrictTeamBuildingService.subtractTeamBuilding();
 	}
 
 	@Override

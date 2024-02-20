@@ -32,4 +32,15 @@ public class TeamBuildingEntityConverter
 				.memberId(source.getMemberId())
 				.build();
 	}
+
+	public TeamBuildingEntity toEntity(TeamBuildingModel source, TeamBuildingStatus status) {
+		return TeamBuildingEntity.builder()
+				.id(source.getId())
+				.title(source.getTitle())
+				.content(source.getContent())
+				.maxTeamSize(source.getMaxTeamSize())
+				.status(status)
+				.memberId(source.getMemberId())
+				.build();
+	}
 }
