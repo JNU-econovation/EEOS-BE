@@ -7,9 +7,10 @@ import java.util.Arrays;
 public enum TeamBuildingStatus {
 	/** 진행 중 */
 	PROGRESS("progress"),
-	/** 완료 */
+	/** 팀빌딩 결과 요청 완료 */
 	COMPLETE("completed"),
-	;
+	/** 팀빌딩 결과 종료 */
+	END("end");
 
 	private final String status;
 
