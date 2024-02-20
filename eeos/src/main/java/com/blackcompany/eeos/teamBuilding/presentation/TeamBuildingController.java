@@ -7,6 +7,7 @@ import com.blackcompany.eeos.common.presentation.respnose.ApiResponseGenerator;
 import com.blackcompany.eeos.common.presentation.respnose.MessageCode;
 import com.blackcompany.eeos.teamBuilding.application.dto.CreateTeamBuildingRequest;
 import com.blackcompany.eeos.teamBuilding.application.dto.ValidateTeamBuildingResponse;
+import com.blackcompany.eeos.teamBuilding.application.usecase.CompleteTeamBuildingUsecase;
 import com.blackcompany.eeos.teamBuilding.application.usecase.CreateTeamBuildingUsecase;
 import com.blackcompany.eeos.teamBuilding.application.usecase.EndTeamBuildingUsecase;
 import com.blackcompany.eeos.teamBuilding.application.usecase.ValidateTeamBuildingUsecase;
@@ -26,6 +27,7 @@ public class TeamBuildingController {
 	private final CreateTeamBuildingUsecase createTeamBuildingUsecase;
 	private final EndTeamBuildingUsecase endTeamBuildingUsecase;
 	private final ValidateTeamBuildingUsecase validateTeamBuildingUsecase;
+	private final CompleteTeamBuildingUsecase completeTeamBuildingUsecase;
 
 	@PostMapping("/team-building")
 	public ApiResponse<SuccessBody<Void>> create(
@@ -45,5 +47,11 @@ public class TeamBuildingController {
 			@Member Long memberId, @RequestParam("status") String status) {
 		ValidateTeamBuildingResponse response = validateTeamBuildingUsecase.validate(memberId, status);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
+	}
+
+	@PostMapping("/team-building/complete")
+	public ApiResponse<SuccessBody<Void>> complete(@Member Long memberId) {
+		completeTeamBuildingUsecase.complete(memberId);
+		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.GET);
 	}
 }
