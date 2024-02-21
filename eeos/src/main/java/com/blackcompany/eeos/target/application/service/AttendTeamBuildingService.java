@@ -1,9 +1,12 @@
 package com.blackcompany.eeos.target.application.service;
 
+import com.blackcompany.eeos.member.application.service.QueryMemberService;
 import com.blackcompany.eeos.target.application.dto.AttendTeamBuildingRequest;
+import com.blackcompany.eeos.target.application.dto.QueryTargetInfoResponse;
 import com.blackcompany.eeos.target.application.model.TeamBuildingTargetModel;
 import com.blackcompany.eeos.target.application.model.converter.TeamBuildingTargetEntityConverter;
 import com.blackcompany.eeos.target.application.usecase.AttendTeamBuildingUsecase;
+import com.blackcompany.eeos.target.application.usecase.GetTargetInfoUsecase;
 import com.blackcompany.eeos.target.application.usecase.UpdateAttendTeamBuildingUsecase;
 import com.blackcompany.eeos.target.persistence.TeamBuildingTargetEntity;
 import com.blackcompany.eeos.target.persistence.TeamBuildingTargetRepository;
@@ -20,12 +23,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class AttendTeamBuildingService
-		implements AttendTeamBuildingUsecase, UpdateAttendTeamBuildingUsecase {
+		implements AttendTeamBuildingUsecase, UpdateAttendTeamBuildingUsecase, GetTargetInfoUsecase {
 	private final QueryTeamBuildingService queryTeamBuildingService;
 	private final QueryTeamBuildingTargetService queryTeamBuildingTargetService;
 	private final TeamBuildingTargetEntityConverter entityConverter;
 	private final TeamBuildingTargetRepository teamBuildingTargetRepository;
 	private final TeamBuildingEntityConverter teamBuildingEntityConverter;
+	private final QueryMemberService queryMemberService;
 
 	@Override
 	@Transactional
@@ -47,6 +51,18 @@ public class AttendTeamBuildingService
 				entityConverter.toEntity(model.inputContent(request.getContent()));
 
 		teamBuildingTargetRepository.save(newEntity);
+	}
+
+	@Override
+	public QueryTargetInfoResponse getTargetInfo(Long memberId) {
+		TeamBuildingTargetModel model = getTargetByActiveBuilding(memberId);
+		String name = queryMemberService.getName(memberId);
+
+		return QueryTargetInfoResponse.builder()
+				.name(name)
+				.status(model.getInputStatus())
+				.content(model.getContent())
+				.build();
 	}
 
 	private TeamBuildingTargetModel getTargetByActiveBuilding(Long memberId) {

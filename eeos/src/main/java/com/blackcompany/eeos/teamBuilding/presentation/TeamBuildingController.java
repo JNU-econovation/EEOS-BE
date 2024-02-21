@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/team-building")
 public class TeamBuildingController {
 	private final CreateTeamBuildingUsecase createTeamBuildingUsecase;
 	private final EndTeamBuildingUsecase endTeamBuildingUsecase;
@@ -37,39 +37,39 @@ public class TeamBuildingController {
 	private final GetResultTeamBuildingUsecase getResultTeamBuildingUsecase;
 	private final GetTeamBuildingUsecase getTeamBuildingUsecase;
 
-	@PostMapping("/team-building")
+	@PostMapping
 	public ApiResponse<SuccessBody<Void>> create(
 			@Member Long memberId, @RequestBody @Valid CreateTeamBuildingRequest request) {
 		createTeamBuildingUsecase.create(memberId, request);
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.CREATE);
 	}
 
-	@DeleteMapping("/team-building/end")
+	@DeleteMapping("/end")
 	public ApiResponse<SuccessBody<Void>> end(@Member Long memberId) {
 		endTeamBuildingUsecase.delete(memberId);
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.DELETE);
 	}
 
-	@GetMapping("/team-building/validate")
+	@GetMapping("/validate")
 	public ApiResponse<SuccessBody<ValidateTeamBuildingResponse>> validateStatus(
 			@Member Long memberId, @RequestParam("status") String status) {
 		ValidateTeamBuildingResponse response = validateTeamBuildingUsecase.validate(memberId, status);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
 	}
 
-	@PostMapping("/team-building/complete")
+	@PostMapping("/complete")
 	public ApiResponse<SuccessBody<Void>> complete(@Member Long memberId) {
 		completeTeamBuildingUsecase.complete(memberId);
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.DELETE);
 	}
 
-	@GetMapping("/team-building/result")
+	@GetMapping("/result")
 	public ApiResponse<SuccessBody<ResultTeamBuildingResponse>> getResult(@Member Long memberId) {
 		ResultTeamBuildingResponse response = getResultTeamBuildingUsecase.getResult(memberId);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
 	}
 
-	@GetMapping("/team-building")
+	@GetMapping
 	public ApiResponse<SuccessBody<QueryTeamBuildingResponse>> getTeamBuilding(
 			@Member Long memberId, @RequestParam("status") String status) {
 		QueryTeamBuildingResponse response = getTeamBuildingUsecase.getTeamBuilding(memberId, status);
