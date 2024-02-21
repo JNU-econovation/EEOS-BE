@@ -10,6 +10,7 @@ import com.blackcompany.eeos.teamBuilding.application.dto.EachMemberResponse;
 import com.blackcompany.eeos.teamBuilding.application.dto.ResultTeamBuildingResponse;
 import com.blackcompany.eeos.teamBuilding.application.dto.converter.ResultTeamBuildingResponseConverter;
 import com.blackcompany.eeos.teamBuilding.application.exception.NotFoundTeamBuildingStatusException;
+import com.blackcompany.eeos.teamBuilding.application.model.TeamBuildingAccessRights;
 import com.blackcompany.eeos.teamBuilding.application.model.TeamBuildingModel;
 import com.blackcompany.eeos.teamBuilding.application.model.converter.TeamBuildingEntityConverter;
 import com.blackcompany.eeos.teamBuilding.application.model.converter.TeamBuildingRequestConverter;
@@ -18,6 +19,8 @@ import com.blackcompany.eeos.teamBuilding.application.usecase.CompleteTeamBuildi
 import com.blackcompany.eeos.teamBuilding.application.usecase.CreateTeamBuildingUsecase;
 import com.blackcompany.eeos.teamBuilding.application.usecase.EndTeamBuildingUsecase;
 import com.blackcompany.eeos.teamBuilding.application.usecase.GetResultTeamBuildingUsecase;
+import com.blackcompany.eeos.teamBuilding.application.usecase.GetTeamBuildingUsecase;
+import com.blackcompany.eeos.teamBuilding.application.usecase.QueryTeamBuildingResponse;
 import com.blackcompany.eeos.teamBuilding.infra.client.ClusteringTeamApiClient;
 import com.blackcompany.eeos.teamBuilding.infra.dto.converter.ParticipantRequestConverter;
 import com.blackcompany.eeos.teamBuilding.persistence.TeamBuildingEntity;
@@ -38,7 +41,8 @@ public class TeamBuildingService
 		implements CreateTeamBuildingUsecase,
 				EndTeamBuildingUsecase,
 				CompleteTeamBuildingUsecase,
-				GetResultTeamBuildingUsecase {
+				GetResultTeamBuildingUsecase,
+				GetTeamBuildingUsecase {
 	private final RestrictTeamBuildingService restrictTeamBuildingService;
 	private final TeamBuildingRequestConverter requestConverter;
 	private final TeamBuildingEntityConverter entityConverter;
@@ -107,6 +111,25 @@ public class TeamBuildingService
 
 		return responseConverter.from(
 				model.getAccessRight(memberId).getAccessRight(), combines(members, memberIds));
+	}
+
+	@Override
+	public QueryTeamBuildingResponse getTeamBuilding(Long memberId, String teaBuildingStatus) {
+		TeamBuildingStatus status = TeamBuildingStatus.find(teaBuildingStatus);
+
+		TeamBuildingModel model =
+				teamBuildingRepository
+						.findByStatus(status)
+						.map(entityConverter::from)
+						.orElseThrow(() -> new NotFoundTeamBuildingStatusException(status.getStatus()));
+
+		TeamBuildingAccessRights accessRight = model.getAccessRight(memberId);
+
+		return QueryTeamBuildingResponse.builder()
+				.title(model.getTitle())
+				.content(model.getContent())
+				.accessRight(accessRight.getAccessRight())
+				.build();
 	}
 
 	private List<List<EachMemberResponse>> combines(

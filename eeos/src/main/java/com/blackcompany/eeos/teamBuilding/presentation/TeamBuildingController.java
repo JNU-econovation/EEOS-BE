@@ -12,6 +12,8 @@ import com.blackcompany.eeos.teamBuilding.application.usecase.CompleteTeamBuildi
 import com.blackcompany.eeos.teamBuilding.application.usecase.CreateTeamBuildingUsecase;
 import com.blackcompany.eeos.teamBuilding.application.usecase.EndTeamBuildingUsecase;
 import com.blackcompany.eeos.teamBuilding.application.usecase.GetResultTeamBuildingUsecase;
+import com.blackcompany.eeos.teamBuilding.application.usecase.GetTeamBuildingUsecase;
+import com.blackcompany.eeos.teamBuilding.application.usecase.QueryTeamBuildingResponse;
 import com.blackcompany.eeos.teamBuilding.application.usecase.ValidateTeamBuildingUsecase;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +35,7 @@ public class TeamBuildingController {
 	private final ValidateTeamBuildingUsecase validateTeamBuildingUsecase;
 	private final CompleteTeamBuildingUsecase completeTeamBuildingUsecase;
 	private final GetResultTeamBuildingUsecase getResultTeamBuildingUsecase;
+	private final GetTeamBuildingUsecase getTeamBuildingUsecase;
 
 	@PostMapping("/team-building")
 	public ApiResponse<SuccessBody<Void>> create(
@@ -63,6 +66,13 @@ public class TeamBuildingController {
 	@GetMapping("/team-building/result")
 	public ApiResponse<SuccessBody<ResultTeamBuildingResponse>> getResult(@Member Long memberId) {
 		ResultTeamBuildingResponse response = getResultTeamBuildingUsecase.getResult(memberId);
+		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
+	}
+
+	@GetMapping("/team-building")
+	public ApiResponse<SuccessBody<QueryTeamBuildingResponse>> getTeamBuilding(
+			@Member Long memberId, @RequestParam("status") String status) {
+		QueryTeamBuildingResponse response = getTeamBuildingUsecase.getTeamBuilding(memberId, status);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
 	}
 }
