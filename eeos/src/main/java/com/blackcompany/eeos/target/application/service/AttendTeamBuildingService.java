@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class CommandAttendTeamBuildingService
+public class AttendTeamBuildingService
 		implements AttendTeamBuildingUsecase, UpdateAttendTeamBuildingUsecase {
 	private final QueryTeamBuildingService queryTeamBuildingService;
 	private final QueryTeamBuildingTargetService queryTeamBuildingTargetService;
