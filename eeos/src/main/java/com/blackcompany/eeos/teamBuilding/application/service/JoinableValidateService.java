@@ -33,7 +33,7 @@ public class JoinableValidateService implements ValidateService {
 			queryTeamBuildingTargetService.getTarget(memberId, model.getId());
 			return Accessibility.JOINABLE;
 		} catch (EndTeamBuildingException | NotFoundTargetTeamBuildingException ex) {
-			return Accessibility.NONCREATABLE;
+			return Accessibility.NONJOINABLE;
 		}
 	}
 
