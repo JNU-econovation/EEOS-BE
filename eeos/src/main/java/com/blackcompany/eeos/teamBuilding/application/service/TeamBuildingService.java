@@ -9,6 +9,7 @@ import com.blackcompany.eeos.teamBuilding.application.dto.CreateTeamBuildingRequ
 import com.blackcompany.eeos.teamBuilding.application.dto.EachMemberResponse;
 import com.blackcompany.eeos.teamBuilding.application.dto.ResultTeamBuildingResponse;
 import com.blackcompany.eeos.teamBuilding.application.dto.converter.ResultTeamBuildingResponseConverter;
+import com.blackcompany.eeos.teamBuilding.application.exception.EndTeamBuildingException;
 import com.blackcompany.eeos.teamBuilding.application.exception.NotFoundTeamBuildingStatusException;
 import com.blackcompany.eeos.teamBuilding.application.model.TeamBuildingAccessRights;
 import com.blackcompany.eeos.teamBuilding.application.model.TeamBuildingModel;
@@ -97,32 +98,36 @@ public class TeamBuildingService
 
 	@Override
 	public ResultTeamBuildingResponse getResult(Long memberId) {
-		Long teamBuildingId = queryTeamBuildingService.getByStatus(TeamBuildingStatus.COMPLETE).getId();
+		TeamBuildingEntity entity = queryTeamBuildingService.getByStatus(TeamBuildingStatus.COMPLETE);
+		TeamBuildingModel model = entityConverter.from(entity);
+
+		validateReadAccessibility(memberId, model.getId());
 
 		List<List<Long>> memberIds =
-				teamBuildingResultRepository.findAllByTeamBuildingId(teamBuildingId).stream()
+				teamBuildingResultRepository.findAllByTeamBuildingId(model.getId()).stream()
 						.map(TeamBuildingResultEntity::getMemberIds)
 						.collect(Collectors.toList());
 
 		List<List<MemberEntity>> members = getMembers(memberIds);
-
-		TeamBuildingEntity entity = queryTeamBuildingService.getByStatus(TeamBuildingStatus.COMPLETE);
-		TeamBuildingModel model = entityConverter.from(entity);
 
 		return responseConverter.from(
 				model.getAccessRight(memberId).getAccessRight(), combines(members, memberIds));
 	}
 
 	@Override
-	public QueryTeamBuildingResponse getTeamBuilding(Long memberId, String teaBuildingStatus) {
-		TeamBuildingStatus status = TeamBuildingStatus.find(teaBuildingStatus);
-
+	public QueryTeamBuildingResponse getTeamBuilding(Long memberId) {
 		TeamBuildingModel model =
 				teamBuildingRepository
-						.findByStatus(status)
+						.findByStatus(TeamBuildingStatus.PROGRESS)
 						.map(entityConverter::from)
-						.orElseThrow(() -> new NotFoundTeamBuildingStatusException(status.getStatus()));
+						.orElseGet(
+								() ->
+										teamBuildingRepository
+												.findByStatus(TeamBuildingStatus.COMPLETE)
+												.map(entityConverter::from)
+												.orElseThrow(EndTeamBuildingException::new));
 
+		validateReadAccessibility(memberId, model.getId());
 		TeamBuildingAccessRights accessRight = model.getAccessRight(memberId);
 
 		return QueryTeamBuildingResponse.builder()
@@ -178,5 +183,9 @@ public class TeamBuildingService
 
 	private List<List<MemberEntity>> getMembers(List<List<Long>> memberIds) {
 		return memberIds.stream().map(memberRepository::findMembersByIds).collect(Collectors.toList());
+	}
+
+	private void validateReadAccessibility(Long memberId, Long programId) {
+		queryTeamBuildingTargetService.getTarget(memberId, programId);
 	}
 }

@@ -71,8 +71,8 @@ public class TeamBuildingController {
 
 	@GetMapping
 	public ApiResponse<SuccessBody<QueryTeamBuildingResponse>> getTeamBuilding(
-			@Member Long memberId, @RequestParam("status") String status) {
-		QueryTeamBuildingResponse response = getTeamBuildingUsecase.getTeamBuilding(memberId, status);
+			@Member Long memberId) {
+		QueryTeamBuildingResponse response = getTeamBuildingUsecase.getTeamBuilding(memberId);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
 	}
 }
