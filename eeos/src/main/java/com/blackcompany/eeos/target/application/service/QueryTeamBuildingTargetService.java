@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -17,6 +18,7 @@ public class QueryTeamBuildingTargetService {
 	private final TeamBuildingTargetRepository teamBuildingTargetRepository;
 	private final TeamBuildingTargetEntityConverter entityConverter;
 
+	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	public TeamBuildingTargetModel getTarget(Long memberId, Long teamBuildingId) {
 		return teamBuildingTargetRepository
 				.findByTeamBuildingIdAndMemberId(teamBuildingId, memberId)
