@@ -16,6 +16,7 @@ services:
       - eeos-network
   flyway:
     container_name: eeos-flyway
+    image: flyway/flyway:latest
     command: -url=jdbc:mysql://eeos-mysql:3306/eeos?useSSL=false&allowPublicKeyRetrieval=true  -user=root -password=root migrate
     volumes:
     - ./flyway/conf/:/flyway/conf
