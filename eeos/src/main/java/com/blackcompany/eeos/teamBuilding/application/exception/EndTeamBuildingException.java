@@ -1,9 +1,8 @@
 package com.blackcompany.eeos.teamBuilding.application.exception;
 
-import com.blackcompany.eeos.common.exception.BusinessException;
 import org.springframework.http.HttpStatus;
 
-public class EndTeamBuildingException extends BusinessException {
+public class EndTeamBuildingException extends NotFoundProgressTeamBuildingException {
 	private static final String FAIL_CODE = "6011";
 
 	public EndTeamBuildingException() {
@@ -12,6 +11,6 @@ public class EndTeamBuildingException extends BusinessException {
 
 	@Override
 	public String getMessage() {
-		return "팀빌딩이 종료되어 해당 팀빌딩을 조회할 수 없습니다.";
+		return "팀빌딩이 종료되었습니다.";
 	}
 }

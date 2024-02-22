@@ -9,7 +9,9 @@ import com.blackcompany.eeos.teamBuilding.application.dto.CreateTeamBuildingRequ
 import com.blackcompany.eeos.teamBuilding.application.dto.EachMemberResponse;
 import com.blackcompany.eeos.teamBuilding.application.dto.ResultTeamBuildingResponse;
 import com.blackcompany.eeos.teamBuilding.application.dto.converter.ResultTeamBuildingResponseConverter;
+import com.blackcompany.eeos.teamBuilding.application.exception.CompleteTeamBuildingException;
 import com.blackcompany.eeos.teamBuilding.application.exception.EndTeamBuildingException;
+import com.blackcompany.eeos.teamBuilding.application.exception.NotFoundProgressTeamBuildingException;
 import com.blackcompany.eeos.teamBuilding.application.exception.NotFoundTeamBuildingStatusException;
 import com.blackcompany.eeos.teamBuilding.application.model.TeamBuildingAccessRights;
 import com.blackcompany.eeos.teamBuilding.application.model.TeamBuildingModel;
@@ -30,6 +32,7 @@ import com.blackcompany.eeos.teamBuilding.persistence.TeamBuildingResultEntity;
 import com.blackcompany.eeos.teamBuilding.persistence.TeamBuildingResultRepository;
 import com.blackcompany.eeos.teamBuilding.persistence.TeamBuildingStatus;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -120,12 +123,7 @@ public class TeamBuildingService
 				teamBuildingRepository
 						.findByStatus(TeamBuildingStatus.PROGRESS)
 						.map(entityConverter::from)
-						.orElseGet(
-								() ->
-										teamBuildingRepository
-												.findByStatus(TeamBuildingStatus.COMPLETE)
-												.map(entityConverter::from)
-												.orElseThrow(EndTeamBuildingException::new));
+						.orElseThrow(generateNotFoundProgressTeamBuildingException());
 
 		validateReadAccessibility(memberId, model.getId());
 		TeamBuildingAccessRights accessRight = model.getAccessRight(memberId);
@@ -187,5 +185,14 @@ public class TeamBuildingService
 
 	private void validateReadAccessibility(Long memberId, Long programId) {
 		queryTeamBuildingTargetService.getTarget(memberId, programId);
+	}
+
+	private Supplier<NotFoundProgressTeamBuildingException>
+			generateNotFoundProgressTeamBuildingException() {
+		if (teamBuildingRepository.existsByStatus(TeamBuildingStatus.COMPLETE)) {
+			return CompleteTeamBuildingException::new;
+		} else {
+			return EndTeamBuildingException::new;
+		}
 	}
 }
