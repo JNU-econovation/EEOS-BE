@@ -6,5 +6,5 @@ public interface EndTeamBuildingUsecase {
 	 *
 	 * @param memberId 팀빌딩 작성자
 	 */
-	void delete(Long memberId);
+	void end(Long memberId);
 }
