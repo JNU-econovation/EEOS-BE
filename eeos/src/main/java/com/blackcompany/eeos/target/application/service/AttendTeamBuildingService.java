@@ -36,9 +36,9 @@ public class AttendTeamBuildingService
 	public void create(Long memberId, AttendTeamBuildingRequest request) {
 		TeamBuildingTargetModel model = getTargetByActiveBuilding(memberId);
 
-		TeamBuildingTargetEntity newEntity =
+		TeamBuildingTargetEntity entity =
 				entityConverter.toEntity(model.inputContent(request.getContent()));
-		teamBuildingTargetRepository.save(newEntity);
+		teamBuildingTargetRepository.save(entity);
 	}
 
 	@Override
@@ -47,10 +47,10 @@ public class AttendTeamBuildingService
 		validateAttendTeamBuilding();
 
 		TeamBuildingTargetModel model = getTargetByActiveBuilding(memberId);
-		TeamBuildingTargetEntity newEntity =
+		TeamBuildingTargetEntity entity =
 				entityConverter.toEntity(model.inputContent(request.getContent()));
 
-		teamBuildingTargetRepository.save(newEntity);
+		teamBuildingTargetRepository.save(entity);
 	}
 
 	@Override
