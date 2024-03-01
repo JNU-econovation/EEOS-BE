@@ -52,8 +52,8 @@ class TeamBuildingServiceTest {
 	@DisplayName("진행 중인 팀빌딩의 작성자가 아니라면 수정 권한이 없음 예외가 발생한다.")
 	void denied_edit_team_building() {
 		// given
-		TeamBuildingEntity 생성된_팀빌딩 = TeamBuildingFixture.팀빌딩(TeamBuildingStatus.COMPLETE, 1L);
-		when(teamBuildingRepository.findByStatus(TeamBuildingStatus.COMPLETE))
+		TeamBuildingEntity 생성된_팀빌딩 = TeamBuildingFixture.팀빌딩(TeamBuildingStatus.PROGRESS, 1L);
+		when(teamBuildingRepository.findByStatus(TeamBuildingStatus.PROGRESS))
 				.thenReturn(Optional.of(생성된_팀빌딩));
 
 		// when & then
