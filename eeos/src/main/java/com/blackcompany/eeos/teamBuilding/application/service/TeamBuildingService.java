@@ -9,6 +9,7 @@ import com.blackcompany.eeos.teamBuilding.application.dto.CreateTeamBuildingRequ
 import com.blackcompany.eeos.teamBuilding.application.dto.EachMemberResponse;
 import com.blackcompany.eeos.teamBuilding.application.dto.ResultTeamBuildingResponse;
 import com.blackcompany.eeos.teamBuilding.application.dto.converter.ResultTeamBuildingResponseConverter;
+import com.blackcompany.eeos.teamBuilding.application.event.DeletedTeamBuildingEvent;
 import com.blackcompany.eeos.teamBuilding.application.exception.CompleteTeamBuildingException;
 import com.blackcompany.eeos.teamBuilding.application.exception.EndTeamBuildingException;
 import com.blackcompany.eeos.teamBuilding.application.exception.NotFoundProgressTeamBuildingException;
@@ -20,6 +21,7 @@ import com.blackcompany.eeos.teamBuilding.application.model.converter.TeamBuildi
 import com.blackcompany.eeos.teamBuilding.application.model.converter.TeamBuildingResultConverter;
 import com.blackcompany.eeos.teamBuilding.application.usecase.CompleteTeamBuildingUsecase;
 import com.blackcompany.eeos.teamBuilding.application.usecase.CreateTeamBuildingUsecase;
+import com.blackcompany.eeos.teamBuilding.application.usecase.DeleteTeamBuildingUsecase;
 import com.blackcompany.eeos.teamBuilding.application.usecase.EndTeamBuildingUsecase;
 import com.blackcompany.eeos.teamBuilding.application.usecase.GetResultTeamBuildingUsecase;
 import com.blackcompany.eeos.teamBuilding.application.usecase.GetTeamBuildingUsecase;
@@ -35,6 +37,7 @@ import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,7 +49,8 @@ public class TeamBuildingService
 				EndTeamBuildingUsecase,
 				CompleteTeamBuildingUsecase,
 				GetResultTeamBuildingUsecase,
-				GetTeamBuildingUsecase {
+				GetTeamBuildingUsecase,
+				DeleteTeamBuildingUsecase {
 	private final RestrictTeamBuildingService restrictTeamBuildingService;
 	private final TeamBuildingRequestConverter requestConverter;
 	private final TeamBuildingEntityConverter entityConverter;
@@ -60,6 +64,7 @@ public class TeamBuildingService
 	private final TeamBuildingResultConverter teamBuildingResultConverter;
 	private final MemberRepository memberRepository;
 	private final ResultTeamBuildingResponseConverter responseConverter;
+	private final ApplicationEventPublisher publisher;
 
 	@Override
 	@Transactional
@@ -74,7 +79,7 @@ public class TeamBuildingService
 
 	@Override
 	@Transactional
-	public void delete(Long memberId) {
+	public void end(Long memberId) {
 		TeamBuildingStatus status = TeamBuildingStatus.COMPLETE;
 
 		TeamBuildingModel model =
@@ -135,6 +140,24 @@ public class TeamBuildingService
 				.build();
 	}
 
+	@Override
+	@Transactional
+	public void delete(Long memberId) {
+		TeamBuildingStatus status = TeamBuildingStatus.PROGRESS;
+
+		TeamBuildingModel model =
+				teamBuildingRepository
+						.findByStatus(status)
+						.map(entityConverter::from)
+						.orElseThrow(() -> new NotFoundTeamBuildingStatusException(status.getStatus()));
+
+		model.validateEdit(memberId);
+
+		teamBuildingRepository.delete(entityConverter.toEntity(model));
+		restrictTeamBuildingService.subtractTeamBuilding();
+		publisher.publishEvent(DeletedTeamBuildingEvent.of(model.getId()));
+	}
+
 	private List<List<EachMemberResponse>> combines(
 			List<List<MemberEntity>> members, List<List<Long>> memberIds) {
 		return members.stream()
@@ -191,8 +214,7 @@ public class TeamBuildingService
 			generateNotFoundProgressTeamBuildingException() {
 		if (teamBuildingRepository.existsByStatus(TeamBuildingStatus.COMPLETE)) {
 			return CompleteTeamBuildingException::new;
-		} else {
-			return EndTeamBuildingException::new;
 		}
+		return EndTeamBuildingException::new;
 	}
 }

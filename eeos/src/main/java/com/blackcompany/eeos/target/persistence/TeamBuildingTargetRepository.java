@@ -10,4 +10,6 @@ public interface TeamBuildingTargetRepository
 			Long teamBuildingId, Long memberId);
 
 	List<TeamBuildingTargetEntity> findByTeamBuildingId(Long teamBuildingId);
+
+	void deleteByTeamBuildingId(Long teamBuildingId);
 }

@@ -10,6 +10,7 @@ import com.blackcompany.eeos.teamBuilding.application.dto.ResultTeamBuildingResp
 import com.blackcompany.eeos.teamBuilding.application.dto.ValidateTeamBuildingResponse;
 import com.blackcompany.eeos.teamBuilding.application.usecase.CompleteTeamBuildingUsecase;
 import com.blackcompany.eeos.teamBuilding.application.usecase.CreateTeamBuildingUsecase;
+import com.blackcompany.eeos.teamBuilding.application.usecase.DeleteTeamBuildingUsecase;
 import com.blackcompany.eeos.teamBuilding.application.usecase.EndTeamBuildingUsecase;
 import com.blackcompany.eeos.teamBuilding.application.usecase.GetResultTeamBuildingUsecase;
 import com.blackcompany.eeos.teamBuilding.application.usecase.GetTeamBuildingUsecase;
@@ -36,6 +37,7 @@ public class TeamBuildingController {
 	private final CompleteTeamBuildingUsecase completeTeamBuildingUsecase;
 	private final GetResultTeamBuildingUsecase getResultTeamBuildingUsecase;
 	private final GetTeamBuildingUsecase getTeamBuildingUsecase;
+	private final DeleteTeamBuildingUsecase deleteTeamBuildingUsecase;
 
 	@PostMapping
 	public ApiResponse<SuccessBody<Void>> create(
@@ -46,7 +48,7 @@ public class TeamBuildingController {
 
 	@DeleteMapping("/end")
 	public ApiResponse<SuccessBody<Void>> end(@Member Long memberId) {
-		endTeamBuildingUsecase.delete(memberId);
+		endTeamBuildingUsecase.end(memberId);
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.DELETE);
 	}
 
@@ -74,5 +76,11 @@ public class TeamBuildingController {
 			@Member Long memberId) {
 		QueryTeamBuildingResponse response = getTeamBuildingUsecase.getTeamBuilding(memberId);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
+	}
+
+	@DeleteMapping
+	public ApiResponse<SuccessBody<Void>> deleteTeamBuilding(@Member Long memberId) {
+		deleteTeamBuildingUsecase.delete(memberId);
+		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.DELETE);
 	}
 }
