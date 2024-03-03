@@ -5,10 +5,17 @@
 | Language, Framework | Java, Spring Boot |
 | Database | MySQL, Redis, Flyway |
 | ORM | Spring Data JPA, QueryDSL |
-| 운영 환경 구축 | ECR, ECS, EC2, Docker |
+| 운영 환경 구축 | EC2, Docker |
 | Build | Gradle |
 | CI/CD | Github Actions |
-| library | Spring Open Feign, OAuth 2.0 |
+| Library | Spring Open Feign, OAuth 2.0, Actuator |
+
+## 실행방법
+1. git clone
+2. 환경변수를 설정해줍니다.(env.properties)
+3. docker-compose를 통해 db를 실행합니다.
+4. spring boot를 실행합니다.
+
 
 ## docs
 [서브 도메인 적용하기](https://velog.io/@kssumin/%EC%84%9C%EB%B8%8C-%EB%8F%84%EB%A9%94%EC%9D%B8-%EC%A0%81%EC%9A%A9%ED%95%98%EA%B8%B0)
@@ -21,8 +28,3 @@
 
 [200 status code만 사용하지 말자](https://velog.io/@kssumin/EEOS-%EC%BA%90%EC%8B%B1)
 
-## 실행방법
-1. git clone
-2. 환경변수를 설정해줍니다.(env.properties)
-3. docker-compose를 통해 db를 실행합니다.
-4. spring boot를 실행합니다.
