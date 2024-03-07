@@ -7,6 +7,7 @@ cors:
   allow-origin:
     urls: ${CORS_URL}
 
-api:
-  domain: ${API_DOMAIN}
-  cookie-key: ${COOKIE_KEY}
+token:
+  cookie:
+    domain: ${COOKIE_TOKEN_DOMAIN}
+    path: ${COOKIE_TOKEN_PATH}
