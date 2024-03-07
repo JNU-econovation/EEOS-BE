@@ -5,16 +5,17 @@ import com.blackcompany.eeos.auth.application.dto.converter.TokenResponseConvert
 import com.blackcompany.eeos.auth.application.dto.response.TokenResponse;
 import com.blackcompany.eeos.auth.application.usecase.LoginUsecase;
 import com.blackcompany.eeos.auth.application.usecase.ReissueUsecase;
+import com.blackcompany.eeos.auth.presentation.support.AuthConstants;
 import com.blackcompany.eeos.auth.presentation.support.TokenExtractor;
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponse;
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponseBody.SuccessBody;
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponseGenerator;
 import com.blackcompany.eeos.common.presentation.respnose.MessageCode;
-import com.blackcompany.eeos.common.utils.TimeUtil;
+import com.blackcompany.eeos.common.presentation.support.CookieManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,26 +30,20 @@ public class AuthController {
 	private final LoginUsecase loginUsecase;
 	private final ReissueUsecase reissueUsecase;
 	private final TokenExtractor tokenExtractor;
+	private final CookieManager cookieManager;
 	private final TokenResponseConverter tokenResponseConverter;
-	private final String cookieKey;
-	private final String domain;
-	private final long validTime;
 
 	public AuthController(
 			LoginUsecase loginUsecase,
 			ReissueUsecase reissueUsecase,
 			@Qualifier("cookie") TokenExtractor tokenExtractor,
 			TokenResponseConverter tokenResponseConverter,
-			@Value("${api.cookie-key}") String cookieKey,
-			@Value("${api.domain}") String domain,
-			@Value("${security.jwt.refresh.validTime}") long validTime) {
+			CookieManager cookieManager) {
 		this.loginUsecase = loginUsecase;
 		this.reissueUsecase = reissueUsecase;
 		this.tokenExtractor = tokenExtractor;
 		this.tokenResponseConverter = tokenResponseConverter;
-		this.cookieKey = cookieKey;
-		this.domain = domain;
-		this.validTime = validTime;
+		this.cookieManager = cookieManager;
 	}
 
 	@PostMapping("/login/{oauthServerType}")
@@ -73,25 +68,14 @@ public class AuthController {
 		return ApiResponseGenerator.success(response, HttpStatus.CREATED, MessageCode.CREATE);
 	}
 
-	private TokenResponse toResponse(TokenModel tokenModel, HttpServletResponse httpResponse) {
+	private TokenResponse toResponse(TokenModel tokenModel, HttpServletResponse httpServletResponse) {
 		TokenResponse response =
 				tokenResponseConverter.from(tokenModel.getAccessToken(), tokenModel.getAccessExpiredTime());
-		setCookie(httpResponse, tokenModel);
+
+		ResponseCookie cookie =
+				cookieManager.createCookie(AuthConstants.TOKEN_KEY, tokenModel.getRefreshToken());
+		httpServletResponse.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
 		return response;
-	}
-
-	private void setCookie(HttpServletResponse response, TokenModel tokenModel) {
-		ResponseCookie cookie =
-				ResponseCookie.from(cookieKey, tokenModel.getRefreshToken())
-						.path("/")
-						.domain(domain)
-						.httpOnly(true)
-						.secure(true)
-						.sameSite("None")
-						.maxAge(TimeUtil.convertSecondsFromMillis(validTime))
-						.build();
-
-		response.addHeader("Set-Cookie", cookie.toString());
 	}
 }
