@@ -1,13 +1,13 @@
 package com.blackcompany.eeos.auth.presentation.support;
 
-import com.blackcompany.eeos.common.presentation.support.CookieGenerator;
+import com.blackcompany.eeos.common.presentation.support.CookieManager;
 import com.blackcompany.eeos.common.utils.TimeUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AuthCookieGenerator implements CookieGenerator {
+public class AuthCookieManager implements CookieManager {
 
 	private static final Boolean HTTP_ONLY = true;
 	private static final Boolean SECURE = true;
