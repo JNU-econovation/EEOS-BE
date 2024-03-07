@@ -7,6 +7,7 @@ spring:
         - oauth
         - token
         - actuator
+        - local-redis
       dev:
         - mysql
         - api
@@ -14,6 +15,7 @@ spring:
         - token
         - log
         - actuator
+        - redis
       prod:
         - mysql
         - api
@@ -21,4 +23,5 @@ spring:
         - token
         - log
         - actuator
+        - redis
     active: local
