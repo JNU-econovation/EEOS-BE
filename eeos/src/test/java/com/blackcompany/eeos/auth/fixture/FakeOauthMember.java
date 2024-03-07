@@ -2,7 +2,7 @@ package com.blackcompany.eeos.auth.fixture;
 
 import com.blackcompany.eeos.auth.application.domain.OauthMemberModel;
 import com.blackcompany.eeos.auth.application.domain.OauthServerType;
-import com.blackcompany.eeos.auth.persistence.OauthInfoEntity;
+import com.blackcompany.eeos.auth.persistence.OAuthMemberEntity;
 
 public class FakeOauthMember {
 	public static OauthMemberModel oauthMemberModel() {
@@ -13,7 +13,7 @@ public class FakeOauthMember {
 				.build();
 	}
 
-	public static OauthInfoEntity oauthInfoEntity() {
-		return OauthInfoEntity.builder().oauthId("oauthId").memberId(1L).build();
+	public static OAuthMemberEntity oauthInfoEntity() {
+		return OAuthMemberEntity.builder().oauthId("oauthId").memberId(1L).build();
 	}
 }
