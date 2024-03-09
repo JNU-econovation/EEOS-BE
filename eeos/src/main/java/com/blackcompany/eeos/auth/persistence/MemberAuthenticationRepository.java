@@ -11,11 +11,11 @@ public class MemberAuthenticationRepository {
 
 	private final RedisTemplate<String, Object> redisTemplate;
 
-	public void setData(String key, Long value, Long expiredTime) {
+	public void save(String key, Long value, Long expiredTime) {
 		redisTemplate.opsForValue().set(key, value, expiredTime, TimeUnit.MILLISECONDS);
 	}
 
-	public boolean isExistKey(String key) {
+	public boolean isExistToken(String key) {
 		return redisTemplate.hasKey(key);
 	}
 }
