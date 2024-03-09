@@ -2,7 +2,8 @@ spring:
   profiles:
     group:
       test:
-        - test-mysql
+        - local-mysql
+        - local-redis
         - test-api
         - test-token
         - test-oauth
