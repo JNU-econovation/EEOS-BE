@@ -4,8 +4,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 import com.blackcompany.eeos.auth.application.domain.OauthMemberModel;
+import com.blackcompany.eeos.auth.application.support.AuthenticationTokenGenerator;
 import com.blackcompany.eeos.auth.fixture.FakeOauthMember;
-import com.blackcompany.eeos.auth.persistence.OauthInfoEntity;
+import com.blackcompany.eeos.auth.persistence.OAuthMemberEntity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,10 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class AuthFacadeServiceTest {
-	@Mock CreateTokenService createTokenService;
-
-	@Mock AuthService authService;
 	@Mock OauthClientService oauthClientService;
+	@Mock AuthenticationTokenGenerator authenticationTokenGenerator;
 
 	@InjectMocks AuthFacadeService authFacadeService;
 
@@ -33,15 +32,14 @@ class AuthFacadeServiceTest {
 		String uri = "uri";
 
 		OauthMemberModel oauthMemberModel = FakeOauthMember.oauthMemberModel();
-		OauthInfoEntity oauthInfoEntity = FakeOauthMember.oauthInfoEntity();
+		OAuthMemberEntity oAuthMemberEntity = FakeOauthMember.oauthInfoEntity();
 
 		when(oauthClientService.getOauthMember(type, authCode, uri)).thenReturn(oauthMemberModel);
-		when(authService.login(oauthMemberModel)).thenReturn(oauthInfoEntity);
 
 		// when
 		authFacadeService.login(type, authCode, uri);
 
 		// then
-		Mockito.verify(createTokenService).execute(memberId);
+		Mockito.verify(authenticationTokenGenerator).execute(memberId);
 	}
 }
