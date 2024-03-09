@@ -18,8 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class ReissueServiceTest {
 
-	@Mock
-	AuthenticationTokenGenerator authenticationTokenGenerator;
+	@Mock AuthenticationTokenGenerator authenticationTokenGenerator;
 	@Mock MemberAuthenticationRepository memberAuthenticationRepository;
 
 	@Mock TokenResolver tokenResolver;
