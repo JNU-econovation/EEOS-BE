@@ -20,9 +20,9 @@ import lombok.experimental.SuperBuilder;
 @ToString
 @SuperBuilder(toBuilder = true)
 @Entity
-@Table(name = OauthInfoEntity.ENTITY_PREFIX)
-public class OauthInfoEntity extends BaseEntity {
-	public static final String ENTITY_PREFIX = "oauth_info";
+@Table(name = OAuthMemberEntity.ENTITY_PREFIX)
+public class OAuthMemberEntity extends BaseEntity {
+	public static final String ENTITY_PREFIX = "oauth_member";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

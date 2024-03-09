@@ -2,10 +2,12 @@ spring:
   config:
     activate:
       on-profile: test-api
+
 cors:
   allow-origin:
     urls: test
 
-api:
-  domain: domain
-  cookie-key: key
+token:
+  cookie:
+    domain: domain
+    path: key

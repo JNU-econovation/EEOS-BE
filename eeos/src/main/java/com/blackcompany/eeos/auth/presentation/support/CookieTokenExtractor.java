@@ -8,14 +8,13 @@ import org.springframework.stereotype.Component;
 
 @Component("cookie")
 public class CookieTokenExtractor implements TokenExtractor {
-	private static final String cookieKey = "eeos_token";
 
 	@Override
 	public String extract(HttpServletRequest request) {
 		Cookie[] cookies = getCookies(request);
 
 		for (Cookie cookie : cookies) {
-			if (Objects.equals(cookieKey, cookie.getName())) {
+			if (Objects.equals(AuthConstants.TOKEN_KEY, cookie.getName())) {
 				return getValue(cookie.getValue());
 			}
 		}

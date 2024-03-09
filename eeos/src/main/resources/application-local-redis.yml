@@ -1,0 +1,7 @@
+spring:
+  config:
+    activate:
+      on-profile: local-redis
+  redis:
+    host: localhost
+    port : 16379

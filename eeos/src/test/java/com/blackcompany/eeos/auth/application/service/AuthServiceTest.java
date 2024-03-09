@@ -5,10 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.blackcompany.eeos.auth.application.domain.converter.OauthInfoEntityConverter;
+import com.blackcompany.eeos.auth.application.domain.converter.OauthMemberEntityConverter;
 import com.blackcompany.eeos.auth.fixture.FakeOauthMember;
-import com.blackcompany.eeos.auth.persistence.OauthInfoEntity;
-import com.blackcompany.eeos.auth.persistence.OauthInfoRepository;
+import com.blackcompany.eeos.auth.persistence.OAuthMemberEntity;
+import com.blackcompany.eeos.auth.persistence.OAuthMemberRepository;
 import com.blackcompany.eeos.member.application.model.ActiveStatus;
 import com.blackcompany.eeos.member.application.model.converter.MemberEntityConverter;
 import com.blackcompany.eeos.member.fixture.MemberFixture;
@@ -25,40 +25,40 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
-	@Mock OauthInfoRepository oauthInfoRepository;
-	@InjectMocks AuthService authService;
-	@Mock MemberRepository memberRepository;
-	@Spy OauthInfoEntityConverter oauthInfoEntityConverter;
 
+	@Mock MemberRepository memberRepository;
+	@Mock OAuthMemberRepository oAuthMemberRepository;
 	@Spy MemberEntityConverter memberEntityConverter;
+	@Spy OauthMemberEntityConverter oauthMemberEntityConverter;
+	@InjectMocks AuthService authService;
 
 	@Test
-	@DisplayName("새로운 회원인 경우 oauth에서 가져온 회원 정보를 저장한다.")
+	@DisplayName("신규 회원인 경우 oauth에서 가져온 회원 정보를 저장한다.")
 	void login_existing_user() {
 		// given
-		when(oauthInfoRepository.findByOauthId(FakeOauthMember.oauthMemberModel().getOauthId()))
+		when(oAuthMemberRepository.findByOauthId(FakeOauthMember.oauthMemberModel().getOauthId()))
 				.thenReturn(Optional.ofNullable(null));
 		when(memberRepository.save(Mockito.any()))
 				.thenReturn(MemberFixture.멤버_엔티티(1L, ActiveStatus.AM));
 
 		// when
-		authService.login(FakeOauthMember.oauthMemberModel());
+		authService.authenticate(FakeOauthMember.oauthMemberModel());
 
 		// then
 		assertAll(
 				() -> verify(memberRepository).save(Mockito.any()),
-				() -> verify(oauthInfoRepository).save(Mockito.any()));
+				() -> verify(oAuthMemberRepository).save(Mockito.any()));
 	}
 
 	@Test
 	@DisplayName("기존 회원인 경우 존재하던 oauth 정보를 가져온다.")
 	void login_new_user() {
 		// given
-		when(oauthInfoRepository.findByOauthId(FakeOauthMember.oauthMemberModel().getOauthId()))
+		when(oAuthMemberRepository.findByOauthId(FakeOauthMember.oauthMemberModel().getOauthId()))
 				.thenReturn(Optional.of(FakeOauthMember.oauthInfoEntity()));
 
 		// when
-		OauthInfoEntity entity = authService.login(FakeOauthMember.oauthMemberModel());
+		OAuthMemberEntity entity = authService.authenticate(FakeOauthMember.oauthMemberModel());
 
 		// then
 		assertEquals(entity.getOauthId(), FakeOauthMember.oauthMemberModel().getOauthId());
