@@ -7,12 +7,12 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class MemberAuthenticationRepository {
+public class BlackAuthenticationRepository {
 
 	private final RedisTemplate<String, Object> redisTemplate;
 
-	public void save(String key, Long value, Long expiredTime) {
-		redisTemplate.opsForValue().set(key, value, expiredTime, TimeUnit.MILLISECONDS);
+	public void save(String token, Long memberId, Long expiration) {
+		redisTemplate.opsForValue().set(token, memberId, expiration, TimeUnit.MILLISECONDS);
 	}
 
 	public boolean isExistToken(String key) {

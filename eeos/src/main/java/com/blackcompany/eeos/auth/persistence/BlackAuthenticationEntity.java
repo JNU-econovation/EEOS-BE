@@ -15,7 +15,7 @@ import org.springframework.data.redis.core.TimeToLive;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class MemberAuthenticationEntity {
+public class BlackAuthenticationEntity {
 	@Id private String token;
 	private Long memberId;
 	@TimeToLive private Long expiration;
