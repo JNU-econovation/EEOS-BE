@@ -19,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class AuthFacadeServiceTest {
 	@Mock OauthClientService oauthClientService;
 	@Mock AuthenticationTokenGenerator authenticationTokenGenerator;
+	@Mock AuthService authService;
 
 	@InjectMocks AuthFacadeService authFacadeService;
 
@@ -35,6 +36,7 @@ class AuthFacadeServiceTest {
 		OAuthMemberEntity oAuthMemberEntity = FakeOauthMember.oauthInfoEntity();
 
 		when(oauthClientService.getOauthMember(type, authCode, uri)).thenReturn(oauthMemberModel);
+		when(authService.authenticate(oauthMemberModel)).thenReturn(oAuthMemberEntity);
 
 		// when
 		authFacadeService.login(type, authCode, uri);
