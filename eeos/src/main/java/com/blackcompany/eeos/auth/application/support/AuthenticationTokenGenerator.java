@@ -20,8 +20,8 @@ public class AuthenticationTokenGenerator {
 
 		return tokenModelConverter.from(
 				accessToken,
-				tokenResolver.getExpiredDateByHeader(accessToken),
+				tokenResolver.getExpiredDateByAccessToken(accessToken),
 				refreshToken,
-				tokenResolver.getExpiredDateByCookie(refreshToken));
+				tokenResolver.getExpiredDateByRefreshToken(refreshToken));
 	}
 }

@@ -30,7 +30,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 		}
 
 		String token = tokenExtractor.extract(request);
-		tokenResolver.getUserInfoByHeader(token);
+		tokenResolver.getUserDataByAccessToken(token);
 		return true;
 	}
 
