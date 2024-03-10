@@ -6,7 +6,9 @@ import com.blackcompany.eeos.auth.application.dto.response.TokenResponse;
 import com.blackcompany.eeos.auth.application.usecase.LogOutUsecase;
 import com.blackcompany.eeos.auth.application.usecase.LoginUsecase;
 import com.blackcompany.eeos.auth.application.usecase.ReissueUsecase;
+import com.blackcompany.eeos.auth.application.usecase.WithDrawUsecase;
 import com.blackcompany.eeos.auth.presentation.support.AuthConstants;
+import com.blackcompany.eeos.auth.presentation.support.Member;
 import com.blackcompany.eeos.auth.presentation.support.TokenExtractor;
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponse;
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponseBody.SuccessBody;
@@ -34,6 +36,7 @@ public class AuthController {
 	private final CookieManager cookieManager;
 	private final TokenResponseConverter tokenResponseConverter;
 	private final LogOutUsecase logOutUsecase;
+	private final WithDrawUsecase withDrawUsecase;
 
 	public AuthController(
 			LoginUsecase loginUsecase,
@@ -41,13 +44,15 @@ public class AuthController {
 			@Qualifier("cookie") TokenExtractor tokenExtractor,
 			TokenResponseConverter tokenResponseConverter,
 			CookieManager cookieManager,
-			LogOutUsecase logOutUsecase) {
+			LogOutUsecase logOutUsecase,
+			WithDrawUsecase withDrawUsecase) {
 		this.loginUsecase = loginUsecase;
 		this.reissueUsecase = reissueUsecase;
 		this.tokenExtractor = tokenExtractor;
 		this.tokenResponseConverter = tokenResponseConverter;
 		this.cookieManager = cookieManager;
 		this.logOutUsecase = logOutUsecase;
+		this.withDrawUsecase = withDrawUsecase;
 	}
 
 	@PostMapping("/login/{oauthServerType}")
@@ -74,9 +79,19 @@ public class AuthController {
 
 	@PostMapping("/logout")
 	ApiResponse<SuccessBody<Void>> logout(
-			HttpServletRequest request, HttpServletResponse httpResponse, Long memberId) {
+			HttpServletRequest request, HttpServletResponse httpResponse, @Member Long memberId) {
 		String token = tokenExtractor.extract(request);
 		logOutUsecase.logOut(token, memberId);
+		deleteTokenResponse(httpResponse);
+
+		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.DELETE);
+	}
+
+	@PostMapping("/withdraw")
+	ApiResponse<SuccessBody<Void>> withDraw(
+			HttpServletRequest request, HttpServletResponse httpResponse, @Member Long memberId) {
+		String token = tokenExtractor.extract(request);
+		withDrawUsecase.withDraw(token, memberId);
 		deleteTokenResponse(httpResponse);
 
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.DELETE);
