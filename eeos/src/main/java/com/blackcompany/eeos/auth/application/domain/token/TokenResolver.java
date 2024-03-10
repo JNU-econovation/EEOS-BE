@@ -1,9 +1,7 @@
 package com.blackcompany.eeos.auth.application.domain.token;
 
-import com.blackcompany.eeos.auth.application.exception.NotFoundCookieException;
-import com.blackcompany.eeos.auth.application.exception.NotFoundHeaderTokenException;
-import com.blackcompany.eeos.auth.application.exception.RtTokenExpiredException;
 import com.blackcompany.eeos.auth.application.exception.TokenExpiredException;
+import com.blackcompany.eeos.auth.application.exception.TokenParsingException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -27,61 +25,57 @@ public class TokenResolver {
 	public TokenResolver(
 			@Value("${security.jwt.access.secretKey}") String accessSecretKey,
 			@Value("${security.jwt.refresh.secretKey}") String refreshSecretKey) {
-		this.accessSecretKey = Keys.hmacShaKeyFor(accessSecretKey.getBytes(StandardCharsets.UTF_8));
-		this.refreshSecretKey = Keys.hmacShaKeyFor(refreshSecretKey.getBytes(StandardCharsets.UTF_8));
+		this.accessSecretKey = generateSecretKey(accessSecretKey);
+		this.refreshSecretKey = generateSecretKey(refreshSecretKey);
 	}
 
-	public Long getExpiredDateByHeader(final String token) {
-		Date expiration = getAccessClaims(token).getExpiration();
-
-		return expiration.getTime();
+	public Long getExpiredDateByAccessToken(final String token) {
+		return getExpirationTime(getAccessClaims(token));
 	}
 
-	public Long getUserInfoByCookie(final String token) {
-		return getRefreshClaims(token).get(MEMBER_ID_CLAIM_KEY, Long.class);
+	public Long getExpiredDateByRefreshToken(final String token) {
+		return getExpirationTime(getRefreshClaims(token));
 	}
 
-	public Long getExpiredDateByCookie(final String token) {
-		Date expiration = getRefreshClaims(token).getExpiration();
-
-		return expiration.getTime();
+	public Long getUserDataByAccessToken(final String token) {
+		return getClaimValue(getAccessClaims(token), MEMBER_ID_CLAIM_KEY);
 	}
 
-	public Long getUserInfoByHeader(final String token) {
-		return getAccessClaims(token).get(MEMBER_ID_CLAIM_KEY, Long.class);
+	public Long getUserDataByRefreshToken(final String token) {
+		return getClaimValue(getRefreshClaims(token), MEMBER_ID_CLAIM_KEY);
+	}
+
+	private SecretKey generateSecretKey(String key) {
+		return Keys.hmacShaKeyFor(key.getBytes(StandardCharsets.UTF_8));
 	}
 
 	private Claims getAccessClaims(final String token) {
-		try {
-			return Jwts.parserBuilder()
-					.setSigningKey(accessSecretKey)
-					.build()
-					.parseClaimsJws(token)
-					.getBody();
-		} catch (ExpiredJwtException e) {
-			throw new TokenExpiredException();
-		} catch (SignatureException e) {
-			log.error("jwt 파싱에 에러가 발생했습니다.");
-			throw new NotFoundHeaderTokenException();
-		} catch (IllegalStateException e) {
-			throw new NotFoundHeaderTokenException();
-		}
+		return parseClaims(token, accessSecretKey);
 	}
 
 	private Claims getRefreshClaims(final String token) {
+		return parseClaims(token, refreshSecretKey);
+	}
+
+	private Claims parseClaims(final String token, final SecretKey secretKey) {
 		try {
-			return Jwts.parserBuilder()
-					.setSigningKey(refreshSecretKey)
-					.build()
-					.parseClaimsJws(token)
-					.getBody();
+			return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody();
 		} catch (ExpiredJwtException e) {
-			throw new RtTokenExpiredException();
+			throw new TokenExpiredException();
 		} catch (SignatureException e) {
-			log.error("jwt 파싱에 에러가 발생했습니다.");
-			throw new NotFoundCookieException();
-		} catch (IllegalStateException e) {
-			throw new NotFoundCookieException();
+			throw new TokenParsingException(e);
+		} catch (Exception e) {
+			log.error("JWT 파싱 중 오류 발생: {}", e.getMessage(), e);
+			throw new TokenParsingException(e);
 		}
+	}
+
+	private Long getExpirationTime(Claims claims) {
+		Date expiration = claims.getExpiration();
+		return expiration.getTime();
+	}
+
+	private Long getClaimValue(Claims claims, String claimKey) {
+		return claims.get(claimKey, Long.class);
 	}
 }
