@@ -48,7 +48,7 @@ class ReissueServiceTest {
 
 		when(tokenResolver.getUserDataByRefreshToken(token)).thenReturn(memberId);
 		when(blackAuthenticationRepository.isExistToken(token)).thenReturn(Boolean.FALSE);
-		when(tokenResolver.getExpiredDateByAccessToken(token)).thenReturn(validTime);
+		when(tokenResolver.getExpiredDateByRefreshToken(token)).thenReturn(validTime);
 
 		// when
 		reissueService.execute(token);
