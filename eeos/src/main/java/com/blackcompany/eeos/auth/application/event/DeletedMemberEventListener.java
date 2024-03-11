@@ -1,7 +1,7 @@
 package com.blackcompany.eeos.auth.application.event;
 
-import com.blackcompany.eeos.auth.persistence.OAuthMemberRepository;
-import com.blackcompany.eeos.member.persistence.MemberRepository;
+import com.blackcompany.eeos.auth.application.domain.token.TokenResolver;
+import com.blackcompany.eeos.auth.persistence.BlackAuthenticationRepository;
 import com.blackcompany.eeos.target.persistence.AttendRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,24 +16,27 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @RequiredArgsConstructor
 @Slf4j
 public class DeletedMemberEventListener {
-	private final MemberRepository memberRepository;
-	private final OAuthMemberRepository oAuthMemberRepository;
 	private final AttendRepository attendRepository;
+	private final BlackAuthenticationRepository blackAuthenticationRepository;
+	private final TokenResolver tokenResolver;
 
 	@Async
 	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void handleDeletedProgram(DeletedMemberEvent event) {
-		deleteMemberData(event.getMemberId());
 		deleteTargetData(event.getMemberId());
-	}
-
-	private void deleteMemberData(Long memberId) {
-		memberRepository.deleteById(memberId);
-		oAuthMemberRepository.findByMemberId(memberId).ifPresent(oAuthMemberRepository::delete);
+		saveUsedToken(event.getToken(), event.getMemberId());
 	}
 
 	private void deleteTargetData(Long memberId) {
 		attendRepository.deleteAllByMemberId(memberId);
+	}
+
+	private void saveUsedToken(String token, Long memberId) {
+		blackAuthenticationRepository.save(token, memberId, getExpiredDate(token));
+	}
+
+	private Long getExpiredDate(String token) {
+		return tokenResolver.getExpiredDateByRefreshToken(token);
 	}
 }
