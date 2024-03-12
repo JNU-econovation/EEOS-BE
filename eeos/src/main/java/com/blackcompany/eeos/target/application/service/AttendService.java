@@ -5,7 +5,8 @@ import com.blackcompany.eeos.member.application.model.MemberModel;
 import com.blackcompany.eeos.member.application.model.converter.MemberEntityConverter;
 import com.blackcompany.eeos.member.application.service.QueryMemberService;
 import com.blackcompany.eeos.member.persistence.MemberRepository;
-import com.blackcompany.eeos.program.application.service.ProgramValidService;
+import com.blackcompany.eeos.program.application.exception.NotFoundProgramException;
+import com.blackcompany.eeos.program.persistence.ProgramRepository;
 import com.blackcompany.eeos.target.application.dto.AttendInfoActiveStatusResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfoResponse;
 import com.blackcompany.eeos.target.application.dto.ChangeAttendStatusRequest;
@@ -44,7 +45,6 @@ public class AttendService
 
 	private final AttendRepository attendRepository;
 	private final MemberRepository memberRepository;
-	private final ProgramValidService programValidService;
 	private final AttendInfoConverter infoConverter;
 	private final AttendEntityConverter attendEntityConverter;
 	private final QueryMemberService queryMemberService;
@@ -54,10 +54,11 @@ public class AttendService
 	private final QueryAttendStatusResponseConverter attendStatusResponseConverter;
 	private final AttendInfoActiveStatusConverter attendInfoActiveStatusConverter;
 	private final QueryAttendActiveStatusConverter queryAttendActiveStatusConverter;
+	private final ProgramRepository programRepository;
 
 	@Override
 	public List<AttendInfoResponse> findAttendInfo(final Long programId) {
-		programValidService.validate(programId);
+		validateExistsProgram(programId);
 
 		return memberRepository.findMembersByProgramId(programId).stream()
 				.map(member -> infoConverter.from(member, getAttendStatus(member.getId(), programId)))
@@ -66,7 +67,7 @@ public class AttendService
 
 	@Override
 	public QueryAttendStatusResponse findAttendInfo(final Long programId, final String attendStatus) {
-		programValidService.validate(programId);
+		validateExistsProgram(programId);
 
 		List<AttendModel> attends = findAttendByAttendStatus(programId, attendStatus);
 		List<MemberModel> members = findMembers(attends);
@@ -189,5 +190,11 @@ public class AttendService
 		return memberRepository.findMembersByActiveStatus(ActiveStatus.find(activeStatus)).stream()
 				.map(memberEntityConverter::from)
 				.collect(Collectors.toList());
+	}
+
+	private void validateExistsProgram(Long programId) {
+		if (!programRepository.existsById(programId)) {
+			throw new NotFoundProgramException(programId);
+		}
 	}
 }
