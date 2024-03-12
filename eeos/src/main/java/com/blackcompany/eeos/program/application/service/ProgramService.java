@@ -82,9 +82,9 @@ public class ProgramService
 	@Override
 	@Transactional
 	public CommandProgramResponse update(
-			final Long writerId, final Long programId, final UpdateProgramRequest request) {
+			final Long memberId, final Long programId, final UpdateProgramRequest request) {
 		ProgramModel model = findProgram(programId);
-		ProgramModel requestModel = requestConverter.from(writerId, request, programId);
+		ProgramModel requestModel = requestConverter.from(memberId, request, programId);
 
 		updateProgram(model, requestModel);
 		updateAttend(request.getMembers(), model);
