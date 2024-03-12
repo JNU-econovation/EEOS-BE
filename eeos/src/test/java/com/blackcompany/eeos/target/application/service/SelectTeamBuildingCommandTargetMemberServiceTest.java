@@ -30,8 +30,7 @@ class SelectTeamBuildingCommandTargetMemberServiceTest {
 	@Mock private MemberRepository memberRepository;
 	@Spy private MemberEntityConverter memberEntityConverter;
 
-	@InjectMocks
-	private SelectTeamBuildingCommandTargetMemberMemberService selectTeamBuildingTargetService;
+	@InjectMocks private CommandTeamBuildingTargetMemberService selectTeamBuildingTargetService;
 
 	@Test
 	@DisplayName("대상자를 전달받아 팀빌딩 대상자로 저장한다.")

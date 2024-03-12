@@ -3,8 +3,8 @@ package com.blackcompany.eeos.teamBuilding.application.service;
 import com.blackcompany.eeos.member.persistence.MemberEntity;
 import com.blackcompany.eeos.member.persistence.MemberRepository;
 import com.blackcompany.eeos.target.application.model.TeamBuildingTargetModel;
+import com.blackcompany.eeos.target.application.service.CommandTeamBuildingTargetMemberService;
 import com.blackcompany.eeos.target.application.service.QueryTeamBuildingTargetService;
-import com.blackcompany.eeos.target.application.service.SelectTeamBuildingCommandTargetMemberMemberService;
 import com.blackcompany.eeos.teamBuilding.application.dto.CreateTeamBuildingRequest;
 import com.blackcompany.eeos.teamBuilding.application.dto.EachMemberResponse;
 import com.blackcompany.eeos.teamBuilding.application.dto.ResultTeamBuildingResponse;
@@ -55,7 +55,7 @@ public class TeamBuildingService
 	private final TeamBuildingRequestConverter requestConverter;
 	private final TeamBuildingEntityConverter entityConverter;
 	private final TeamBuildingRepository teamBuildingRepository;
-	private final SelectTeamBuildingCommandTargetMemberMemberService teamBuildingTargetService;
+	private final CommandTeamBuildingTargetMemberService teamBuildingTargetService;
 	private final QueryTeamBuildingService queryTeamBuildingService;
 	private final QueryTeamBuildingTargetService queryTeamBuildingTargetService;
 	private final ClusteringTeamApiClient clusteringTeamApiClient;
