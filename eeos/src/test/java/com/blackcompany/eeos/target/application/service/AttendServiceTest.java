@@ -1,7 +1,6 @@
 package com.blackcompany.eeos.target.application.service;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import com.blackcompany.eeos.member.application.model.ActiveStatus;
@@ -63,7 +62,7 @@ class AttendServiceTest {
 		AttendEntity 바다_참석 =
 				com.blackcompany.eeos.target.fixture.AttendFixture.참석대상자_엔티티(2L, AttendStatus.ATTEND);
 
-		doNothing().when(programRepository).existsById(programId);
+		when(programRepository.existsById(programId)).thenReturn(Boolean.TRUE);
 		when(attendRepository.findAllByProgramIdAndStatus(programId, AttendStatus.find(attendStatus)))
 				.thenReturn(List.of(수민_참석, 바다_참석));
 		when(memberRepository.findMembersByIds(List.of(수민_참석.getMemberId(), 바다_참석.getMemberId())))
