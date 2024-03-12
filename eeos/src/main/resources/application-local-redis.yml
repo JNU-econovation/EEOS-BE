@@ -5,3 +5,4 @@ spring:
   redis:
     host: localhost
     port : 16379
+    password: root
