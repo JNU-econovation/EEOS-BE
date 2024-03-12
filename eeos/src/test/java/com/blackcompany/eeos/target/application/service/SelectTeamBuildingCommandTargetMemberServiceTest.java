@@ -13,6 +13,7 @@ import com.blackcompany.eeos.target.application.model.converter.TeamBuildingTarg
 import com.blackcompany.eeos.target.fixture.TargetMemberFixture;
 import com.blackcompany.eeos.target.persistence.TeamBuildingTargetRepository;
 import com.blackcompany.eeos.teamBuilding.application.dto.TeamBuildingMember;
+import com.blackcompany.eeos.teamBuilding.application.service.CommandTeamBuildingTargetMemberService;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
