@@ -27,7 +27,7 @@ class SelectAttendCommandTargetMemberServiceTest {
 	@Spy private AttendEntityConverter entityConverter;
 	@Mock private MemberRepository memberRepository;
 	@Spy private MemberEntityConverter memberEntityConverter;
-	@InjectMocks private SelectAttendCommandTargetMemberService selectAttendTargetService;
+	@InjectMocks private SelectAttendCommandTargetMemberMemberService selectAttendTargetService;
 
 	@Test
 	@DisplayName("대상자를 전달받아 참석 대상자로 저장한다.")

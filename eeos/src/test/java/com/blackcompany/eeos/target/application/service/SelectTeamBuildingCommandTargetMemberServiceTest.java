@@ -29,7 +29,9 @@ class SelectTeamBuildingCommandTargetMemberServiceTest {
 	@Spy private TeamBuildingTargetEntityConverter entityConverter;
 	@Mock private MemberRepository memberRepository;
 	@Spy private MemberEntityConverter memberEntityConverter;
-	@InjectMocks private SelectTeamBuildingCommandTargetMemberService selectTeamBuildingTargetService;
+
+	@InjectMocks
+	private SelectTeamBuildingCommandTargetMemberMemberService selectTeamBuildingTargetService;
 
 	@Test
 	@DisplayName("대상자를 전달받아 팀빌딩 대상자로 저장한다.")

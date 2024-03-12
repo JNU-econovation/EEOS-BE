@@ -22,12 +22,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(readOnly = true)
-public class SelectAttendCommandTargetMemberService extends SelectTargetService
+public class SelectAttendCommandTargetMemberMemberService extends SelectTargetMemberService
 		implements CommandTargetMemberService, AttendTargetService {
 	private final AttendRepository attendRepository;
 	private final AttendEntityConverter entityConverter;
 
-	public SelectAttendCommandTargetMemberService(
+	public SelectAttendCommandTargetMemberMemberService(
 			MemberRepository memberRepository,
 			MemberEntityConverter memberEntityConverter,
 			AttendRepository attendRepository,
