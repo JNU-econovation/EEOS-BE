@@ -1,6 +1,6 @@
 version: '3.1'
 services:
-  overflow-mysql:
+  eeos-local-mysql:
     container_name: eeos-mysql8
     image: mysql/mysql-server:8.0.27
     environment:
@@ -12,8 +12,14 @@ services:
       - "13308:3306"
     volumes:
       - ./mysql-init.d/:/docker-entrypoint-initdb.d
-
-  overflow-adminer: # mysql web admin
+  eeos-local-redis:
+    container_name: eeos-redis
+    image: redis:latest
+    ports:
+      - "16379:6379"
+    environment:
+      - REDIS_PASSWORD=root
+  eeos-local-adminer: # mysql web admin
     container_name: eeos-adminer
     image: adminer:4
     ports:
@@ -22,9 +28,3 @@ services:
       - ADMINER_DEFAULT_SERVER=overflow-mysql8
       - ADMINER_DESIGN=nette
       - ADMINER_PLUGINS=tables-filter tinymce
-
-  overflow-redis: # Redis
-    container_name: eeos-redis
-    image: redis:latest
-    ports:
-      - "16379:6379"

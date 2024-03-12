@@ -6,7 +6,7 @@ services:
     environment:
       - MYSQL_DATABASE=eeos
       - MYSQL_ROOT_HOST=%
-      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
     command: [ "--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci", "--skip-character-set-client-handshake", "--lower_case_table_names=1", "--max_connections=2048", "--wait_timeout=3600" ]
     ports:
       - "13306:3306"
@@ -25,6 +25,15 @@ services:
     - eeos-network
     depends_on:
     - mysql
+  redis:
+    container_name: eeos-redis
+    image: redis:latest
+    ports:
+      - "16379:6379"
+    environment:
+      - REDIS_PASSWORD=${DB_PASSWORD}
+    networks:
+      - eeos-network
   backend:
     build:
       context: .
@@ -35,12 +44,13 @@ services:
     depends_on:
       - mysql
       - flyway
+      - redis
     restart: always
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://eeos-mysql:3306/eeos?useSSL=false&serverTimezone=Asia/Seoul&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
-      SPRING_PROFILES_ACTIVE: dev
+      SPRING_PROFILES_ACTIVE: ${PROFILE}
     networks: #사용할 네트워크 지정
       - eeos-network
 networks:
