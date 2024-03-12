@@ -24,12 +24,12 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class SelectTeamBuildingTargetServiceTest {
+class SelectTeamBuildingCommandTargetMemberServiceTest {
 	@Mock private TeamBuildingTargetRepository teamBuildingTargetRepository;
 	@Spy private TeamBuildingTargetEntityConverter entityConverter;
 	@Mock private MemberRepository memberRepository;
 	@Spy private MemberEntityConverter memberEntityConverter;
-	@InjectMocks private SelectTeamBuildingTargetService selectTeamBuildingTargetService;
+	@InjectMocks private SelectTeamBuildingCommandTargetMemberService selectTeamBuildingTargetService;
 
 	@Test
 	@DisplayName("대상자를 전달받아 팀빌딩 대상자로 저장한다.")

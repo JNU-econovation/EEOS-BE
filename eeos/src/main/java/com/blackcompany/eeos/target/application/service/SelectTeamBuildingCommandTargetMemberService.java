@@ -13,11 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(readOnly = true)
-public class SelectTeamBuildingTargetService extends SelectTargetService implements TargetService {
+public class SelectTeamBuildingCommandTargetMemberService extends SelectTargetService
+		implements CommandTargetMemberService {
 	private final TeamBuildingTargetEntityConverter entityConverter;
 	private final TeamBuildingTargetRepository targetRepository;
 
-	public SelectTeamBuildingTargetService(
+	public SelectTeamBuildingCommandTargetMemberService(
 			MemberRepository memberRepository,
 			MemberEntityConverter memberEntityConverter,
 			TeamBuildingTargetEntityConverter entityConverter,

@@ -4,7 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.blackcompany.eeos.target.application.service.SelectTeamBuildingTargetService;
+import com.blackcompany.eeos.target.application.service.SelectTeamBuildingCommandTargetMemberService;
 import com.blackcompany.eeos.teamBuilding.application.dto.CreateTeamBuildingRequest;
 import com.blackcompany.eeos.teamBuilding.application.exception.DeniedEditTeamBuilding;
 import com.blackcompany.eeos.teamBuilding.application.model.converter.TeamBuildingEntityConverter;
@@ -29,7 +29,7 @@ class TeamBuildingServiceTest {
 	@Spy private TeamBuildingRequestConverter requestConverter;
 	@Spy private TeamBuildingEntityConverter entityConverter;
 	@Mock private TeamBuildingRepository teamBuildingRepository;
-	@Mock private SelectTeamBuildingTargetService teamBuildingTargetService;
+	@Mock private SelectTeamBuildingCommandTargetMemberService teamBuildingTargetService;
 	@Mock private RestrictTeamBuildingService restrictTeamBuildingService;
 	@InjectMocks private TeamBuildingService teamBuildingService;
 
