@@ -1,6 +1,6 @@
 package com.blackcompany.eeos.program.application.event;
 
-import com.blackcompany.eeos.target.application.service.CommandAttendService;
+import com.blackcompany.eeos.target.persistence.AttendRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -15,7 +15,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 @RequiredArgsConstructor
 @Slf4j
 public class DeletedProgramEventListener {
-	private final CommandAttendService attendService;
+	private final AttendRepository attendRepository;
 
 	@Async
 	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
@@ -24,6 +24,6 @@ public class DeletedProgramEventListener {
 		log.info(
 				"프로그램 삭제 Transaction committed: {}",
 				TransactionSynchronizationManager.isActualTransactionActive());
-		attendService.deleteByProgram(event.getProgramId());
+		attendRepository.deleteAllByProgramId(event.getProgramId());
 	}
 }

@@ -23,10 +23,10 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class SelectTargetServiceTest {
+class SelectCommandTargetMemberServiceTest {
 	@Mock private MemberRepository memberRepository;
 	@Spy private MemberEntityConverter memberEntityConverter;
-	@InjectMocks private SelectAttendTargetService selectTargetService;
+	@InjectMocks private SelectAttendCommandTargetMemberMemberService selectTargetService;
 
 	@Test
 	@DisplayName("주어진 대상 멤버들로 멤버를 조회한다.")
