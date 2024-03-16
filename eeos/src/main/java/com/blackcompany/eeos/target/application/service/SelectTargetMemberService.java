@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public abstract class SelectTargetService {
+public abstract class SelectTargetMemberService {
 	private final MemberRepository memberRepository;
 	private final MemberEntityConverter memberEntityConverter;
 

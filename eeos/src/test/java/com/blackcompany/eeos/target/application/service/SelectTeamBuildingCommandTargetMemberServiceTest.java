@@ -13,6 +13,7 @@ import com.blackcompany.eeos.target.application.model.converter.TeamBuildingTarg
 import com.blackcompany.eeos.target.fixture.TargetMemberFixture;
 import com.blackcompany.eeos.target.persistence.TeamBuildingTargetRepository;
 import com.blackcompany.eeos.teamBuilding.application.dto.TeamBuildingMember;
+import com.blackcompany.eeos.teamBuilding.application.service.CommandTeamBuildingTargetMemberService;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
@@ -24,12 +25,13 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class SelectTeamBuildingTargetServiceTest {
+class SelectTeamBuildingCommandTargetMemberServiceTest {
 	@Mock private TeamBuildingTargetRepository teamBuildingTargetRepository;
 	@Spy private TeamBuildingTargetEntityConverter entityConverter;
 	@Mock private MemberRepository memberRepository;
 	@Spy private MemberEntityConverter memberEntityConverter;
-	@InjectMocks private SelectTeamBuildingTargetService selectTeamBuildingTargetService;
+
+	@InjectMocks private CommandTeamBuildingTargetMemberService selectTeamBuildingTargetService;
 
 	@Test
 	@DisplayName("대상자를 전달받아 팀빌딩 대상자로 저장한다.")

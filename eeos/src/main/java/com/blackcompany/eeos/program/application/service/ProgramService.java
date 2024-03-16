@@ -29,7 +29,7 @@ import com.blackcompany.eeos.program.application.usecase.UpdateProgramUsecase;
 import com.blackcompany.eeos.program.persistence.ProgramCategory;
 import com.blackcompany.eeos.program.persistence.ProgramEntity;
 import com.blackcompany.eeos.program.persistence.ProgramRepository;
-import com.blackcompany.eeos.target.application.service.SelectAttendTargetService;
+import com.blackcompany.eeos.target.application.service.SelectAttendCommandTargetMemberMemberService;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
@@ -55,7 +55,7 @@ public class ProgramService
 	private final ProgramEntityConverter entityConverter;
 	private final ProgramResponseConverter responseConverter;
 	private final ProgramRepository programRepository;
-	private final SelectAttendTargetService attendTargetService;
+	private final SelectAttendCommandTargetMemberMemberService attendTargetService;
 	private final ProgramPageResponseConverter pageResponseConverter;
 	private final ProgramStatusServiceComposite programStatusComposite;
 	private final ApplicationEventPublisher applicationEventPublisher;

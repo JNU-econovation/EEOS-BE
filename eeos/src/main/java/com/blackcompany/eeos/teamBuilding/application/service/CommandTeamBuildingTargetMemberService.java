@@ -1,9 +1,11 @@
-package com.blackcompany.eeos.target.application.service;
+package com.blackcompany.eeos.teamBuilding.application.service;
 
 import com.blackcompany.eeos.member.application.model.converter.MemberEntityConverter;
 import com.blackcompany.eeos.member.persistence.MemberRepository;
 import com.blackcompany.eeos.target.application.dto.TargetMember;
 import com.blackcompany.eeos.target.application.model.converter.TeamBuildingTargetEntityConverter;
+import com.blackcompany.eeos.target.application.service.CommandTargetMemberService;
+import com.blackcompany.eeos.target.application.service.SelectTargetMemberService;
 import com.blackcompany.eeos.target.persistence.TeamBuildingTargetEntity;
 import com.blackcompany.eeos.target.persistence.TeamBuildingTargetRepository;
 import java.util.List;
@@ -13,11 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(readOnly = true)
-public class SelectTeamBuildingTargetService extends SelectTargetService implements TargetService {
+public class CommandTeamBuildingTargetMemberService extends SelectTargetMemberService
+		implements CommandTargetMemberService {
 	private final TeamBuildingTargetEntityConverter entityConverter;
 	private final TeamBuildingTargetRepository targetRepository;
 
-	public SelectTeamBuildingTargetService(
+	public CommandTeamBuildingTargetMemberService(
 			MemberRepository memberRepository,
 			MemberEntityConverter memberEntityConverter,
 			TeamBuildingTargetEntityConverter entityConverter,
