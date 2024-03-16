@@ -35,7 +35,7 @@ CREATE TABLE `program` (
                            `program_writer` bigint NOT NULL,
                            PRIMARY KEY (`program_id`),
                            KEY `idx_program_date` (`program_date`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `attend` (
                           `attend_id` bigint NOT NULL AUTO_INCREMENT,
