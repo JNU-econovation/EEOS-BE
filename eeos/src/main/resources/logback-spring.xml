@@ -37,7 +37,7 @@
         </root>
     </springProfile>
     <springProfile name="dev">
-        <root level="warn">
+        <root level="info">
             <appender-ref ref="CONSOLE"/>
         </root>
         <logger name="org.springframework.web" level="warn">
@@ -45,6 +45,9 @@
         </logger>
     </springProfile>
     <springProfile name="prod">
+        <root level="info">
+            <appender-ref ref="CONSOLE"/>
+        </root>
         <logger name="org.springframework.web" level="warn">
             <appender-ref ref="FILE"/>
         </logger>
