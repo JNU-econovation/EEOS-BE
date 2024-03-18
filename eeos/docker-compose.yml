@@ -51,7 +51,7 @@ services:
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
       SPRING_PROFILES_ACTIVE: ${PROFILE}
-      SPRING_REDIS_HOST: localhost
+      SPRING_REDIS_HOST: redis
       SPRING_REDIS_PORT: 6379
       SPRING_REDIS_PASSWORD: root
     networks: #사용할 네트워크 지정
