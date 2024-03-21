@@ -12,7 +12,6 @@ services:
     restart: always
     networks:
       - external-network
-      - internal-network
   eeos-mysql:
     container_name: eeos-mysql
     image: mysql/mysql-server:8.0.27
