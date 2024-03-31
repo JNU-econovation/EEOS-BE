@@ -1,0 +1,11 @@
+springdoc:
+  swagger-ui:
+    path: /api-docs.html
+    disable-swagger-default-url: true
+    display-request-duration: true
+    operations-sorter: alpha
+  api-docs:
+    path: /api-docs
+  show-actuator: true
+  default-produces-media-type: application/json
+  packages-to-scan: com.blackcompany.eeos
