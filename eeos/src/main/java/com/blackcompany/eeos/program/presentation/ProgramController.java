@@ -19,6 +19,9 @@ import com.blackcompany.eeos.program.application.usecase.GetProgramUsecase;
 import com.blackcompany.eeos.program.application.usecase.GetProgramsUsecase;
 import com.blackcompany.eeos.program.application.usecase.UpdateProgramUsecase;
 import javax.validation.Valid;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,6 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/programs")
+@Tag(name = "API", description = "행사에 관한 API")
 public class ProgramController {
 
 	private final CreateProgramUsecase createProgramUsecase;
@@ -43,6 +47,7 @@ public class ProgramController {
 	private final DeleteProgramUsecase deleteProgramUsecase;
 	private final GetAccessRightUsecase getAccessRightUsecase;
 
+	@Operation(summary = "행사 생성", description = "Request Body에 담긴 행사 정보를 통해서 행사를 생성한다.")
 	@PostMapping
 	public ApiResponse<SuccessBody<CommandProgramResponse>> create(
 			@Member Long memberId, @RequestBody @Valid CreateProgramRequest request) {
@@ -50,6 +55,7 @@ public class ProgramController {
 		return ApiResponseGenerator.success(response, HttpStatus.CREATED, MessageCode.CREATE);
 	}
 
+	@Operation(summary = "행사 조회", description = "PathVariable에 담긴 programId를 통해서 행사 1개를 조회한다.")
 	@GetMapping("/{programId}")
 	public ApiResponse<SuccessBody<QueryProgramResponse>> findOne(
 			@Member Long memberId, @PathVariable("programId") Long programId) {
@@ -57,6 +63,7 @@ public class ProgramController {
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
 	}
 
+	@Operation(summary = "행사 수정", description = "PathVariable에 담긴 programId를 통해서 행사 1개를 수정한다.")
 	@PatchMapping("/{programId}")
 	public ApiResponse<SuccessBody<CommandProgramResponse>> update(
 			@Member Long memberId,
@@ -66,6 +73,7 @@ public class ProgramController {
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.UPDATE);
 	}
 
+	@Operation(summary = "행사 리스트 조회", description = "1 페이지에 들어가는 행사 리스트를 받아온다.")
 	@GetMapping
 	public ApiResponse<SuccessBody<PageResponse<QueryProgramsResponse>>> findAll(
 			@RequestParam("category") String category,
@@ -77,6 +85,7 @@ public class ProgramController {
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
 	}
 
+	@Operation(summary = "행사 삭제", description = "PathVariable에 담긴 programId를 통해서 행사 1개를 삭제한다.")
 	@DeleteMapping("/{programId}")
 	public ApiResponse<SuccessBody<Void>> delete(
 			@Member Long memberId, @PathVariable("programId") Long programId) {
@@ -84,6 +93,7 @@ public class ProgramController {
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.DELETE);
 	}
 
+	@Operation(summary = "행사 수정 권한", description = "PathVariable에 담긴 programId를 통해서 현재 사용자가 행사를 수정할 수 있는지 확인한다.")
 	@GetMapping("/{programId}/accessRight")
 	public ApiResponse<SuccessBody<QueryAccessRightResponse>> getAccessRight(
 			@Member Long memberId, @PathVariable("programId") Long programId) {
