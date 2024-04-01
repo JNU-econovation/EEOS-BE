@@ -26,5 +26,4 @@ spring:
         - log
         - actuator
         - redis
-        - swagger
     active: local
