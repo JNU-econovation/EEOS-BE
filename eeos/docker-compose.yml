@@ -63,7 +63,7 @@ services:
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
       SPRING_PROFILES_ACTIVE: ${PROFILE}
-      SPRING_REDIS_HOST: eeoes-redis
+      SPRING_REDIS_HOST: eeos-redis
       SPRING_REDIS_PORT: 6379
       SPRING_REDIS_PASSWORD: root
     networks:
