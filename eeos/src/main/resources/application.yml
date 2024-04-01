@@ -17,6 +17,7 @@ spring:
         - log
         - actuator
         - redis
+        - swagger
       prod:
         - mysql
         - api
@@ -25,4 +26,5 @@ spring:
         - log
         - actuator
         - redis
+        - swagger
     active: local

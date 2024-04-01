@@ -20,6 +20,6 @@ public class SwaggerConfig {
         return new Info()
                 .title("EEOS API")
                 .description("EEOS API Swagger")
-                .version("1.0.0");
+                .version("2.2.0");
     }
 }
