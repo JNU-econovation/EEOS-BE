@@ -38,3 +38,6 @@ out/
 
 ### data
 ./resources/local-develop-environment/mysql-data/
+
+### env
+eeos/src/main/resources/env.properties
