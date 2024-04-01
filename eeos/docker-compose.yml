@@ -1,6 +1,18 @@
 version: '3.1'
 services:
-  mysql:
+  nginx-proxy:
+    container_name: nginx-proxy
+    depends_on:
+      - eeos-backend
+    image: nginx:latest
+    ports:
+      - "50001:80"
+    volumes:
+      - ./proxy/nginx.conf:/etc/nginx/nginx.conf
+    restart: always
+    networks:
+      - external-network
+  eeos-mysql:
     container_name: eeos-mysql
     image: mysql/mysql-server:8.0.27
     environment:
@@ -8,53 +20,55 @@ services:
       - MYSQL_ROOT_HOST=%
       - MYSQL_ROOT_PASSWORD=root
     command: [ "--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci", "--skip-character-set-client-handshake", "--lower_case_table_names=1", "--max_connections=2048", "--wait_timeout=3600" ]
-    ports:
-      - "13306:3306"
+    expose:
+      - "3306"
     volumes:
       - ./resources/local-develop-environment/mysql-data:/var/lib/mysql
     networks:
-      - eeos-network
-  flyway:
+      - internal-network
+  eeos-flyway:
     container_name: eeos-flyway
     image: flyway/flyway:latest
     command: -url=jdbc:mysql://eeos-mysql:3306/eeos?useSSL=false&allowPublicKeyRetrieval=true  -user=root -password=root migrate
     volumes:
-    - ./flyway/conf/:/flyway/conf
-    - ./flyway/sql/:/flyway/sql
+      - ./flyway/conf/:/flyway/conf
+      - ./flyway/sql/:/flyway/sql
     networks:
-    - eeos-network
+      - internal-network
     depends_on:
-    - mysql
-  redis:
+      - eeos-mysql
+  eeos-redis:
     container_name: eeos-redis
     image: redis:latest
-    ports:
-      - "16379:6379"
+    expose:
+      - "6379"
     environment:
       - REDIS_PASSWORD=root
     networks:
-      - eeos-network
-  backend:
+      - internal-network
+  eeos-backend:
     build:
       context: .
-      dockerfile: Dockerfile
-    container_name: eeos-app
-    ports:
-      - "8080:8080"
+      dockerfile: ./Dockerfile
+    container_name: eeos-backend
+    expose:
+      - "8080"
     depends_on:
-      - mysql
-      - flyway
-      - redis
+      - eeos-mysql
+      - eeos-flyway
+      - eeos-redis
     restart: always
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://eeos-mysql:3306/eeos?useSSL=false&serverTimezone=Asia/Seoul&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
       SPRING_PROFILES_ACTIVE: ${PROFILE}
-      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_HOST: eeos-redis
       SPRING_REDIS_PORT: 6379
       SPRING_REDIS_PASSWORD: root
-    networks: #사용할 네트워크 지정
-      - eeos-network
+    networks:
+      - external-network
+      - internal-network
 networks:
-  eeos-network:
+  external-network:
+  internal-network:
