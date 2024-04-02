@@ -8,6 +8,7 @@ spring:
         - token
         - actuator
         - local-redis
+        - swagger
       dev:
         - mysql
         - api
@@ -16,6 +17,7 @@ spring:
         - log
         - actuator
         - redis
+        - swagger
       prod:
         - mysql
         - api
