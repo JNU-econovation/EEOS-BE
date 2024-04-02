@@ -1,4 +1,4 @@
-package com.blackcompany.eeos.program.presentation;
+package com.blackcompany.eeos.program.presentation.guest;
 
 import com.blackcompany.eeos.auth.presentation.support.Member;
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponse;
