@@ -13,4 +13,7 @@ public interface GetProgramUsecase {
 	 * @return
 	 */
 	QueryProgramResponse getProgram(Long memberId, Long programId);
+
+	QueryProgramResponse getProgram(Long programId);
+
 }
