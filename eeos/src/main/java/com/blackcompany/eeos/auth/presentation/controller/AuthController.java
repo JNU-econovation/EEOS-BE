@@ -57,7 +57,7 @@ public class AuthController {
 		this.withDrawUsecase = withDrawUsecase;
 	}
 
-	@Operation(summary = "로그인을 한다.", description = "redirect url 과 code 를 받아 토큰을 발급한다.")
+	@Operation(summary = "로그인을 한다.", description = "토큰을 발급한다.")
 	@PostMapping("/login/{oauthServerType}")
 	ApiResponse<SuccessBody<TokenResponse>> login(
 			@PathVariable String oauthServerType,
@@ -81,7 +81,7 @@ public class AuthController {
 		return ApiResponseGenerator.success(response, HttpStatus.CREATED, MessageCode.CREATE);
 	}
 
-	@Operation(summary = "로그아웃한다.", description = "사용자의 토큰과 id를 이용하여 클라이언트에서 사용한 토큰을 삭제한다.")
+	@Operation(summary = "로그아웃한다.", description = "클라이언트에서 사용한 토큰을 삭제한다.")
 	@PostMapping("/logout")
 	ApiResponse<SuccessBody<Void>> logout(
 			HttpServletRequest request, HttpServletResponse httpResponse, @Member Long memberId) {
@@ -92,7 +92,7 @@ public class AuthController {
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.DELETE);
 	}
 
-	@Operation(summary = "회원을 삭제한다.", description = "사용자의 토큰과 id를 사용해서 회원을 조회하고 회원이면 삭제한다.")
+	@Operation(summary = "회원탈퇴", description = "사용자의 리프레시 토큰을 사용해서 회원을 삭제한다.")
 	@PostMapping("/withdraw")
 	ApiResponse<SuccessBody<Void>> withDraw(
 			HttpServletRequest request, HttpServletResponse httpResponse, @Member Long memberId) {
