@@ -47,6 +47,7 @@ public class ProgramController {
 	private final DeleteProgramUsecase deleteProgramUsecase;
 	private final GetAccessRightUsecase getAccessRightUsecase;
 
+
 	@Operation(summary = "행사 생성", description = "행사 정보를 통해서 행사를 생성한다.")
 	@PostMapping
 	public ApiResponse<SuccessBody<CommandProgramResponse>> create(
@@ -62,6 +63,7 @@ public class ProgramController {
 		QueryProgramResponse response = getProgramUsecase.getProgram(memberId, programId);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
 	}
+
 
 	@Operation(summary = "행사 수정", description = "행사 1개를 수정한다.")
 	@PatchMapping("/{programId}")
@@ -84,6 +86,7 @@ public class ProgramController {
 				getProgramsUsecase.getPrograms(category, status, size, page);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
 	}
+
 
 	@Operation(summary = "행사 삭제", description = "행사 1개를 삭제한다.")
 	@DeleteMapping("/{programId}")

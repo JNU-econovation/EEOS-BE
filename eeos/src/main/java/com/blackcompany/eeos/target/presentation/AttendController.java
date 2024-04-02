@@ -73,7 +73,8 @@ public class AttendController {
 				getAttendantInfoUsecase.findAttendInfo(programId, attendStatus);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
 	}
-	@Operation(summary = "activeStatus 별로 회원 리스트 조회", description = "프로그램에 관련된 회원들을 활동상태에 맞게 가져온다.")
+
+	@Operation(summary = "activeStatus 별로 회원 리스트 조회", description = "프로그램에 관련된 회원들을 활동상태에 맞게 가져온다.")p
 	@GetMapping("/programs/{programId}/members")
 	public ApiResponse<SuccessBody<QueryAttendActiveStatusResponse>>
 			getAttendAllInfoByProgramSortActiveStatus(
