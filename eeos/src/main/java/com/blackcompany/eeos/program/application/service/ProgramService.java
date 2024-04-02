@@ -15,6 +15,7 @@ import com.blackcompany.eeos.program.application.dto.converter.ProgramResponseCo
 import com.blackcompany.eeos.program.application.dto.converter.QueryAccessRightResponseConverter;
 import com.blackcompany.eeos.program.application.event.DeletedProgramEvent;
 import com.blackcompany.eeos.program.application.exception.NotFoundProgramException;
+import com.blackcompany.eeos.program.application.model.AccessRights;
 import com.blackcompany.eeos.program.application.model.ProgramModel;
 import com.blackcompany.eeos.program.application.model.ProgramStatus;
 import com.blackcompany.eeos.program.application.model.converter.ProgramEntityConverter;
@@ -29,6 +30,7 @@ import com.blackcompany.eeos.program.application.usecase.UpdateProgramUsecase;
 import com.blackcompany.eeos.program.persistence.ProgramCategory;
 import com.blackcompany.eeos.program.persistence.ProgramEntity;
 import com.blackcompany.eeos.program.persistence.ProgramRepository;
+import com.blackcompany.eeos.program.presentation.guest.GuestAccessRights;
 import com.blackcompany.eeos.target.application.service.SelectAttendCommandTargetMemberMemberService;
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -78,6 +80,14 @@ public class ProgramService
 		return responseConverter.from(
 				model, model.getProgramStatus(), findAccessRight(model, memberId));
 	}
+
+	@Override
+	public QueryProgramResponse getProgram(final Long programId) {
+		ProgramModel model = findProgram(programId);
+		return responseConverter.from(
+				model, model.getProgramStatus(), getGuestAccessRight());
+	}
+
 
 	@Override
 	@Transactional
@@ -159,5 +169,9 @@ public class ProgramService
 
 	private String findAccessRight(final ProgramModel model, final Long memberId) {
 		return model.getAccessRight(memberId);
+	}
+
+	private String getGuestAccessRight(){
+		return GuestAccessRights.get();
 	}
 }
