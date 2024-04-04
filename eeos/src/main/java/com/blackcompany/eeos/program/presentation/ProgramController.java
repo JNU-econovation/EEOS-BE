@@ -48,7 +48,7 @@ public class ProgramController {
 	private final GetAccessRightUsecase getAccessRightUsecase;
 
 
-	@Operation(summary = "행사 생성", description = "행사 정보를 통해서 행사를 생성한다.")
+	@Operation(summary = "행사 생성", description = "RequestBody에 담긴 행사 정보를 통해서 행사를 생성한다.")
 	@PostMapping
 	public ApiResponse<SuccessBody<CommandProgramResponse>> create(
 			@Member Long memberId, @RequestBody @Valid CreateProgramRequest request) {
@@ -56,7 +56,7 @@ public class ProgramController {
 		return ApiResponseGenerator.success(response, HttpStatus.CREATED, MessageCode.CREATE);
 	}
 
-	@Operation(summary = "행사 조회", description = "행사 1개를 조회한다.")
+	@Operation(summary = "행사 조회", description = "PathVariable에 담긴 programId를 통해서 행사 1기를 조회한다.")
 	@GetMapping("/{programId}")
 	public ApiResponse<SuccessBody<QueryProgramResponse>> findOne(
 			@Member Long memberId, @PathVariable("programId") Long programId) {
@@ -65,7 +65,7 @@ public class ProgramController {
 	}
 
 
-	@Operation(summary = "행사 수정", description = "행사 1개를 수정한다.")
+	@Operation(summary = "행사 수정", description = "PathVariable에 담긴 programId를 사용해서 행사 1개를 삭제한다.")
 	@PatchMapping("/{programId}")
 	public ApiResponse<SuccessBody<CommandProgramResponse>> update(
 			@Member Long memberId,
@@ -75,7 +75,7 @@ public class ProgramController {
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.UPDATE);
 	}
 
-	@Operation(summary = "행사 리스트 조회", description = "1 페이지에 들어가는 행사 리스트를 받아온다.")
+	@Operation(summary = "행사 리스트 조회", description = "RequestParam 의 category, programStatus, size, page 를 사용해서 1 페이지에 들어가는 행사 리스트를 가져온다.")
 	@GetMapping
 	public ApiResponse<SuccessBody<PageResponse<QueryProgramsResponse>>> findAll(
 			@RequestParam("category") String category,
@@ -88,7 +88,7 @@ public class ProgramController {
 	}
 
 
-	@Operation(summary = "행사 삭제", description = "행사 1개를 삭제한다.")
+	@Operation(summary = "행사 삭제", description = "PathVariable에 담긴 programId를 사용해서 행사를 삭제한다.")
 	@DeleteMapping("/{programId}")
 	public ApiResponse<SuccessBody<Void>> delete(
 			@Member Long memberId, @PathVariable("programId") Long programId) {
@@ -96,7 +96,7 @@ public class ProgramController {
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.DELETE);
 	}
 
-	@Operation(summary = "행사 수정 권한", description = "현재 사용자가 행사를 수정할 수 있는지 확인한다.")
+	@Operation(summary = "행사 수정 권한", description = "PathVariable에 programId를 담아 사용자가 프로그램에 수정권한이 있는지 확인한다.")
 	@GetMapping("/{programId}/accessRight")
 	public ApiResponse<SuccessBody<QueryAccessRightResponse>> getAccessRight(
 			@Member Long memberId, @PathVariable("programId") Long programId) {

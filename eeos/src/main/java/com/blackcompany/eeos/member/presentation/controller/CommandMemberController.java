@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CommandMemberController {
 	private final ChangeActiveStatusUsecase changeActiveStatusUsecase;
 
-	@Operation(summary = "회원 상태 변경", description = "회원 상태를 AM,RM,CM,OB 중 하나로 변경한다.")
+	@Operation(summary = "회원 상태 변경", description = "RequestBody의 activeStatus를 사용해 회원 상태를 AM,RM,CM,OB 중 하나로 변경한다.")
 	@PutMapping("/activeStatus")
 	public ApiResponse<SuccessBody<CommandMemberResponse>> changeActiveStatus(
 			@Member Long memberId, @RequestBody @Valid ChangeActiveStatusRequest request) {
