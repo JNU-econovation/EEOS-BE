@@ -56,7 +56,7 @@ public class ProgramController {
 		return ApiResponseGenerator.success(response, HttpStatus.CREATED, MessageCode.CREATE);
 	}
 
-	@Operation(summary = "행사 조회", description = "PathVariable에 담긴 프로그램 아이디를 통해서 행사 1기를 조회한다.")
+	@Operation(summary = "행사 조회", description = "PathVariable에 담긴 programId를 통해서 행사 1기를 조회한다.")
 	@GetMapping("/{programId}")
 	public ApiResponse<SuccessBody<QueryProgramResponse>> findOne(
 			@Member Long memberId, @PathVariable("programId") Long programId) {
