@@ -6,4 +6,7 @@ public interface BlockModel extends AbstractModel {
     String getType();
 
     TextModel getText();
+    void setType(String type);
+
+    void setText(String text);
 }
