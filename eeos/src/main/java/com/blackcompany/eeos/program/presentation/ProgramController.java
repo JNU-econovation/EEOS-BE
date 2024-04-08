@@ -12,14 +12,11 @@ import com.blackcompany.eeos.program.application.dto.QueryAccessRightResponse;
 import com.blackcompany.eeos.program.application.dto.QueryProgramResponse;
 import com.blackcompany.eeos.program.application.dto.QueryProgramsResponse;
 import com.blackcompany.eeos.program.application.dto.UpdateProgramRequest;
-import com.blackcompany.eeos.program.application.usecase.CreateProgramUsecase;
-import com.blackcompany.eeos.program.application.usecase.DeleteProgramUsecase;
-import com.blackcompany.eeos.program.application.usecase.GetAccessRightUsecase;
-import com.blackcompany.eeos.program.application.usecase.GetProgramUsecase;
-import com.blackcompany.eeos.program.application.usecase.GetProgramsUsecase;
-import com.blackcompany.eeos.program.application.usecase.UpdateProgramUsecase;
+import com.blackcompany.eeos.program.application.usecase.*;
+
 import javax.validation.Valid;
 
+import com.blackcompany.eeos.program.infra.api.slack.chat.dto.ProgramSlackNotificationRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -46,6 +43,7 @@ public class ProgramController {
 	private final GetProgramsUsecase getProgramsUsecase;
 	private final DeleteProgramUsecase deleteProgramUsecase;
 	private final GetAccessRightUsecase getAccessRightUsecase;
+	private final NotifyProgramUsecase notifyProgramUsecase;
 
 
 	@Operation(summary = "행사 생성", description = "RequestBody에 담긴 행사 정보를 통해서 행사를 생성한다.")
@@ -102,5 +100,13 @@ public class ProgramController {
 			@Member Long memberId, @PathVariable("programId") Long programId) {
 		QueryAccessRightResponse response = getAccessRightUsecase.getAccessRight(memberId, programId);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
+	}
+
+	@PostMapping("/{programId}/slack/notification")
+	public ApiResponse<SuccessBody<CommandProgramResponse>> slackNotify(
+			@Member Long memberId, @RequestBody ProgramSlackNotificationRequest request,
+			@PathVariable("programId") Long programId){
+		CommandProgramResponse response = notifyProgramUsecase.notify(memberId, programId, request);
+		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.CREATE); //프로그램 조회, 내용 형태를 바꾼다.
 	}
 }
