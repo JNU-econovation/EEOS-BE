@@ -1,10 +1,7 @@
 package com.blackcompany.eeos.program.infra.api.slack.chat.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 import com.blackcompany.eeos.program.infra.api.slack.chat.model.ChatPostModel.Block;
-import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
@@ -21,14 +18,25 @@ public class ChatPostModel implements MessageModel<Block>{
     public static class Block implements BlockModel{
         private String type;
         private TextModel text;
+
+        public void setText(String text){
+            this.text.setText(text);
+        }
+
+        public void setType(String type){
+            this.type = type;
+        }
     }
 
     @Getter
-    @AllArgsConstructor
     @Builder
+    @AllArgsConstructor
     @NoArgsConstructor
     public static class Text implements TextModel{
         private String type;
         private String text;
+
+        public void setType(String type){ this.type = type; }
+        public void setText(String text){ this.text = text; }
     }
 }
