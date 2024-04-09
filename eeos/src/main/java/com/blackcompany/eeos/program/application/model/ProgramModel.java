@@ -2,11 +2,7 @@ package com.blackcompany.eeos.program.application.model;
 
 import com.blackcompany.eeos.common.support.AbstractModel;
 import com.blackcompany.eeos.common.utils.DateConverter;
-import com.blackcompany.eeos.program.application.exception.DeniedProgramEditException;
-import com.blackcompany.eeos.program.application.exception.NotAllowedUpdatedProgramAttendException;
-import com.blackcompany.eeos.program.application.exception.NotAllowedUpdatedProgramTypeException;
-import com.blackcompany.eeos.program.application.exception.NotFoundProgramCategoryException;
-import com.blackcompany.eeos.program.application.exception.OverDateException;
+import com.blackcompany.eeos.program.application.exception.*;
 import com.blackcompany.eeos.program.persistence.ProgramCategory;
 import com.blackcompany.eeos.program.persistence.ProgramType;
 import java.sql.Timestamp;
@@ -51,6 +47,10 @@ public class ProgramModel implements AbstractModel {
 		canEdit(memberId);
 	}
 
+	public void validateNotify(Long memberId){
+		if(!isWriter(memberId)) throw new DeniedProgramNotificationException(memberId);
+	}
+
 	public String getAccessRight(Long memberId) {
 		if (isWriter(memberId)) {
 			return AccessRights.EDIT.getAccessRight();
@@ -73,6 +73,8 @@ public class ProgramModel implements AbstractModel {
 
 		return this;
 	}
+
+
 
 	private ProgramStatus findProgramStatus() {
 		LocalDate now = DateConverter.toLocalDate(Instant.now().toEpochMilli());
