@@ -26,7 +26,8 @@ import com.blackcompany.eeos.program.application.dto.ProgramSlackNotificationReq
 import com.blackcompany.eeos.program.infra.api.slack.chat.client.SlackChatApiClient;
 import com.blackcompany.eeos.program.infra.api.slack.chat.dto.SlackChatPostMessageResponse;
 import com.blackcompany.eeos.program.infra.api.slack.chat.model.ChatPostModel;
-import com.blackcompany.eeos.program.infra.api.slack.chat.model.converter.ProgramSlackNotificationMessageConverter;
+import com.blackcompany.eeos.program.infra.api.slack.chat.model.converter.ChatPostModelConverter;
+import com.blackcompany.eeos.program.infra.api.slack.chat.service.ProgramNotifyServiceComposite;
 import com.blackcompany.eeos.program.persistence.ProgramCategory;
 import com.blackcompany.eeos.program.persistence.ProgramEntity;
 import com.blackcompany.eeos.program.persistence.ProgramRepository;
@@ -65,8 +66,7 @@ public class ProgramService
 	private final ProgramStatusServiceComposite programStatusComposite;
 	private final ApplicationEventPublisher applicationEventPublisher;
 	private final QueryAccessRightResponseConverter accessRightResponseConverter;
-	private final ProgramSlackNotificationMessageConverter programSlackNotificationMessageConverter;
-	private final SlackChatApiClient slackChatApiClient;
+	private final ProgramNotifyServiceComposite notifyServiceComposite;
 
 	@Override
 	@Transactional
@@ -143,21 +143,9 @@ public class ProgramService
 
 	@Override
 	public CommandProgramResponse notify(final Long memberId, final Long programId, final ProgramSlackNotificationRequest request){
-		ProgramModel programModel = findProgram(programId);
-		ProgramNotificationModel notificationModel = getNotifyInfo(programModel, request);
-		notificationModel.validateNotify(memberId);
-		ChatPostModel chatPostModel = programSlackNotificationMessageConverter.from(notificationModel);
-		/** ------수정할 부분 -------*/
-		SlackChatPostMessageResponse response = slackChatApiClient.post(chatPostModel);
-		log.info(response.getMessage());
-		return CommandProgramResponse.builder()
-				.programId(programId)
-				.build();
-		/** ----------------------*/
-	}
-
-	private ProgramNotificationModel getNotifyInfo(ProgramModel model, ProgramSlackNotificationRequest request){
-		return ProgramNotificationModel.from(model, request);
+		ProgramNotificationModel model = getNotifyInfo(programId, request);
+		model.validateNotify(memberId);
+		return notifyServiceComposite.notify(model);
 	}
 
 	private ProgramModel findProgram(final Long programId) {
@@ -198,5 +186,10 @@ public class ProgramService
 
 	private String getGuestAccessRight(){
 		return GuestAccessRights.get();
+	}
+
+	private ProgramNotificationModel getNotifyInfo(Long programId, ProgramSlackNotificationRequest request){
+		ProgramNotificationModel model = ProgramNotificationModel.of(findProgram(programId), request);
+		return model;
 	}
 }
