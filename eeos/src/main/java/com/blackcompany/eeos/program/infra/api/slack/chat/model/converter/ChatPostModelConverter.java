@@ -18,10 +18,13 @@ import java.time.format.DateTimeFormatter;
 public class ChatPostModelConverter
 {
     private final MemberRepository memberRepository;
+    private final Channels channels;
+    private final BotTokens tokens;
+
     public ChatPostModel from(ProgramNotificationModel model){
         return ChatPostModel.builder()
-                .token(BotTokens.BLACK_COMPANY_EEOS_BOT.getToken()) /** 수정 필요 */
-                .channel(Channels.BLACK_COMPANY_TEST.getChannel()) /** 수정 필요 */
+                .token(tokens.getBLACK_COMPANY_EEOS_BOT()) /** 수정 필요 */
+                .channel(channels.getBLACK_COMPANY_TEST()) /** 수정 필요 */
                 .message(getMessage(model))
                 .userName(getUsername(model))
                 .build();
