@@ -5,6 +5,7 @@ import com.blackcompany.eeos.program.application.dto.ChangeAllAttendStatusReques
 import com.blackcompany.eeos.program.application.dto.CommandProgramResponse;
 import com.blackcompany.eeos.program.application.dto.CreateProgramRequest;
 import com.blackcompany.eeos.program.application.dto.PageResponse;
+import com.blackcompany.eeos.program.application.dto.ProgramSlackNotificationRequest;
 import com.blackcompany.eeos.program.application.dto.ProgramsResponse;
 import com.blackcompany.eeos.program.application.dto.QueryAccessRightResponse;
 import com.blackcompany.eeos.program.application.dto.QueryProgramResponse;
@@ -22,11 +23,6 @@ import com.blackcompany.eeos.program.application.model.converter.ProgramEntityCo
 import com.blackcompany.eeos.program.application.model.converter.ProgramRequestConverter;
 import com.blackcompany.eeos.program.application.support.ProgramStatusServiceComposite;
 import com.blackcompany.eeos.program.application.usecase.*;
-import com.blackcompany.eeos.program.application.dto.ProgramSlackNotificationRequest;
-import com.blackcompany.eeos.program.infra.api.slack.chat.client.SlackChatApiClient;
-import com.blackcompany.eeos.program.infra.api.slack.chat.dto.SlackChatPostMessageResponse;
-import com.blackcompany.eeos.program.infra.api.slack.chat.model.ChatPostModel;
-import com.blackcompany.eeos.program.infra.api.slack.chat.model.converter.ChatPostModelConverter;
 import com.blackcompany.eeos.program.infra.api.slack.chat.service.ProgramNotifyServiceComposite;
 import com.blackcompany.eeos.program.persistence.ProgramCategory;
 import com.blackcompany.eeos.program.persistence.ProgramEntity;
@@ -70,7 +66,6 @@ public class ProgramService
 
 	@Override
 	@Transactional
-
 	public CommandProgramResponse create(final Long memberId, final CreateProgramRequest request) {
 		ProgramModel model = requestConverter.from(memberId, request);
 		Long saveId = createProgram(model);
@@ -90,10 +85,8 @@ public class ProgramService
 	@Override
 	public QueryProgramResponse getProgram(final Long programId) {
 		ProgramModel model = findProgram(programId);
-		return responseConverter.from(
-				model, model.getProgramStatus(), getGuestAccessRight());
+		return responseConverter.from(model, model.getProgramStatus(), getGuestAccessRight());
 	}
-
 
 	@Override
 	@Transactional
@@ -142,7 +135,8 @@ public class ProgramService
 	}
 
 	@Override
-	public CommandProgramResponse notify(final Long memberId, final Long programId, final ProgramSlackNotificationRequest request){
+	public CommandProgramResponse notify(
+			final Long memberId, final Long programId, final ProgramSlackNotificationRequest request) {
 		ProgramNotificationModel model = getNotifyInfo(programId, request);
 		model.validateNotify(memberId);
 		return notifyServiceComposite.notify(model);
@@ -184,11 +178,12 @@ public class ProgramService
 		return model.getAccessRight(memberId);
 	}
 
-	private String getGuestAccessRight(){
+	private String getGuestAccessRight() {
 		return GuestAccessRights.get();
 	}
 
-	private ProgramNotificationModel getNotifyInfo(Long programId, ProgramSlackNotificationRequest request){
+	private ProgramNotificationModel getNotifyInfo(
+			Long programId, ProgramSlackNotificationRequest request) {
 		ProgramNotificationModel model = ProgramNotificationModel.of(findProgram(programId), request);
 		return model;
 	}
