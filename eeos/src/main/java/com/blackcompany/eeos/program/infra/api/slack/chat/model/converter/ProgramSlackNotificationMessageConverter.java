@@ -4,7 +4,9 @@ import com.blackcompany.eeos.program.application.model.ProgramNotificationModel;
 import com.blackcompany.eeos.program.infra.api.slack.chat.model.*;
 import com.blackcompany.eeos.program.infra.api.slack.chat.model.ChatPostModel.Block;
 import com.blackcompany.eeos.program.infra.api.slack.chat.model.ChatPostModel.Text;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ProgramSlackNotificationMessageConverter
 {
     public ChatPostModel from(ProgramNotificationModel model){
