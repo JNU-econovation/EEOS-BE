@@ -8,6 +8,7 @@ spring:
         - token
         - actuator
         - local-redis
+        - slack
         - swagger
       dev:
         - mysql
@@ -18,6 +19,7 @@ spring:
         - actuator
         - redis
         - swagger
+        - slack
       prod:
         - mysql
         - api
@@ -26,4 +28,5 @@ spring:
         - log
         - actuator
         - redis
+        - slack
     active: local
