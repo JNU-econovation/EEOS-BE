@@ -28,7 +28,7 @@ public class GuestProgramController {
     private final DeleteProgramUsecase deleteProgramUsecase;
     private final GetAccessRightUsecase getAccessRightUsecase;
 
-    @Operation(summary = "행사 리스트 조회", description = "1 페이지에 들어가는 행사 리스트를 받아온다.")
+    @Operation(summary = "게스트모드 - 행사 리스트 조회", description = "RequestParam에 담긴 category, programStatus, size, page를 이용해 프로그램 리스트를 조회한다.")
     @GetMapping()
     public ApiResponse<SuccessBody<PageResponse<QueryProgramsResponse>>> findAll(
             @RequestParam("category") String category,
@@ -40,7 +40,7 @@ public class GuestProgramController {
         return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
     }
 
-    @Operation(summary = "행사 조회", description = "행사 1개를 조회한다.")
+    @Operation(summary = "행사 조회", description = "PathVariable에 담긴 prgramId를 이용해 특정 프로그램의 내용을 불러온다. 참석, 불참, 지각의 정보는 블라인트 처리된다.")
     @GetMapping("/{programId}")
     public ApiResponse<SuccessBody<QueryProgramResponse>> findOne(
             @PathVariable("programId") Long programId){

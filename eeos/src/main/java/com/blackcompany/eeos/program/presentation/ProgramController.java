@@ -102,6 +102,7 @@ public class ProgramController {
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
 	}
 
+	@Operation(summary = "행사 생성 자동 알림", description = "RequestBody에 programUrl을 담아 슬랙 API를 이용하여 슬랙봇 메세지 기능을 요청합니다.")
 	@PostMapping("/{programId}/slack/notification")
 	public ApiResponse<SuccessBody<CommandProgramResponse>> slackNotify(
 			@Member Long memberId, @RequestBody ProgramSlackNotificationRequest request,
