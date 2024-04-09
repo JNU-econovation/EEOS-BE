@@ -12,6 +12,6 @@ slack:
 
   channel:
     black-company:
-      eeos-test: ${BLACK_COMPANY_CAHNNEL_ID}
+      eeos-test: ${BLACK_COMPANY_CHANNEL_ID}
     econovation:
       notification: ${ECONOVATION_NOTIFICATION_CHANNEL_ID}
