@@ -29,6 +29,17 @@ public class ProgramModel implements AbstractModel {
 	private ProgramType programType;
 	private Long writer;
 
+	public ProgramModel(ProgramModel model){
+		this.id = model.id;
+		this.title = model.title;
+		this.content = model.content;
+		this.programDate = model.programDate;
+		this.eventStatus = model.eventStatus;
+		this.programCategory = model.programCategory;
+		this.programType = model.programType;
+		this.writer = model.writer;
+	}
+
 	public void validateCreate() {
 		if (findProgramStatus().equals(ProgramStatus.ACTIVE)) {
 			return;
@@ -73,9 +84,6 @@ public class ProgramModel implements AbstractModel {
 
 		return this;
 	}
-
-
-
 	private ProgramStatus findProgramStatus() {
 		LocalDate now = DateConverter.toLocalDate(Instant.now().toEpochMilli());
 		LocalDate programDate = DateConverter.toLocalDate(this.programDate.getTime());
