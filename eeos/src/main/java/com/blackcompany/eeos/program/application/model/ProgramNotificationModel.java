@@ -1,45 +1,26 @@
 package com.blackcompany.eeos.program.application.model;
 
-import com.blackcompany.eeos.common.support.AbstractModel;
-import com.blackcompany.eeos.program.infra.api.slack.chat.dto.ProgramSlackNotificationRequest;
+import com.blackcompany.eeos.program.application.dto.ProgramSlackNotificationRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.format.DateTimeFormatter;
+
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder(toBuilder = true)
-public class ProgramNotificationModel{
+@Getter
+public class ProgramNotificationModel extends ProgramModel{
 
-    private ProgramModel programModel;
-    private String programUrl;
+    private String url;
 
-    public static ProgramNotificationModel from(ProgramModel model, ProgramSlackNotificationRequest request){
-        return ProgramNotificationModel.builder()
-                .programModel(model)
-                .programUrl(request.getProgramUrl())
-                .build();
+    public ProgramNotificationModel(ProgramModel model, String url){
+        super(model);
+        this.url = url;
     }
 
-    public String getTitle(){
-        return programModel
-                .getTitle();
-    }
-
-    public String getContent(){
-        return programModel
-                .getContent();
-    }
-
-    public String getProgramUrl(){
-        return this.programUrl;
-    }
-
-    public String getProgramDate(){
-        return programModel
-                .getProgramDate()
-                .toLocalDateTime()
-                .toString();
+    public static ProgramNotificationModel of(ProgramModel model, ProgramSlackNotificationRequest request) {
+        return new ProgramNotificationModel(model, request.getProgramUrl());
     }
 }

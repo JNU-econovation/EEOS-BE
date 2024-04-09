@@ -1,23 +1,38 @@
 package com.blackcompany.eeos.program.infra.api.slack.chat.model.converter;
 
+import com.blackcompany.eeos.member.application.exception.NotFoundMemberException;
+import com.blackcompany.eeos.member.persistence.MemberRepository;
 import com.blackcompany.eeos.program.application.model.ProgramNotificationModel;
 import com.blackcompany.eeos.program.infra.api.slack.chat.model.*;
 import com.blackcompany.eeos.program.infra.api.slack.chat.model.ChatPostModel.Block;
 import com.blackcompany.eeos.program.infra.api.slack.chat.model.ChatPostModel.Text;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
-public class ProgramSlackNotificationMessageConverter
+import java.time.format.DateTimeFormatter;
+
+@Component
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
+public class ChatPostModelConverter
 {
+    private final MemberRepository memberRepository;
+    private final Channels channels;
+    private final BotTokens tokens;
+
     public ChatPostModel from(ProgramNotificationModel model){
         return ChatPostModel.builder()
-                .token(BotTokens.BLACK_COMPANY_EEOS.getToken())
-                .channel(SlackChannels.NOTIFICATION.getChannel())
+                .token(tokens.getBLACK_COMPANY_EEOS_BOT()) /** 수정 필요 */
+                .channel(channels.getBLACK_COMPANY_TEST()) /** 수정 필요 */
                 .message(getMessage(model))
+                .userName(getUsername(model))
                 .build();
     }
 
     private Block[] getMessage(final ProgramNotificationModel model){
-        return getBlocks(BlockTypes.SECTION.getType(),
-                TextTypes.MARKDOWN.getType(),
+        return getBlocks(BlockTypes.SECTION.getType(), /** 수정 필요 */
+                TextTypes.MARKDOWN.getType(), /** 수정 필요 */
                 model);
     }
 
@@ -28,8 +43,8 @@ public class ProgramSlackNotificationMessageConverter
                 getBlock(blockType, textType, ProgramMessageAnnouncements.HEADER_TOP.getAnnouncement()),
                 getBlock(blockType, textType, ProgramMessageAnnouncements.HEADER_MID.getAnnouncement()),
                 getBlock(blockType, textType, ProgramMessageAnnouncements.PROGRAM_NAME.getAnnouncement()+model.getTitle()),
-                getBlock(blockType, textType, ProgramMessageAnnouncements.PROGRAM_DATE.getAnnouncement()+model.getProgramDate()),
-                getBlock(blockType, textType, ProgramMessageAnnouncements.PROGRAM_URL.getAnnouncement()+model.getProgramUrl()),
+                getBlock(blockType, textType, ProgramMessageAnnouncements.PROGRAM_DATE.getAnnouncement()+getStringDate(model)),
+                getBlock(blockType, textType, ProgramMessageAnnouncements.PROGRAM_URL.getAnnouncement()+model.getUrl()),
                 getBlock(blockType, textType, ProgramMessageAnnouncements.BOTTOM.getAnnouncement())
         };
     }
@@ -51,5 +66,17 @@ public class ProgramSlackNotificationMessageConverter
                 .type(type)
                 .text(text)
                 .build();
+    }
+
+    private String getStringDate(ProgramNotificationModel model){
+        return model.getProgramDate()
+                .toLocalDateTime()
+                .format(DateTimeFormatter.ofPattern("YYYY년 MM월 DD일(E)"));
+    }
+
+    private String getUsername(ProgramNotificationModel model){
+        return memberRepository.findById(model.getWriter())
+                .map(m -> m.getName())
+                .orElseThrow( () -> new NotFoundMemberException());
     }
 }

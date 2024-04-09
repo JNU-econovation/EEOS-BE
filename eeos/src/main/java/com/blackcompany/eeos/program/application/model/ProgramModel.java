@@ -2,11 +2,7 @@ package com.blackcompany.eeos.program.application.model;
 
 import com.blackcompany.eeos.common.support.AbstractModel;
 import com.blackcompany.eeos.common.utils.DateConverter;
-import com.blackcompany.eeos.program.application.exception.DeniedProgramEditException;
-import com.blackcompany.eeos.program.application.exception.NotAllowedUpdatedProgramAttendException;
-import com.blackcompany.eeos.program.application.exception.NotAllowedUpdatedProgramTypeException;
-import com.blackcompany.eeos.program.application.exception.NotFoundProgramCategoryException;
-import com.blackcompany.eeos.program.application.exception.OverDateException;
+import com.blackcompany.eeos.program.application.exception.*;
 import com.blackcompany.eeos.program.persistence.ProgramCategory;
 import com.blackcompany.eeos.program.persistence.ProgramType;
 import java.sql.Timestamp;
@@ -33,6 +29,17 @@ public class ProgramModel implements AbstractModel {
 	private ProgramType programType;
 	private Long writer;
 
+	public ProgramModel(ProgramModel model){
+		this.id = model.id;
+		this.title = model.title;
+		this.content = model.content;
+		this.programDate = model.programDate;
+		this.eventStatus = model.eventStatus;
+		this.programCategory = model.programCategory;
+		this.programType = model.programType;
+		this.writer = model.writer;
+	}
+
 	public void validateCreate() {
 		if (findProgramStatus().equals(ProgramStatus.ACTIVE)) {
 			return;
@@ -49,6 +56,10 @@ public class ProgramModel implements AbstractModel {
 
 	public void validateDelete(Long memberId) {
 		canEdit(memberId);
+	}
+
+	public void validateNotify(Long memberId){
+		if(!isWriter(memberId)) throw new DeniedProgramNotificationException(memberId);
 	}
 
 	public String getAccessRight(Long memberId) {
@@ -73,7 +84,6 @@ public class ProgramModel implements AbstractModel {
 
 		return this;
 	}
-
 	private ProgramStatus findProgramStatus() {
 		LocalDate now = DateConverter.toLocalDate(Instant.now().toEpochMilli());
 		LocalDate programDate = DateConverter.toLocalDate(this.programDate.getTime());

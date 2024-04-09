@@ -1,4 +1,4 @@
-package com.blackcompany.eeos.program.infra.api.slack.chat.dto;
+package com.blackcompany.eeos.program.application.dto;
 
 import com.blackcompany.eeos.common.support.dto.AbstractRequestDto;
 

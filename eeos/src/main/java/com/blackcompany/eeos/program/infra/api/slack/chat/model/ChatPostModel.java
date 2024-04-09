@@ -1,5 +1,6 @@
 package com.blackcompany.eeos.program.infra.api.slack.chat.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import com.blackcompany.eeos.program.infra.api.slack.chat.model.ChatPostModel.Block;
 
@@ -10,6 +11,9 @@ public class ChatPostModel implements MessageModel<Block>{
     private String token;
     private String channel;
     private Block[] message;
+
+    @JsonProperty("username")
+    private String userName;
 
     @Getter
     @AllArgsConstructor
