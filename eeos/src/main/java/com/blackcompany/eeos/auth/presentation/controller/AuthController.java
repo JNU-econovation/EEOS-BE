@@ -15,10 +15,9 @@ import com.blackcompany.eeos.common.presentation.respnose.ApiResponseBody.Succes
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponseGenerator;
 import com.blackcompany.eeos.common.presentation.respnose.MessageCode;
 import com.blackcompany.eeos.common.presentation.support.CookieManager;
+import io.swagger.v3.oas.annotations.Operation;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -57,7 +56,9 @@ public class AuthController {
 		this.withDrawUsecase = withDrawUsecase;
 	}
 
-	@Operation(summary = "로그인을 한다.", description = "PathVariable에 담긴 redirect_url, code를 받아 액세스 토큰과 리프레시 토큰을 발급한다.")
+	@Operation(
+			summary = "로그인을 한다.",
+			description = "PathVariable에 담긴 redirect_url, code를 받아 액세스 토큰과 리프레시 토큰을 발급한다.")
 	@PostMapping("/login/{oauthServerType}")
 	ApiResponse<SuccessBody<TokenResponse>> login(
 			@PathVariable String oauthServerType,

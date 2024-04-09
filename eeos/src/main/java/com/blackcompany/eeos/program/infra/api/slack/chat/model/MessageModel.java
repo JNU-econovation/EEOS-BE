@@ -4,8 +4,9 @@ import com.blackcompany.eeos.common.support.AbstractModel;
 
 public interface MessageModel<T> extends AbstractModel {
 
-    String getToken();
+	String getToken();
 
-    String getChannel();
-    <T> T getMessage();
+	String getChannel();
+
+	<T> T getMessage();
 }

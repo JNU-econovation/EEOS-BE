@@ -4,10 +4,11 @@ import lombok.Getter;
 
 @Getter
 public enum TextTypes {
-    MARKDOWN("mrkdwn");
+	MARKDOWN("mrkdwn");
 
-    private String type;
+	private String type;
 
-    TextTypes(String type){ this.type = type; }
-
+	TextTypes(String type) {
+		this.type = type;
+	}
 }

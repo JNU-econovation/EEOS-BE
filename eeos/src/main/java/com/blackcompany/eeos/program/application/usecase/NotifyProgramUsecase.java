@@ -5,6 +5,6 @@ import com.blackcompany.eeos.program.application.dto.ProgramSlackNotificationReq
 
 public interface NotifyProgramUsecase {
 
-    CommandProgramResponse notify(Long memberId, Long programId, ProgramSlackNotificationRequest request);
-
+	CommandProgramResponse notify(
+			Long memberId, Long programId, ProgramSlackNotificationRequest request);
 }

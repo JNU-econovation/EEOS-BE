@@ -29,7 +29,7 @@ public class ProgramModel implements AbstractModel {
 	private ProgramType programType;
 	private Long writer;
 
-	public ProgramModel(ProgramModel model){
+	public ProgramModel(ProgramModel model) {
 		this.id = model.id;
 		this.title = model.title;
 		this.content = model.content;
@@ -58,8 +58,8 @@ public class ProgramModel implements AbstractModel {
 		canEdit(memberId);
 	}
 
-	public void validateNotify(Long memberId){
-		if(!isWriter(memberId)) throw new DeniedProgramNotificationException(memberId);
+	public void validateNotify(Long memberId) {
+		if (!isWriter(memberId)) throw new DeniedProgramNotificationException(memberId);
 	}
 
 	public String getAccessRight(Long memberId) {
@@ -84,6 +84,7 @@ public class ProgramModel implements AbstractModel {
 
 		return this;
 	}
+
 	private ProgramStatus findProgramStatus() {
 		LocalDate now = DateConverter.toLocalDate(Instant.now().toEpochMilli());
 		LocalDate programDate = DateConverter.toLocalDate(this.programDate.getTime());

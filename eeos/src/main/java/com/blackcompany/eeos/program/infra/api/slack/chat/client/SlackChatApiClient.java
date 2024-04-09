@@ -3,8 +3,7 @@ package com.blackcompany.eeos.program.infra.api.slack.chat.client;
 import com.blackcompany.eeos.program.infra.api.slack.chat.dto.SlackChatPostMessageResponse;
 import com.blackcompany.eeos.program.infra.api.slack.chat.model.ChatPostModel;
 
-public interface SlackChatApiClient{
+public interface SlackChatApiClient {
 
-    <T> SlackChatPostMessageResponse post(ChatPostModel model);
-
+	<T> SlackChatPostMessageResponse post(ChatPostModel model);
 }

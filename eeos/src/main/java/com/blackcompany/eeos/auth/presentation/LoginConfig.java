@@ -24,7 +24,7 @@ public class LoginConfig implements WebMvcConfigurer {
 		registry
 				.addInterceptor(memberAuthInterceptor())
 				.addPathPatterns("/api/**")
-				.excludePathPatterns( "/api/guest/**", "/api/auth/**", "/api/health-check");
+				.excludePathPatterns("/api/guest/**", "/api/auth/**", "/api/health-check");
 		registry
 				.addInterceptor(reissueAuthInterceptor())
 				.addPathPatterns("/auth/reissue")

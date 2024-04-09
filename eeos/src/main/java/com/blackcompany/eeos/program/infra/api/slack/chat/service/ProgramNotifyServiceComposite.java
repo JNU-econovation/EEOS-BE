@@ -8,25 +8,20 @@ import com.blackcompany.eeos.program.infra.api.slack.chat.model.ChatPostModel;
 import com.blackcompany.eeos.program.infra.api.slack.chat.model.converter.ChatPostModelConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Component
 @RequiredArgsConstructor
 public class ProgramNotifyServiceComposite {
 
-    private final SlackChatApiClient client;
-    private final ChatPostModelConverter converter;
+	private final SlackChatApiClient client;
+	private final ChatPostModelConverter converter;
 
-    public CommandProgramResponse notify(ProgramNotificationModel notificationModel){
+	public CommandProgramResponse notify(ProgramNotificationModel notificationModel) {
 
-        ChatPostModel model = converter.from(notificationModel);
-        SlackChatPostMessageResponse response = client.post(model);
+		ChatPostModel model = converter.from(notificationModel);
+		SlackChatPostMessageResponse response = client.post(model);
 
-        /** return 부분 수정*/
-        return CommandProgramResponse.builder()
-                .programId(notificationModel.getId())
-                .build();
-    }
-
-
+		/** return 부분 수정 */
+		return CommandProgramResponse.builder().programId(notificationModel.getId()).build();
+	}
 }

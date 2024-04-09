@@ -9,17 +9,12 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SwaggerConfig {
 
-    @Bean
-    public OpenAPI openAPI(){
-        return new OpenAPI()
-                .components(new Components())
-                .info(apiInfo());
-    }
+	@Bean
+	public OpenAPI openAPI() {
+		return new OpenAPI().components(new Components()).info(apiInfo());
+	}
 
-    private Info apiInfo(){
-        return new Info()
-                .title("EEOS API")
-                .description("EEOS API Swagger")
-                .version("2.2.0");
-    }
+	private Info apiInfo() {
+		return new Info().title("EEOS API").description("EEOS API Swagger").version("2.2.0");
+	}
 }
