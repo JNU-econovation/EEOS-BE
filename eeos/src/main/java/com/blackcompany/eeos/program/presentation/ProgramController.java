@@ -16,7 +16,7 @@ import com.blackcompany.eeos.program.application.usecase.*;
 
 import javax.validation.Valid;
 
-import com.blackcompany.eeos.program.infra.api.slack.chat.dto.ProgramSlackNotificationRequest;
+import com.blackcompany.eeos.program.application.dto.ProgramSlackNotificationRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
