@@ -1,10 +1,8 @@
 package com.blackcompany.eeos.program.application.model;
 
-import com.blackcompany.eeos.common.support.AbstractModel;
-import com.blackcompany.eeos.program.infra.api.slack.chat.dto.ProgramSlackNotificationRequest;
+import com.blackcompany.eeos.program.application.dto.ProgramSlackNotificationRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
@@ -41,5 +39,9 @@ public class ProgramNotificationModel{
                 .getProgramDate()
                 .toLocalDateTime()
                 .toString();
+    }
+
+    public void validateNotify(long memberId){
+        programModel.validateNotify(memberId);
     }
 }
