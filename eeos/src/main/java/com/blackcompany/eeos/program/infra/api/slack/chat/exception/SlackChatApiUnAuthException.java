@@ -9,8 +9,8 @@ public class SlackChatApiUnAuthException extends BusinessException {
     private final String message;
 
     public SlackChatApiUnAuthException(String message){
-        super(FAIL_CODE, HttpStatus.UNAUTHORIZED);
-        this.message = message;
+        super(FAIL_CODE, HttpStatus.INTERNAL_SERVER_ERROR);
+        this.message = "Slakc API 응답 : " + message;
     }
 
     @Override
