@@ -8,7 +8,6 @@ import lombok.*;
 @Builder
 public class ChatPostModel implements MessageModel<Block> {
 
-	private String channel;
 	private Block[] message;
 
 	@JsonProperty("username")
