@@ -33,9 +33,7 @@ public class SlackChatPostMessageResponse implements SlackApiResponse {
 	}
 
 	public String getMessage() {
-		return Arrays.stream(message.getAttachments())
-				.map(a -> a.getText())
-				.collect(Collectors.reducing("", (a1, a2) -> a1 + "\n" + a2));
+		return message.getText();
 	}
 
 	@Getter
