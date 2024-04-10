@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 
 public class SlackChatApiUnAuthException extends BusinessException {
 
-    private static final String FAIL_CODE = "1009";
+    private static final String FAIL_CODE = "5001";
     private final String message;
 
     public SlackChatApiUnAuthException(String message){
