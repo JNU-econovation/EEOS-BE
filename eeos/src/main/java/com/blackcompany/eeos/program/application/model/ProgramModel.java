@@ -60,6 +60,7 @@ public class ProgramModel implements AbstractModel {
 
 	public void validateNotify(Long memberId) {
 		if (!isWriter(memberId)) throw new DeniedProgramNotificationException(memberId);
+		if (!isWeeklyProgram(this)) throw new NotWeeklyProgramException();
 	}
 
 	public String getAccessRight(Long memberId) {
@@ -104,6 +105,10 @@ public class ProgramModel implements AbstractModel {
 
 	private boolean isWriter(Long memberId) {
 		return writer.equals(memberId);
+	}
+
+	private boolean isWeeklyProgram(ProgramModel model){
+		return model.programCategory.getCategory().equals(ProgramCategory.find("weekly"));
 	}
 
 	private void canUpdate(ProgramModel requestModel) {
