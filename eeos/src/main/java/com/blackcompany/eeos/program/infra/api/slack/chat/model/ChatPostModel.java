@@ -8,28 +8,18 @@ import lombok.*;
 @Builder
 public class ChatPostModel implements MessageModel<Block> {
 
-	private String token;
-	private String channel;
 	private Block[] message;
 
 	@JsonProperty("username")
 	private String userName;
 
 	@Getter
-	@AllArgsConstructor
 	@Builder
+	@AllArgsConstructor
 	@NoArgsConstructor
 	public static class Block implements BlockModel {
 		private String type;
 		private TextModel text;
-
-		public void setText(String text) {
-			this.text.setText(text);
-		}
-
-		public void setType(String type) {
-			this.type = type;
-		}
 	}
 
 	@Getter
@@ -39,13 +29,5 @@ public class ChatPostModel implements MessageModel<Block> {
 	public static class Text implements TextModel {
 		private String type;
 		private String text;
-
-		public void setType(String type) {
-			this.type = type;
-		}
-
-		public void setText(String text) {
-			this.text = text;
-		}
 	}
 }

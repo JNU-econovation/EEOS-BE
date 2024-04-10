@@ -16,15 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class ChatPostModelConverter {
 	private final MemberRepository memberRepository;
-	private final Channels channels;
-	private final BotTokens tokens;
 
 	public ChatPostModel from(ProgramNotificationModel model) {
 		return ChatPostModel.builder()
-				.token(tokens.getBLACK_COMPANY_EEOS_BOT())
-				/** 수정 필요 */
-				.channel(channels.getBLACK_COMPANY_TEST())
-				/** 수정 필요 */
 				.message(getMessage(model))
 				.userName(getUsername(model))
 				.build();
