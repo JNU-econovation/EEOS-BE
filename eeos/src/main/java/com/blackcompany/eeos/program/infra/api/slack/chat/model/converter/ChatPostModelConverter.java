@@ -21,7 +21,6 @@ public class ChatPostModelConverter {
 
 	public ChatPostModel from(ProgramNotificationModel model) {
 		return ChatPostModel.builder()
-				.token(tokens.getBLACK_COMPANY_EEOS_BOT())
 				/** 수정 필요 */
 				.channel(channels.getBLACK_COMPANY_TEST())
 				/** 수정 필요 */
