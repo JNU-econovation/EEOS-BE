@@ -9,7 +9,7 @@ public class DeniedProgramNotificationException extends BusinessException {
 	private final long memberId;
 
 	public DeniedProgramNotificationException(long memberId) {
-		super(FAIL_CODE, HttpStatus.BAD_REQUEST);
+		super(FAIL_CODE, HttpStatus.UNAUTHORIZED);
 		this.memberId = memberId;
 	}
 
