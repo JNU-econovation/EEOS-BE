@@ -1,6 +1,6 @@
 package com.blackcompany.eeos.program.infra.api.slack.chat.config;
 
-import com.blackcompany.eeos.program.infra.api.slack.chat.interceptor.SlackChatOpenFeignInterceptor;
+import com.blackcompany.eeos.program.infra.api.slack.chat.interceptor.SlackBCChatOpenFeignInterceptor;
 import com.blackcompany.eeos.program.infra.api.slack.chat.model.BotTokens;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -12,8 +12,8 @@ public class FeignConfig {
 
     private final BotTokens tokens;
     @Bean
-    public SlackChatOpenFeignInterceptor feignInterceptor(){
-        return new SlackChatOpenFeignInterceptor(tokens);
+    public SlackBCChatOpenFeignInterceptor feignInterceptor(){
+        return new SlackBCChatOpenFeignInterceptor(tokens);
     }
 
 }
