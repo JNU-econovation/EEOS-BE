@@ -13,12 +13,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 @Getter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
+@Slf4j
 public class ProgramModel implements AbstractModel {
 	private Long id;
 	private String title;
@@ -108,7 +110,7 @@ public class ProgramModel implements AbstractModel {
 	}
 
 	private boolean isWeeklyProgram(ProgramModel model){
-		return model.programCategory.getCategory().equals(ProgramCategory.find("weekly"));
+		return model.programCategory.equals(ProgramCategory.find("weekly"));
 	}
 
 	private void canUpdate(ProgramModel requestModel) {
