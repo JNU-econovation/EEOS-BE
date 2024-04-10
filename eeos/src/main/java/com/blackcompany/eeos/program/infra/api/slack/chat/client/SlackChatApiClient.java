@@ -8,6 +8,5 @@ public interface SlackChatApiClient {
 
 	SlackChatPostMessageResponse post(final String channel,
 										  final String blocks,
-										  final String username,
-										  final String pretty);
+										  final String username);
 }

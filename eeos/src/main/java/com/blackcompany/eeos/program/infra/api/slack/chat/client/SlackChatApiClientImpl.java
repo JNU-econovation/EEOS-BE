@@ -16,6 +16,5 @@ public interface SlackChatApiClientImpl extends SlackChatApiClient {
 	@PostMapping(path = "/chat.postMessage", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	SlackChatPostMessageResponse post(@RequestParam("channel") final String channel,
 									  @RequestParam("blocks") final String blocks,
-									  @RequestParam("username") final String username,
-									  @RequestParam("pretty") final String pretty);
+									  @RequestParam("username") final String username);
 }
