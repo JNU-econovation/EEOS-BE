@@ -40,7 +40,7 @@ public class ChatPostModelConverter {
 			getBlock(blockType, textType, ProgramMessageAnnouncements.HEADER_MID.getAnnouncement()),
 			getBlock(
 					blockType,
-					textType,
+					textType ,
 					ProgramMessageAnnouncements.PROGRAM_NAME.getAnnouncement() + model.getTitle()),
 			getBlock(
 					blockType,
@@ -66,7 +66,7 @@ public class ChatPostModelConverter {
 		return model
 				.getProgramDate()
 				.toLocalDateTime()
-				.format(DateTimeFormatter.ofPattern("YYYY년 MM월 DD일(E)"));
+				.format(DateTimeFormatter.ofPattern("YYYY년 MM월 dd일(E)"));
 	}
 
 	private String getUsername(ProgramNotificationModel model) {
