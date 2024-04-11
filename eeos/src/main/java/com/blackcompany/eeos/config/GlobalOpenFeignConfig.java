@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @EnableFeignClients("com.blackcompany.eeos")
-public class OpenFeignConfig {
+public class GlobalOpenFeignConfig {
 	@Bean
 	Logger.Level feignLoggerLevel() {
 		return Logger.Level.FULL;
