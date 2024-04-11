@@ -6,7 +6,8 @@ import com.sun.xml.bind.v2.runtime.output.Encoded;
 
 public interface SlackChatApiClient {
 
-	SlackChatPostMessageResponse post(final String channel,
-										  final String blocks,
-										  final String username);
+	SlackChatPostMessageResponse post(final String token,
+									  final String channel,
+									  final String blocks,
+									  final String username);
 }

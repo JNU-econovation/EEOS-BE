@@ -17,4 +17,7 @@ public class Channels {
 
 	@Value("${slack.channel.black-company.slack-message-test}")
 	private String BLACK_COMPANY_TEST;
+
+	@Value("${slack.channel.black-company.notification}")
+	private String BLACK_COMPANY_NOTIFICATION;
 }
