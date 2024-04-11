@@ -7,10 +7,12 @@ import com.blackcompany.eeos.program.infra.api.slack.chat.client.SlackChatApiCli
 import com.blackcompany.eeos.program.infra.api.slack.chat.dto.SlackChatPostMessageResponse;
 import com.blackcompany.eeos.program.infra.api.slack.chat.exception.SlackChatApiUnAuthException;
 import com.blackcompany.eeos.program.infra.api.slack.chat.mapper.ObjectToJsonMapper;
+import com.blackcompany.eeos.program.infra.api.slack.chat.model.BotTokens;
 import com.blackcompany.eeos.program.infra.api.slack.chat.model.Channels;
 import com.blackcompany.eeos.program.infra.api.slack.chat.model.ChatPostModel;
 import com.blackcompany.eeos.program.infra.api.slack.chat.model.converter.ChatPostModelConverter;
 import com.blackcompany.eeos.program.infra.api.slack.chat.support.ChannelGetter;
+import com.blackcompany.eeos.program.infra.api.slack.chat.support.TokenGetter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -24,17 +26,28 @@ public class ProgramNotifyServiceComposite {
 	private final ChatPostModelConverter modelConverter;
 	private final ProgramResponseConverter responseConverter;
 	private final Channels channels;
+	private final BotTokens tokens;
 	private final ObjectToJsonMapper<ChatPostModel.Block[]> mapper;
+
+	private final String BEARER = "Bearer";
 
 	public CommandProgramResponse notify(ProgramNotificationModel notiModel) {
 
 		ChatPostModel model = modelConverter.from(notiModel);
-		SlackChatPostMessageResponse response = post(getTestChannel(), model);
+		SlackChatPostMessageResponse response = post(getBlackCompanyBotToken(),
+													getTestChannel(),
+													model);
 
 		if(!response.isOk()) throw new SlackChatApiUnAuthException(response.getError());
 
 		return responseConverter.from(notiModel.getId());
 	}
+
+	private TokenGetter getEconoBotToken(){ return () -> String.format("%s %s", BEARER, tokens.getECONOVATION_EEOS_BOT()); }
+
+	private TokenGetter getBlackCompanyBotToken(){ return () -> String.format("%s %s", BEARER, tokens.getBLACK_COMPANY_EEOS_BOT()); }
+
+	private ChannelGetter getBlackCompanyNotiChannel(){ return () -> BEARER + channels.getBLACK_COMPANY_NOTIFICATION();}
 
 	private ChannelGetter getNotiChannel(){
 		return () -> channels.getECONOVATION_NOTIFICATION();
@@ -48,9 +61,9 @@ public class ProgramNotifyServiceComposite {
 		return () -> channels.getBLACK_COMPANY_TEST();
 	}
 
-
-	private SlackChatPostMessageResponse post(ChannelGetter channel, ChatPostModel model){
-		return client.post(channel.getChannel(),
+	private SlackChatPostMessageResponse post(TokenGetter token, ChannelGetter channel, ChatPostModel model){
+		return client.post(token.getToken(),
+				channel.getChannel(),
 				mapper.toJson(model.getMessage()),
 				model.getUserName());
 	}
