@@ -35,7 +35,7 @@ public class ProgramNotifyServiceComposite {
 
 		ChatPostModel model = modelConverter.from(notiModel);
 		SlackChatPostMessageResponse response = post(getBlackCompanyBotToken(),
-													getTestChannel(),
+													getBlackCompanyNotiChannel(),
 													model);
 
 		if(!response.isOk()) throw new SlackChatApiUnAuthException(response.getError());
@@ -47,7 +47,7 @@ public class ProgramNotifyServiceComposite {
 
 	private TokenGetter getBlackCompanyBotToken(){ return () -> String.format("%s %s", BEARER, tokens.getBLACK_COMPANY_EEOS_BOT()); }
 
-	private ChannelGetter getBlackCompanyNotiChannel(){ return () -> BEARER + channels.getBLACK_COMPANY_NOTIFICATION();}
+	private ChannelGetter getBlackCompanyNotiChannel(){ return () -> channels.getBLACK_COMPANY_NOTIFICATION();}
 
 	private ChannelGetter getNotiChannel(){
 		return () -> channels.getECONOVATION_NOTIFICATION();
