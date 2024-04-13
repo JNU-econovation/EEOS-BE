@@ -114,16 +114,4 @@ public class ProgramController {
 		return ApiResponseGenerator.success(
 				response, HttpStatus.OK, MessageCode.CREATE); // 프로그램 조회, 내용 형태를 바꾼다.
 	}
-
-	@Operation(
-			summary = "행사 생성 자동 알림",
-			description = "RequestBody에 programUrl을 담아 슬랙 API를 이용하여 슬랙봇 메세지 기능을 요청합니다.")
-	@PostMapping("/{programId}/slack/notification-test")
-	public ApiResponse<SuccessBody<CommandProgramResponse>> slackNotifytest(
-			@RequestBody ProgramSlackNotificationRequest request,
-			@PathVariable("programId") Long programId) {
-		CommandProgramResponse response = notifyProgramUsecase.notify(43L, programId, request);
-		return ApiResponseGenerator.success(
-				response, HttpStatus.OK, MessageCode.CREATE); // 프로그램 조회, 내용 형태를 바꾼다.
-	}
 }
