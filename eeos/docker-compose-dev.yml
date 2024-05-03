@@ -50,13 +50,8 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://eeos-mysql:3306/eeos?useSSL=false&serverTimezone=Asia/Seoul&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
-<<<<<<< HEAD:eeos/docker-compose-dev.yml
       SPRING_PROFILES_ACTIVE: dev
       SPRING_REDIS_HOST: eeos-redis
-=======
-      SPRING_PROFILES_ACTIVE: ${PROFILE}
-      SPRING_REDIS_HOST: redis
->>>>>>> main:eeos/docker-compose.yml
       SPRING_REDIS_PORT: 6379
       SPRING_REDIS_PASSWORD: root
     networks:
