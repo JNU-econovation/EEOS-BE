@@ -4,7 +4,7 @@ import com.blackcompany.eeos.auth.fixture.FakeSlackApiClientFixture;
 import com.blackcompany.eeos.auth.infra.oauth.slack.dto.SlackMember;
 import com.blackcompany.eeos.auth.infra.oauth.slack.dto.SlackToken;
 
-class FakeSlackApiClient implements SlackApiClient {
+class FakeSlackApiClient implements SlackOauthApiClient {
 
 	@Override
 	public SlackToken fetchToken(

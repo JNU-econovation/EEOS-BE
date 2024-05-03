@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(name = "SlackOpenFeign", url = "https://slack.com/api")
-public interface SlackApiClientImpl extends SlackApiClient {
+public interface SlackOauthApiClientImpl extends SlackOauthApiClient {
 	@GetMapping(path = "/oauth.v2.access")
 	SlackToken fetchToken(
 			@RequestParam("client_id") String clientId,
