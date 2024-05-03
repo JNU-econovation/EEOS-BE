@@ -15,10 +15,9 @@ import com.blackcompany.eeos.common.presentation.respnose.ApiResponseBody.Succes
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponseGenerator;
 import com.blackcompany.eeos.common.presentation.respnose.MessageCode;
 import com.blackcompany.eeos.common.presentation.support.CookieManager;
+import io.swagger.v3.oas.annotations.Operation;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -57,7 +56,9 @@ public class AuthController {
 		this.withDrawUsecase = withDrawUsecase;
 	}
 
-	@Operation(summary = "로그인을 한다.", description = "토큰을 발급한다.")
+	@Operation(
+			summary = "로그인을 한다.",
+			description = "PathVariable에 담긴 redirect_url, code를 받아 액세스 토큰과 리프레시 토큰을 발급한다.")
 	@PostMapping("/login/{oauthServerType}")
 	ApiResponse<SuccessBody<TokenResponse>> login(
 			@PathVariable String oauthServerType,
@@ -70,7 +71,7 @@ public class AuthController {
 		return ApiResponseGenerator.success(response, HttpStatus.CREATED, MessageCode.CREATE);
 	}
 
-	@Operation(summary = "토큰을 재발급한다.", description = "사용자 토큰을 추출하여 해당 토큰을 기반으로 새로운 토큰을 생성, 반환한다.")
+	@Operation(summary = "토큰을 재발급한다.", description = "쿠키에 담긴 사용자 토큰을 이용하여 리프레시 토큰을 반환한다.")
 	@PostMapping("/reissue")
 	ApiResponse<SuccessBody<TokenResponse>> reissue(
 			HttpServletRequest request, HttpServletResponse httpResponse) {
@@ -81,7 +82,7 @@ public class AuthController {
 		return ApiResponseGenerator.success(response, HttpStatus.CREATED, MessageCode.CREATE);
 	}
 
-	@Operation(summary = "로그아웃한다.", description = "클라이언트에서 사용한 토큰을 삭제한다.")
+	@Operation(summary = "로그아웃한다.", description = "쿠키에 담긴 리프레시 토큰을 이용하여 로그아웃한다.")
 	@PostMapping("/logout")
 	ApiResponse<SuccessBody<Void>> logout(
 			HttpServletRequest request, HttpServletResponse httpResponse, @Member Long memberId) {
@@ -92,7 +93,7 @@ public class AuthController {
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.DELETE);
 	}
 
-	@Operation(summary = "회원탈퇴", description = "사용자의 리프레시 토큰을 사용해서 회원을 삭제한다.")
+	@Operation(summary = "회원탈퇴", description = "쿠키에 담긴 리프레시 토큰을 이용하여 회원을 탈퇴한다.")
 	@PostMapping("/withdraw")
 	ApiResponse<SuccessBody<Void>> withDraw(
 			HttpServletRequest request, HttpServletResponse httpResponse, @Member Long memberId) {

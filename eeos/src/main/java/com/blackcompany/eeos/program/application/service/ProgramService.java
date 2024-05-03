@@ -5,6 +5,7 @@ import com.blackcompany.eeos.program.application.dto.ChangeAllAttendStatusReques
 import com.blackcompany.eeos.program.application.dto.CommandProgramResponse;
 import com.blackcompany.eeos.program.application.dto.CreateProgramRequest;
 import com.blackcompany.eeos.program.application.dto.PageResponse;
+import com.blackcompany.eeos.program.application.dto.ProgramSlackNotificationRequest;
 import com.blackcompany.eeos.program.application.dto.ProgramsResponse;
 import com.blackcompany.eeos.program.application.dto.QueryAccessRightResponse;
 import com.blackcompany.eeos.program.application.dto.QueryProgramResponse;
@@ -16,24 +17,23 @@ import com.blackcompany.eeos.program.application.dto.converter.QueryAccessRightR
 import com.blackcompany.eeos.program.application.event.DeletedProgramEvent;
 import com.blackcompany.eeos.program.application.exception.NotFoundProgramException;
 import com.blackcompany.eeos.program.application.model.ProgramModel;
+import com.blackcompany.eeos.program.application.model.ProgramNotificationModel;
 import com.blackcompany.eeos.program.application.model.ProgramStatus;
 import com.blackcompany.eeos.program.application.model.converter.ProgramEntityConverter;
 import com.blackcompany.eeos.program.application.model.converter.ProgramRequestConverter;
 import com.blackcompany.eeos.program.application.support.ProgramStatusServiceComposite;
-import com.blackcompany.eeos.program.application.usecase.CreateProgramUsecase;
-import com.blackcompany.eeos.program.application.usecase.DeleteProgramUsecase;
-import com.blackcompany.eeos.program.application.usecase.GetAccessRightUsecase;
-import com.blackcompany.eeos.program.application.usecase.GetProgramUsecase;
-import com.blackcompany.eeos.program.application.usecase.GetProgramsUsecase;
-import com.blackcompany.eeos.program.application.usecase.UpdateProgramUsecase;
+import com.blackcompany.eeos.program.application.usecase.*;
+import com.blackcompany.eeos.program.infra.api.slack.chat.service.ProgramNotifyServiceComposite;
 import com.blackcompany.eeos.program.persistence.ProgramCategory;
 import com.blackcompany.eeos.program.persistence.ProgramEntity;
 import com.blackcompany.eeos.program.persistence.ProgramRepository;
+import com.blackcompany.eeos.program.presentation.guest.GuestAccessRights;
 import com.blackcompany.eeos.target.application.service.SelectAttendCommandTargetMemberMemberService;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -43,13 +43,15 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class ProgramService
 		implements CreateProgramUsecase,
 				GetProgramUsecase,
 				UpdateProgramUsecase,
 				GetProgramsUsecase,
 				DeleteProgramUsecase,
-				GetAccessRightUsecase {
+				GetAccessRightUsecase,
+				NotifyProgramUsecase {
 
 	private final ProgramRequestConverter requestConverter;
 	private final ProgramEntityConverter entityConverter;
@@ -60,6 +62,7 @@ public class ProgramService
 	private final ProgramStatusServiceComposite programStatusComposite;
 	private final ApplicationEventPublisher applicationEventPublisher;
 	private final QueryAccessRightResponseConverter accessRightResponseConverter;
+	private final ProgramNotifyServiceComposite notifyServiceComposite;
 
 	@Override
 	@Transactional
@@ -77,6 +80,12 @@ public class ProgramService
 		ProgramModel model = findProgram(programId);
 		return responseConverter.from(
 				model, model.getProgramStatus(), findAccessRight(model, memberId));
+	}
+
+	@Override
+	public QueryProgramResponse getProgram(final Long programId) {
+		ProgramModel model = findProgram(programId);
+		return responseConverter.from(model, model.getProgramStatus(), getGuestAccessRight());
 	}
 
 	@Override
@@ -125,6 +134,14 @@ public class ProgramService
 		return accessRightResponseConverter.to(accessRight);
 	}
 
+	@Override
+	public CommandProgramResponse notify(
+			final Long memberId, final Long programId, final ProgramSlackNotificationRequest request) {
+		ProgramNotificationModel model = getNotifyInfo(programId, request);
+		model.validateNotify(memberId);
+		return notifyServiceComposite.notify(model);
+	}
+
 	private ProgramModel findProgram(final Long programId) {
 		return programRepository
 				.findById(programId)
@@ -159,5 +176,15 @@ public class ProgramService
 
 	private String findAccessRight(final ProgramModel model, final Long memberId) {
 		return model.getAccessRight(memberId);
+	}
+
+	private String getGuestAccessRight() {
+		return GuestAccessRights.get();
+	}
+
+	private ProgramNotificationModel getNotifyInfo(
+			Long programId, ProgramSlackNotificationRequest request) {
+		ProgramNotificationModel model = ProgramNotificationModel.of(findProgram(programId), request);
+		return model;
 	}
 }

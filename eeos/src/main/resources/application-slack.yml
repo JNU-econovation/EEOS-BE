@@ -1,0 +1,19 @@
+spring:
+  config:
+    activate:
+      on-profile: slack
+
+slack:
+  bot:
+    black-company:
+      eeos: ${BLACK_COMPANY_EEOS_BOT_TOKEN}
+    econovation:
+      eeos: ${ECONOVATION_EEOS_BOT_TOKEN}
+
+  channel:
+    black-company:
+      slack-message-test: ${BLACK_COMPANY_TEST_CHANNEL_ID}
+      notification : ${BLACK_COMPANY_NOTIFICATION_CHANNEL_ID}
+    econovation:
+      notification: ${ECONOVATION_NOTIFICATION_CHANNEL_ID}
+      small_talk: ${ECONOVATION_SMALL_TALK_CHANNEL_ID}
