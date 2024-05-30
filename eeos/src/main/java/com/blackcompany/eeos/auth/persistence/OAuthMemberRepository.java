@@ -11,4 +11,8 @@ public interface OAuthMemberRepository extends JpaRepository<OAuthMemberEntity, 
 
 	@Query("SELECT o FROM OAuthMemberEntity  o WHERE o.memberId=:memberId")
 	Optional<OAuthMemberEntity> findByMemberId(@Param("memberId") Long memberId);
+
+	@Query(
+			"SELECT o FROM OAuthMemberEntity  o WHERE o.memberId = (SELECT a.memberId FROM AccountEntity a WHERE a.loginId=:loginId)")
+	Optional<OAuthMemberEntity> findByAccount(@Param("loginId") String loginId);
 }
