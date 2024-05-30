@@ -94,6 +94,9 @@ dependencies {
 
     // actuator
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    // JBCrypt
+    implementation 'org.mindrot:jbcrypt:0.4'
 }
 
 test {
