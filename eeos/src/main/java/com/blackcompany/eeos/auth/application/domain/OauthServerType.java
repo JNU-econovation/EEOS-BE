@@ -6,7 +6,8 @@ import lombok.Getter;
 
 @Getter
 public enum OauthServerType {
-	SLACK("slack");
+	SLACK("slack"),
+	EEOS("eeos");
 
 	private final String oauthServer;
 

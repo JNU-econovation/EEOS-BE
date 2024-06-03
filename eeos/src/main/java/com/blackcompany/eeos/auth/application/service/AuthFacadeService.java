@@ -21,4 +21,10 @@ public class AuthFacadeService implements LoginUsecase {
 		OAuthMemberEntity entity = authService.authenticate(model);
 		return authenticationTokenGenerator.execute(entity.getMemberId());
 	}
+
+	@Override
+	public TokenModel login(String loginId, String password) {
+		OAuthMemberEntity entity = authService.authenticate(loginId, password);
+		return authenticationTokenGenerator.execute(entity.getMemberId());
+	}
 }
