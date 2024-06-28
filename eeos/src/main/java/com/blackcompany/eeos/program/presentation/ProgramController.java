@@ -8,17 +8,15 @@ import com.blackcompany.eeos.common.presentation.respnose.MessageCode;
 import com.blackcompany.eeos.program.application.dto.CommandProgramResponse;
 import com.blackcompany.eeos.program.application.dto.CreateProgramRequest;
 import com.blackcompany.eeos.program.application.dto.PageResponse;
+import com.blackcompany.eeos.program.application.dto.ProgramSlackNotificationRequest;
 import com.blackcompany.eeos.program.application.dto.QueryAccessRightResponse;
 import com.blackcompany.eeos.program.application.dto.QueryProgramResponse;
 import com.blackcompany.eeos.program.application.dto.QueryProgramsResponse;
 import com.blackcompany.eeos.program.application.dto.UpdateProgramRequest;
 import com.blackcompany.eeos.program.application.usecase.*;
-
-import javax.validation.Valid;
-
-import com.blackcompany.eeos.program.infra.api.slack.chat.dto.ProgramSlackNotificationRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -45,7 +43,6 @@ public class ProgramController {
 	private final GetAccessRightUsecase getAccessRightUsecase;
 	private final NotifyProgramUsecase notifyProgramUsecase;
 
-
 	@Operation(summary = "행사 생성", description = "RequestBody에 담긴 행사 정보를 통해서 행사를 생성한다.")
 	@PostMapping
 	public ApiResponse<SuccessBody<CommandProgramResponse>> create(
@@ -62,7 +59,6 @@ public class ProgramController {
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
 	}
 
-
 	@Operation(summary = "행사 수정", description = "PathVariable에 담긴 programId를 사용해서 행사 1개를 삭제한다.")
 	@PatchMapping("/{programId}")
 	public ApiResponse<SuccessBody<CommandProgramResponse>> update(
@@ -73,7 +69,10 @@ public class ProgramController {
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.UPDATE);
 	}
 
-	@Operation(summary = "행사 리스트 조회", description = "RequestParam 의 category, programStatus, size, page 를 사용해서 1 페이지에 들어가는 행사 리스트를 가져온다.")
+	@Operation(
+			summary = "행사 리스트 조회",
+			description =
+					"RequestParam 의 category, programStatus, size, page 를 사용해서 1 페이지에 들어가는 행사 리스트를 가져온다.")
 	@GetMapping
 	public ApiResponse<SuccessBody<PageResponse<QueryProgramsResponse>>> findAll(
 			@RequestParam("category") String category,
@@ -85,7 +84,6 @@ public class ProgramController {
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
 	}
 
-
 	@Operation(summary = "행사 삭제", description = "PathVariable에 담긴 programId를 사용해서 행사를 삭제한다.")
 	@DeleteMapping("/{programId}")
 	public ApiResponse<SuccessBody<Void>> delete(
@@ -94,7 +92,9 @@ public class ProgramController {
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.DELETE);
 	}
 
-	@Operation(summary = "행사 수정 권한", description = "PathVariable에 programId를 담아 사용자가 프로그램에 수정권한이 있는지 확인한다.")
+	@Operation(
+			summary = "행사 수정 권한",
+			description = "PathVariable에 programId를 담아 사용자가 프로그램에 수정권한이 있는지 확인한다.")
 	@GetMapping("/{programId}/accessRight")
 	public ApiResponse<SuccessBody<QueryAccessRightResponse>> getAccessRight(
 			@Member Long memberId, @PathVariable("programId") Long programId) {
@@ -102,12 +102,16 @@ public class ProgramController {
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
 	}
 
-	@Operation(summary = "행사 생성 자동 알림", description = "RequestBody에 programUrl을 담아 슬랙 API를 이용하여 슬랙봇 메세지 기능을 요청합니다.")
+	@Operation(
+			summary = "행사 생성 자동 알림",
+			description = "RequestBody에 programUrl을 담아 슬랙 API를 이용하여 슬랙봇 메세지 기능을 요청합니다.")
 	@PostMapping("/{programId}/slack/notification")
 	public ApiResponse<SuccessBody<CommandProgramResponse>> slackNotify(
-			@Member Long memberId, @RequestBody ProgramSlackNotificationRequest request,
-			@PathVariable("programId") Long programId){
+			@Member Long memberId,
+			@RequestBody ProgramSlackNotificationRequest request,
+			@PathVariable("programId") Long programId) {
 		CommandProgramResponse response = notifyProgramUsecase.notify(memberId, programId, request);
-		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.CREATE); //프로그램 조회, 내용 형태를 바꾼다.
+		return ApiResponseGenerator.success(
+				response, HttpStatus.OK, MessageCode.CREATE); // 프로그램 조회, 내용 형태를 바꾼다.
 	}
 }

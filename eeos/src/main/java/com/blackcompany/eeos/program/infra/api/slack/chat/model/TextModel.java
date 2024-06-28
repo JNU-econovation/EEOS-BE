@@ -4,11 +4,7 @@ import com.blackcompany.eeos.common.support.AbstractModel;
 
 public interface TextModel extends AbstractModel {
 
-    String getType();
+	String getType();
 
-    String getText();
-
-    void setType(String type);
-
-    void setText(String type);
+	String getText();
 }

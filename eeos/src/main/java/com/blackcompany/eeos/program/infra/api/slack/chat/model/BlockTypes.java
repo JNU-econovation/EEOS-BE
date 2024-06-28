@@ -4,9 +4,11 @@ import lombok.Getter;
 
 @Getter
 public enum BlockTypes {
-    SECTION("section");
+	SECTION("section");
 
-    private String type;
+	private String type;
 
-    BlockTypes(String type){ this.type = type; }
+	BlockTypes(String type) {
+		this.type = type;
+	}
 }

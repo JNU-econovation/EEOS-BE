@@ -2,6 +2,7 @@ package com.blackcompany.eeos.auth.presentation.controller;
 
 import com.blackcompany.eeos.auth.application.domain.TokenModel;
 import com.blackcompany.eeos.auth.application.dto.converter.TokenResponseConverter;
+import com.blackcompany.eeos.auth.application.dto.request.EEOSLoginRequest;
 import com.blackcompany.eeos.auth.application.dto.response.TokenResponse;
 import com.blackcompany.eeos.auth.application.usecase.LogOutUsecase;
 import com.blackcompany.eeos.auth.application.usecase.LoginUsecase;
@@ -15,19 +16,14 @@ import com.blackcompany.eeos.common.presentation.respnose.ApiResponseBody.Succes
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponseGenerator;
 import com.blackcompany.eeos.common.presentation.respnose.MessageCode;
 import com.blackcompany.eeos.common.presentation.support.CookieManager;
+import io.swagger.v3.oas.annotations.Operation;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -57,7 +53,9 @@ public class AuthController {
 		this.withDrawUsecase = withDrawUsecase;
 	}
 
-	@Operation(summary = "로그인을 한다.", description = "PathVariable에 담긴 redirect_url, code를 받아 액세스 토큰과 리프레시 토큰을 발급한다.")
+	@Operation(
+			summary = "로그인을 한다.",
+			description = "PathVariable에 담긴 redirect_url, code를 받아 액세스 토큰과 리프레시 토큰을 발급한다.")
 	@PostMapping("/login/{oauthServerType}")
 	ApiResponse<SuccessBody<TokenResponse>> login(
 			@PathVariable String oauthServerType,
@@ -67,6 +65,15 @@ public class AuthController {
 		TokenModel tokenModel = loginUsecase.login(oauthServerType, code, uri);
 		TokenResponse response = generateTokenResponse(tokenModel, httpResponse);
 
+		return ApiResponseGenerator.success(response, HttpStatus.CREATED, MessageCode.CREATE);
+	}
+
+	@Operation(summary = "로그인 한다.", description = "사용자가 id와 password를 이용하여 로그인한다.")
+	@PostMapping("/login")
+	ApiResponse<SuccessBody<TokenResponse>> login(
+			@RequestBody EEOSLoginRequest request, HttpServletResponse httpResponse) {
+		TokenModel tokenModel = loginUsecase.login(request.getId(), request.getPassword());
+		TokenResponse response = generateTokenResponse(tokenModel, httpResponse);
 		return ApiResponseGenerator.success(response, HttpStatus.CREATED, MessageCode.CREATE);
 	}
 

@@ -22,7 +22,7 @@ public class SlackOauthMemberClient implements OauthMemberClient {
 	private static final String BEARER = "Bearer";
 
 	private final SlackOauthConfig oauthConfig;
-	private final SlackApiClient slackApiClient;
+	private final SlackOauthApiClient slackApiClient;
 	private final OauthModelConverter oauthModelConverter;
 
 	@Override
