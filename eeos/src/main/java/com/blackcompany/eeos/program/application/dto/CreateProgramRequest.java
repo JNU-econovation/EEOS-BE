@@ -19,5 +19,14 @@ public class CreateProgramRequest implements CommandProgramRequest {
 	private @NotNull String content;
 	private @NotNull String category;
 	private @NotNull String type;
+	private @NotNull List<Team> teamList;
+	private @NotNull String programGithubUrl;
 	private List<ProgramMembers> members;
+
+	@NoArgsConstructor
+	@AllArgsConstructor
+	@Getter
+	static class Team{
+		private Long teamId;
+	}
 }
