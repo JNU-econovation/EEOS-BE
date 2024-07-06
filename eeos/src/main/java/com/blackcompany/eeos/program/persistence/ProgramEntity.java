@@ -1,6 +1,7 @@
 package com.blackcompany.eeos.program.persistence;
 
 import com.blackcompany.eeos.common.persistence.BaseEntity;
+import com.blackcompany.eeos.program.application.model.ProgramAttendMode;
 import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,11 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.Table;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
@@ -30,6 +27,7 @@ import org.hibernate.annotations.Where;
 		name = ProgramEntity.ENTITY_PREFIX,
 		indexes = @Index(name = "idx_program_date", columnList = "program_date"))
 @SQLDelete(sql = "UPDATE program SET is_deleted=true where program_id=?")
+// delete from program where program_id=1;
 @Where(clause = "is_deleted=false")
 public class ProgramEntity extends BaseEntity {
 
@@ -49,6 +47,9 @@ public class ProgramEntity extends BaseEntity {
 	@Column(name = ENTITY_PREFIX + "_date", nullable = false)
 	private Timestamp programDate;
 
+	@Column(name = ENTITY_PREFIX + "_url", nullable = false)
+	private String githubUrl;
+
 	@Column(name = ENTITY_PREFIX + "_category", nullable = false)
 	@Enumerated(EnumType.STRING)
 	private ProgramCategory programCategory;
@@ -56,6 +57,11 @@ public class ProgramEntity extends BaseEntity {
 	@Column(name = ENTITY_PREFIX + "_type", nullable = false)
 	@Enumerated(EnumType.STRING)
 	private ProgramType programType;
+
+	@Column(name = ENTITY_PREFIX + "_attend_mode", nullable = false)
+	@Builder.Default
+	@Enumerated(EnumType.STRING)
+	private ProgramAttendMode attendMode = ProgramAttendMode.NONE;
 
 	@Column(name = ENTITY_PREFIX + "_writer", nullable = false)
 	private Long writer;
