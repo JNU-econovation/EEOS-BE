@@ -3,7 +3,7 @@ package com.blackcompany.eeos.comment.application.service;
 import com.blackcompany.eeos.comment.application.dto.CreateCommentRequest;
 import com.blackcompany.eeos.comment.application.dto.UpdateCommentRequest;
 import com.blackcompany.eeos.comment.application.dto.converter.CommentResponseConverter;
-import com.blackcompany.eeos.comment.application.exception.CommentUpdateFailedException;
+import com.blackcompany.eeos.comment.application.exception.DeniedEditCommentException;
 import com.blackcompany.eeos.comment.application.exception.NotFoundCommentException;
 import com.blackcompany.eeos.comment.application.model.CommentModel;
 import com.blackcompany.eeos.comment.application.model.converter.CommentModelConverter;
@@ -38,24 +38,29 @@ public class CommentService
 	@Override
 	public CommentModel create(Long memberId, CreateCommentRequest request) {
 		CommentModel model = commentModelConverter.from(memberId, request);
-		CommentEntity entity = createComment(model);
-		return commentEntityConverter.from(entity);
+		createValidate(model);
+		CommentModel saved = createComment(model);
+		return saved;
 	}
 
 	@Override
 	public CommentModel update(Long memberId, Long commentId, UpdateCommentRequest request) {
-		CommentEntity updated = updateComment(commentId, request.getContent());
-		return commentEntityConverter.from(updated);
+		CommentModel model = findCommentById(commentId);
+		model.validateUpdate(memberId);
+		CommentModel updated = updateComment(commentId, request.getContent());
+		return updated;
 	}
 
 	@Override
-	public void delete(Long commentId) {
+	public void delete(Long memberId, Long commentId) {
+		CommentModel model = findCommentById (commentId);
+		model.validateDelete(memberId);
 		deleteComment(commentId);
 	}
 
 	@Override
 	public List<CommentModel> getComments(Long memberId, Long programId, Long teamId) {
-		return findComment(programId, teamId).stream()
+		return findCommentsByProgramIdAndTeam(programId, teamId).stream()
 				.map(commentEntityConverter::from)
 				.filter(CommentModel::isSuperComment)
 				.collect(Collectors.toList());
@@ -63,41 +68,44 @@ public class CommentService
 
 	@Override
 	public List<CommentModel> getAnswerComments(Long commentId) {
-		return findAnswerComments(commentId).stream()
+		return findAnswerCommentsBySuperId(commentId).stream()
 				.map(commentEntityConverter::from)
 				.collect(Collectors.toList());
-	}
-
-	private List<CommentEntity> findAnswerComments(Long commentId) {
-		return commentRepository.findCommentBySuperCommentId(commentId);
-	}
-
-	private List<CommentEntity> findComment(Long programId, Long teamId) {
-		return commentRepository.findCommentByProgramIdAndPresentingTeamId(programId, teamId);
 	}
 
 	private void deleteComment(Long commentId) {
 		commentRepository.deleteById(commentId);
 	}
 
-	private CommentEntity createComment(CommentModel model) {
-		createValidate(model);
+	private CommentModel createComment(CommentModel model) {
 		CommentEntity entity = commentEntityConverter.toEntity(model);
-		return commentRepository.save(entity);
+		CommentEntity saved = commentRepository.save(entity);
+		return commentEntityConverter.from(saved);
 	}
 
-	private CommentEntity updateComment(Long commentId, String content) {
-		CommentEntity updated =
+	private CommentModel updateComment(Long commentId, String content) {
+		CommentModel updated =
 				commentRepository
 						.updateById(commentId, content)
-						.orElseThrow(() -> new CommentUpdateFailedException(commentId));
+						.map(commentEntityConverter::from)
+						.orElseThrow(() -> new DeniedEditCommentException(commentId));
 		return updated;
 	}
 
-	private CommentEntity findById(Long commentId) {
+	private CommentModel findCommentById(Long commentId) {
+
 		return commentRepository
 				.findById(commentId)
+				.map(commentEntityConverter::from)
 				.orElseThrow(() -> new NotFoundCommentException(commentId));
+	}
+
+	private List<CommentEntity> findAnswerCommentsBySuperId(Long commentId) {
+		return commentRepository.findCommentBySuperCommentId(commentId);
+	}
+
+	private List<CommentEntity> findCommentsByProgramIdAndTeam(Long programId, Long teamId) {
+		return commentRepository.findCommentByProgramIdAndPresentingTeamId(programId, teamId);
 	}
 
 	/** 이 기능은 model에 있어야 할까? */
