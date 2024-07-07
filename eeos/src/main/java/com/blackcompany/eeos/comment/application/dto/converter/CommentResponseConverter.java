@@ -24,6 +24,7 @@ public class CommentResponseConverter {
 	}
 
 	public QueryCommentsResponse from(List<QueryCommentResponse> responses) {
+		responses.stream().forEach(r -> r.getAnswers().stream().forEach(a -> a.toString()));
 		return QueryCommentsResponse.builder().comments(responses).build();
 	}
 
@@ -45,13 +46,15 @@ public class CommentResponseConverter {
 
 	private QueryAnswerResponse from(CommentModel source, Long memberId) {
 		if (source.getSuperCommentId() == -1) throw new NotConvertedCommentException();
-		return QueryAnswerResponse.builder()
-				.commentId(source.getId())
-				.content(source.getContent())
-				.writer(findMemberName(source.getWriter()))
-				.time(source.getCreatedDate().toString())
-				.accessRight(source.getAccessRight(memberId))
-				.build();
+		QueryAnswerResponse response =
+				QueryAnswerResponse.builder()
+						.commentId(source.getId())
+						.content(source.getContent())
+						.writer(findMemberName(source.getWriter()))
+						.time(source.getCreatedDate().toString())
+						.accessRight(source.getAccessRight(memberId))
+						.build();
+		return response;
 	}
 
 	private String findMemberName(Long memberId) {
