@@ -23,7 +23,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ProgramModel implements AbstractModel {
 
-	private static final String URL_REGEX = "^(https?:\\/\\/)?(www\\.)?github\\.com\\/[\\w.-]+\\/[\\w.-]+\\/?(\\S*)?$";
+	private static final String URL_REGEX =
+			"^(https?:\\/\\/)?(www\\.)?github\\.com\\/[\\w.-]+\\/[\\w.-]+\\/?(\\S*)?$";
 
 	private Long id;
 	private String title;
@@ -54,7 +55,7 @@ public class ProgramModel implements AbstractModel {
 			throw new OverDateException();
 		}
 
-		if (!isGithubUrl()){
+		if (!isGithubUrl()) {
 			throw new IsNotGithubUrlException();
 		}
 
@@ -82,6 +83,7 @@ public class ProgramModel implements AbstractModel {
 			throw new NotAllowedAttendStartException();
 		}
 	}
+
 	public String getAccessRight(Long memberId) {
 		if (isWriter(memberId)) {
 			return AccessRights.EDIT.getAccessRight();
@@ -116,7 +118,7 @@ public class ProgramModel implements AbstractModel {
 		return ProgramStatus.ACTIVE;
 	}
 
-	private boolean isGithubUrl(){
+	private boolean isGithubUrl() {
 		return githubUrl.matches(URL_REGEX);
 	}
 
