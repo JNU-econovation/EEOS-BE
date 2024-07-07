@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +36,7 @@ public class CommentService
 	private final ProgramRepository programRepository;
 	private final TeamRepository teamRepository;
 
+	@Transactional
 	@Override
 	public CommentModel create(Long memberId, CreateCommentRequest request) {
 		CommentModel model = commentModelConverter.from(memberId, request);
@@ -43,6 +45,7 @@ public class CommentService
 		return saved;
 	}
 
+	@Transactional
 	@Override
 	public CommentModel update(Long memberId, Long commentId, UpdateCommentRequest request) {
 		CommentModel model = findCommentById(commentId);
@@ -51,13 +54,15 @@ public class CommentService
 		return updated;
 	}
 
+	@Transactional
 	@Override
 	public void delete(Long memberId, Long commentId) {
-		CommentModel model = findCommentById (commentId);
+		CommentModel model = findCommentById(commentId);
 		model.validateDelete(memberId);
 		deleteComment(commentId);
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public List<CommentModel> getComments(Long memberId, Long programId, Long teamId) {
 		return findCommentsByProgramIdAndTeam(programId, teamId).stream()
@@ -66,6 +71,7 @@ public class CommentService
 				.collect(Collectors.toList());
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public List<CommentModel> getAnswerComments(Long commentId) {
 		return findAnswerCommentsBySuperId(commentId).stream()
@@ -120,5 +126,7 @@ public class CommentService
 		if (!programRepository.existsById(programId)) {
 			throw new NotFoundProgramException(programId);
 		}
+
+		model.validateCreate();
 	}
 }
