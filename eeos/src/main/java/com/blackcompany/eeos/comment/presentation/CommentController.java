@@ -49,7 +49,7 @@ public class CommentController {
 	@Operation(summary = "질문 및 코멘트 삭제", description = "코멘트 및 질문을 삭제합니다.")
 	public ApiResponse<SuccessBody<Void>> delete(
 			@Member Long memberId, @PathVariable("commentId") Long commentId) {
-		commentService.delete(commentId);
+		commentService.delete(memberId, commentId);
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.DELETE);
 	}
 
