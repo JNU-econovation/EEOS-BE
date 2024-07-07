@@ -4,7 +4,7 @@ import com.blackcompany.eeos.comment.application.dto.CommandCommentResponse;
 import com.blackcompany.eeos.comment.application.dto.QueryAnswerResponse;
 import com.blackcompany.eeos.comment.application.dto.QueryCommentResponse;
 import com.blackcompany.eeos.comment.application.dto.QueryCommentsResponse;
-import com.blackcompany.eeos.comment.application.exception.CommentNotConvertedException;
+import com.blackcompany.eeos.comment.application.exception.NotConvertedCommentException;
 import com.blackcompany.eeos.comment.application.model.CommentModel;
 import com.blackcompany.eeos.member.application.exception.NotFoundMemberException;
 import com.blackcompany.eeos.member.persistence.MemberRepository;
@@ -44,7 +44,7 @@ public class CommentResponseConverter {
 	}
 
 	private QueryAnswerResponse from(CommentModel source, Long memberId) {
-		if (source.getSuperCommentId() == -1) throw new CommentNotConvertedException();
+		if (source.getSuperCommentId() == -1) throw new NotConvertedCommentException();
 		return QueryAnswerResponse.builder()
 				.commentId(source.getId())
 				.content(source.getContent())
