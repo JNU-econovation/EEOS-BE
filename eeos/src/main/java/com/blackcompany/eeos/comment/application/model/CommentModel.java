@@ -1,6 +1,8 @@
 package com.blackcompany.eeos.comment.application.model;
 
 import com.blackcompany.eeos.comment.application.exception.DeniedEditCommentException;
+import com.blackcompany.eeos.comment.application.exception.ExceedContentLimitLengthException;
+import com.blackcompany.eeos.comment.application.exception.UnExpectedNPException;
 import com.blackcompany.eeos.common.support.AbstractModel;
 import com.blackcompany.eeos.program.application.model.AccessRights;
 import java.sql.Timestamp;
@@ -11,6 +13,8 @@ import lombok.*;
 @Builder(toBuilder = true)
 @Getter
 public class CommentModel implements AbstractModel {
+
+	private static final long contentLimitLength = 500L;
 
 	private Long id;
 	private Long programId;
@@ -26,12 +30,17 @@ public class CommentModel implements AbstractModel {
 		return AccessRights.READ_ONLY.getAccessRight();
 	}
 
-	public void validateUpdate(Long memberId){
-		if(!isEdit(memberId)) throw new DeniedEditCommentException(this.getId());
+	public void validateCreate(){
+		if(isExceedLengthLimit())
+			throw new ExceedContentLimitLengthException();
 	}
 
-	public void validateDelete(Long memberId){
-		if(!isEdit(memberId)) throw new DeniedEditCommentException(this.getId());
+	public void validateUpdate(Long memberId) {
+		if (!isEdit(memberId)) throw new DeniedEditCommentException(this.getId());
+	}
+
+	public void validateDelete(Long memberId) {
+		if (!isEdit(memberId)) throw new DeniedEditCommentException(this.getId());
 	}
 
 	public boolean isSuperComment() {
@@ -41,5 +50,17 @@ public class CommentModel implements AbstractModel {
 	private boolean isEdit(Long memberId) {
 		if (this.writer.equals(memberId)) return true;
 		return false;
+	}
+
+	private boolean isExceedLengthLimit(){
+		return getContentLength() > contentLimitLength;
+	}
+
+	private long getContentLength(){
+		try {
+			return this.content.length();
+		} catch(NullPointerException e){
+			throw new UnExpectedNPException();
+		}
 	}
 }
