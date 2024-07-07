@@ -1,5 +1,6 @@
 package com.blackcompany.eeos.comment.application.model;
 
+import com.blackcompany.eeos.comment.application.exception.DeniedEditCommentException;
 import com.blackcompany.eeos.common.support.AbstractModel;
 import com.blackcompany.eeos.program.application.model.AccessRights;
 import java.sql.Timestamp;
@@ -23,6 +24,14 @@ public class CommentModel implements AbstractModel {
 	public String getAccessRight(Long memberId) {
 		if (isEdit(memberId)) return AccessRights.EDIT.getAccessRight();
 		return AccessRights.READ_ONLY.getAccessRight();
+	}
+
+	public void validateUpdate(Long memberId){
+		if(!isEdit(memberId)) throw new DeniedEditCommentException(this.getId());
+	}
+
+	public void validateDelete(Long memberId){
+		if(!isEdit(memberId)) throw new DeniedEditCommentException(this.getId());
 	}
 
 	public boolean isSuperComment() {
