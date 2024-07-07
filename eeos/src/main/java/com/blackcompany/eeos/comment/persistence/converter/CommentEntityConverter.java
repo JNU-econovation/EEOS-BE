@@ -11,15 +11,13 @@ public class CommentEntityConverter
 
 	@Override
 	public CommentEntity toEntity(CommentModel model) {
-		CommentEntity entity =
-				CommentEntity.builder()
+		return CommentEntity.builder()
+						.programId(model.getProgramId())
 						.superCommentId(model.getSuperCommentId())
 						.writer(model.getWriter())
-						.programId(model.getProgramId())
-						.content(model.getContent())
 						.presentingTeamId(model.getPresentingTeam())
+						.content(model.getContent())
 						.build();
-		return entity;
 	}
 
 	@Override
