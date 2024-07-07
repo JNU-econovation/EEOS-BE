@@ -3,11 +3,13 @@ package com.blackcompany.eeos.comment.application.dto;
 import com.blackcompany.eeos.common.support.dto.AbstractResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
+@Getter
 public class QueryAnswerResponse implements AbstractResponseDto {
 
 	private Long commentId;
