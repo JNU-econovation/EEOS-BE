@@ -5,16 +5,14 @@ import org.springframework.http.HttpStatus;
 
 public class ExceedContentLimitLengthException extends BusinessException {
 
-    private static final String FAIL_CODE = "";
+	private static final String FAIL_CODE = "8005";
 
-    private final long contentLength;
+	public ExceedContentLimitLengthException() {
+		super(FAIL_CODE, HttpStatus.FORBIDDEN);
+	}
 
-    public ExceedContentLimitLengthException(long contentLength){
-        super(FAIL_CODE, HttpStatus.FORBIDDEN);
-        this.contentLength = contentLength;
-    }
-
-    @Override
-    public String getMessage() { return String.format("코멘트 제한 글자 수를 초과하였습니다. (글자 수 : %d)", contentLength); }
-
+	@Override
+	public String getMessage() {
+		return "코멘트 글자 수 제한을 초과하였습니다.";
+	}
 }
