@@ -42,7 +42,6 @@ public class TeamService implements CreateTeamUsecase, DeleteTeamUsecase, GetTea
 	private final TeamResponseConverter teamResponseConverter;
 	private final ApplicationEventPublisher applicationEventPublisher;
 	private final QueryTeamResponseConverter queryTeamResponseConverter;
-	private final AdminChecker adminChecker;
 	private final QueryMemberService memberService;
 
 	@Override
