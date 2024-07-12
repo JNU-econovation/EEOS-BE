@@ -61,7 +61,7 @@ public class ProgramEntity extends BaseEntity {
 	@Column(name = ENTITY_PREFIX + "_attend_mode", nullable = false)
 	@Builder.Default
 	@Enumerated(EnumType.STRING)
-	private ProgramAttendMode attendMode = ProgramAttendMode.NONE;
+	private ProgramAttendMode attendMode = ProgramAttendMode.END;
 
 	@Column(name = ENTITY_PREFIX + "_writer", nullable = false)
 	private Long writer;
