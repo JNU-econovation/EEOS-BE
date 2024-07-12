@@ -43,6 +43,8 @@ public class ProgramController {
 	private final GetAccessRightUsecase getAccessRightUsecase;
 	private final NotifyProgramUsecase notifyProgramUsecase;
 
+	private final AttendStartUsecase attendStartUsecase;
+
 	@Operation(summary = "행사 생성", description = "RequestBody에 담긴 행사 정보를 통해서 행사를 생성한다.")
 	@PostMapping
 	public ApiResponse<SuccessBody<CommandProgramResponse>> create(
@@ -113,5 +115,17 @@ public class ProgramController {
 		CommandProgramResponse response = notifyProgramUsecase.notify(memberId, programId, request);
 		return ApiResponseGenerator.success(
 				response, HttpStatus.OK, MessageCode.CREATE); // 프로그램 조회, 내용 형태를 바꾼다.
+	}
+
+	@Operation(
+			summary = "행사 출석 체크 시작",
+			description = "PathVariable에 programId를 담아 해당 program의 출석 체크를 시작한다.")
+	@PostMapping("/{programId}")
+	public ApiResponse<SuccessBody<Void>> attend(
+			@Member Long memberId,
+			@PathVariable("programId") Long programId,
+			@RequestParam("mode") String mode) {
+		attendStartUsecase.attendStart(memberId, programId, mode);
+		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.ATTEND_START);
 	}
 }
