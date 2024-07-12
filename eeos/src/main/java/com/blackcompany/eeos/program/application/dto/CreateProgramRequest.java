@@ -26,7 +26,7 @@ public class CreateProgramRequest implements CommandProgramRequest {
 	@NoArgsConstructor
 	@AllArgsConstructor
 	@Getter
-	static class Team{
+	static class Team {
 		private Long teamId;
 	}
 }
