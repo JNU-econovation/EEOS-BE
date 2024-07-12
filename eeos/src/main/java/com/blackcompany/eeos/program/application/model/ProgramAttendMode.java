@@ -10,7 +10,7 @@ public enum ProgramAttendMode {
 	/** 지각 수합 중 */
 	LATE("late"),
 	/** 어떠한 상태도 아닐 때 */
-	NONE("none");
+	END("end");
 
 	private String mode;
 
