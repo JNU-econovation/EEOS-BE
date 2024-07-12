@@ -8,6 +8,7 @@ import com.blackcompany.eeos.program.persistence.ProgramType;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.Arrays;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -78,9 +79,17 @@ public class ProgramModel implements AbstractModel {
 		if (!isWeeklyProgram(this)) throw new NotWeeklyProgramException();
 	}
 
-	public void validateAttend() {
+	public void validateAttend(Long memberId, String mode) {
 		if (!findProgramStatus().equals(ProgramStatus.ACTIVE)) {
+			throw new AlreadyEndProgramException();
+		}
+
+		if (!this.writer.equals(memberId)) {
 			throw new NotAllowedAttendStartException();
+		}
+
+		if (this.attendMode.getMode().equals(mode)) {
+			throw new SameModeRequestException();
 		}
 	}
 
@@ -106,6 +115,17 @@ public class ProgramModel implements AbstractModel {
 		githubUrl = requestModel.getGithubUrl();
 
 		return this;
+	}
+
+	public void changeProgramAttendMode(String mode) {
+		this.attendMode = findProgramAttendMode(mode);
+	}
+
+	private ProgramAttendMode findProgramAttendMode(String mode) {
+		return Arrays.stream(ProgramAttendMode.values())
+				.filter(m -> m.getMode().equals(mode))
+				.findFirst()
+				.orElseThrow(NotFoundProgramAttendMode::new);
 	}
 
 	private ProgramStatus findProgramStatus() {
