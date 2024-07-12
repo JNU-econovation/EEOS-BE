@@ -99,7 +99,7 @@ public class TeamService implements CreateTeamUsecase, DeleteTeamUsecase, GetTea
 	@Transactional
 	public void delete(final Long memberId, final Long teamId) {
 		TeamModel team = findTeam(teamId);
-		isAdmin(memberId);
+		validateMember(memberId);
 
 		teamRepository.deleteTeamEntityByName(team.getId());
 		applicationEventPublisher.publishEvent(DeletedTeamEvent.of(teamId));
