@@ -28,6 +28,10 @@ public class MemberModel implements AbstractModel, MemberIdModel {
 		return this;
 	}
 
+	public boolean isAdmin(){
+		return this.name.equals(Name.ADMIN_NAME.getName());
+	}
+
 	public boolean validateSame(Long memberId) {
 		return id.equals(memberId);
 	}

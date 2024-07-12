@@ -22,6 +22,7 @@ public class QueryMemberService implements GetMembersByActiveStatus, GetMemberBy
 	private final MemberEntityConverter entityConverter;
 	private final MemberRepository memberRepository;
 	private final QueryMemberResponseConverter responseConverter;
+	private final MemberEntityConverter memberEntityConverter;
 
 	@Override
 	public QueryMembersResponse execute(final String activeStatus) {
@@ -43,6 +44,12 @@ public class QueryMemberService implements GetMembersByActiveStatus, GetMemberBy
 
 		MemberModel model = entityConverter.from(member);
 		return responseConverter.from(model);
+	}
+
+	public MemberModel findMember(Long memberId){
+		MemberEntity entity = memberRepository.findById(memberId)
+				.orElseThrow(NotFoundMemberException::new);
+		return memberEntityConverter.from(entity);
 	}
 
 	public String getName(final Long memberId) {
