@@ -1,5 +1,8 @@
 package com.blackcompany.eeos.team.application.Service;
 
+import com.blackcompany.eeos.common.support.AdminChecker;
+import com.blackcompany.eeos.member.application.model.Name;
+import com.blackcompany.eeos.member.application.service.QueryMemberService;
 import com.blackcompany.eeos.team.application.dto.CreateTeamRequest;
 import com.blackcompany.eeos.team.application.dto.CreateTeamResponse;
 import com.blackcompany.eeos.team.application.dto.QueryTeamsResponse;
@@ -39,22 +42,22 @@ public class TeamService implements CreateTeamUsecase, DeleteTeamUsecase, GetTea
 	private final TeamResponseConverter teamResponseConverter;
 	private final ApplicationEventPublisher applicationEventPublisher;
 	private final QueryTeamResponseConverter queryTeamResponseConverter;
+	private final AdminChecker adminChecker;
+	private final QueryMemberService memberService;
 
 	@Override
 	@Transactional
 	public CreateTeamResponse create(final Long memberId, final CreateTeamRequest request) {
-		isAdmin(memberId);
+		validateMember(memberId);
 		TeamModel model = createTeamRequestConverter.from(request);
 		Long saveId = createTeam(model);
 
 		return teamResponseConverter.from(saveId);
 	}
 
-	public void isAdmin(Long memberId) {
-		if (memberId == 4) {
-			return;
-		}
-		throw new DeniedTeamEditException(memberId);
+	private void validateMember(Long memberId) {
+		if(!memberService.findMember(memberId).isAdmin())
+			throw new DeniedTeamEditException(memberId);
 	}
 
 	private Long createTeam(TeamModel model) {
