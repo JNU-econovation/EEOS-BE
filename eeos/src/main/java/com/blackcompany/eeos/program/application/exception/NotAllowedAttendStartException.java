@@ -5,14 +5,14 @@ import org.springframework.http.HttpStatus;
 
 public class NotAllowedAttendStartException extends BusinessException {
 
-	private static final String FAIL_CODE = "1010";
+	private static final String FAIL_CODE = "1011";
 
 	public NotAllowedAttendStartException() {
-		super(FAIL_CODE, HttpStatus.UNAUTHORIZED);
+		super(FAIL_CODE, HttpStatus.NOT_ACCEPTABLE);
 	}
 
 	@Override
 	public String getMessage() {
-		return "종료된 행사는 출석 체크를 시작할 수 없습니다.";
+		return "관리자만 출석체크를 시작할 수 있습니다.";
 	}
 }
