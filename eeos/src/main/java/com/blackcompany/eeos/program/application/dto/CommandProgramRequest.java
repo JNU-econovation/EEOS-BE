@@ -14,4 +14,6 @@ public interface CommandProgramRequest extends AbstractRequestDto {
 	String getCategory();
 
 	String getType();
+
+	String getProgramGithubUrl();
 }
