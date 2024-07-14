@@ -29,6 +29,7 @@ public class ProgramRequestConverter
 				.content(source.getContent())
 				.programDate(DateConverter.toEpochSecond(source.getDeadLine()))
 				.programCategory(ProgramCategory.find(source.getCategory()))
+				.githubUrl(source.getProgramGithubUrl())
 				.programType(ProgramType.find(source.getType()))
 				.writer(memberId)
 				.build();
