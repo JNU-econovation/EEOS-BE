@@ -17,6 +17,8 @@ public class QueryProgramResponse implements AbstractResponseDto {
 	private Timestamp deadLine;
 	private String content;
 	private String category;
+	private String attendMode;
+	private String programGithubUrl;
 	private String programStatus;
 	private String type;
 	private String accessRight;

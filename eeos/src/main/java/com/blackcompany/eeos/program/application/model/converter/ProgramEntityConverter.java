@@ -19,7 +19,9 @@ public class ProgramEntityConverter
 				.title(source.getTitle())
 				.programDate(source.getProgramDate())
 				.content(source.getContent())
+				.githubUrl(source.getGithubUrl())
 				.programCategory(source.getProgramCategory())
+				.attendMode(source.getAttendMode())
 				.programType(source.getProgramType())
 				.writer(source.getWriter())
 				.build();
@@ -38,6 +40,8 @@ public class ProgramEntityConverter
 				.id(source.getId())
 				.title(source.getTitle())
 				.content(source.getContent())
+				.githubUrl(source.getGithubUrl())
+				.attendMode(source.getAttendMode())
 				.programDate(source.getProgramDate())
 				.programCategory(source.getProgramCategory())
 				.programType(source.getProgramType())

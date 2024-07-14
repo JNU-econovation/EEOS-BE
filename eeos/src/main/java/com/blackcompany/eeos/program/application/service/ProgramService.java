@@ -51,7 +51,8 @@ public class ProgramService
 				GetProgramsUsecase,
 				DeleteProgramUsecase,
 				GetAccessRightUsecase,
-				NotifyProgramUsecase {
+				NotifyProgramUsecase,
+				AttendStartUsecase {
 
 	private final ProgramRequestConverter requestConverter;
 	private final ProgramEntityConverter entityConverter;
@@ -140,6 +141,18 @@ public class ProgramService
 		ProgramNotificationModel model = getNotifyInfo(programId, request);
 		model.validateNotify(memberId);
 		return notifyServiceComposite.notify(model);
+	}
+
+	@Transactional(readOnly = false)
+	@Override
+	public void attendStart(Long memberId, Long programId, String mode) {
+
+		ProgramModel model = findProgram(programId);
+		model.validateAttend(memberId, mode);
+		log.info(mode);
+		model.changeProgramAttendMode(mode);
+		log.info(model.getAttendMode().getMode());
+		programRepository.changeAttendMode(model.getId(), model.getAttendMode());
 	}
 
 	private ProgramModel findProgram(final Long programId) {

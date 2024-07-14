@@ -8,6 +8,7 @@ import com.blackcompany.eeos.program.persistence.ProgramType;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.Arrays;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,12 +23,18 @@ import lombok.extern.slf4j.Slf4j;
 @Builder(toBuilder = true)
 @Slf4j
 public class ProgramModel implements AbstractModel {
+
+	private static final String URL_REGEX =
+			"^(https?:\\/\\/)?(www\\.)?github\\.com\\/[\\w.-]+\\/[\\w.-]+\\/?(\\S*)?$";
+
 	private Long id;
 	private String title;
 	private String content;
 	private Timestamp programDate;
 	private String eventStatus;
 	private ProgramCategory programCategory;
+	private String githubUrl;
+	private ProgramAttendMode attendMode;
 	private ProgramType programType;
 	private Long writer;
 
@@ -38,15 +45,22 @@ public class ProgramModel implements AbstractModel {
 		this.programDate = model.programDate;
 		this.eventStatus = model.eventStatus;
 		this.programCategory = model.programCategory;
+		this.githubUrl = model.githubUrl;
+		this.attendMode = model.attendMode;
 		this.programType = model.programType;
 		this.writer = model.writer;
 	}
 
 	public void validateCreate() {
-		if (findProgramStatus().equals(ProgramStatus.ACTIVE)) {
-			return;
+		if (!findProgramStatus().equals(ProgramStatus.ACTIVE)) {
+			throw new OverDateException();
 		}
-		throw new OverDateException();
+
+		if (!isGithubUrl()) {
+			throw new IsNotGithubUrlException();
+		}
+
+		return;
 	}
 
 	public void validateEditAttend(Long memberId) {
@@ -63,6 +77,20 @@ public class ProgramModel implements AbstractModel {
 	public void validateNotify(Long memberId) {
 		if (!isWriter(memberId)) throw new DeniedProgramNotificationException(memberId);
 		if (!isWeeklyProgram(this)) throw new NotWeeklyProgramException();
+	}
+
+	public void validateAttend(Long memberId, String mode) {
+		if (!findProgramStatus().equals(ProgramStatus.ACTIVE)) {
+			throw new AlreadyEndProgramException();
+		}
+
+		if (!this.writer.equals(memberId)) {
+			throw new NotAllowedAttendStartException();
+		}
+
+		if (this.attendMode.getMode().equals(mode)) {
+			throw new SameModeRequestException();
+		}
 	}
 
 	public String getAccessRight(Long memberId) {
@@ -84,8 +112,20 @@ public class ProgramModel implements AbstractModel {
 		content = requestModel.getContent();
 		programDate = requestModel.getProgramDate();
 		programCategory = requestModel.getProgramCategory();
+		githubUrl = requestModel.getGithubUrl();
 
 		return this;
+	}
+
+	public void changeProgramAttendMode(String mode) {
+		this.attendMode = findProgramAttendMode(mode);
+	}
+
+	private ProgramAttendMode findProgramAttendMode(String mode) {
+		return Arrays.stream(ProgramAttendMode.values())
+				.filter(m -> m.getMode().equals(mode))
+				.findFirst()
+				.orElseThrow(NotFoundProgramAttendMode::new);
 	}
 
 	private ProgramStatus findProgramStatus() {
@@ -96,6 +136,10 @@ public class ProgramModel implements AbstractModel {
 			return ProgramStatus.END;
 		}
 		return ProgramStatus.ACTIVE;
+	}
+
+	private boolean isGithubUrl() {
+		return githubUrl.matches(URL_REGEX);
 	}
 
 	private boolean canEdit(Long memberId) {
@@ -109,7 +153,7 @@ public class ProgramModel implements AbstractModel {
 		return writer.equals(memberId);
 	}
 
-	private boolean isWeeklyProgram(ProgramModel model){
+	private boolean isWeeklyProgram(ProgramModel model) {
 		return model.programCategory.equals(ProgramCategory.find("weekly"));
 	}
 
