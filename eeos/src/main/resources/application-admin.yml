@@ -1,0 +1,10 @@
+spring:
+  config:
+    activate:
+      on-profile: admin
+
+eeos:
+  admin:
+    name : ${ADMIN_NAME}
+    loginId : ${ADMIN_LOGIN_ID}
+    password: ${ADMIN_PASSWORD}
