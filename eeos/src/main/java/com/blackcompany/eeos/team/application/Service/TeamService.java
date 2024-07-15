@@ -60,7 +60,7 @@ public class TeamService implements CreateTeamUsecase, DeleteTeamUsecase, GetTea
 	public void delete(final Long memberId, final Long teamId) {
 		TeamModel team = findTeam(teamId);
 		validateUser(memberId);
-
+    
 		teamRepository.deleteTeamEntityByName(team.getId());
 		applicationEventPublisher.publishEvent(DeletedTeamEvent.of(teamId));
 	}
@@ -87,6 +87,7 @@ public class TeamService implements CreateTeamUsecase, DeleteTeamUsecase, GetTea
 
 		return queryTeamResponseConverter.from(models);
 	}
+
 
 	private List<TeamModel> findTeamByProgram(Long programId) {
 		return presentationRepository.findTeamsByProgramId(programId).stream()
