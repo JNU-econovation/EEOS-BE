@@ -22,7 +22,7 @@ public interface CommentRepository extends JpaRepository<CommentEntity, Long> {
 	@Transactional
 	@Modifying(clearAutomatically = true)
 	@Query("UPDATE CommentEntity c SET c.content=:content WHERE c.id=:commentId")
-	Optional<CommentEntity> updateById(
+	int updateById(
 			@Param("commentId") Long commentId, @Param("content") String content);
 
 	@Transactional
