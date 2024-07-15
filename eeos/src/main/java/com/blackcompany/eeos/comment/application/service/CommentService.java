@@ -65,10 +65,12 @@ public class CommentService
 	@Transactional(readOnly = true)
 	@Override
 	public List<CommentModel> getComments(Long memberId, Long programId, Long teamId) {
-		return findCommentsByProgramIdAndTeam(programId, teamId).stream()
-				.map(commentEntityConverter::from)
-				.filter(CommentModel::isSuperComment)
-				.collect(Collectors.toList());
+		if(teamId==null){
+			return findCommentsByProgramId(programId);
+		}
+
+		return findCommentsByProgramIdAndTeam(programId, teamId);
+
 	}
 
 	@Transactional(readOnly = true)
@@ -110,8 +112,16 @@ public class CommentService
 		return commentRepository.findCommentBySuperCommentId(commentId);
 	}
 
-	private List<CommentEntity> findCommentsByProgramIdAndTeam(Long programId, Long teamId) {
-		return commentRepository.findCommentByProgramIdAndPresentingTeamId(programId, teamId);
+	private List<CommentModel> findCommentsByProgramIdAndTeam(Long programId, Long teamId) {
+		return commentRepository.findCommentByProgramIdAndPresentingTeamId(programId, teamId).stream()
+				.map(commentEntityConverter::from)
+				.collect(Collectors.toList());
+	}
+
+	private List<CommentModel> findCommentsByProgramId(Long programId){
+		return commentRepository.findCommentByProgramId(programId).stream()
+				.map(commentEntityConverter::from)
+				.collect(Collectors.toList());
 	}
 
 	/** 이 기능은 model에 있어야 할까? */
