@@ -15,9 +15,6 @@ public interface CommentRepository extends JpaRepository<CommentEntity, Long> {
 	List<CommentEntity> findCommentByProgramIdAndPresentingTeamId(
 			@Param("programId") Long programId, @Param("teamId") Long teamId);
 
-	@Query("SELECT c FROM CommentEntity c WHERE c.programId=:programId ORDER BY c.createdDate ASC")
-	List<CommentEntity> findCommentByProgramId(@Param("programId") Long programId);
-
 	@Query(
 			"SELECT c FROM CommentEntity c WHERE c.superCommentId=:commentId ORDER BY c.createdDate ASC")
 	List<CommentEntity> findCommentBySuperCommentId(@Param("commentId") Long commentId);
@@ -25,7 +22,7 @@ public interface CommentRepository extends JpaRepository<CommentEntity, Long> {
 	@Transactional
 	@Modifying(clearAutomatically = true)
 	@Query("UPDATE CommentEntity c SET c.content=:content WHERE c.id=:commentId")
-	Optional<CommentEntity> updateById(
+	int updateById(
 			@Param("commentId") Long commentId, @Param("content") String content);
 
 	@Transactional
