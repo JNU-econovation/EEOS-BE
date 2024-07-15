@@ -19,6 +19,7 @@ public class MemberModel implements AbstractModel, MemberIdModel {
 	private Long id;
 	private String name;
 	private ActiveStatus activeStatus;
+	private boolean isAdmin;
 	private OauthServerType oauthServerType;
 
 	public MemberModel updateActiveStatus(String status) {
@@ -26,10 +27,6 @@ public class MemberModel implements AbstractModel, MemberIdModel {
 		canEdit(requestStatus);
 		this.activeStatus = requestStatus;
 		return this;
-	}
-
-	public boolean isAdmin(){
-		return this.name.equals(Name.ADMIN_NAME.getName());
 	}
 
 	public boolean validateSame(Long memberId) {
