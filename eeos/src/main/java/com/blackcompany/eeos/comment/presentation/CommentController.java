@@ -54,7 +54,7 @@ public class CommentController {
 	}
 
 	@GetMapping
-	@Operation
+	@Operation(summary = "질문 및 코멘트 조회", description = "코멘트 및 질문을 조회합니다.")
 	public ApiResponse<SuccessBody<QueryCommentsResponse>> getComments(
 			@Member Long memberId,
 			@RequestParam("programId") Long programId,

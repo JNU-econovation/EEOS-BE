@@ -1,5 +1,6 @@
 package com.blackcompany.eeos.team.application.Service;
 
+import com.blackcompany.eeos.member.application.model.MemberModel;
 import com.blackcompany.eeos.member.application.service.QueryMemberService;
 import com.blackcompany.eeos.target.persistence.PresentationRepository;
 import com.blackcompany.eeos.team.application.dto.CreateTeamRequest;
@@ -47,7 +48,7 @@ public class TeamService implements CreateTeamUsecase, DeleteTeamUsecase, GetTea
 	@Override
 	@Transactional
 	public CreateTeamResponse create(final Long memberId, final CreateTeamRequest request) {
-		validateMember(memberId);
+		validateUser(memberId);
 		TeamModel model = createTeamRequestConverter.from(request);
 		Long saveId = createTeam(model);
 
@@ -58,8 +59,8 @@ public class TeamService implements CreateTeamUsecase, DeleteTeamUsecase, GetTea
 	@Transactional
 	public void delete(final Long memberId, final Long teamId) {
 		TeamModel team = findTeam(teamId);
-		validateMember(memberId);
-
+		validateUser(memberId);
+    
 		teamRepository.deleteTeamEntityByName(team.getId());
 		applicationEventPublisher.publishEvent(DeletedTeamEvent.of(teamId));
 	}
@@ -69,7 +70,7 @@ public class TeamService implements CreateTeamUsecase, DeleteTeamUsecase, GetTea
 		Long numberFormatId;
 		List<TeamModel> models;
 		if ("none".equals(programId)) {
-			 models = findTeams();
+			models = findTeams();
 			return queryTeamResponseConverter.from(models);
 			// 이 방법 외에 programId로 들어오는 none, 숫자, 올바르지 않은 형식 이 3가지를 구별할 수 있는 방법이 있을까??
 		} else {
@@ -87,7 +88,8 @@ public class TeamService implements CreateTeamUsecase, DeleteTeamUsecase, GetTea
 		return queryTeamResponseConverter.from(models);
 	}
 
-	private List<TeamModel> findTeamByProgram(Long programId){
+
+	private List<TeamModel> findTeamByProgram(Long programId) {
 		return presentationRepository.findTeamsByProgramId(programId).stream()
 				.map(entityConverter::from)
 				.collect(Collectors.toList());
@@ -99,7 +101,7 @@ public class TeamService implements CreateTeamUsecase, DeleteTeamUsecase, GetTea
 				.collect(Collectors.toList());
 	}
 
-	private void validateMember(Long memberId) {
+	private void validateUser(Long memberId) {
 		if (!memberService.findMember(memberId).isAdmin()) throw new DeniedTeamEditException(memberId);
 	}
 

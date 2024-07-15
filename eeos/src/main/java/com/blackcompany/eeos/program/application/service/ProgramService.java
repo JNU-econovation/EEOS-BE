@@ -1,6 +1,8 @@
 package com.blackcompany.eeos.program.application.service;
 
 import com.blackcompany.eeos.common.utils.DateConverter;
+import com.blackcompany.eeos.member.application.model.MemberModel;
+import com.blackcompany.eeos.member.application.service.QueryMemberService;
 import com.blackcompany.eeos.program.application.dto.ChangeAllAttendStatusRequest;
 import com.blackcompany.eeos.program.application.dto.CommandProgramResponse;
 import com.blackcompany.eeos.program.application.dto.CreateProgramRequest;
@@ -15,6 +17,7 @@ import com.blackcompany.eeos.program.application.dto.converter.ProgramPageRespon
 import com.blackcompany.eeos.program.application.dto.converter.ProgramResponseConverter;
 import com.blackcompany.eeos.program.application.dto.converter.QueryAccessRightResponseConverter;
 import com.blackcompany.eeos.program.application.event.DeletedProgramEvent;
+import com.blackcompany.eeos.program.application.exception.DeniedProgramEditException;
 import com.blackcompany.eeos.program.application.exception.NotFoundProgramException;
 import com.blackcompany.eeos.program.application.model.ProgramModel;
 import com.blackcompany.eeos.program.application.model.ProgramNotificationModel;
@@ -29,11 +32,10 @@ import com.blackcompany.eeos.program.persistence.ProgramEntity;
 import com.blackcompany.eeos.program.persistence.ProgramRepository;
 import com.blackcompany.eeos.program.presentation.guest.GuestAccessRights;
 import com.blackcompany.eeos.target.application.service.SelectAttendCommandTargetMemberMemberService;
+import com.blackcompany.eeos.target.application.usecase.PresentTeamUsecase;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
-
-import com.blackcompany.eeos.target.application.usecase.PresentTeamUsecase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -66,12 +68,15 @@ public class ProgramService
 	private final ApplicationEventPublisher applicationEventPublisher;
 	private final QueryAccessRightResponseConverter accessRightResponseConverter;
 	private final ProgramNotifyServiceComposite notifyServiceComposite;
+	private final QueryMemberService memberService;
 
 	private final PresentTeamUsecase presentTeamUsecase;
 
 	@Override
 	@Transactional
 	public CommandProgramResponse create(final Long memberId, final CreateProgramRequest request) {
+		validateUser(memberId);
+
 		ProgramModel model = requestConverter.from(memberId, request);
 		Long saveId = createProgram(model);
 
@@ -204,5 +209,9 @@ public class ProgramService
 			Long programId, ProgramSlackNotificationRequest request) {
 		ProgramNotificationModel model = ProgramNotificationModel.of(findProgram(programId), request);
 		return model;
+	}
+
+	private void validateUser(Long memberId){
+		if(!memberService.findMember(memberId).isAdmin()) throw new DeniedProgramEditException(memberId);
 	}
 }

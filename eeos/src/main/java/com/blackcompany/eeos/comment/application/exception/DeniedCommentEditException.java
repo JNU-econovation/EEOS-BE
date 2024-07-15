@@ -3,13 +3,13 @@ package com.blackcompany.eeos.comment.application.exception;
 import com.blackcompany.eeos.common.exception.BusinessException;
 import org.springframework.http.HttpStatus;
 
-public class DeniedEditCommentException extends BusinessException {
+public class DeniedCommentEditException extends BusinessException {
 
 	private static final String FAIL_CODE = "8003";
 
 	private final Long commentId;
 
-	public DeniedEditCommentException(Long commentId) {
+	public DeniedCommentEditException(Long commentId) {
 		super(FAIL_CODE, HttpStatus.NOT_ACCEPTABLE);
 		this.commentId = commentId;
 	}
