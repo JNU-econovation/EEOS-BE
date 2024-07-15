@@ -15,6 +15,6 @@ public class DeniedProgramEditException extends BusinessException {
 
 	@Override
 	public String getMessage() {
-		return String.format("%s 프로그램 편집 권한(수정/삭제)이 없는 사용자입니다.", programId);
+		return String.format("%s 프로그램 편집 권한(생성/수정/삭제)이 없는 사용자입니다.", programId);
 	}
 }
