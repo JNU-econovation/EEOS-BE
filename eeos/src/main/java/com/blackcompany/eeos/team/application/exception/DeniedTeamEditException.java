@@ -14,6 +14,6 @@ public class DeniedTeamEditException extends BusinessException {
 
 	@Override
 	public String getMessage() {
-		return String.format("%s 은 팀 편집 권한(생성/삭제)이 없는 사용자 입니다.", memberId);
+		return String.format("%s 은 팀 편집 권한(생성/수정/삭제)이 없는 사용자 입니다.", memberId);
 	}
 }
