@@ -4,7 +4,10 @@ import com.blackcompany.eeos.auth.presentation.support.Member;
 import com.blackcompany.eeos.comment.application.dto.*;
 import com.blackcompany.eeos.comment.application.dto.converter.CommentResponseConverter;
 import com.blackcompany.eeos.comment.application.model.CommentModel;
-import com.blackcompany.eeos.comment.application.service.CommentService;
+import com.blackcompany.eeos.comment.application.usecase.CreateCommentUsecase;
+import com.blackcompany.eeos.comment.application.usecase.DeleteCommentUsecase;
+import com.blackcompany.eeos.comment.application.usecase.GetCommentUsecase;
+import com.blackcompany.eeos.comment.application.usecase.UpdateCommentUsecase;
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponse;
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponseBody.*;
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponseGenerator;
@@ -21,7 +24,10 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class CommentController {
 
-	private final CommentService commentService;
+	private final CreateCommentUsecase createCommentUsecase;
+	private final UpdateCommentUsecase updateCommentUsecase;
+	private final GetCommentUsecase getCommentsUsecase;
+	private final DeleteCommentUsecase deleteCommentUsecase;
 	private final CommentResponseConverter responseConverter;
 	private final CommentResponseConverter commentResponseConverter;
 
@@ -29,7 +35,7 @@ public class CommentController {
 	@Operation(summary = "질문 및 코멘트 작성", description = "코멘트 및 질문을 생성합니다.")
 	public ApiResponse<SuccessBody<CommandCommentResponse>> create(
 			@Member Long memberId, @RequestBody CreateCommentRequest request) {
-		CommentModel model = commentService.create(memberId, request);
+		CommentModel model = createCommentUsecase.create(memberId, request);
 		return ApiResponseGenerator.success(
 				responseConverter.from(model), HttpStatus.OK, MessageCode.CREATE);
 	}
@@ -40,7 +46,7 @@ public class CommentController {
 			@Member Long memberId,
 			@PathVariable("commentId") Long commentId,
 			@RequestBody UpdateCommentRequest request) {
-		CommentModel model = commentService.update(memberId, commentId, request);
+		CommentModel model = updateCommentUsecase.update(memberId, commentId, request);
 		return ApiResponseGenerator.success(
 				responseConverter.from(model), HttpStatus.OK, MessageCode.UPDATE);
 	}
@@ -49,7 +55,7 @@ public class CommentController {
 	@Operation(summary = "질문 및 코멘트 삭제", description = "코멘트 및 질문을 삭제합니다.")
 	public ApiResponse<SuccessBody<Void>> delete(
 			@Member Long memberId, @PathVariable("commentId") Long commentId) {
-		commentService.delete(memberId, commentId);
+		deleteCommentUsecase.delete(memberId, commentId);
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.DELETE);
 	}
 
@@ -59,16 +65,15 @@ public class CommentController {
 			@Member Long memberId,
 			@RequestParam("programId") Long programId,
 			@RequestParam("teamId") Long teamId) {
-		List<CommentModel> comments = commentService.getComments(memberId, programId, teamId);
+		List<CommentModel> comments = getCommentsUsecase.getComments(memberId, programId, teamId);
 		List<QueryCommentResponse> responses =
 				comments.stream()
 						.map(
 								e ->
 										commentResponseConverter.from(
-												memberId, e, commentService.getAnswerComments(e.getId())))
+												memberId, e, getCommentsUsecase.getAnswerComments(e.getId())))
 						.collect(Collectors.toList());
 
-		return ApiResponseGenerator.success(
-				commentResponseConverter.from(responses), HttpStatus.OK, MessageCode.GET);
+		return ApiResponseGenerator.success(commentResponseConverter.from(responses), HttpStatus.OK, MessageCode.GET);
 	}
 }
