@@ -30,6 +30,7 @@ public class ProgramResponseConverter {
 				.category(target.getProgramCategory().getCategory())
 				.programGithubUrl(target.getGithubUrl())
 				.type(target.getProgramType().getType())
+				.attendMode(target.getAttendMode().getMode())
 				.programStatus(status)
 				.accessRight(accessRight)
 				.build();
