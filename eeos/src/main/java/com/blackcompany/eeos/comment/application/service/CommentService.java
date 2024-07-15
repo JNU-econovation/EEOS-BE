@@ -3,7 +3,7 @@ package com.blackcompany.eeos.comment.application.service;
 import com.blackcompany.eeos.comment.application.dto.CreateCommentRequest;
 import com.blackcompany.eeos.comment.application.dto.UpdateCommentRequest;
 import com.blackcompany.eeos.comment.application.dto.converter.CommentResponseConverter;
-import com.blackcompany.eeos.comment.application.exception.DeniedEditCommentException;
+import com.blackcompany.eeos.comment.application.exception.DeniedCommentEditException;
 import com.blackcompany.eeos.comment.application.exception.NotFoundCommentException;
 import com.blackcompany.eeos.comment.application.model.CommentModel;
 import com.blackcompany.eeos.comment.application.model.converter.CommentModelConverter;
@@ -65,12 +65,11 @@ public class CommentService
 	@Transactional(readOnly = true)
 	@Override
 	public List<CommentModel> getComments(Long memberId, Long programId, Long teamId) {
-		if(teamId==null){
+		if (teamId == null) {
 			return findCommentsByProgramId(programId);
 		}
 
 		return findCommentsByProgramIdAndTeam(programId, teamId);
-
 	}
 
 	@Transactional(readOnly = true)
@@ -96,7 +95,7 @@ public class CommentService
 				commentRepository
 						.updateById(commentId, content)
 						.map(commentEntityConverter::from)
-						.orElseThrow(() -> new DeniedEditCommentException(commentId));
+						.orElseThrow(() -> new DeniedCommentEditException(commentId));
 		return updated;
 	}
 
@@ -118,7 +117,7 @@ public class CommentService
 				.collect(Collectors.toList());
 	}
 
-	private List<CommentModel> findCommentsByProgramId(Long programId){
+	private List<CommentModel> findCommentsByProgramId(Long programId) {
 		return commentRepository.findCommentByProgramId(programId).stream()
 				.map(commentEntityConverter::from)
 				.collect(Collectors.toList());
