@@ -8,6 +8,8 @@ import com.blackcompany.eeos.comment.application.exception.NotConvertedCommentEx
 import com.blackcompany.eeos.comment.application.model.CommentModel;
 import com.blackcompany.eeos.member.application.exception.NotFoundMemberException;
 import com.blackcompany.eeos.member.persistence.MemberRepository;
+
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +36,7 @@ public class CommentResponseConverter {
 				answers.stream().map(e -> from(e, memberId)).collect(Collectors.toList());
 
 		return QueryCommentResponse.builder()
-				.time(source.getCreatedDate().toString())
+				.time(getCreateTimeString(source))
 				.content(source.getContent())
 				.teamId(source.getPresentingTeam())
 				.writer(findMemberName(source.getWriter()))
@@ -51,7 +53,7 @@ public class CommentResponseConverter {
 						.commentId(source.getId())
 						.content(source.getContent())
 						.writer(findMemberName(source.getWriter()))
-						.time(source.getCreatedDate().toString())
+						.time(getCreateTimeString(source))
 						.accessRight(source.getAccessRight(memberId))
 						.build();
 		return response;
@@ -59,5 +61,9 @@ public class CommentResponseConverter {
 
 	private String findMemberName(Long memberId) {
 		return memberRepository.findById(memberId).orElseThrow(NotFoundMemberException::new).getName();
+	}
+
+	private String getCreateTimeString(CommentModel model){
+		return model.getCreatedDate().toLocalDateTime().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
 	}
 }
