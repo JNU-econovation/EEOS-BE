@@ -7,11 +7,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 @Getter
@@ -30,7 +27,8 @@ public class OAuthMemberEntity extends BaseEntity {
 	private Long id;
 
 	@Column(name = ENTITY_PREFIX + "_oauth_id", nullable = false)
-	private String oauthId;
+	@Builder.Default
+	private String oauthId = "NONE";
 
 	@Column(name = ENTITY_PREFIX + "_member_id", nullable = false)
 	private Long memberId;
