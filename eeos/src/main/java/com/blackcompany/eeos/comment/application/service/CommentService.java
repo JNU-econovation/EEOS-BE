@@ -4,6 +4,7 @@ import com.blackcompany.eeos.comment.application.dto.CreateCommentRequest;
 import com.blackcompany.eeos.comment.application.dto.UpdateCommentRequest;
 import com.blackcompany.eeos.comment.application.dto.converter.CommentResponseConverter;
 import com.blackcompany.eeos.comment.application.exception.DeniedCommentEditException;
+import com.blackcompany.eeos.comment.application.exception.NotExpectedCommentEditException;
 import com.blackcompany.eeos.comment.application.exception.NotFoundCommentException;
 import com.blackcompany.eeos.comment.application.model.CommentModel;
 import com.blackcompany.eeos.comment.application.model.converter.CommentModelConverter;
@@ -50,7 +51,8 @@ public class CommentService
 	public CommentModel update(Long memberId, Long commentId, UpdateCommentRequest request) {
 		CommentModel model = findCommentById(commentId);
 		model.validateUpdate(memberId);
-		CommentModel updated = updateComment(commentId, request.getContent());
+		updateComment(commentId, request.getContent());
+		CommentModel updated = findCommentById(commentId);
 		return updated;
 	}
 
@@ -90,13 +92,11 @@ public class CommentService
 		return commentEntityConverter.from(saved);
 	}
 
-	private CommentModel updateComment(Long commentId, String content) {
-		CommentModel updated =
-				commentRepository
-						.updateById(commentId, content)
-						.map(commentEntityConverter::from)
-						.orElseThrow(() -> new DeniedCommentEditException(commentId));
-		return updated;
+	private Long updateComment(Long commentId, String content) {
+		int result = commentRepository.updateById(commentId, content);
+		if(result==0) throw new NotExpectedCommentEditException();
+
+		return commentId;
 	}
 
 	private CommentModel findCommentById(Long commentId) {
