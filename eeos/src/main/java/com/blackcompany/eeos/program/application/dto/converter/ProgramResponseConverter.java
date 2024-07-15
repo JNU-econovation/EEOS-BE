@@ -28,6 +28,7 @@ public class ProgramResponseConverter {
 				.content(target.getContent())
 				.deadLine(target.getProgramDate())
 				.category(target.getProgramCategory().getCategory())
+				.programGithubUrl(target.getGithubUrl())
 				.type(target.getProgramType().getType())
 				.programStatus(status)
 				.accessRight(accessRight)
