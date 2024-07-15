@@ -16,6 +16,7 @@ public class MemberEntityConverter implements AbstractEntityConverter<MemberEnti
 				.id(source.getId())
 				.name(source.getName())
 				.activeStatus(source.getActiveStatus())
+				.isAdmin(source.isAdmin())
 				.oauthServerType(source.getOauthServerType())
 				.build();
 	}
@@ -25,6 +26,7 @@ public class MemberEntityConverter implements AbstractEntityConverter<MemberEnti
 		return MemberEntity.builder()
 				.id(source.getId())
 				.name(source.getName())
+				.isAdmin(source.isAdmin())
 				.activeStatus(ActiveStatus.find(source.getActiveStatus()))
 				.oauthServerType(source.getOauthServerType())
 				.build();

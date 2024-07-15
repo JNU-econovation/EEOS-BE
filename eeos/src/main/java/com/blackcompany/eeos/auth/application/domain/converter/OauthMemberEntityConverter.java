@@ -21,4 +21,8 @@ public class OauthMemberEntityConverter
 	public OAuthMemberEntity toEntity(final String oauthId, Long memberId) {
 		return OAuthMemberEntity.builder().oauthId(oauthId).memberId(memberId).build();
 	}
+
+	public OAuthMemberEntity toEntity(final Long memberId){
+		return OAuthMemberEntity.builder().memberId(memberId).build();
+	}
 }
