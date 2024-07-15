@@ -37,7 +37,7 @@ public class CommentResponseConverter {
 				.time(source.getCreatedDate().toString())
 				.content(source.getContent())
 				.teamId(source.getPresentingTeam())
-				.writer(findMemberName(memberId))
+				.writer(findMemberName(source.getWriter()))
 				.commentId(source.getId())
 				.accessRight(source.getAccessRight(memberId))
 				.answers(answersResponse)
