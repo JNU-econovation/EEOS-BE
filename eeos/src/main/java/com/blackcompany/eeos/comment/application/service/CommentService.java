@@ -66,7 +66,7 @@ public class CommentService
 	@Override
 	public List<CommentModel> getComments(Long memberId, Long programId, Long teamId) {
 		if (teamId == null) {
-			return findCommentsByProgramId(programId);
+			throw new NullPointerException("teamId 값이 null 입니다.");
 		}
 
 		return findCommentsByProgramIdAndTeam(programId, teamId);
@@ -114,12 +114,7 @@ public class CommentService
 	private List<CommentModel> findCommentsByProgramIdAndTeam(Long programId, Long teamId) {
 		return commentRepository.findCommentByProgramIdAndPresentingTeamId(programId, teamId).stream()
 				.map(commentEntityConverter::from)
-				.collect(Collectors.toList());
-	}
-
-	private List<CommentModel> findCommentsByProgramId(Long programId) {
-		return commentRepository.findCommentByProgramId(programId).stream()
-				.map(commentEntityConverter::from)
+				.filter(CommentModel::isSuperComment)
 				.collect(Collectors.toList());
 	}
 
