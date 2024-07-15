@@ -52,4 +52,8 @@ public class MemberEntity extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	@Builder.Default
 	private ActiveStatus activeStatus = ActiveStatus.AM;
+
+	@Column(name = ENTITY_PREFIX + "_is_admin", nullable = false)
+	@Builder.Default
+	private boolean isAdmin = false;
 }
