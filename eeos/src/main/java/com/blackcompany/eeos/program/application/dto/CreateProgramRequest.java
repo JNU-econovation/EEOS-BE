@@ -27,13 +27,11 @@ public class CreateProgramRequest implements CommandProgramRequest {
 	@NoArgsConstructor
 	@AllArgsConstructor
 	@Getter
-	class Team {
+	static class Team {
 		private Long teamId;
 	}
 
-	public List<Long> getTeamIds(){
-		return this.teams.stream()
-				.map(t -> t.getTeamId())
-				.collect(Collectors.toList());
+	public List<Long> getTeamIds() {
+		return this.teams.stream().map(t -> t.getTeamId()).collect(Collectors.toList());
 	}
 }
