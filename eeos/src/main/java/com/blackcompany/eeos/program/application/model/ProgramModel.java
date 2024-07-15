@@ -34,7 +34,8 @@ public class ProgramModel implements AbstractModel {
 	private String eventStatus;
 	private ProgramCategory programCategory;
 	private String githubUrl;
-	private ProgramAttendMode attendMode;
+	@Builder.Default
+	private ProgramAttendMode attendMode = ProgramAttendMode.END;
 	private ProgramType programType;
 	private Long writer;
 
