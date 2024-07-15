@@ -4,6 +4,8 @@ import io.lettuce.core.dynamic.annotation.Param;
 import java.util.List;
 import java.util.Optional;
 import javax.transaction.Transactional;
+
+import lombok.NonNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -27,6 +29,5 @@ public interface CommentRepository extends JpaRepository<CommentEntity, Long> {
 
 	@Transactional
 	@Modifying
-	@Query("DELETE FROM CommentEntity c WHERE c.id=:commentId OR c.superCommentId=:commentId")
-	void deleteById(@Param("commentId") Long commentId);
+	void deleteById(@NonNull Long commentId);
 }
