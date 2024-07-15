@@ -11,8 +11,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface SlackChatApiClientImpl extends SlackChatApiClient {
 
 	@PostMapping(path = "/chat.postMessage", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-	SlackChatPostMessageResponse post(@RequestHeader("Authorization") String token,
-									  @RequestParam("channel") final String channel,
-									  @RequestParam("blocks") final String blocks,
-									  @RequestParam("username") final String username);
+	SlackChatPostMessageResponse post(
+			@RequestHeader("Authorization") String token,
+			@RequestParam("channel") final String channel,
+			@RequestParam("blocks") final String blocks,
+			@RequestParam("username") final String username);
 }

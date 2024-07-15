@@ -9,23 +9,22 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-public class ObjectToJsonMapper<T>{
+public class ObjectToJsonMapper<T> {
 
-    private final ObjectMapper mapper = new ObjectMapper();
+	private final ObjectMapper mapper = new ObjectMapper();
 
-    /** 예외 처리 필요 */
-    public String toJson(T t){
-        try {
-            return mapper.writeValueAsString(t);
-        } catch (JsonGenerationException e){
-            log.error(e.getMessage());
-        } catch (JsonMappingException e){
-            log.error(e.getMessage());
-        } catch (JsonProcessingException e){
-            log.error(e.getMessage());
-        }
+	/** 예외 처리 필요 */
+	public String toJson(T t) {
+		try {
+			return mapper.writeValueAsString(t);
+		} catch (JsonGenerationException e) {
+			log.error(e.getMessage());
+		} catch (JsonMappingException e) {
+			log.error(e.getMessage());
+		} catch (JsonProcessingException e) {
+			log.error(e.getMessage());
+		}
 
-        return "hi";
-    }
-
+		return "hi";
+	}
 }

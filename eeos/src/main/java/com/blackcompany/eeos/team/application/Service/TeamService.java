@@ -1,7 +1,5 @@
 package com.blackcompany.eeos.team.application.Service;
 
-import com.blackcompany.eeos.common.support.AdminChecker;
-import com.blackcompany.eeos.member.application.model.Name;
 import com.blackcompany.eeos.member.application.service.QueryMemberService;
 import com.blackcompany.eeos.team.application.dto.CreateTeamRequest;
 import com.blackcompany.eeos.team.application.dto.CreateTeamResponse;
@@ -55,8 +53,7 @@ public class TeamService implements CreateTeamUsecase, DeleteTeamUsecase, GetTea
 	}
 
 	private void validateMember(Long memberId) {
-		if(!memberService.findMember(memberId).isAdmin())
-			throw new DeniedTeamEditException(memberId);
+		if (!memberService.findMember(memberId).isAdmin()) throw new DeniedTeamEditException(memberId);
 	}
 
 	private Long createTeam(TeamModel model) {

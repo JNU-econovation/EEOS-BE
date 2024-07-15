@@ -2,8 +2,6 @@ package com.blackcompany.eeos.program.infra.api.slack.chat.dto;
 
 import com.blackcompany.eeos.auth.infra.oauth.slack.dto.SlackApiResponse;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.Arrays;
-import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

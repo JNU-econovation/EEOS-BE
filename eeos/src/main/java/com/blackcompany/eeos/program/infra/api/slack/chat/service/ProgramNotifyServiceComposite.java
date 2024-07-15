@@ -34,35 +34,42 @@ public class ProgramNotifyServiceComposite {
 	public CommandProgramResponse notify(ProgramNotificationModel notiModel) {
 
 		ChatPostModel model = modelConverter.from(notiModel);
-		SlackChatPostMessageResponse response = post(getBlackCompanyBotToken(),
-													getBlackCompanyNotiChannel(),
-													model);
+		SlackChatPostMessageResponse response =
+				post(getBlackCompanyBotToken(), getBlackCompanyNotiChannel(), model);
 
-		if(!response.isOk()) throw new SlackChatApiUnAuthException(response.getError());
+		if (!response.isOk()) throw new SlackChatApiUnAuthException(response.getError());
 
 		return responseConverter.from(notiModel.getId());
 	}
 
-	private TokenGetter getEconoBotToken(){ return () -> String.format("%s %s", BEARER, tokens.getECONOVATION_EEOS_BOT()); }
+	private TokenGetter getEconoBotToken() {
+		return () -> String.format("%s %s", BEARER, tokens.getECONOVATION_EEOS_BOT());
+	}
 
-	private TokenGetter getBlackCompanyBotToken(){ return () -> String.format("%s %s", BEARER, tokens.getBLACK_COMPANY_EEOS_BOT()); }
+	private TokenGetter getBlackCompanyBotToken() {
+		return () -> String.format("%s %s", BEARER, tokens.getBLACK_COMPANY_EEOS_BOT());
+	}
 
-	private ChannelGetter getBlackCompanyNotiChannel(){ return () -> channels.getBLACK_COMPANY_NOTIFICATION();}
+	private ChannelGetter getBlackCompanyNotiChannel() {
+		return () -> channels.getBLACK_COMPANY_NOTIFICATION();
+	}
 
-	private ChannelGetter getNotiChannel(){
+	private ChannelGetter getNotiChannel() {
 		return () -> channels.getECONOVATION_NOTIFICATION();
 	}
 
-	private ChannelGetter getSmallTalkChannel(){
+	private ChannelGetter getSmallTalkChannel() {
 		return () -> channels.getECONOVATION_SMALL_TALK();
 	}
 
-	private ChannelGetter getTestChannel(){
+	private ChannelGetter getTestChannel() {
 		return () -> channels.getBLACK_COMPANY_TEST();
 	}
 
-	private SlackChatPostMessageResponse post(TokenGetter token, ChannelGetter channel, ChatPostModel model){
-		return client.post(token.getToken(),
+	private SlackChatPostMessageResponse post(
+			TokenGetter token, ChannelGetter channel, ChatPostModel model) {
+		return client.post(
+				token.getToken(),
 				channel.getChannel(),
 				mapper.toJson(model.getMessage()),
 				model.getUserName());

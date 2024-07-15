@@ -30,9 +30,8 @@ public class CommentModel implements AbstractModel {
 		return AccessRights.READ_ONLY.getAccessRight();
 	}
 
-	public void validateCreate(){
-		if(isExceedLengthLimit())
-			throw new ExceedContentLimitLengthException();
+	public void validateCreate() {
+		if (isExceedLengthLimit()) throw new ExceedContentLimitLengthException();
 	}
 
 	public void validateUpdate(Long memberId) {
@@ -52,14 +51,14 @@ public class CommentModel implements AbstractModel {
 		return false;
 	}
 
-	private boolean isExceedLengthLimit(){
+	private boolean isExceedLengthLimit() {
 		return getContentLength() > contentLimitLength;
 	}
 
-	private long getContentLength(){
+	private long getContentLength() {
 		try {
 			return this.content.length();
-		} catch(NullPointerException e){
+		} catch (NullPointerException e) {
 			throw new UnExpectedNPException();
 		}
 	}

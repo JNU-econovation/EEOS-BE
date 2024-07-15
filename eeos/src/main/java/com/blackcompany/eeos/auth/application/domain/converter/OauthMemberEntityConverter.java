@@ -22,7 +22,7 @@ public class OauthMemberEntityConverter
 		return OAuthMemberEntity.builder().oauthId(oauthId).memberId(memberId).build();
 	}
 
-	public OAuthMemberEntity toEntity(final Long memberId){
+	public OAuthMemberEntity toEntity(final Long memberId) {
 		return OAuthMemberEntity.builder().memberId(memberId).build();
 	}
 }

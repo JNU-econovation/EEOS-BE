@@ -18,10 +18,7 @@ public class ChatPostModelConverter {
 	private final MemberRepository memberRepository;
 
 	public ChatPostModel from(ProgramNotificationModel model) {
-		return ChatPostModel.builder()
-				.message(getMessage(model))
-				.userName(getUsername(model))
-				.build();
+		return ChatPostModel.builder().message(getMessage(model)).userName(getUsername(model)).build();
 	}
 
 	private Block[] getMessage(final ProgramNotificationModel model) {
@@ -40,7 +37,7 @@ public class ChatPostModelConverter {
 			getBlock(blockType, textType, ProgramMessageAnnouncements.HEADER_MID.getAnnouncement()),
 			getBlock(
 					blockType,
-					textType ,
+					textType,
 					ProgramMessageAnnouncements.PROGRAM_NAME.getAnnouncement() + model.getTitle()),
 			getBlock(
 					blockType,
