@@ -32,6 +32,8 @@ import com.blackcompany.eeos.target.application.service.SelectAttendCommandTarge
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
+
+import com.blackcompany.eeos.target.application.usecase.PresentTeamUsecase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -65,6 +67,8 @@ public class ProgramService
 	private final QueryAccessRightResponseConverter accessRightResponseConverter;
 	private final ProgramNotifyServiceComposite notifyServiceComposite;
 
+	private final PresentTeamUsecase presentTeamUsecase;
+
 	@Override
 	@Transactional
 	public CommandProgramResponse create(final Long memberId, final CreateProgramRequest request) {
@@ -72,6 +76,7 @@ public class ProgramService
 		Long saveId = createProgram(model);
 
 		attendTargetService.save(saveId, request.getMembers());
+		presentTeamUsecase.save(saveId, request.getTeamIds());
 
 		return responseConverter.from(saveId);
 	}
