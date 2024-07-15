@@ -12,12 +12,12 @@ public class CommentEntityConverter
 	@Override
 	public CommentEntity toEntity(CommentModel model) {
 		return CommentEntity.builder()
-						.programId(model.getProgramId())
-						.superCommentId(model.getSuperCommentId())
-						.writer(model.getWriter())
-						.presentingTeamId(model.getPresentingTeam())
-						.content(model.getContent())
-						.build();
+				.programId(model.getProgramId())
+				.superCommentId(model.getSuperCommentId())
+				.writer(model.getWriter())
+				.presentingTeamId(model.getPresentingTeam())
+				.content(model.getContent())
+				.build();
 	}
 
 	@Override

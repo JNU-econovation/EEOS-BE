@@ -53,8 +53,7 @@ public class TeamService implements CreateTeamUsecase, DeleteTeamUsecase, GetTea
 	}
 
 	private void validateMember(Long memberId) {
-		if(!memberService.findMember(memberId).isAdmin())
-			throw new DeniedTeamEditException(memberId);
+		if (!memberService.findMember(memberId).isAdmin()) throw new DeniedTeamEditException(memberId);
 	}
 
 	private Long createTeam(TeamModel model) {

@@ -46,9 +46,9 @@ public class QueryMemberService implements GetMembersByActiveStatus, GetMemberBy
 		return responseConverter.from(model);
 	}
 
-	public MemberModel findMember(Long memberId){
-		MemberEntity entity = memberRepository.findById(memberId)
-				.orElseThrow(NotFoundMemberException::new);
+	public MemberModel findMember(Long memberId) {
+		MemberEntity entity =
+				memberRepository.findById(memberId).orElseThrow(NotFoundMemberException::new);
 		return memberEntityConverter.from(entity);
 	}
 
