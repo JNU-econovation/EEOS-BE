@@ -1,6 +1,6 @@
 package com.blackcompany.eeos.comment.application.model;
 
-import com.blackcompany.eeos.comment.application.exception.DeniedEditCommentException;
+import com.blackcompany.eeos.comment.application.exception.DeniedCommentEditException;
 import com.blackcompany.eeos.comment.application.exception.ExceedContentLimitLengthException;
 import com.blackcompany.eeos.comment.application.exception.UnExpectedNPException;
 import com.blackcompany.eeos.common.support.AbstractModel;
@@ -35,11 +35,11 @@ public class CommentModel implements AbstractModel {
 	}
 
 	public void validateUpdate(Long memberId) {
-		if (!isEdit(memberId)) throw new DeniedEditCommentException(this.getId());
+		if (!isEdit(memberId)) throw new DeniedCommentEditException(this.getId());
 	}
 
 	public void validateDelete(Long memberId) {
-		if (!isEdit(memberId)) throw new DeniedEditCommentException(this.getId());
+		if (!isEdit(memberId)) throw new DeniedCommentEditException(this.getId());
 	}
 
 	public boolean isSuperComment() {
