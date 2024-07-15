@@ -126,6 +126,6 @@ public class ProgramController {
 			@PathVariable("programId") Long programId,
 			@RequestParam("mode") String mode) {
 		attendStartUsecase.attendStart(memberId, programId, mode);
-		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.ATTEND_START);
+		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.UPDATE);
 	}
 }
