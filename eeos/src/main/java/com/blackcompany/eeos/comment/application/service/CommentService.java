@@ -55,6 +55,7 @@ public class CommentService
 	public CommentModel update(Long memberId, Long commentId, UpdateCommentRequest request) {
 		CommentModel model = findCommentById(commentId);
 		model.validateUpdate(memberId);
+
 		return findCommentById(updateComment(commentId, request.getContent()));
 	}
 
@@ -99,6 +100,7 @@ public class CommentService
 		return commentEntityConverter.from(saved);
 	}
 
+
 	private void changeSuperComment(CommentModel model) {
 		Long superCommentId = findCommentById(model.getSuperCommentId()).getSuperCommentId();
 		model.changeSuperComment(superCommentId);
@@ -133,6 +135,7 @@ public class CommentService
 	private void validateUser(Long memberId){
 		MemberModel member = memberService.findMember(memberId);
 		if(member.isAdmin()) throw new NotCreateAdminCommentException();
+
 	}
 
 	/** 이 기능은 model에 있어야 할까? */
