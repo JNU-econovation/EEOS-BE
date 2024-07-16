@@ -46,6 +46,10 @@ public class CommentModel implements AbstractModel {
 		return superCommentId.equals(Long.valueOf(-1L));
 	}
 
+	public void changeSuperComment(Long newSuper){
+		this.superCommentId = newSuper;
+	}
+
 	private boolean isEdit(Long memberId) {
 		if (this.writer.equals(memberId)) return true;
 		return false;
