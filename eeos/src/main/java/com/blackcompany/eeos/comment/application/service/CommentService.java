@@ -92,12 +92,12 @@ public class CommentService
 	}
 
 	private CommentModel createComment(CommentModel model) {
+
 		if (!model.isSuperComment()) changeSuperComment(model);
 		CommentEntity entity = commentEntityConverter.toEntity(model);
 		CommentEntity saved = commentRepository.save(entity);
 		return commentEntityConverter.from(saved);
 	}
-
 	private void changeSuperComment(CommentModel model) {
 		Long superCommentId = findCommentById(model.getSuperCommentId()).getSuperCommentId();
 		model.changeSuperComment(superCommentId);
