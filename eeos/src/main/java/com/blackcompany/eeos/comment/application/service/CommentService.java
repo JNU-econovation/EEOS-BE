@@ -4,6 +4,7 @@ import com.blackcompany.eeos.comment.application.dto.CreateCommentRequest;
 import com.blackcompany.eeos.comment.application.dto.UpdateCommentRequest;
 import com.blackcompany.eeos.comment.application.dto.converter.CommentResponseConverter;
 import com.blackcompany.eeos.comment.application.exception.DeniedCommentEditException;
+import com.blackcompany.eeos.comment.application.exception.NotCreateAdminCommentException;
 import com.blackcompany.eeos.comment.application.exception.NotExpectedCommentEditException;
 import com.blackcompany.eeos.comment.application.exception.NotFoundCommentException;
 import com.blackcompany.eeos.comment.application.model.CommentModel;
@@ -15,6 +16,8 @@ import com.blackcompany.eeos.comment.application.usecase.UpdateCommentUsecase;
 import com.blackcompany.eeos.comment.persistence.CommentEntity;
 import com.blackcompany.eeos.comment.persistence.CommentRepository;
 import com.blackcompany.eeos.comment.persistence.converter.CommentEntityConverter;
+import com.blackcompany.eeos.member.application.model.MemberModel;
+import com.blackcompany.eeos.member.application.service.QueryMemberService;
 import com.blackcompany.eeos.program.application.exception.NotFoundProgramException;
 import com.blackcompany.eeos.program.persistence.ProgramRepository;
 import com.blackcompany.eeos.team.application.exception.NotFoundTeamException;
@@ -33,13 +36,14 @@ public class CommentService
 	private final CommentRepository commentRepository;
 	private final CommentModelConverter commentModelConverter;
 	private final CommentEntityConverter commentEntityConverter;
-	private final CommentResponseConverter commentResponseConverter;
 	private final ProgramRepository programRepository;
 	private final TeamRepository teamRepository;
+	private final QueryMemberService memberService;
 
 	@Transactional
 	@Override
 	public CommentModel create(Long memberId, CreateCommentRequest request) {
+		MemberModel member = memberService.findMember(memberId);
 		CommentModel model = commentModelConverter.from(memberId, request);
 		createValidate(model);
 		CommentModel saved = createComment(model);
@@ -116,6 +120,11 @@ public class CommentService
 				.map(commentEntityConverter::from)
 				.filter(CommentModel::isSuperComment)
 				.collect(Collectors.toList());
+	}
+
+	private void validateUser(Long memberId){
+		MemberModel member = memberService.findMember(memberId);
+		if(member.isAdmin()) throw new NotCreateAdminCommentException();
 	}
 
 	/** 이 기능은 model에 있어야 할까? */
