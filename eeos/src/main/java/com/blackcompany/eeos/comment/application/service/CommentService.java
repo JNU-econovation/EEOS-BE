@@ -2,8 +2,6 @@ package com.blackcompany.eeos.comment.application.service;
 
 import com.blackcompany.eeos.comment.application.dto.CreateCommentRequest;
 import com.blackcompany.eeos.comment.application.dto.UpdateCommentRequest;
-import com.blackcompany.eeos.comment.application.dto.converter.CommentResponseConverter;
-import com.blackcompany.eeos.comment.application.exception.DeniedCommentEditException;
 import com.blackcompany.eeos.comment.application.exception.NotCreateAdminCommentException;
 import com.blackcompany.eeos.comment.application.exception.NotExpectedCommentEditException;
 import com.blackcompany.eeos.comment.application.exception.NotFoundCommentException;
@@ -56,7 +54,7 @@ public class CommentService
 		CommentModel model = findCommentById(commentId);
 		model.validateUpdate(memberId);
 
-		return findCommentById(updateComment(commentId, request.getContent()));
+		return findCommentById(updateComment(commentId, request.getContents()));
 	}
 
 	@Transactional
@@ -94,13 +92,12 @@ public class CommentService
 	}
 
 	private CommentModel createComment(CommentModel model) {
-		if(!model.isSuperComment()) changeSuperComment(model);
+
+		if (!model.isSuperComment()) changeSuperComment(model);
 		CommentEntity entity = commentEntityConverter.toEntity(model);
 		CommentEntity saved = commentRepository.save(entity);
 		return commentEntityConverter.from(saved);
 	}
-
-
 	private void changeSuperComment(CommentModel model) {
 		Long superCommentId = findCommentById(model.getSuperCommentId()).getSuperCommentId();
 		model.changeSuperComment(superCommentId);
@@ -108,7 +105,7 @@ public class CommentService
 
 	private Long updateComment(Long commentId, String content) {
 		int result = commentRepository.updateById(commentId, content);
-		if(result==0) throw new NotExpectedCommentEditException();
+		if (result == 0) throw new NotExpectedCommentEditException();
 
 		return commentId;
 	}
@@ -132,10 +129,9 @@ public class CommentService
 				.collect(Collectors.toList());
 	}
 
-	private void validateUser(Long memberId){
+	private void validateUser(Long memberId) {
 		MemberModel member = memberService.findMember(memberId);
-		if(member.isAdmin()) throw new NotCreateAdminCommentException();
-
+		if (member.isAdmin()) throw new NotCreateAdminCommentException();
 	}
 
 	/** 이 기능은 model에 있어야 할까? */
