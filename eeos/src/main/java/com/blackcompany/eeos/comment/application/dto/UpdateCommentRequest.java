@@ -13,5 +13,5 @@ import lombok.NoArgsConstructor;
 @Builder(toBuilder = true)
 public class UpdateCommentRequest implements AbstractRequestDto {
 
-	private @NotNull String content;
+	private @NotNull String contents;
 }
