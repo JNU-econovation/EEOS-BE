@@ -43,7 +43,7 @@ public class CommentService
 	@Transactional
 	@Override
 	public CommentModel create(Long memberId, CreateCommentRequest request) {
-		MemberModel member = memberService.findMember(memberId);
+		validateUser(memberId);
 		CommentModel model = commentModelConverter.from(memberId, request);
 		createValidate(model);
 		CommentModel saved = createComment(model);
@@ -55,9 +55,7 @@ public class CommentService
 	public CommentModel update(Long memberId, Long commentId, UpdateCommentRequest request) {
 		CommentModel model = findCommentById(commentId);
 		model.validateUpdate(memberId);
-		updateComment(commentId, request.getContent());
-		CommentModel updated = findCommentById(commentId);
-		return updated;
+		return findCommentById(updateComment(commentId, request.getContent()));
 	}
 
 	@Transactional
@@ -73,6 +71,10 @@ public class CommentService
 	public List<CommentModel> getComments(Long memberId, Long programId, Long teamId) {
 		if (teamId == null) {
 			throw new NullPointerException("teamId 값이 null 입니다.");
+		}
+
+		if (programId == null) {
+			throw new NullPointerException("programId 값이 null 입니다.");
 		}
 
 		return findCommentsByProgramIdAndTeam(programId, teamId);
@@ -91,9 +93,15 @@ public class CommentService
 	}
 
 	private CommentModel createComment(CommentModel model) {
+		if(!model.isSuperComment()) changeSuperComment(model);
 		CommentEntity entity = commentEntityConverter.toEntity(model);
 		CommentEntity saved = commentRepository.save(entity);
 		return commentEntityConverter.from(saved);
+	}
+
+	private void changeSuperComment(CommentModel model) {
+		Long superCommentId = findCommentById(model.getSuperCommentId()).getSuperCommentId();
+		model.changeSuperComment(superCommentId);
 	}
 
 	private Long updateComment(Long commentId, String content) {
