@@ -19,6 +19,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.Where;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -32,6 +33,7 @@ import lombok.experimental.SuperBuilder;
 			@Index(name = "idx_member_name", columnList = "member_name"),
 			@Index(name = "idx_member_active_status", columnList = "member_active_status")
 		})
+@Where(clause = "member_is_admin=false")
 public class MemberEntity extends BaseEntity {
 
 	public static final String ENTITY_PREFIX = "member";
