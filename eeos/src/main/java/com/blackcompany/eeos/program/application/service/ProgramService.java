@@ -1,7 +1,6 @@
 package com.blackcompany.eeos.program.application.service;
 
 import com.blackcompany.eeos.common.utils.DateConverter;
-import com.blackcompany.eeos.member.application.model.MemberModel;
 import com.blackcompany.eeos.member.application.service.QueryMemberService;
 import com.blackcompany.eeos.program.application.dto.ChangeAllAttendStatusRequest;
 import com.blackcompany.eeos.program.application.dto.CommandProgramResponse;
@@ -56,7 +55,7 @@ public class ProgramService
 				DeleteProgramUsecase,
 				GetAccessRightUsecase,
 				NotifyProgramUsecase,
-				AttendStartUsecase {
+		AttendModeChangeUsecase {
 
 	private final ProgramRequestConverter requestConverter;
 	private final ProgramEntityConverter entityConverter;
@@ -155,13 +154,16 @@ public class ProgramService
 
 	@Transactional(readOnly = false)
 	@Override
-	public void attendStart(Long memberId, Long programId, String mode) {
+	public void changeMode(Long memberId, Long programId, String mode) {
 
 		ProgramModel model = findProgram(programId);
 		model.validateAttend(memberId, mode);
-		log.info(mode);
 		model.changeProgramAttendMode(mode);
-		log.info(model.getAttendMode().getMode());
+
+		change(model);
+	}
+
+	private void change(ProgramModel model) {
 		programRepository.changeAttendMode(model.getId(), model.getAttendMode());
 	}
 
