@@ -2,6 +2,7 @@ package com.blackcompany.eeos.target.application.model;
 
 import com.blackcompany.eeos.common.application.model.MemberIdModel;
 import com.blackcompany.eeos.common.support.AbstractModel;
+import com.blackcompany.eeos.target.application.exception.DeniedChangeAttendException;
 import com.blackcompany.eeos.target.application.exception.DeniedSaveAttendException;
 import com.blackcompany.eeos.target.application.exception.NotSameBeforeAttendStatusException;
 import java.util.List;
@@ -23,8 +24,8 @@ public class AttendModel implements AbstractModel, MemberIdModel {
 	private Long programId;
 	private AttendStatus status;
 
-	public AttendModel changeStatus(String beforeStatus, String afterStatus) {
-		validateChange(beforeStatus);
+	public AttendModel changeStatus(String afterStatus) {
+		validateChange(afterStatus);
 		this.status = AttendStatus.find(afterStatus);
 
 		return this;
@@ -57,18 +58,22 @@ public class AttendModel implements AbstractModel, MemberIdModel {
 				.build();
 	}
 
-	private void validateChange(String beforeStatus) {
-		canChange(beforeStatus);
-		isSameBeforeStatus(beforeStatus);
+	private void validateChange(String afterStatus) {
+		canChange();
+		isSameBeforeStatus(afterStatus);
 	}
 
 	private void validateChangeByManager(String beforeStatus) {
 		isSameBeforeStatus(beforeStatus);
 	}
 
-	private void canChange(String beforeStatus) {
-		if (AttendStatus.isSame(beforeStatus, AttendStatus.NONRELATED)) {
+	private void canChange() {
+		if (AttendStatus.isSame(status.getStatus(), AttendStatus.NONRELATED)) {
 			throw new DeniedSaveAttendException();
+		}
+
+		if(!AttendStatus.isSame(status.getStatus(), AttendStatus.NONRESPONSE)) {
+			throw new DeniedChangeAttendException();
 		}
 	}
 

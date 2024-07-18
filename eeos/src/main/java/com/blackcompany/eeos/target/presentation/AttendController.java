@@ -6,7 +6,6 @@ import com.blackcompany.eeos.common.presentation.respnose.ApiResponseBody.Succes
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponseGenerator;
 import com.blackcompany.eeos.common.presentation.respnose.MessageCode;
 import com.blackcompany.eeos.target.application.dto.AttendInfoResponse;
-import com.blackcompany.eeos.target.application.dto.ChangeAttendStatusRequest;
 import com.blackcompany.eeos.target.application.dto.ChangeAttendStatusResponse;
 import com.blackcompany.eeos.target.application.dto.QueryAttendActiveStatusResponse;
 import com.blackcompany.eeos.target.application.dto.QueryAttendStatusResponse;
@@ -50,10 +49,9 @@ public class AttendController {
 	@PutMapping("/attend/programs/{programId}")
 	public ApiResponse<SuccessBody<ChangeAttendStatusResponse>> changeAttendStatus(
 			@Member Long memberId,
-			@PathVariable("programId") Long programId,
-			@RequestBody ChangeAttendStatusRequest request) {
+			@PathVariable("programId") Long programId) {
 		ChangeAttendStatusResponse response =
-				changeAttendStatusUsecase.changeStatus(memberId, request, programId);
+				changeAttendStatusUsecase.changeStatus(memberId, programId);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.UPDATE);
 	}
 

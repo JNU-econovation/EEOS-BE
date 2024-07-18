@@ -43,7 +43,7 @@ public class ProgramController {
 	private final GetAccessRightUsecase getAccessRightUsecase;
 	private final NotifyProgramUsecase notifyProgramUsecase;
 
-	private final AttendStartUsecase attendStartUsecase;
+	private final AttendModeChangeUsecase attendStartUsecase;
 
 	@Operation(summary = "행사 생성", description = "RequestBody에 담긴 행사 정보를 통해서 행사를 생성한다.")
 	@PostMapping
@@ -125,7 +125,7 @@ public class ProgramController {
 			@Member Long memberId,
 			@PathVariable("programId") Long programId,
 			@RequestParam("mode") String mode) {
-		attendStartUsecase.attendStart(memberId, programId, mode);
+		attendStartUsecase.changeMode(memberId, programId, mode);
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.UPDATE);
 	}
 }
