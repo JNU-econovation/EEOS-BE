@@ -6,10 +6,11 @@ import com.blackcompany.eeos.member.application.model.converter.MemberEntityConv
 import com.blackcompany.eeos.member.application.service.QueryMemberService;
 import com.blackcompany.eeos.member.persistence.MemberRepository;
 import com.blackcompany.eeos.program.application.exception.NotFoundProgramException;
+import com.blackcompany.eeos.program.application.model.ProgramModel;
+import com.blackcompany.eeos.program.application.model.converter.ProgramEntityConverter;
 import com.blackcompany.eeos.program.persistence.ProgramRepository;
 import com.blackcompany.eeos.target.application.dto.AttendInfoActiveStatusResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfoResponse;
-import com.blackcompany.eeos.target.application.dto.ChangeAttendStatusRequest;
 import com.blackcompany.eeos.target.application.dto.ChangeAttendStatusResponse;
 import com.blackcompany.eeos.target.application.dto.QueryAttendActiveStatusResponse;
 import com.blackcompany.eeos.target.application.dto.QueryAttendStatusResponse;
@@ -55,6 +56,7 @@ public class AttendService
 	private final AttendInfoActiveStatusConverter attendInfoActiveStatusConverter;
 	private final QueryAttendActiveStatusConverter queryAttendActiveStatusConverter;
 	private final ProgramRepository programRepository;
+	private final ProgramEntityConverter programEntityConverter;
 
 	@Override
 	public List<AttendInfoResponse> findAttendInfo(final Long programId) {
@@ -83,11 +85,13 @@ public class AttendService
 	@Transactional
 	@Override
 	public ChangeAttendStatusResponse changeStatus(
-			final Long memberId, final ChangeAttendStatusRequest request, final Long programId) {
+			final Long memberId, final Long programId) {
 		AttendModel model = getAttend(memberId, programId);
+		ProgramModel program = findProgram(programId);
 
 		AttendModel changedModel =
-				model.changeStatus(request.getBeforeAttendStatus(), request.getAfterAttendStatus());
+				model.changeStatus(program.getAttendMode().getMode());
+
 		AttendEntity updated = attendRepository.save(attendEntityConverter.toEntity(changedModel));
 
 		String name = queryMemberService.getName(memberId);
@@ -117,6 +121,12 @@ public class AttendService
 						.collect(Collectors.toList());
 
 		return queryAttendActiveStatusConverter.of(response);
+	}
+
+	private ProgramModel findProgram(final Long programId){
+		return programRepository.findById(programId)
+				.map(programEntityConverter::from)
+				.orElseThrow(()->new NotFoundProgramException(programId));
 	}
 
 	private AttendModel getAttend(final Long memberId, final Long programId) {
