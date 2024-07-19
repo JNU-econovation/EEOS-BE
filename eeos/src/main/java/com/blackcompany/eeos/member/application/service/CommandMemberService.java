@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class CommandMemberService implements ChangeActiveStatusUsecase {
 	private final MemberRepository memberRepository;
+	private final OAuthMemberRepository oAuthMemberRepository;
 	private final MemberEntityConverter memberConverter;
 	private final CommandMemberResponseConverter responseConverter;
 	private final ApplicationEventPublisher applicationEventPublisher;
