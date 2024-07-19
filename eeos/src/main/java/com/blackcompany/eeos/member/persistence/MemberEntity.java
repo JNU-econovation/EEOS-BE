@@ -57,4 +57,5 @@ public class MemberEntity extends BaseEntity {
 	@Column(name = ENTITY_PREFIX + "_is_admin", nullable = false)
 	@Builder.Default
 	private boolean isAdmin = false;
+
 }
