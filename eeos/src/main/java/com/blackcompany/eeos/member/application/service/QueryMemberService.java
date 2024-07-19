@@ -62,12 +62,14 @@ public class QueryMemberService implements GetMembersByActiveStatus, GetMemberBy
 	private List<MemberModel> findMembers() {
 		return memberRepository.findMembers().stream()
 				.map(entityConverter::from)
+				.filter(m -> !m.isAdmin())
 				.collect(Collectors.toList());
 	}
 
 	private List<MemberModel> findMembersByStatus(ActiveStatus activeStatus) {
 		return memberRepository.findMembersByActiveStatus(activeStatus).stream()
 				.map(entityConverter::from)
+				.filter(m -> !m.isAdmin())
 				.collect(Collectors.toList());
 	}
 }
