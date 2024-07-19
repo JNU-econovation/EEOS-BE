@@ -46,7 +46,7 @@ public class AttendController {
 	@Operation(
 			summary = "참여상태 변경",
 			description = "PathVariable의 programId와 RequestBody의 참여상태를 이용하여 사용자의 참여상태를 변경한다.")
-	@PutMapping("/attend/programs/{programId}")
+	@PostMapping("/attend/programs/{programId}")
 	public ApiResponse<SuccessBody<ChangeAttendStatusResponse>> changeAttendStatus(
 			@Member Long memberId,
 			@PathVariable("programId") Long programId) {
