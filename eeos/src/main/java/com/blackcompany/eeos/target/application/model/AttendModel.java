@@ -72,13 +72,13 @@ public class AttendModel implements AbstractModel, MemberIdModel {
 			throw new DeniedSaveAttendException();
 		}
 
-		if(!AttendStatus.isSame(status.getStatus(), AttendStatus.NONRESPONSE)) {
+		if (!AttendStatus.isSame(status.getStatus(), AttendStatus.NONRESPONSE)) {
 			throw new DeniedChangeAttendException();
 		}
 	}
 
 	private void isSameBeforeStatus(String status) {
-		if (AttendStatus.isSame(status, this.status)) {
+		if (!AttendStatus.isSame(status, this.status)) {
 			return;
 		}
 		throw new NotSameBeforeAttendStatusException(memberId);
