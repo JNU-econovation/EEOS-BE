@@ -1,5 +1,6 @@
 package com.blackcompany.eeos.member.application.service;
 
+import com.blackcompany.eeos.auth.persistence.OAuthMemberRepository;
 import com.blackcompany.eeos.member.application.dto.ChangeActiveStatusRequest;
 import com.blackcompany.eeos.member.application.dto.CommandMemberResponse;
 import com.blackcompany.eeos.member.application.dto.converter.CommandMemberResponseConverter;
@@ -24,7 +25,7 @@ public class CommandMemberService implements ChangeActiveStatusUsecase {
 	private final CommandMemberResponseConverter responseConverter;
 	private final ApplicationEventPublisher applicationEventPublisher;
 	private final QueryMemberService memberService;
-	
+
 	@Transactional
 	@Override
 	public CommandMemberResponse adminChangeStatus(
@@ -68,6 +69,8 @@ public class CommandMemberService implements ChangeActiveStatusUsecase {
 		validateUser(adminMemberId);
 
 		memberRepository.deleteById(member.getId());
+		oAuthMemberRepository.deleteById(member.getId());
+
 		applicationEventPublisher.publishEvent(DeletedMemberEvent.of(memberId));
 	}
 }
