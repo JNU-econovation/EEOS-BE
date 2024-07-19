@@ -23,6 +23,7 @@ public class CommandMemberService implements ChangeActiveStatusUsecase {
 	private final MemberEntityConverter memberConverter;
 	private final CommandMemberResponseConverter responseConverter;
 	private final ApplicationEventPublisher applicationEventPublisher;
+	private final QueryMemberService memberService;
 
 	@Transactional
 	@Override
@@ -44,7 +45,7 @@ public class CommandMemberService implements ChangeActiveStatusUsecase {
 	@Override
 	public CommandMemberResponse adminChangeStatus(
 			final Long adminMemberId, Long memberId, final ChangeActiveStatusRequest request) {
-		isAdmin(adminMemberId);
+		validateUser(adminMemberId);
 		MemberModel model =
 				memberRepository
 						.findById(memberId)
@@ -69,8 +70,8 @@ public class CommandMemberService implements ChangeActiveStatusUsecase {
 				.orElseThrow(NotFoundMemberException::new);
 	}
 
-	public void isAdmin(Long memberId) {
-		if (memberId == 0) {
+	private void validateUser(Long memberId) {
+		if (memberService.findMember(memberId).isAdmin()) {
 			return;
 		}
 		throw new DeniedMemberEditException(memberId);
@@ -80,7 +81,7 @@ public class CommandMemberService implements ChangeActiveStatusUsecase {
 	@Transactional
 	public void delete(final Long adminMemberId, final Long memberId) {
 		MemberModel member = findMember(memberId);
-		isAdmin(adminMemberId);
+		validateUser(adminMemberId);
 
 		memberRepository.deleteById(member.getId());
 		applicationEventPublisher.publishEvent(DeletedMemberEvent.of(memberId));
