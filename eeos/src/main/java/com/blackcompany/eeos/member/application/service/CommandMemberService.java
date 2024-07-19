@@ -24,23 +24,7 @@ public class CommandMemberService implements ChangeActiveStatusUsecase {
 	private final CommandMemberResponseConverter responseConverter;
 	private final ApplicationEventPublisher applicationEventPublisher;
 	private final QueryMemberService memberService;
-
-	@Transactional
-	@Override
-	public CommandMemberResponse changeStatus(
-			final Long memberId, final ChangeActiveStatusRequest request) {
-		MemberModel model =
-				memberRepository
-						.findById(memberId)
-						.map(memberConverter::from)
-						.orElseThrow(NotFoundMemberException::new);
-
-		MemberEntity updatedMember = updateActiveStatus(model, request.getActiveStatus());
-
-		return responseConverter.from(
-				updatedMember.getName(), updatedMember.getActiveStatus().getStatus());
-	}
-
+	
 	@Transactional
 	@Override
 	public CommandMemberResponse adminChangeStatus(
