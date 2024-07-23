@@ -16,4 +16,5 @@ public class NotFoundTeamException extends BusinessException {
 	public String getMessage() {
 		return String.format(" teamId %d는 존재하지 않는 팀입니다.", teamId);
 	}
+
 }
