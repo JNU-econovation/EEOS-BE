@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.blackcompany.eeos.team.application.exception.NotFoundTeamException;
-import com.blackcompany.eeos.team.application.model.TeamModel;
 import com.blackcompany.eeos.team.application.model.converter.TeamEntityConverter;
 import com.blackcompany.eeos.team.persistence.TeamRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,9 +32,9 @@ public class TeamPresentService implements PresentTeamUsecase {
 	}
 
 	private void validateTeams(List<Long> teamIds) {
-		if(isExistTeams(teamIds)){
-			throw new NotFoundTeamException();
-		}
+		teamIds.forEach(id -> {
+			if(!teamRepository.existsById(id)) throw new NotFoundTeamException();
+		});
 	}
 
 	private List<PresentationEntity> toEntities(Long programId, List<Long> teamIds) {
@@ -44,18 +43,4 @@ public class TeamPresentService implements PresentTeamUsecase {
 				.collect(Collectors.toList());
 	}
 
-	private boolean isExistTeams(List<Long> teamIds){
-		long originSize = teamIds.size();
-		long filteredSize = findAllTeam().stream()
-				.map(TeamModel::getId)
-				.filter(teamIds::contains)
-				.count();
-		return originSize==filteredSize;
-	}
-
-	private List<TeamModel> findAllTeam(){
-		return teamRepository.findAllTeamsByStatus().stream()
-				.map(teamEntityConverter::from)
-				.collect(Collectors.toList());
-	}
 }
