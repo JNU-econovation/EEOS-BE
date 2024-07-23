@@ -4,6 +4,8 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,6 +33,7 @@ public class CreateProgramRequest implements CommandProgramRequest {
 		private Long teamId;
 	}
 
+	@JsonIgnore
 	public List<Long> getTeamIds() {
 		return this.teams.stream().map(t -> t.getTeamId()).collect(Collectors.toList());
 	}

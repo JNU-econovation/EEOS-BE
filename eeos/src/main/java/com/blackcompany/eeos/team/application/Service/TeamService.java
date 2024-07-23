@@ -1,6 +1,5 @@
 package com.blackcompany.eeos.team.application.Service;
 
-import com.blackcompany.eeos.member.application.model.MemberModel;
 import com.blackcompany.eeos.member.application.service.QueryMemberService;
 import com.blackcompany.eeos.target.persistence.PresentationRepository;
 import com.blackcompany.eeos.team.application.dto.CreateTeamRequest;
@@ -60,7 +59,7 @@ public class TeamService implements CreateTeamUsecase, DeleteTeamUsecase, GetTea
 	public void delete(final Long memberId, final Long teamId) {
 		TeamModel team = findTeam(teamId);
 		validateUser(memberId);
-    
+
 		teamRepository.deleteTeamEntityByName(team.getId());
 		applicationEventPublisher.publishEvent(DeletedTeamEvent.of(teamId));
 	}
@@ -87,7 +86,6 @@ public class TeamService implements CreateTeamUsecase, DeleteTeamUsecase, GetTea
 
 		return queryTeamResponseConverter.from(models);
 	}
-
 
 	private List<TeamModel> findTeamByProgram(Long programId) {
 		return presentationRepository.findTeamsByProgramId(programId).stream()
@@ -137,6 +135,6 @@ public class TeamService implements CreateTeamUsecase, DeleteTeamUsecase, GetTea
 		return teamRepository
 				.findById(teamId)
 				.map(entityConverter::from)
-				.orElseThrow(() -> new NotFoundTeamException(teamId));
+				.orElseThrow( NotFoundTeamException::new);
 	}
 }

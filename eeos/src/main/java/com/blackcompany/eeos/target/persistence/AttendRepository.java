@@ -4,6 +4,7 @@ import com.blackcompany.eeos.target.application.model.AttendStatus;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -29,4 +30,12 @@ public interface AttendRepository extends JpaRepository<AttendEntity, Long> {
 	List<AttendEntity> findAllByProgramId(@Param("programId") Long programId);
 
 	void deleteAllByMemberId(Long memberId);
+
+	@Modifying
+	@Query(
+			"UPDATE AttendEntity a SET a.status=:afterStatus WHERE a.programId=:programId AND a.status=:beforeStatus")
+	void updateAttendStatusByProgramId(
+			@Param("programId") Long programId,
+			@Param("beforeStatus") AttendStatus beforeStatus,
+			@Param("afterStatus") AttendStatus afterStatus);
 }
