@@ -135,6 +135,6 @@ public class TeamService implements CreateTeamUsecase, DeleteTeamUsecase, GetTea
 		return teamRepository
 				.findById(teamId)
 				.map(entityConverter::from)
-				.orElseThrow( NotFoundTeamException::new);
+				.orElseThrow(() -> new NotFoundTeamException(teamId));
 	}
 }
