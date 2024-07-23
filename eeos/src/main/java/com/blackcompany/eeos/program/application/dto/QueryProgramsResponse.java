@@ -18,6 +18,6 @@ public class QueryProgramsResponse implements AbstractResponseDto {
 	private Timestamp deadLine;
 	private String category;
 	private String programStatus;
-	private String programAttendMode;
+	private String attendMode;
 	private String type;
 }
