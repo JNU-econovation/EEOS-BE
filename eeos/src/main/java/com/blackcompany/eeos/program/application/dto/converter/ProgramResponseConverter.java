@@ -15,6 +15,7 @@ public class ProgramResponseConverter {
 				.programId(target.getId())
 				.title(target.getTitle())
 				.deadLine(target.getProgramDate())
+				.attendMode(target.getAttendMode().getMode())
 				.category(target.getProgramCategory().getCategory())
 				.type(target.getProgramType().getType())
 				.programStatus(status.getStatus())
