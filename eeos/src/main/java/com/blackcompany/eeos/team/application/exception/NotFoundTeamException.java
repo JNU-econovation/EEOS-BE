@@ -5,12 +5,16 @@ import org.springframework.http.HttpStatus;
 
 public class NotFoundTeamException extends BusinessException {
 	private static final String FAIL_CODE = "7000";
+	private final Long teamId;
 
-	public NotFoundTeamException() {
+	public NotFoundTeamException(Long teamId) {
 		super(FAIL_CODE, HttpStatus.BAD_REQUEST);
+		this.teamId = teamId;
 	}
 
 	@Override
-	public String getMessage(){ return "존재하지 않는 팀입니다."; }
+	public String getMessage() {
+		return String.format(" teamId %d는 존재하지 않는 팀입니다.", teamId);
+	}
 
 }
