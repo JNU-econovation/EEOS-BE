@@ -79,7 +79,7 @@ public class ProgramModel implements AbstractModel {
 		if (!isWeeklyProgram(this)) throw new NotWeeklyProgramException();
 	}
 
-	public void validateAttend(Long memberId, String mode) {
+	public void validateAttendModeChange(Long memberId, String mode) {
 		if (!findProgramStatus().equals(ProgramStatus.ACTIVE)) {
 			throw new AlreadyEndProgramException();
 		}
