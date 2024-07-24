@@ -27,7 +27,7 @@ public class TeamPresentService implements PresentTeamUsecase {
 
 		List<PresentationEntity> entities = toEntities(programId, teamIds);
 
-		entities.stream().map(presentationRepository::save);
+		presentationRepository.saveAll(entities);
 	}
 
 	private void validateTeams(List<Long> teamIds) {

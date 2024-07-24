@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ProgramModel implements AbstractModel {
 
 	private static final String URL_REGEX =
-			"^(https?:\\/\\/)?(www\\.)?github\\.com\\/[\\w.-]+\\/[\\w.-]+\\/?(\\S*)?$";
+			"^(https?:\\/\\/)?(www\\.)?github\\.com\\/JNU-econovation$";
 
 	private Long id;
 	private String title;
@@ -34,8 +34,7 @@ public class ProgramModel implements AbstractModel {
 	private String eventStatus;
 	private ProgramCategory programCategory;
 	private String githubUrl;
-	@Builder.Default
-	private ProgramAttendMode attendMode = ProgramAttendMode.END;
+	@Builder.Default private ProgramAttendMode attendMode = ProgramAttendMode.END;
 	private ProgramType programType;
 	private Long writer;
 
