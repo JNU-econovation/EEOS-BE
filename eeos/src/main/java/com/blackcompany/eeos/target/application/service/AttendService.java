@@ -119,6 +119,7 @@ public class AttendService
 
 		List<AttendInfoActiveStatusResponse> response =
 				members.stream()
+						.filter(m -> !m.isAdmin())
 						.map(member -> combine(member, findAttend(programId), member.getActiveStatus()))
 						.collect(Collectors.toList());
 
