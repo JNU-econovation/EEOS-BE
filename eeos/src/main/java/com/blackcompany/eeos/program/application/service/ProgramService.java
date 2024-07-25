@@ -55,7 +55,7 @@ public class ProgramService
 				DeleteProgramUsecase,
 				GetAccessRightUsecase,
 				NotifyProgramUsecase,
-		AttendModeChangeUsecase {
+				AttendModeChangeUsecase {
 
 	private final ProgramRequestConverter requestConverter;
 	private final ProgramEntityConverter entityConverter;
@@ -68,6 +68,7 @@ public class ProgramService
 	private final QueryAccessRightResponseConverter accessRightResponseConverter;
 	private final ProgramNotifyServiceComposite notifyServiceComposite;
 	private final QueryMemberService memberService;
+	private final ProgramQuitUsecase quitUsecase;
 
 	private final PresentTeamUsecase presentTeamUsecase;
 
@@ -81,6 +82,7 @@ public class ProgramService
 
 		attendTargetService.save(saveId, request.getMembers());
 		presentTeamUsecase.save(saveId, request.getTeamIds());
+		quitUsecase.pushQuitAttendJob(model.toBuilder().id(saveId).build());
 
 		return responseConverter.from(saveId);
 	}
@@ -157,7 +159,7 @@ public class ProgramService
 	public void changeMode(Long memberId, Long programId, String mode) {
 
 		ProgramModel model = findProgram(programId);
-		model.validateAttend(memberId, mode);
+		model.validateAttendModeChange(memberId, mode);
 		model.changeProgramAttendMode(mode);
 
 		change(model);
@@ -213,7 +215,8 @@ public class ProgramService
 		return model;
 	}
 
-	private void validateUser(Long memberId){
-		if(!memberService.findMember(memberId).isAdmin()) throw new DeniedProgramEditException(memberId);
+	private void validateUser(Long memberId) {
+		if (!memberService.findMember(memberId).isAdmin())
+			throw new DeniedProgramEditException(memberId);
 	}
 }
