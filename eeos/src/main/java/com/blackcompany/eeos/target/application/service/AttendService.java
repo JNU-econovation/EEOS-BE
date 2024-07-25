@@ -6,6 +6,7 @@ import com.blackcompany.eeos.member.application.model.converter.MemberEntityConv
 import com.blackcompany.eeos.member.application.service.QueryMemberService;
 import com.blackcompany.eeos.member.persistence.MemberRepository;
 import com.blackcompany.eeos.program.application.exception.NotFoundProgramException;
+import com.blackcompany.eeos.program.application.model.ProgramAttendMode;
 import com.blackcompany.eeos.program.application.model.ProgramModel;
 import com.blackcompany.eeos.program.application.model.converter.ProgramEntityConverter;
 import com.blackcompany.eeos.program.persistence.ProgramRepository;
@@ -20,6 +21,7 @@ import com.blackcompany.eeos.target.application.dto.converter.ChangeAttendStatus
 import com.blackcompany.eeos.target.application.dto.converter.QueryAttendActiveStatusConverter;
 import com.blackcompany.eeos.target.application.dto.converter.QueryAttendStatusResponseConverter;
 import com.blackcompany.eeos.target.application.exception.NotFoundAttendException;
+import com.blackcompany.eeos.target.application.exception.NotStartAttendException;
 import com.blackcompany.eeos.target.application.model.AttendModel;
 import com.blackcompany.eeos.target.application.model.AttendStatus;
 import com.blackcompany.eeos.target.application.model.converter.AttendEntityConverter;
@@ -84,13 +86,13 @@ public class AttendService
 
 	@Transactional
 	@Override
-	public ChangeAttendStatusResponse changeStatus(
-			final Long memberId, final Long programId) {
+	public ChangeAttendStatusResponse changeStatus(final Long memberId, final Long programId) {
 		AttendModel model = getAttend(memberId, programId);
 		ProgramModel program = findProgram(programId);
 
-		AttendModel changedModel =
-				model.changeStatus(program.getAttendMode().getMode());
+
+
+		AttendModel changedModel = model.changeStatus(program.getAttendMode().getMode());
 
 		AttendEntity updated = attendRepository.save(attendEntityConverter.toEntity(changedModel));
 
@@ -123,10 +125,15 @@ public class AttendService
 		return queryAttendActiveStatusConverter.of(response);
 	}
 
-	private ProgramModel findProgram(final Long programId){
-		return programRepository.findById(programId)
+	private void validateAttend(ProgramModel model){
+		if(model.getAttendMode().equals(ProgramAttendMode.END)) throw new NotStartAttendException();
+	}
+
+	private ProgramModel findProgram(final Long programId) {
+		return programRepository
+				.findById(programId)
 				.map(programEntityConverter::from)
-				.orElseThrow(()->new NotFoundProgramException(programId));
+				.orElseThrow(() -> new NotFoundProgramException(programId));
 	}
 
 	private AttendModel getAttend(final Long memberId, final Long programId) {

@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ProgramModel implements AbstractModel {
 
 	private static final String URL_REGEX =
-			"^(https?:\\/\\/)?(www\\.)?github\\.com\\/JNU-econovation$";
+			"^https://github\\.com/JNU-econovation(/[\\w.-]+)*/?$";
 
 	private Long id;
 	private String title;
@@ -79,7 +79,7 @@ public class ProgramModel implements AbstractModel {
 		if (!isWeeklyProgram(this)) throw new NotWeeklyProgramException();
 	}
 
-	public void validateAttend(Long memberId, String mode) {
+	public void validateAttendModeChange(Long memberId, String mode) {
 		if (!findProgramStatus().equals(ProgramStatus.ACTIVE)) {
 			throw new AlreadyEndProgramException();
 		}
