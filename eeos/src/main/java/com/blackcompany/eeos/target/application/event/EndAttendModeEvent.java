@@ -1,17 +1,18 @@
 package com.blackcompany.eeos.target.application.event;
 
+import java.util.Set;
 import lombok.Getter;
 
 @Getter
 public class EndAttendModeEvent {
 
-	private final Long programId;
+	private final Set<Long> programIds;
 
-	private EndAttendModeEvent(Long programId) {
-		this.programId = programId;
+	private EndAttendModeEvent(Set<Long> programIds) {
+		this.programIds = programIds;
 	}
 
-	public static EndAttendModeEvent of(Long programId) {
-		return new EndAttendModeEvent(programId);
+	public static EndAttendModeEvent of(Set<Long> programIds) {
+		return new EndAttendModeEvent(programIds);
 	}
 }
