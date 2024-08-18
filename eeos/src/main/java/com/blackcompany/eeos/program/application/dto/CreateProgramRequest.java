@@ -1,11 +1,10 @@
 package com.blackcompany.eeos.program.application.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.constraints.NotNull;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
