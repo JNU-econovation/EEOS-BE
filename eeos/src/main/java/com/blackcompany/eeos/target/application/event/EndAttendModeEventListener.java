@@ -1,5 +1,7 @@
 package com.blackcompany.eeos.target.application.event;
 
+import com.blackcompany.eeos.program.application.model.ProgramAttendMode;
+import com.blackcompany.eeos.program.persistence.ProgramRepository;
 import com.blackcompany.eeos.target.application.model.AttendStatus;
 import com.blackcompany.eeos.target.persistence.AttendRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 public class EndAttendModeEventListener {
 
 	private final AttendRepository attendRepository;
+	private final ProgramRepository programRepository;
 
 	@Async
 	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
@@ -26,7 +29,15 @@ public class EndAttendModeEventListener {
 		log.info(
 				"출석 체크 종료 Transaction committed: {}",
 				TransactionSynchronizationManager.isActualTransactionActive());
-		attendRepository.updateAttendStatusByProgramId(
-				event.getProgramId(), AttendStatus.NONRESPONSE, AttendStatus.ABSENT);
+
+		for (Long id : event.getProgramIds()) {
+			programRepository.changeAttendMode(id, ProgramAttendMode.END);
+			attendRepository.updateAttendStatusByProgramId(
+					id, AttendStatus.NONRESPONSE, AttendStatus.ABSENT);
+		}
+
+		if (event.getProgramIds().isEmpty()) {
+			log.info("Empty Set");
+		}
 	}
 }
