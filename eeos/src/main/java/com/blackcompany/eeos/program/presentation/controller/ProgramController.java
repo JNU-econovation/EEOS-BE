@@ -1,39 +1,22 @@
-package com.blackcompany.eeos.program.presentation;
+package com.blackcompany.eeos.program.presentation.controller;
 
 import com.blackcompany.eeos.auth.presentation.support.Member;
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponse;
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponseBody.SuccessBody;
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponseGenerator;
 import com.blackcompany.eeos.common.presentation.respnose.MessageCode;
-import com.blackcompany.eeos.program.application.dto.CommandProgramResponse;
-import com.blackcompany.eeos.program.application.dto.CreateProgramRequest;
-import com.blackcompany.eeos.program.application.dto.PageResponse;
-import com.blackcompany.eeos.program.application.dto.ProgramSlackNotificationRequest;
-import com.blackcompany.eeos.program.application.dto.QueryAccessRightResponse;
-import com.blackcompany.eeos.program.application.dto.QueryProgramResponse;
-import com.blackcompany.eeos.program.application.dto.QueryProgramsResponse;
-import com.blackcompany.eeos.program.application.dto.UpdateProgramRequest;
+import com.blackcompany.eeos.program.application.dto.*;
 import com.blackcompany.eeos.program.application.usecase.*;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import com.blackcompany.eeos.program.presentation.docs.ProgramApi;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/programs")
-@Tag(name = "API", description = "행사에 관한 API")
-public class ProgramController {
+public class ProgramController implements ProgramApi {
 
 	private final CreateProgramUsecase createProgramUsecase;
 	private final GetProgramUsecase getProgramUsecase;
@@ -42,10 +25,9 @@ public class ProgramController {
 	private final DeleteProgramUsecase deleteProgramUsecase;
 	private final GetAccessRightUsecase getAccessRightUsecase;
 	private final NotifyProgramUsecase notifyProgramUsecase;
-
 	private final AttendModeChangeUsecase attendStartUsecase;
 
-	@Operation(summary = "행사 생성", description = "RequestBody에 담긴 행사 정보를 통해서 행사를 생성한다.")
+	@Override
 	@PostMapping
 	public ApiResponse<SuccessBody<CommandProgramResponse>> create(
 			@Member Long memberId, @RequestBody @Valid CreateProgramRequest request) {
@@ -53,7 +35,7 @@ public class ProgramController {
 		return ApiResponseGenerator.success(response, HttpStatus.CREATED, MessageCode.CREATE);
 	}
 
-	@Operation(summary = "행사 조회", description = "PathVariable에 담긴 programId를 통해서 행사 1기를 조회한다.")
+	@Override
 	@GetMapping("/{programId}")
 	public ApiResponse<SuccessBody<QueryProgramResponse>> findOne(
 			@Member Long memberId, @PathVariable("programId") Long programId) {
@@ -61,7 +43,7 @@ public class ProgramController {
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
 	}
 
-	@Operation(summary = "행사 수정", description = "PathVariable에 담긴 programId를 사용해서 행사 1개를 삭제한다.")
+	@Override
 	@PatchMapping("/{programId}")
 	public ApiResponse<SuccessBody<CommandProgramResponse>> update(
 			@Member Long memberId,
@@ -71,10 +53,7 @@ public class ProgramController {
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.UPDATE);
 	}
 
-	@Operation(
-			summary = "행사 리스트 조회",
-			description =
-					"RequestParam 의 category, programStatus, size, page 를 사용해서 1 페이지에 들어가는 행사 리스트를 가져온다.")
+	@Override
 	@GetMapping
 	public ApiResponse<SuccessBody<PageResponse<QueryProgramsResponse>>> findAll(
 			@RequestParam("category") String category,
@@ -86,7 +65,7 @@ public class ProgramController {
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
 	}
 
-	@Operation(summary = "행사 삭제", description = "PathVariable에 담긴 programId를 사용해서 행사를 삭제한다.")
+	@Override
 	@DeleteMapping("/{programId}")
 	public ApiResponse<SuccessBody<Void>> delete(
 			@Member Long memberId, @PathVariable("programId") Long programId) {
@@ -94,9 +73,7 @@ public class ProgramController {
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.DELETE);
 	}
 
-	@Operation(
-			summary = "행사 수정 권한",
-			description = "PathVariable에 programId를 담아 사용자가 프로그램에 수정권한이 있는지 확인한다.")
+	@Override
 	@GetMapping("/{programId}/accessRight")
 	public ApiResponse<SuccessBody<QueryAccessRightResponse>> getAccessRight(
 			@Member Long memberId, @PathVariable("programId") Long programId) {
@@ -104,22 +81,17 @@ public class ProgramController {
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
 	}
 
-	@Operation(
-			summary = "행사 생성 자동 알림",
-			description = "RequestBody에 programUrl을 담아 슬랙 API를 이용하여 슬랙봇 메세지 기능을 요청합니다.")
+	@Override
 	@PostMapping("/{programId}/slack/notification")
 	public ApiResponse<SuccessBody<CommandProgramResponse>> slackNotify(
 			@Member Long memberId,
 			@RequestBody ProgramSlackNotificationRequest request,
 			@PathVariable("programId") Long programId) {
 		CommandProgramResponse response = notifyProgramUsecase.notify(memberId, programId, request);
-		return ApiResponseGenerator.success(
-				response, HttpStatus.OK, MessageCode.CREATE); // 프로그램 조회, 내용 형태를 바꾼다.
+		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.CREATE);
 	}
 
-	@Operation(
-			summary = "행사 출석 체크 시작",
-			description = "PathVariable에 programId를 담아 해당 program의 출석 체크를 시작한다.")
+	@Override
 	@PostMapping("/{programId}")
 	public ApiResponse<SuccessBody<Void>> attend(
 			@Member Long memberId,

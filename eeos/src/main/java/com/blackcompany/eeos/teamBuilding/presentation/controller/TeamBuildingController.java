@@ -1,4 +1,4 @@
-package com.blackcompany.eeos.teamBuilding.presentation;
+package com.blackcompany.eeos.teamBuilding.presentation.controller;
 
 import com.blackcompany.eeos.auth.presentation.support.Member;
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponse;
@@ -16,6 +16,7 @@ import com.blackcompany.eeos.teamBuilding.application.usecase.GetResultTeamBuild
 import com.blackcompany.eeos.teamBuilding.application.usecase.GetTeamBuildingUsecase;
 import com.blackcompany.eeos.teamBuilding.application.usecase.QueryTeamBuildingResponse;
 import com.blackcompany.eeos.teamBuilding.application.usecase.ValidateTeamBuildingUsecase;
+import com.blackcompany.eeos.teamBuilding.presentation.docs.TeamBuildingApi;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -30,7 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/team-building")
-public class TeamBuildingController {
+public class TeamBuildingController implements TeamBuildingApi {
 	private final CreateTeamBuildingUsecase createTeamBuildingUsecase;
 	private final EndTeamBuildingUsecase endTeamBuildingUsecase;
 	private final ValidateTeamBuildingUsecase validateTeamBuildingUsecase;

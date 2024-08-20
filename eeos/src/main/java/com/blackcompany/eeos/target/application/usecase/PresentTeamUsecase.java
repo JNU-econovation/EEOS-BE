@@ -4,6 +4,5 @@ import java.util.List;
 
 public interface PresentTeamUsecase {
 
-    void save(Long programId, List<Long> teamIds);
-
+	void save(Long programId, List<Long> teamIds);
 }

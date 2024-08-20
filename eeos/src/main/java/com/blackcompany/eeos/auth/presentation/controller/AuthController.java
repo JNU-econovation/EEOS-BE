@@ -8,6 +8,7 @@ import com.blackcompany.eeos.auth.application.usecase.LogOutUsecase;
 import com.blackcompany.eeos.auth.application.usecase.LoginUsecase;
 import com.blackcompany.eeos.auth.application.usecase.ReissueUsecase;
 import com.blackcompany.eeos.auth.application.usecase.WithDrawUsecase;
+import com.blackcompany.eeos.auth.presentation.docs.AuthApi;
 import com.blackcompany.eeos.auth.presentation.support.AuthConstants;
 import com.blackcompany.eeos.auth.presentation.support.Member;
 import com.blackcompany.eeos.auth.presentation.support.TokenExtractor;
@@ -16,7 +17,6 @@ import com.blackcompany.eeos.common.presentation.respnose.ApiResponseBody.Succes
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponseGenerator;
 import com.blackcompany.eeos.common.presentation.respnose.MessageCode;
 import com.blackcompany.eeos.common.presentation.support.CookieManager;
-import io.swagger.v3.oas.annotations.Operation;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
-public class AuthController {
+public class AuthController implements AuthApi {
 	private final LoginUsecase loginUsecase;
 	private final ReissueUsecase reissueUsecase;
 	private final TokenExtractor tokenExtractor;
@@ -53,11 +53,9 @@ public class AuthController {
 		this.withDrawUsecase = withDrawUsecase;
 	}
 
-	@Operation(
-			summary = "로그인을 한다.",
-			description = "PathVariable에 담긴 redirect_url, code를 받아 액세스 토큰과 리프레시 토큰을 발급한다.")
+	@Override
 	@PostMapping("/login/{oauthServerType}")
-	ApiResponse<SuccessBody<TokenResponse>> login(
+	public ApiResponse<SuccessBody<TokenResponse>> login(
 			@PathVariable String oauthServerType,
 			@RequestParam("code") String code,
 			@RequestParam("redirect_uri") String uri,
@@ -68,18 +66,18 @@ public class AuthController {
 		return ApiResponseGenerator.success(response, HttpStatus.CREATED, MessageCode.CREATE);
 	}
 
-	@Operation(summary = "로그인 한다.", description = "사용자가 id와 password를 이용하여 로그인한다.")
+	@Override
 	@PostMapping("/login")
-	ApiResponse<SuccessBody<TokenResponse>> login(
+	public ApiResponse<SuccessBody<TokenResponse>> login(
 			@RequestBody EEOSLoginRequest request, HttpServletResponse httpResponse) {
 		TokenModel tokenModel = loginUsecase.login(request.getId(), request.getPassword());
 		TokenResponse response = generateTokenResponse(tokenModel, httpResponse);
 		return ApiResponseGenerator.success(response, HttpStatus.CREATED, MessageCode.CREATE);
 	}
 
-	@Operation(summary = "토큰을 재발급한다.", description = "쿠키에 담긴 사용자 토큰을 이용하여 리프레시 토큰을 반환한다.")
+	@Override
 	@PostMapping("/reissue")
-	ApiResponse<SuccessBody<TokenResponse>> reissue(
+	public ApiResponse<SuccessBody<TokenResponse>> reissue(
 			HttpServletRequest request, HttpServletResponse httpResponse) {
 		String token = tokenExtractor.extract(request);
 		TokenModel tokenModel = reissueUsecase.execute(token);
@@ -88,9 +86,9 @@ public class AuthController {
 		return ApiResponseGenerator.success(response, HttpStatus.CREATED, MessageCode.CREATE);
 	}
 
-	@Operation(summary = "로그아웃한다.", description = "쿠키에 담긴 리프레시 토큰을 이용하여 로그아웃한다.")
+	@Override
 	@PostMapping("/logout")
-	ApiResponse<SuccessBody<Void>> logout(
+	public ApiResponse<SuccessBody<Void>> logout(
 			HttpServletRequest request, HttpServletResponse httpResponse, @Member Long memberId) {
 		String token = tokenExtractor.extract(request);
 		logOutUsecase.logOut(token, memberId);
@@ -99,9 +97,9 @@ public class AuthController {
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.DELETE);
 	}
 
-	@Operation(summary = "회원탈퇴", description = "쿠키에 담긴 리프레시 토큰을 이용하여 회원을 탈퇴한다.")
+	@Override
 	@PostMapping("/withdraw")
-	ApiResponse<SuccessBody<Void>> withDraw(
+	public ApiResponse<SuccessBody<Void>> withDraw(
 			HttpServletRequest request, HttpServletResponse httpResponse, @Member Long memberId) {
 		String token = tokenExtractor.extract(request);
 		withDrawUsecase.withDraw(token, memberId);

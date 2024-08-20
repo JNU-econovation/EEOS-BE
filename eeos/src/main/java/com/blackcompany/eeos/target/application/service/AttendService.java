@@ -90,8 +90,6 @@ public class AttendService
 		AttendModel model = getAttend(memberId, programId);
 		ProgramModel program = findProgram(programId);
 
-
-
 		AttendModel changedModel = model.changeStatus(program.getAttendMode().getMode());
 
 		AttendEntity updated = attendRepository.save(attendEntityConverter.toEntity(changedModel));
@@ -126,8 +124,8 @@ public class AttendService
 		return queryAttendActiveStatusConverter.of(response);
 	}
 
-	private void validateAttend(ProgramModel model){
-		if(model.getAttendMode().equals(ProgramAttendMode.END)) throw new NotStartAttendException();
+	private void validateAttend(ProgramModel model) {
+		if (model.getAttendMode().equals(ProgramAttendMode.END)) throw new NotStartAttendException();
 	}
 
 	private ProgramModel findProgram(final Long programId) {

@@ -5,13 +5,14 @@ import org.springframework.http.HttpStatus;
 
 public class NotCreateAdminCommentException extends BusinessException {
 
-    private static final String FAIL_CODE = "";
+	private static final String FAIL_CODE = "";
 
-    public NotCreateAdminCommentException(){
-        super(FAIL_CODE, HttpStatus.BAD_REQUEST);
-    }
+	public NotCreateAdminCommentException() {
+		super(FAIL_CODE, HttpStatus.BAD_REQUEST);
+	}
 
-    @Override
-    public String getMessage() { return "관리자는 코멘트를 작성할 수 없습니다."; }
-
+	@Override
+	public String getMessage() {
+		return "관리자는 코멘트를 작성할 수 없습니다.";
+	}
 }

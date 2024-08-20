@@ -1,4 +1,4 @@
-package com.blackcompany.eeos.team.presetation;
+package com.blackcompany.eeos.team.presetation.controller;
 
 import com.blackcompany.eeos.auth.presentation.support.Member;
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponse;
@@ -11,8 +11,7 @@ import com.blackcompany.eeos.team.application.dto.QueryTeamsResponse;
 import com.blackcompany.eeos.team.application.usecase.CreateTeamUsecase;
 import com.blackcompany.eeos.team.application.usecase.DeleteTeamUsecase;
 import com.blackcompany.eeos.team.application.usecase.GetTeamsByActiveStatus;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import com.blackcompany.eeos.team.presetation.docs.TeamApi;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,15 +20,13 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/teams")
-@Tag(name = "API", description = "팀생성에 관한 API")
-public class TeamController {
+public class TeamController implements TeamApi {
 
 	private final CreateTeamUsecase createTeamUsecase;
 	private final DeleteTeamUsecase deleteTeamUsecase;
-
 	private final GetTeamsByActiveStatus getTeamsByActiveStatus;
 
-	@Operation(summary = "팀생성", description = "ReqeustBody에 담긴 팀이름으로 팀을 생성한다.")
+	@Override
 	@PostMapping
 	public ApiResponse<SuccessBody<CreateTeamResponse>> create(
 			@Member Long memberId, @RequestBody @Valid CreateTeamRequest request) {
@@ -37,7 +34,7 @@ public class TeamController {
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.CREATE);
 	}
 
-	@Operation(summary = "팀 삭제", description = "Pathvariable의 teamId을 사용해서 팀을 삭제한다.")
+	@Override
 	@DeleteMapping("/{teamId}")
 	public ApiResponse<SuccessBody<Void>> delete(
 			@Member Long memberId, @PathVariable("teamId") Long teamId) {
@@ -45,7 +42,7 @@ public class TeamController {
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.DELETE);
 	}
 
-	@Operation(summary = "팀 리스트 조회", description = "현학기 활동팀 리스트를 가져온다.")
+	@Override
 	@GetMapping
 	public ApiResponse<SuccessBody<QueryTeamsResponse>> findTeamsByActiveStatus(
 			@RequestParam("programId") String programId) {

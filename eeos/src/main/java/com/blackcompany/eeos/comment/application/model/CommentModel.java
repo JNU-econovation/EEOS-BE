@@ -43,10 +43,10 @@ public class CommentModel implements AbstractModel {
 	}
 
 	public boolean isSuperComment() {
-		return superCommentId.equals(Long.valueOf(-1L));
+		return superCommentId.equals(-1L);
 	}
 
-	public void changeSuperComment(Long newSuper){
+	public void changeSuperComment(Long newSuper) {
 		this.superCommentId = newSuper;
 	}
 

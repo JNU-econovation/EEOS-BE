@@ -93,9 +93,10 @@ public class CommentService
 
 	private CommentModel createComment(CommentModel model) {
 
-		if(!model.isSuperComment()) {
+		if (!model.isSuperComment()) {
 			CommentModel parentsComment = findCommentById(model.getSuperCommentId());
-			if (!parentsComment.isSuperComment()) changeSuperComment(model); // 이 코드를 추가한 이유, 답글에 답글을 달았을 때 보이지 않는다.
+			if (!parentsComment.isSuperComment())
+				changeSuperComment(model); // 이 코드를 추가한 이유, 답글에 답글을 달았을 때 보이지 않는다.
 		}
 
 		CommentEntity entity = commentEntityConverter.toEntity(model);
