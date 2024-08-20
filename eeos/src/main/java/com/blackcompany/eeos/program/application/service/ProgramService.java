@@ -18,6 +18,7 @@ import com.blackcompany.eeos.program.application.dto.converter.QueryAccessRightR
 import com.blackcompany.eeos.program.application.event.DeletedProgramEvent;
 import com.blackcompany.eeos.program.application.exception.DeniedProgramEditException;
 import com.blackcompany.eeos.program.application.exception.NotFoundProgramException;
+import com.blackcompany.eeos.program.application.model.GuestRights;
 import com.blackcompany.eeos.program.application.model.ProgramModel;
 import com.blackcompany.eeos.program.application.model.ProgramNotificationModel;
 import com.blackcompany.eeos.program.application.model.ProgramStatus;
@@ -29,7 +30,6 @@ import com.blackcompany.eeos.program.infra.api.slack.chat.service.ProgramNotifyS
 import com.blackcompany.eeos.program.persistence.ProgramCategory;
 import com.blackcompany.eeos.program.persistence.ProgramEntity;
 import com.blackcompany.eeos.program.persistence.ProgramRepository;
-import com.blackcompany.eeos.program.presentation.guest.GuestAccessRights;
 import com.blackcompany.eeos.target.application.service.SelectAttendCommandTargetMemberMemberService;
 import com.blackcompany.eeos.target.application.usecase.PresentTeamUsecase;
 import java.sql.Timestamp;
@@ -206,7 +206,7 @@ public class ProgramService
 	}
 
 	private String getGuestAccessRight() {
-		return GuestAccessRights.get();
+		return GuestRights.getAccessRight();
 	}
 
 	private ProgramNotificationModel getNotifyInfo(
