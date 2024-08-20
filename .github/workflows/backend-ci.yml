@@ -8,9 +8,6 @@ permissions:
   contents: read
   checks: write
   pull-requests: write
-defaults:
-  run:
-    working-directory: ./eeos  
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -29,9 +26,14 @@ jobs:
           cd ./src/main/resources
           echo "${{ secrets.PROPERTIES }}" > ./application.properties
 
+      - name: Install Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose-plugin
+
       - name: Start DB
         run: |
-          docker-compose -f ./resources/local-develop-environment/docker-compose.yml up -d
+          docker compose -f ./resources/local-develop-environment/docker-compose.yml up -d
           sleep 20
 
       - name: Grant execute permission for gradlew
