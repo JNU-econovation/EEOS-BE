@@ -8,6 +8,9 @@ permissions:
   contents: read
   checks: write
   pull-requests: write
+defaults:
+  run:
+    working-directory: ./eeos  
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -23,7 +26,7 @@ jobs:
 
       - name: Create application.properties
         run: |
-          cd ./eeos/src/main/resources
+          cd ./src/main/resources
           echo "${{ secrets.PROPERTIES }}" > ./application.properties
 
       - name: Start DB
