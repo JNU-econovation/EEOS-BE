@@ -29,11 +29,6 @@ jobs:
           cd ./src/main/resources
           echo "${{ secrets.PROPERTIES }}" > ./application.properties
 
-      - name: Install Docker Compose
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y docker-compose-plugin
-
       - name: Start DB
         run: |
           docker compose -f ./resources/local-develop-environment/docker-compose.yml up -d
