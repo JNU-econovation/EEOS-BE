@@ -2,9 +2,7 @@ package com.blackcompany.eeos.comment.persistence;
 
 import io.lettuce.core.dynamic.annotation.Param;
 import java.util.List;
-import java.util.Optional;
 import javax.transaction.Transactional;
-
 import lombok.NonNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -24,8 +22,7 @@ public interface CommentRepository extends JpaRepository<CommentEntity, Long> {
 	@Transactional
 	@Modifying(clearAutomatically = true)
 	@Query("UPDATE CommentEntity c SET c.content=:content WHERE c.id=:commentId")
-	int updateById(
-			@Param("commentId") Long commentId, @Param("content") String content);
+	int updateById(@Param("commentId") Long commentId, @Param("content") String content);
 
 	@Transactional
 	@Modifying

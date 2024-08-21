@@ -8,7 +8,6 @@ import com.blackcompany.eeos.comment.application.exception.NotConvertedCommentEx
 import com.blackcompany.eeos.comment.application.model.CommentModel;
 import com.blackcompany.eeos.member.application.exception.NotFoundMemberException;
 import com.blackcompany.eeos.member.persistence.MemberRepository;
-
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -63,7 +62,10 @@ public class CommentResponseConverter {
 		return memberRepository.findById(memberId).orElseThrow(NotFoundMemberException::new).getName();
 	}
 
-	private String getCreateTimeString(CommentModel model){
-		return model.getCreatedDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH시 mm분 ss초"));
+	private String getCreateTimeString(CommentModel model) {
+		return model
+				.getCreatedDate()
+				.toLocalDateTime()
+				.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH시 mm분 ss초"));
 	}
 }

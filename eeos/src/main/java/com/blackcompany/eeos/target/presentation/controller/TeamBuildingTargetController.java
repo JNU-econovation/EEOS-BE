@@ -1,4 +1,4 @@
-package com.blackcompany.eeos.target.presentation;
+package com.blackcompany.eeos.target.presentation.controller;
 
 import com.blackcompany.eeos.auth.presentation.support.Member;
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponse;
@@ -10,6 +10,7 @@ import com.blackcompany.eeos.target.application.dto.QueryTargetInfoResponse;
 import com.blackcompany.eeos.target.application.usecase.AttendTeamBuildingUsecase;
 import com.blackcompany.eeos.target.application.usecase.GetTargetInfoUsecase;
 import com.blackcompany.eeos.target.application.usecase.UpdateAttendTeamBuildingUsecase;
+import com.blackcompany.eeos.target.presentation.docs.TeamBuildingTargetApi;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,11 +23,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/target/team-building")
-public class TeamBuildingTargetController {
+public class TeamBuildingTargetController implements TeamBuildingTargetApi {
 	private final AttendTeamBuildingUsecase attendTeamBuildingUsecase;
 	private final UpdateAttendTeamBuildingUsecase updateAttendTeamBuildingUsecase;
 	private final GetTargetInfoUsecase getTargetInfoUsecase;
 
+	@Override
 	@PostMapping
 	public ApiResponse<SuccessBody<Void>> create(
 			@Member Long memberId, @RequestBody AttendTeamBuildingRequest request) {
@@ -35,6 +37,7 @@ public class TeamBuildingTargetController {
 		return ApiResponseGenerator.success(HttpStatus.CREATED, MessageCode.CREATE);
 	}
 
+	@Override
 	@PutMapping
 	public ApiResponse<SuccessBody<Void>> update(
 			@Member Long memberId, @RequestBody AttendTeamBuildingRequest request) {
@@ -43,6 +46,7 @@ public class TeamBuildingTargetController {
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.UPDATE);
 	}
 
+	@Override
 	@GetMapping
 	public ApiResponse<SuccessBody<QueryTargetInfoResponse>> get(@Member Long memberId) {
 

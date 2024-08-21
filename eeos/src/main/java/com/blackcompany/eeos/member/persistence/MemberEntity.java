@@ -19,7 +19,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.Where;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -57,5 +56,4 @@ public class MemberEntity extends BaseEntity {
 	@Column(name = ENTITY_PREFIX + "_is_admin", nullable = false)
 	@Builder.Default
 	private boolean isAdmin = false;
-
 }
