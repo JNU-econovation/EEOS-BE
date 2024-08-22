@@ -1,0 +1,65 @@
+name: PR Review Slack Notification
+on:
+  pull_request_review:
+    types: [submitted]
+jobs:
+  notify_pr_author:
+    runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_PR_REVIEW_WEBHOOK_URL }}
+      SLACK_IDS: ${{ secrets.SLACK_IDS }}
+    steps:
+    - name: PR 리뷰 시 Slack 알림 보내기
+      run: |
+        PR_TITLE="${{ github.event.pull_request.title }}"
+        PR_URL="${{ github.event.pull_request.html_url }}"
+        PR_AUTHOR="${{ github.event.pull_request.user.login }}"
+        REVIEW_STATE="${{ github.event.review.state }}"
+        REVIEWER="${{ github.event.review.user.login }}"
+        
+        SLACK_IDS_JSON=$(echo "$SLACK_IDS" | jq -R '.' | jq '.')
+        
+        if [ $? -ne 0 ]; then
+          exit 1
+        fi
+        
+        parse_slack_ids() {
+            echo "$SLACK_IDS_JSON" | jq -r 'to_entries | map("\(.key):\(.value)") | .[]'
+        }
+        
+        author_slack_id=$(parse_slack_ids | grep "^$PR_AUTHOR:" | cut -d':' -f2)
+        reviewer_slack_id=$(parse_slack_ids | grep "^$REVIEWER:" | cut -d':' -f2)
+        
+        if [ -n "$author_slack_id" ]; then
+            author_mention="<@$author_slack_id>"
+        else
+            author_mention="$PR_AUTHOR"
+        fi
+        
+        if [ -n "$reviewer_slack_id" ]; then
+            reviewer_mention="<@$reviewer_slack_id>"
+        else
+            reviewer_mention="$REVIEWER"
+        fi
+        
+        case "$REVIEW_STATE" in
+          "changes_requested")
+            message="$author_mention님, $reviewer_mention님이 PR에 변경을 요청했습니다: <$PR_URL|$PR_TITLE>"
+            ;;
+          "commented")
+            message="$author_mention님, $reviewer_mention님이 PR에 댓글을 달았습니다: <$PR_URL|$PR_TITLE>"
+            ;;
+          "approved")
+            message="$author_mention님, 축하합니다! $reviewer_mention님이 PR을 승인했습니다: <$PR_URL|$PR_TITLE>"
+            ;;
+        esac
+        
+        if [ ! -z "$message" ]; then
+          response=$(curl -s -o /dev/null -w "%{http_code}" -X POST -H 'Content-type: application/json' \
+            --data "{\"text\":\"$message\"}" \
+            "$SLACK_WEBHOOK_URL")
+          
+          if [ "$response" != "200" ]; then
+            exit 1
+          fi
+        fi
