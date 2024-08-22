@@ -17,30 +17,25 @@ jobs:
         REVIEW_STATE="${{ github.event.review.state }}"
         REVIEWER="${{ github.event.review.user.login }}"
         
-        SLACK_IDS_JSON=$(echo "$SLACK_IDS" | jq -R '.' | jq '.')
+        SLACK_IDS_JSON=$(echo "$SLACK_IDS" | jq -R 'fromjson')
         
         if [ $? -ne 0 ]; then
+          echo "Error parsing SLACK_IDS JSON"
           exit 1
         fi
         
-        parse_slack_ids() {
-            echo "$SLACK_IDS_JSON" | jq -r 'to_entries | map("\(.key):\(.value)") | .[]'
+        get_slack_id() {
+          echo "$SLACK_IDS_JSON" | jq -r --arg github_user "$1" '.[$github_user] // empty'
         }
         
-        author_slack_id=$(parse_slack_ids | grep "^$PR_AUTHOR:" | cut -d':' -f2)
-        reviewer_slack_id=$(parse_slack_ids | grep "^$REVIEWER:" | cut -d':' -f2)
+        author_slack_id=$(get_slack_id "$PR_AUTHOR")
+        reviewer_slack_id=$(get_slack_id "$REVIEWER")
         
-        if [ -n "$author_slack_id" ]; then
-            author_mention="<@$author_slack_id>"
-        else
-            author_mention="$PR_AUTHOR"
-        fi
+        author_mention="${author_slack_id:+<@$author_slack_id>}"
+        reviewer_mention="${reviewer_slack_id:+<@$reviewer_slack_id>}"
         
-        if [ -n "$reviewer_slack_id" ]; then
-            reviewer_mention="<@$reviewer_slack_id>"
-        else
-            reviewer_mention="$REVIEWER"
-        fi
+        author_mention="${author_mention:-$PR_AUTHOR}"
+        reviewer_mention="${reviewer_mention:-$REVIEWER}"
         
         case "$REVIEW_STATE" in
           "changes_requested")
@@ -60,6 +55,7 @@ jobs:
             "$SLACK_WEBHOOK_URL")
           
           if [ "$response" != "200" ]; then
+            echo "Error sending Slack notification. HTTP status code: $response"
             exit 1
           fi
         fi
