@@ -17,12 +17,19 @@ jobs:
         REVIEW_STATE="${{ github.event.review.state }}"
         REVIEWER="${{ github.event.review.user.login }}"
         
-        SLACK_IDS_JSON=$(echo "$SLACK_IDS" | jq -R 'fromjson')
+        echo "SLACK_IDS 내용:"
+        echo "$SLACK_IDS"
+        
+        # SLACK_IDS를 JSON 문자열로 처리
+        SLACK_IDS_JSON=$(echo "$SLACK_IDS" | jq -R '.' | jq 'fromjson')
         
         if [ $? -ne 0 ]; then
-          echo "Error parsing SLACK_IDS JSON"
+          echo "오류: SLACK_IDS가 유효한 JSON 형식이 아닙니다. 시크릿 형식을 확인해주세요." >&2
           exit 1
         fi
+        
+        echo "파싱된 SLACK_IDS:"
+        echo "$SLACK_IDS_JSON"
         
         get_slack_id() {
           echo "$SLACK_IDS_JSON" | jq -r --arg github_user "$1" '.[$github_user] // empty'
@@ -54,8 +61,12 @@ jobs:
             --data "{\"text\":\"$message\"}" \
             "$SLACK_WEBHOOK_URL")
           
-          if [ "$response" != "200" ]; then
-            echo "Error sending Slack notification. HTTP status code: $response"
+          if [ "$response" = "200" ]; then
+            echo "Slack 알림을 성공적으로 보냈습니다: $message"
+          else
+            echo "오류: Slack 알림 전송에 실패했습니다. HTTP 상태 코드: $response" >&2
             exit 1
           fi
+        else
+          echo "보낼 알림이 없습니다"
         fi
