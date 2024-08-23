@@ -11,38 +11,45 @@ jobs:
     steps:
     - name: PR 리뷰 시 Slack 알림 보내기
       run: |
+        set -e
         PR_TITLE="${{ github.event.pull_request.title }}"
         PR_URL="${{ github.event.pull_request.html_url }}"
         PR_AUTHOR="${{ github.event.pull_request.user.login }}"
         REVIEW_STATE="${{ github.event.review.state }}"
         REVIEWER="${{ github.event.review.user.login }}"
         
-        echo "SLACK_IDS 내용:"
-        echo "$SLACK_IDS"
-        
-        # SLACK_IDS를 JSON 문자열로 처리
-        SLACK_IDS_JSON=$(echo "$SLACK_IDS" | jq -R '.' | jq 'fromjson')
-        
-        if [ $? -ne 0 ]; then
-          echo "오류: SLACK_IDS가 유효한 JSON 형식이 아닙니다. 시크릿 형식을 확인해주세요." >&2
-          exit 1
+        # Parse SLACK_IDS as JSON
+        SLACK_IDS_JSON=$(echo "$SLACK_IDS" | jq -r '.' 2>/dev/null || echo "{}")
+        if [ "$SLACK_IDS_JSON" == "{}" ]; then
+          echo "Warning: SLACK_IDS is not a valid JSON. Attempting to parse as a string."
+          SLACK_IDS_JSON=$(echo "$SLACK_IDS" | sed 's/^"//; s/"$//' | jq -R 'split(",") | map(split(":")) | from_entries' 2>/dev/null || echo "{}")
+          if [ "$SLACK_IDS_JSON" == "{}" ]; then
+            echo "Error: Failed to parse SLACK_IDS as JSON or string. Please check the format."
+            exit 1
+          fi
         fi
         
-        echo "파싱된 SLACK_IDS:"
-        echo "$SLACK_IDS_JSON"
-        
         get_slack_id() {
-          echo "$SLACK_IDS_JSON" | jq -r --arg github_user "$1" '.[$github_user] // empty'
+          local github_username="$1"
+          echo "$SLACK_IDS_JSON" | jq -r --arg user "$github_username" '.[$user] // empty'
         }
         
         author_slack_id=$(get_slack_id "$PR_AUTHOR")
         reviewer_slack_id=$(get_slack_id "$REVIEWER")
         
-        author_mention="${author_slack_id:+<@$author_slack_id>}"
-        reviewer_mention="${reviewer_slack_id:+<@$reviewer_slack_id>}"
+        if [ -n "$author_slack_id" ]; then
+          author_mention="<@$author_slack_id>"
+        else
+          author_mention="$PR_AUTHOR"
+          echo "Warning: No Slack ID found for PR author $PR_AUTHOR" >&2
+        fi
         
-        author_mention="${author_mention:-$PR_AUTHOR}"
-        reviewer_mention="${reviewer_mention:-$REVIEWER}"
+        if [ -n "$reviewer_slack_id" ]; then
+          reviewer_mention="<@$reviewer_slack_id>"
+        else
+          reviewer_mention="$REVIEWER"
+          echo "Warning: No Slack ID found for reviewer $REVIEWER" >&2
+        fi
         
         case "$REVIEW_STATE" in
           "changes_requested")
@@ -56,17 +63,17 @@ jobs:
             ;;
         esac
         
-        if [ ! -z "$message" ]; then
+        if [ -n "$message" ]; then
           response=$(curl -s -o /dev/null -w "%{http_code}" -X POST -H 'Content-type: application/json' \
             --data "{\"text\":\"$message\"}" \
             "$SLACK_WEBHOOK_URL")
           
           if [ "$response" = "200" ]; then
-            echo "Slack 알림을 성공적으로 보냈습니다: $message"
+            echo "Successfully sent Slack notification"
           else
-            echo "오류: Slack 알림 전송에 실패했습니다. HTTP 상태 코드: $response" >&2
+            echo "Error: Failed to send Slack notification. HTTP status code: $response" >&2
             exit 1
           fi
         else
-          echo "보낼 알림이 없습니다"
+          echo "No notification to send"
         fi
