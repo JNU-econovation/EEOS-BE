@@ -1,43 +1,22 @@
-name: PR Slack Notification
+name: PR Review Slack Notification
 on:
-  pull_request:
-    types: [opened, reopened]
-permissions:
-  pull-requests: read
+  pull_request_review:
+    types: [submitted]
 jobs:
-  notify_reviewers:
+  notify_pr_author:
     runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_PR_REVIEW_WEBHOOK_URL }}
+      SLACK_IDS: ${{ secrets.SLACK_IDS }}
     steps:
-    - name: Check required secrets
-      run: |
-        if [ -z "${{ secrets.SLACK_PR_CREATE_WEBHOOK_URL }}" ]; then
-          echo "Error: SLACK_PR_CREATE_WEBHOOK_URL is not set"
-          exit 1
-        fi
-        if [ -z "${{ secrets.SLACK_IDS }}" ]; then
-          echo "Error: SLACK_IDS is not set"
-          exit 1
-        fi
-    - name: Set environment variables
-      run: |
-        echo "SLACK_WEBHOOK_URL=${{ secrets.SLACK_PR_CREATE_WEBHOOK_URL }}" >> $GITHUB_ENV
-        echo 'SLACK_IDS=${{ toJson(secrets.SLACK_IDS) }}' >> $GITHUB_ENV
-      shell: bash
-    - name: Send Slack notification for new PR
-      shell: bash
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: PR 리뷰 시 Slack 알림 보내기
       run: |
         set -e
         PR_TITLE="${{ github.event.pull_request.title }}"
         PR_URL="${{ github.event.pull_request.html_url }}"
         PR_AUTHOR="${{ github.event.pull_request.user.login }}"
-        REVIEWERS='${{ toJson(github.event.pull_request.requested_reviewers) }}'
-        
-        if [ "$REVIEWERS" == "null" ] || [ "$REVIEWERS" == "[]" ]; then
-          echo "No reviewers requested for this PR"
-          exit 0
-        fi
+        REVIEW_STATE="${{ github.event.review.state }}"
+        REVIEWER="${{ github.event.review.user.login }}"
         
         # Parse SLACK_IDS as JSON
         SLACK_IDS_JSON=$(echo "$SLACK_IDS" | jq -r '.' 2>/dev/null || echo "{}")
@@ -55,21 +34,9 @@ jobs:
           echo "$SLACK_IDS_JSON" | jq -r --arg user "$github_username" '.[$user] // empty'
         }
         
-        reviewers=$(echo "$REVIEWERS" | jq -r '.[].login // empty')
-        mentions=""
-        
-        for reviewer in $reviewers; do
-          slack_id=$(get_slack_id "$reviewer")
-          
-          if [ -n "$slack_id" ]; then
-            mentions="$mentions <@$slack_id>"
-          else
-            mentions="$mentions $reviewer"
-            echo "Warning: No Slack ID found for GitHub user $reviewer" >&2
-          fi
-        done
-        
         author_slack_id=$(get_slack_id "$PR_AUTHOR")
+        reviewer_slack_id=$(get_slack_id "$REVIEWER")
+        
         if [ -n "$author_slack_id" ]; then
           author_mention="<@$author_slack_id>"
         else
@@ -77,8 +44,26 @@ jobs:
           echo "Warning: No Slack ID found for PR author $PR_AUTHOR" >&2
         fi
         
-        if [ -n "$mentions" ]; then
-          message="$mentions 님, $author_mention 님이 새로운 PR을 생성하였습니다: <$PR_URL|$PR_TITLE>"
+        if [ -n "$reviewer_slack_id" ]; then
+          reviewer_mention="<@$reviewer_slack_id>"
+        else
+          reviewer_mention="$REVIEWER"
+          echo "Warning: No Slack ID found for reviewer $REVIEWER" >&2
+        fi
+        
+        case "$REVIEW_STATE" in
+          "changes_requested")
+            message="$author_mention님, $reviewer_mention님이 PR에 변경을 요청했습니다: <$PR_URL|$PR_TITLE>"
+            ;;
+          "commented")
+            message="$author_mention님, $reviewer_mention님이 PR에 댓글을 달았습니다: <$PR_URL|$PR_TITLE>"
+            ;;
+          "approved")
+            message="$author_mention님, 축하합니다! $reviewer_mention님이 PR을 승인했습니다: <$PR_URL|$PR_TITLE>"
+            ;;
+        esac
+        
+        if [ -n "$message" ]; then
           response=$(curl -s -o /dev/null -w "%{http_code}" -X POST -H 'Content-type: application/json' \
             --data "{\"text\":\"$message\"}" \
             "$SLACK_WEBHOOK_URL")
@@ -90,5 +75,5 @@ jobs:
             exit 1
           fi
         else
-          echo "No reviewers to notify"
+          echo "No notification to send"
         fi
