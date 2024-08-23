@@ -24,27 +24,42 @@ jobs:
         echo 'SLACK_IDS=${{ toJson(secrets.SLACK_IDS) }}' >> $GITHUB_ENV
       shell: bash
     - name: Send Slack notification for new PR
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
+        set -e
         PR_TITLE="${{ github.event.pull_request.title }}"
         PR_URL="${{ github.event.pull_request.html_url }}"
-        REVIEWERS='${{ toJson(github.event.pull_request.requested_reviewers.*.login) }}'
+        PR_AUTHOR="${{ github.event.pull_request.user.login }}"
+        REVIEWERS='${{ toJson(github.event.pull_request.requested_reviewers) }}'
         
-        if [ -z "$REVIEWERS" ] || [ "$REVIEWERS" == "null" ]; then
+        if [ "$REVIEWERS" == "null" ] || [ "$REVIEWERS" == "[]" ]; then
           echo "No reviewers requested for this PR"
           exit 0
         fi
         
-        echo "Reviewers: $REVIEWERS"
+        # Parse SLACK_IDS as JSON
+        SLACK_IDS_JSON=$(echo "$SLACK_IDS" | jq -r '.' 2>/dev/null || echo "{}")
+        if [ "$SLACK_IDS_JSON" == "{}" ]; then
+          echo "Warning: SLACK_IDS is not a valid JSON. Attempting to parse as a string."
+          SLACK_IDS_JSON=$(echo "$SLACK_IDS" | sed 's/^"//; s/"$//' | jq -R 'split(",") | map(split(":")) | from_entries' 2>/dev/null || echo "{}")
+          if [ "$SLACK_IDS_JSON" == "{}" ]; then
+            echo "Error: Failed to parse SLACK_IDS as JSON or string. Please check the format."
+            exit 1
+          fi
+        fi
         
-        parse_slack_ids() {
-          echo "$SLACK_IDS" | jq -r 'to_entries | map("\(.key):\(.value)") | .[]'
+        get_slack_id() {
+          local github_username="$1"
+          echo "$SLACK_IDS_JSON" | jq -r --arg user "$github_username" '.[$user] // empty'
         }
         
-        reviewers=$(echo "$REVIEWERS" | jq -r '.[]')
+        reviewers=$(echo "$REVIEWERS" | jq -r '.[].login // empty')
         mentions=""
         
         for reviewer in $reviewers; do
-          slack_id=$(parse_slack_ids | grep "^$reviewer:" | cut -d':' -f2)
+          slack_id=$(get_slack_id "$reviewer")
           
           if [ -n "$slack_id" ]; then
             mentions="$mentions <@$slack_id>"
@@ -54,10 +69,16 @@ jobs:
           fi
         done
         
-        echo "Mentions: $mentions"
+        author_slack_id=$(get_slack_id "$PR_AUTHOR")
+        if [ -n "$author_slack_id" ]; then
+          author_mention="<@$author_slack_id>"
+        else
+          author_mention="$PR_AUTHOR"
+          echo "Warning: No Slack ID found for PR author $PR_AUTHOR" >&2
+        fi
         
         if [ -n "$mentions" ]; then
-          message="$mentions 님, 새로운 PR이 생성되었습니다: <$PR_URL|$PR_TITLE>"
+          message="$mentions 님, $author_mention 님이 새로운 PR을 생성하였습니다: <$PR_URL|$PR_TITLE>"
           response=$(curl -s -o /dev/null -w "%{http_code}" -X POST -H 'Content-type: application/json' \
             --data "{\"text\":\"$message\"}" \
             "$SLACK_WEBHOOK_URL")
@@ -71,5 +92,3 @@ jobs:
         else
           echo "No reviewers to notify"
         fi
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
