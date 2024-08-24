@@ -58,8 +58,6 @@ public class ProgramModel implements AbstractModel {
 		if (!isGithubUrl()) {
 			throw new IsNotGithubUrlException();
 		}
-
-		return;
 	}
 
 	public void validateEditAttend(Long memberId) {
