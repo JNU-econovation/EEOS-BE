@@ -19,34 +19,45 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class CommandMemberService implements ChangeActiveStatusUsecase {
+public class AdminMemberService implements ChangeActiveStatusUsecase {
 	private final MemberRepository memberRepository;
 	private final OAuthMemberRepository oAuthMemberRepository;
 	private final MemberEntityConverter memberConverter;
 	private final CommandMemberResponseConverter responseConverter;
 	private final ApplicationEventPublisher applicationEventPublisher;
-	private final QueryMemberService memberService;
 
 	@Transactional
 	@Override
-	public CommandMemberResponse adminChangeStatus(
+	public CommandMemberResponse changeActiveStatus(
 			final Long adminMemberId, Long memberId, final ChangeActiveStatusRequest request) {
-		validateUser(adminMemberId);
-		MemberModel model =
-				memberRepository
-						.findById(memberId)
-						.map(memberConverter::from)
-						.orElseThrow(NotFoundMemberException::new);
+		validateAdminPermission(adminMemberId);
 
+		MemberModel model = findMember(memberId);
 		MemberEntity updateMember = updateActiveStatus(model, request.getActiveStatus());
 
 		return responseConverter.from(
 				updateMember.getName(), updateMember.getActiveStatus().getStatus());
 	}
 
-	private MemberEntity updateActiveStatus(final MemberModel model, final String status) {
-		MemberModel memberModel = model.updateActiveStatus(status);
-		return memberRepository.save(memberConverter.toEntity(memberModel));
+	@Override
+	@Transactional
+	public void delete(final Long adminMemberId, final Long memberId) {
+		validateAdminPermission(adminMemberId);
+
+		MemberModel member = findMember(memberId);
+		memberRepository.deleteById(member.getId());
+		oAuthMemberRepository.deleteById(member.getId());
+
+		applicationEventPublisher.publishEvent(DeletedMemberEvent.of(memberId));
+	}
+
+	private void validateAdminPermission(Long memberId) {
+		MemberModel member = findMember(memberId);
+
+		if (member.isAdmin()) {
+			return;
+		}
+		throw new DeniedMemberEditException(memberId);
 	}
 
 	private MemberModel findMember(final Long memberId) {
@@ -56,22 +67,8 @@ public class CommandMemberService implements ChangeActiveStatusUsecase {
 				.orElseThrow(NotFoundMemberException::new);
 	}
 
-	private void validateUser(Long memberId) {
-		if (memberService.findMember(memberId).isAdmin()) {
-			return;
-		}
-		throw new DeniedMemberEditException(memberId);
-	}
-
-	@Override
-	@Transactional
-	public void delete(final Long adminMemberId, final Long memberId) {
-		MemberModel member = findMember(memberId);
-		validateUser(adminMemberId);
-
-		memberRepository.deleteById(member.getId());
-		oAuthMemberRepository.deleteById(member.getId());
-
-		applicationEventPublisher.publishEvent(DeletedMemberEvent.of(memberId));
+	private MemberEntity updateActiveStatus(final MemberModel model, final String status) {
+		MemberModel memberModel = model.updateActiveStatus(status);
+		return memberRepository.save(memberConverter.toEntity(memberModel));
 	}
 }
