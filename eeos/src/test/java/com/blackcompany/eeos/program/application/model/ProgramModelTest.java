@@ -2,12 +2,8 @@ package com.blackcompany.eeos.program.application.model;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.blackcompany.eeos.common.utils.DateConverter;
-import com.blackcompany.eeos.program.application.exception.DeniedProgramEditException;
-import com.blackcompany.eeos.program.application.exception.NotAllowedUpdatedProgramAttendException;
-import com.blackcompany.eeos.program.application.exception.NotAllowedUpdatedProgramTypeException;
-import com.blackcompany.eeos.program.application.exception.NotFoundProgramCategoryException;
-import com.blackcompany.eeos.program.application.exception.OverDateException;
+import com.blackcompany.eeos.program.application.exception.*;
+import com.blackcompany.eeos.program.fixture.ProgramFixture;
 import com.blackcompany.eeos.program.persistence.ProgramCategory;
 import com.blackcompany.eeos.program.persistence.ProgramType;
 import java.time.LocalDate;
@@ -20,10 +16,7 @@ class ProgramModelTest {
 	@DisplayName("프로그램 날짜가 현 날짜의 이후라면 상태는 진행중(active)이다.")
 	void calculateStatusAfterDay() {
 		// given
-		LocalDate date = LocalDate.now().plusDays(1L);
-
-		ProgramModel model =
-				ProgramModel.builder().programDate(DateConverter.toEpochSecond(date)).build();
+		ProgramModel model = ProgramFixture.프로그램_모델(LocalDate.now().plusDays(1L));
 
 		// when
 		String programStatus = model.getProgramStatus();
@@ -36,26 +29,20 @@ class ProgramModelTest {
 	@DisplayName("프로그램 날짜가 현 날짜와 같으면 상태는 진행중(active)이다.")
 	void calculateStatusDay() {
 		// given
-		LocalDate date = LocalDate.now();
-
-		ProgramModel model =
-				ProgramModel.builder().programDate(DateConverter.toEpochSecond(date)).build();
+		ProgramModel model = ProgramFixture.프로그램_모델(LocalDate.now());
 
 		// when
-		String prgramStatus = model.getProgramStatus();
+		String programStatus = model.getProgramStatus();
 
 		// then
-		assertEquals(ProgramStatus.ACTIVE.getStatus(), prgramStatus);
+		assertEquals(ProgramStatus.ACTIVE.getStatus(), programStatus);
 	}
 
 	@Test
 	@DisplayName("프로그램 날짜가 현 날짜의 이전이라면 상태는 완료(end)이다.")
 	void calculateStatusBeforeDay() {
 		// given
-		LocalDate date = LocalDate.now().minusDays(1L);
-
-		ProgramModel model =
-				ProgramModel.builder().programDate(DateConverter.toEpochSecond(date)).build();
+		ProgramModel model = ProgramFixture.프로그램_모델(LocalDate.now().minusDays(1L));
 
 		// when
 		String programStatus = model.getProgramStatus();
@@ -68,10 +55,7 @@ class ProgramModelTest {
 	@DisplayName("작성자 본인일 경우 프로그램 삭제가 가능하다.")
 	void can_delete() {
 		// given
-		LocalDate date = LocalDate.now().minusDays(1L);
-
-		ProgramModel model =
-				ProgramModel.builder().programDate(DateConverter.toEpochSecond(date)).writer(1L).build();
+		ProgramModel model = ProgramFixture.프로그램_모델(LocalDate.now().minusDays(1L), 1L);
 
 		// when & then
 		assertDoesNotThrow(() -> model.validateDelete(1L));
@@ -81,10 +65,7 @@ class ProgramModelTest {
 	@DisplayName("작성자 본인이 아닐 경우 프로그램 삭제가 불가능하다.")
 	void cannot_delete() {
 		// given
-		LocalDate date = LocalDate.now().minusDays(1L);
-
-		ProgramModel model =
-				ProgramModel.builder().programDate(DateConverter.toEpochSecond(date)).writer(2L).build();
+		ProgramModel model = ProgramFixture.프로그램_모델(LocalDate.now().minusDays(1L), 2L);
 
 		// when & then
 		assertThrows(DeniedProgramEditException.class, () -> model.validateDelete(1L));
@@ -94,10 +75,7 @@ class ProgramModelTest {
 	@DisplayName("완료(end)된 프로그램의 참석 대상자를 작성자는 수정할 수 있다.")
 	void can_edit_when_end_program() {
 		// given
-		LocalDate date = LocalDate.now().minusDays(1L);
-
-		ProgramModel model =
-				ProgramModel.builder().programDate(DateConverter.toEpochSecond(date)).writer(2L).build();
+		ProgramModel model = ProgramFixture.프로그램_모델(LocalDate.now().minusDays(1L), 2L);
 
 		// when & then
 		assertDoesNotThrow(() -> model.validateEditAttend(2L));
@@ -107,10 +85,7 @@ class ProgramModelTest {
 	@DisplayName("진행중(active)인 프로그램의 참석 대상자는 수정할 수 없다")
 	void cannot_edit_when_active_program() {
 		// given
-		LocalDate date = LocalDate.now().plusDays(1L);
-
-		ProgramModel model =
-				ProgramModel.builder().programDate(DateConverter.toEpochSecond(date)).writer(2L).build();
+		ProgramModel model = ProgramFixture.프로그램_모델(LocalDate.now().plusDays(1L), 2L);
 
 		// when & then
 		assertThrows(NotAllowedUpdatedProgramAttendException.class, () -> model.validateEditAttend(2L));
@@ -120,10 +95,7 @@ class ProgramModelTest {
 	@DisplayName("프로그램의 작성자가 아닐 시에 참석 대상자를 수정하지 못 한다.")
 	void cannot_edit_when_not_writer() {
 		// given
-		LocalDate date = LocalDate.now().plusDays(1L);
-
-		ProgramModel model =
-				ProgramModel.builder().programDate(DateConverter.toEpochSecond(date)).writer(2L).build();
+		ProgramModel model = ProgramFixture.프로그램_모델(LocalDate.now().plusDays(1L), 2L);
 
 		// when & then
 		assertThrows(DeniedProgramEditException.class, () -> model.validateEditAttend(1L));
@@ -133,20 +105,10 @@ class ProgramModelTest {
 	@DisplayName("프로그램 타입은 수정하지 못 한다.")
 	void cannot_edit_program_type() {
 		// given
-		LocalDate date = LocalDate.now().plusDays(1L);
 		ProgramModel model =
-				ProgramModel.builder()
-						.programDate(DateConverter.toEpochSecond(date))
-						.writer(2L)
-						.programType(ProgramType.NOTIFICATION)
-						.build();
-
+				ProgramFixture.프로그램_모델(LocalDate.now().plusDays(1L), ProgramType.NOTIFICATION, 2L);
 		ProgramModel requestModel =
-				ProgramModel.builder()
-						.programDate(DateConverter.toEpochSecond(date))
-						.writer(2L)
-						.programType(ProgramType.DEMAND)
-						.build();
+				ProgramFixture.프로그램_모델(LocalDate.now().plusDays(1L), ProgramType.DEMAND, 2L);
 
 		// when & then
 		assertThrows(NotAllowedUpdatedProgramTypeException.class, () -> model.update(requestModel));
@@ -154,22 +116,14 @@ class ProgramModelTest {
 
 	@Test
 	@DisplayName("all로 프로그램 카테고리를 수정하지 못 한다.")
-	// given
 	void cannot_edit_program_category_all() {
-		LocalDate date = LocalDate.now().plusDays(1L);
+		// given
 		ProgramModel model =
-				ProgramModel.builder()
-						.writer(1L)
-						.programType(ProgramType.DEMAND)
-						.programCategory(ProgramCategory.EVENT_TEAM)
-						.build();
-
+				ProgramFixture.프로그램_모델(
+						LocalDate.now().plusDays(1L), ProgramCategory.EVENT_TEAM, ProgramType.DEMAND, 1L);
 		ProgramModel requestModel =
-				ProgramModel.builder()
-						.writer(1L)
-						.programType(ProgramType.DEMAND)
-						.programCategory(ProgramCategory.ALL)
-						.build();
+				ProgramFixture.프로그램_모델(
+						LocalDate.now().plusDays(1L), ProgramCategory.ALL, ProgramType.DEMAND, 1L);
 
 		// when & then
 		assertThrows(NotFoundProgramCategoryException.class, () -> model.update(requestModel));
@@ -179,41 +133,23 @@ class ProgramModelTest {
 	@DisplayName("프로그램 작성자가 아니면 프로그램은 수정하지 못 한다.")
 	void cannot_edit_program_when_not_writer() {
 		// given
-		LocalDate date = LocalDate.now().plusDays(1L);
-		ProgramModel model =
-				ProgramModel.builder().programDate(DateConverter.toEpochSecond(date)).writer(2L).build();
-
-		ProgramModel requestModel =
-				ProgramModel.builder().programDate(DateConverter.toEpochSecond(date)).writer(1L).build();
+		ProgramModel model = ProgramFixture.프로그램_모델(LocalDate.now().plusDays(1L), 2L);
+		ProgramModel requestModel = ProgramFixture.프로그램_모델(LocalDate.now().plusDays(1L), 1L);
 
 		// when & then
 		assertThrows(DeniedProgramEditException.class, () -> model.update(requestModel));
 	}
 
 	@Test
-	@DisplayName("프로그램 작성자이며 프로그램 타입을 수정하지 않을 떄는 프로그램 수정이 가능하다.")
-	void cannot_edit_program() {
+	@DisplayName("프로그램 작성자이며 프로그램 타입을 수정하지 않을 때는 프로그램 수정이 가능하다.")
+	void can_edit_program() {
 		// given
-		LocalDate date = LocalDate.now().plusDays(1L);
 		ProgramModel model =
-				ProgramModel.builder()
-						.title("title")
-						.content("content")
-						.programDate(DateConverter.toEpochSecond(date))
-						.programCategory(ProgramCategory.WEEKLY)
-						.programType(ProgramType.DEMAND)
-						.writer(2L)
-						.build();
-
+				ProgramFixture.프로그램_모델(
+						LocalDate.now().plusDays(1L), ProgramCategory.WEEKLY, ProgramType.DEMAND, 2L);
 		ProgramModel requestModel =
-				ProgramModel.builder()
-						.title("title 변경")
-						.content("content 변경")
-						.programDate(DateConverter.toEpochSecond(date))
-						.programCategory(ProgramCategory.EVENT_TEAM)
-						.programType(ProgramType.DEMAND)
-						.writer(2L)
-						.build();
+				ProgramFixture.프로그램_모델(
+						LocalDate.now().plusDays(1L), ProgramCategory.EVENT_TEAM, ProgramType.DEMAND, 2L);
 
 		// when
 		ProgramModel update = model.update(requestModel);
@@ -231,28 +167,12 @@ class ProgramModelTest {
 	@DisplayName("프로그램 수정은 수정 기준 이전 날짜도 가능하다.")
 	void can_edit_program_before_date() {
 		// given
-		LocalDate date = LocalDate.now().plusDays(1L);
 		ProgramModel model =
-				ProgramModel.builder()
-						.title("title")
-						.content("content")
-						.programDate(DateConverter.toEpochSecond(date))
-						.programCategory(ProgramCategory.WEEKLY)
-						.programType(ProgramType.DEMAND)
-						.writer(2L)
-						.build();
-
-		LocalDate beforeDate = LocalDate.now().minusDays(1L);
-
+				ProgramFixture.프로그램_모델(
+						LocalDate.now().plusDays(1L), ProgramCategory.WEEKLY, ProgramType.DEMAND, 2L);
 		ProgramModel requestModel =
-				ProgramModel.builder()
-						.title("title 변경")
-						.content("content 변경")
-						.programDate(DateConverter.toEpochSecond(beforeDate))
-						.programCategory(ProgramCategory.EVENT_TEAM)
-						.programType(ProgramType.DEMAND)
-						.writer(2L)
-						.build();
+				ProgramFixture.프로그램_모델(
+						LocalDate.now().minusDays(1L), ProgramCategory.EVENT_TEAM, ProgramType.DEMAND, 2L);
 
 		// when
 		ProgramModel update = model.update(requestModel);
@@ -268,19 +188,11 @@ class ProgramModelTest {
 
 	@Test
 	@DisplayName("프로그램 생성은 생성 기준 이전 날짜는 불가능하다.")
-	void can_create_program_before_date() {
+	void cannot_create_program_before_date() {
 		// given
-		LocalDate beforeDate = LocalDate.now().minusDays(1L);
-
 		ProgramModel model =
-				ProgramModel.builder()
-						.title("title 변경")
-						.content("content 변경")
-						.programDate(DateConverter.toEpochSecond(beforeDate))
-						.programCategory(ProgramCategory.EVENT_TEAM)
-						.programType(ProgramType.DEMAND)
-						.writer(2L)
-						.build();
+				ProgramFixture.프로그램_모델(
+						LocalDate.now().minusDays(1L), ProgramCategory.EVENT_TEAM, ProgramType.DEMAND, 2L);
 
 		// when & then
 		assertThrows(OverDateException.class, model::validateCreate);
@@ -290,17 +202,9 @@ class ProgramModelTest {
 	@DisplayName("프로그램 생성은 생성 기준 이후 날짜는 가능하다.")
 	void can_create_program_over_date() {
 		// given
-		LocalDate beforeDate = LocalDate.now().plusDays(1L);
-
 		ProgramModel model =
-				ProgramModel.builder()
-						.title("title 변경")
-						.content("content 변경")
-						.programDate(DateConverter.toEpochSecond(beforeDate))
-						.programCategory(ProgramCategory.EVENT_TEAM)
-						.programType(ProgramType.DEMAND)
-						.writer(2L)
-						.build();
+				ProgramFixture.프로그램_모델(
+						LocalDate.now().plusDays(1L), ProgramCategory.EVENT_TEAM, ProgramType.DEMAND, 2L);
 
 		// when & then
 		assertDoesNotThrow(model::validateCreate);
@@ -310,17 +214,8 @@ class ProgramModelTest {
 	@DisplayName("프로그램 생성은 생성 기준 당일 날짜는 가능하다.")
 	void can_create_program_date() {
 		// given
-		LocalDate beforeDate = LocalDate.now();
-
 		ProgramModel model =
-				ProgramModel.builder()
-						.title("title 변경")
-						.content("content 변경")
-						.programDate(DateConverter.toEpochSecond(beforeDate))
-						.programCategory(ProgramCategory.EVENT_TEAM)
-						.programType(ProgramType.DEMAND)
-						.writer(2L)
-						.build();
+				ProgramFixture.프로그램_모델(LocalDate.now(), ProgramCategory.ETC, ProgramType.DEMAND, 1L);
 
 		// when & then
 		assertDoesNotThrow(model::validateCreate);
