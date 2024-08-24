@@ -12,6 +12,17 @@ public class MemberFixture {
 				.name(String.valueOf(memberId))
 				.oauthServerType(OauthServerType.SLACK)
 				.activeStatus(status)
+				.isAdmin(false)
+				.build();
+	}
+
+	public static MemberEntity 어드민_엔티티(Long memberId) {
+		return MemberEntity.builder()
+				.id(memberId)
+				.name(String.valueOf(memberId))
+				.oauthServerType(OauthServerType.SLACK)
+				.activeStatus(ActiveStatus.AM)
+				.isAdmin(true)
 				.build();
 	}
 
@@ -21,6 +32,17 @@ public class MemberFixture {
 				.name(String.valueOf(memberId))
 				.oauthServerType(OauthServerType.SLACK)
 				.activeStatus(status)
+				.isAdmin(false)
+				.build();
+	}
+
+	public static MemberModel 어드민_모델(Long memberId) {
+		return MemberModel.builder()
+				.id(memberId)
+				.name(String.valueOf(memberId))
+				.oauthServerType(OauthServerType.SLACK)
+				.activeStatus(ActiveStatus.AM)
+				.isAdmin(true)
 				.build();
 	}
 }
