@@ -31,13 +31,6 @@ public class AttendModel implements AbstractModel, MemberIdModel {
 		return this;
 	}
 
-	public AttendModel changeStatusByManager(String beforeStatus, String afterStatus) {
-		validateChangeByManager(beforeStatus);
-		this.status = AttendStatus.find(afterStatus);
-
-		return this;
-	}
-
 	public String getStatus() {
 		return status.getStatus();
 	}
