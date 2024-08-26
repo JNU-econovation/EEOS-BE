@@ -37,14 +37,14 @@ public class MemberModel implements AbstractModel, MemberIdModel {
 		return activeStatus.getStatus();
 	}
 
+	@Override
+	public Long getMemberId() {
+		return id;
+	}
+
 	private void canEdit(ActiveStatus requestStatus) {
 		if (requestStatus.isAll()) {
 			throw new DeniedUpdateActiveException(requestStatus.getStatus());
 		}
-	}
-
-	@Override
-	public Long getMemberId() {
-		return id;
 	}
 }

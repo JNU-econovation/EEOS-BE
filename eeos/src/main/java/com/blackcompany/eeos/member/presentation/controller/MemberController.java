@@ -10,14 +10,12 @@ import com.blackcompany.eeos.member.application.usecase.*;
 import com.blackcompany.eeos.member.presentation.docs.MemberApi;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/members")
-@Slf4j
 public class MemberController implements MemberApi {
 	private final ChangeActiveStatusUsecase changeActiveStatusUsecase;
 	private final GetMembersByActiveStatus getMembersByActiveStatus;
@@ -30,7 +28,7 @@ public class MemberController implements MemberApi {
 			@PathVariable("memberId") Long memberId,
 			@RequestBody @Valid ChangeActiveStatusRequest request) {
 		CommandMemberResponse response =
-				changeActiveStatusUsecase.adminChangeStatus(adminMemberId, memberId, request);
+				changeActiveStatusUsecase.changeActiveStatus(adminMemberId, memberId, request);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.UPDATE);
 	}
 

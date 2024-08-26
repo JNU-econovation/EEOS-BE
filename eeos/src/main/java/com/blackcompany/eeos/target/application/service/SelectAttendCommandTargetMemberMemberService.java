@@ -98,7 +98,7 @@ public class SelectAttendCommandTargetMemberMemberService extends SelectTargetMe
 	private void updateAttendStatus(
 			AttendModel model, List<ChangeAllAttendStatusRequest> requests, AttendManager attendManager) {
 		ChangeAllAttendStatusRequest request = findUpdateRequest(model.getMemberId(), requests);
-		model.changeStatusByManager(request.getBeforeAttendStatus(), request.getAfterAttendStatus());
+		model.changeStatus(request.getAfterAttendStatus());
 
 		if (Objects.equals(request.getAfterAttendStatus(), AttendStatus.NONRELATED.getStatus())) {
 			attendManager.addNonRelated(model);
