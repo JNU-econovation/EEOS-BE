@@ -7,7 +7,7 @@ import static org.mockito.Mockito.when;
 import com.blackcompany.eeos.auth.application.domain.token.TokenResolver;
 import com.blackcompany.eeos.auth.application.exception.InvalidTokenException;
 import com.blackcompany.eeos.auth.application.support.AuthenticationTokenGenerator;
-import com.blackcompany.eeos.auth.persistence.BlackAuthenticationRepository;
+import com.blackcompany.eeos.auth.persistence.InvalidTokenRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,7 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class ReissueServiceTest {
 
 	@Mock AuthenticationTokenGenerator authenticationTokenGenerator;
-	@Mock BlackAuthenticationRepository blackAuthenticationRepository;
+	@Mock InvalidTokenRepository invalidTokenRepository;
 
 	@Mock TokenResolver tokenResolver;
 	@InjectMocks ReissueService reissueService;
@@ -32,7 +32,7 @@ class ReissueServiceTest {
 		Long memberId = 1L;
 
 		when(tokenResolver.getUserDataByRefreshToken(token)).thenReturn(memberId);
-		when(blackAuthenticationRepository.isExistToken(token)).thenReturn(Boolean.TRUE);
+		when(invalidTokenRepository.isExistToken(token)).thenReturn(Boolean.TRUE);
 
 		// when & then
 		assertThrows(InvalidTokenException.class, () -> reissueService.execute(token));
@@ -47,7 +47,7 @@ class ReissueServiceTest {
 		Long validTime = 1L;
 
 		when(tokenResolver.getUserDataByRefreshToken(token)).thenReturn(memberId);
-		when(blackAuthenticationRepository.isExistToken(token)).thenReturn(Boolean.FALSE);
+		when(invalidTokenRepository.isExistToken(token)).thenReturn(Boolean.FALSE);
 		when(tokenResolver.getExpiredDateByRefreshToken(token)).thenReturn(validTime);
 
 		// when
@@ -55,7 +55,7 @@ class ReissueServiceTest {
 
 		// then
 		assertAll(
-				() -> verify(blackAuthenticationRepository).save(token, memberId, validTime),
+				() -> verify(invalidTokenRepository).save(token, memberId, validTime),
 				() -> verify(authenticationTokenGenerator).execute(memberId));
 	}
 }

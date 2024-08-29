@@ -4,7 +4,7 @@ import com.blackcompany.eeos.auth.application.domain.token.TokenResolver;
 import com.blackcompany.eeos.auth.application.event.DeletedMemberEvent;
 import com.blackcompany.eeos.auth.application.usecase.LogOutUsecase;
 import com.blackcompany.eeos.auth.application.usecase.WithDrawUsecase;
-import com.blackcompany.eeos.auth.persistence.BlackAuthenticationRepository;
+import com.blackcompany.eeos.auth.persistence.InvalidTokenRepository;
 import com.blackcompany.eeos.auth.persistence.OAuthMemberRepository;
 import com.blackcompany.eeos.member.persistence.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class DeactivateMemberService implements LogOutUsecase, WithDrawUsecase {
-	private final BlackAuthenticationRepository blackAuthenticationRepository;
+	private final InvalidTokenRepository invalidTokenRepository;
 	private final TokenResolver tokenResolver;
 	private final ApplicationEventPublisher eventPublisher;
 	private final MemberRepository memberRepository;
@@ -39,7 +39,7 @@ public class DeactivateMemberService implements LogOutUsecase, WithDrawUsecase {
 	}
 
 	private void saveUsedToken(final String token, final Long memberId) {
-		blackAuthenticationRepository.save(token, memberId, getExpiredToken(token));
+		invalidTokenRepository.save(token, memberId, getExpiredToken(token));
 	}
 
 	private Long getExpiredToken(final String token) {
