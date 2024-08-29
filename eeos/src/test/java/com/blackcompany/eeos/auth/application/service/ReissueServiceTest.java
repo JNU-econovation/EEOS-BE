@@ -29,9 +29,6 @@ class ReissueServiceTest {
 	void exception_when_token_invalid() {
 		// given
 		String token = "token";
-		Long memberId = 1L;
-
-		when(tokenResolver.getUserDataByRefreshToken(token)).thenReturn(memberId);
 		when(invalidTokenRepository.isExistToken(token)).thenReturn(Boolean.TRUE);
 
 		// when & then
