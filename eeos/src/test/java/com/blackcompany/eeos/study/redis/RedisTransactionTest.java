@@ -1,4 +1,4 @@
-package com.blackcompany.eeos.auth.application.service;
+package com.blackcompany.eeos.study.redis;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
