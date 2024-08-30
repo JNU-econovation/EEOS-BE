@@ -30,9 +30,9 @@ public class ReissueService implements ReissueUsecase {
 	}
 
 	private void validateToken(final String token) {
-		boolean isExistToken = invalidTokenRepository.isExistToken(token);
+		Boolean isExistToken = invalidTokenRepository.isExistToken(token);
 
-		if (isExistToken) {
+		if (Boolean.TRUE.equals(isExistToken)) {
 			throw new InvalidTokenException();
 		}
 	}
