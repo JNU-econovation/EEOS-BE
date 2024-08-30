@@ -8,31 +8,38 @@ import com.blackcompany.eeos.auth.application.domain.token.TokenResolver;
 import com.blackcompany.eeos.auth.application.exception.InvalidTokenException;
 import com.blackcompany.eeos.auth.application.support.AuthenticationTokenGenerator;
 import com.blackcompany.eeos.auth.persistence.InvalidTokenRepository;
+import com.blackcompany.eeos.common.DataClearExtension;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
+@ExtendWith(DataClearExtension.class)
 class ReissueServiceTest {
 
-	@Mock AuthenticationTokenGenerator authenticationTokenGenerator;
-	@Mock InvalidTokenRepository invalidTokenRepository;
-
-	@Mock TokenResolver tokenResolver;
-	@InjectMocks ReissueService reissueService;
+	@SpyBean AuthenticationTokenGenerator authenticationTokenGenerator;
+	@Autowired InvalidTokenRepository invalidTokenRepository;
+	@MockBean TokenResolver tokenResolver;
+	@Autowired ReissueService reissueService;
 
 	@Test
 	@DisplayName("블랙리스트에 등록된 토큰이라면 예외가 발생한다.")
 	void exception_when_token_invalid() {
 		// given
 		String token = "token";
-		when(invalidTokenRepository.isExistToken(token)).thenReturn(Boolean.TRUE);
+		Long memberId = 2L;
+		Long validTime = 1000L * 1;
+
+		invalidTokenRepository.save(token, memberId, validTime);
 
 		// when & then
-		assertThrows(InvalidTokenException.class, () -> reissueService.execute(token));
+		assertAll(
+				() -> assertTrue(invalidTokenRepository.isExistToken(token)),
+				() -> assertThrows(InvalidTokenException.class, () -> reissueService.execute(token)));
 	}
 
 	@Test
@@ -40,11 +47,10 @@ class ReissueServiceTest {
 	void token_valid() {
 		// given
 		String token = "token";
-		Long memberId = 1L;
-		Long validTime = 1L;
+		Long memberId = 2L;
+		Long validTime = 1000L * 1;
 
 		when(tokenResolver.getUserDataByRefreshToken(token)).thenReturn(memberId);
-		when(invalidTokenRepository.isExistToken(token)).thenReturn(Boolean.FALSE);
 		when(tokenResolver.getExpiredDateByRefreshToken(token)).thenReturn(validTime);
 
 		// when
@@ -52,7 +58,7 @@ class ReissueServiceTest {
 
 		// then
 		assertAll(
-				() -> verify(invalidTokenRepository).save(token, memberId, validTime),
+				() -> assertFalse(invalidTokenRepository.isExistToken(token)),
 				() -> verify(authenticationTokenGenerator).execute(memberId));
 	}
 }
