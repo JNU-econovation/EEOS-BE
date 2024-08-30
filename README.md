@@ -1,11 +1,8 @@
 ## 시스템 아키텍처
 
-### 1. 시스템 아키텍처 개요
-![시스템 아키텍쳐 개요](https://github.com/user-attachments/assets/628163ce-2724-4f70-8119-d73b323d1bea)
-
-### 2. Docker 네트워크 구조
-![Docker 네트워크 구조](https://github.com/user-attachments/assets/25c92223-3b0d-4a3a-9545-06aba6fb8dcc)
-
+| 1. 서비스 인프라 구조도 | 2. Docker 네트워크 구조 |
+|:-----------------------:|:------------------------:|
+| <img src="https://github.com/user-attachments/assets/628163ce-2724-4f70-8119-d73b323d1bea" width="400"> | <img src="https://github.com/user-attachments/assets/25c92223-3b0d-4a3a-9545-06aba6fb8dcc" width="400"> |
 
 ## 실행방법
 1. git clone https://github.com/JNU-econovation/EEOS-BE
