@@ -46,10 +46,10 @@ public class CreateAdminMemberService implements CreateAdminMemberUsecase {
 	@Override
 	public Long create() {
 		MemberEntity savedMember = saveMember(memberEntityConverter.toEntity(createMember()));
-		AccountEntity savedAccount =
-				saveAccount(accountEntityConverter.toEntity(createAccount(savedMember.getId())));
-		OAuthMemberEntity savedOauthMember =
-				saveOauthMember(oauthMemberEntityConverter.toEntity(savedMember.getId()));
+
+		saveAccount(accountEntityConverter.toEntity(createAccount(savedMember.getId())));
+		saveOauthMember(oauthMemberEntityConverter.toEntity(savedMember.getId()));
+
 		return savedMember.getId();
 	}
 
@@ -60,9 +60,7 @@ public class CreateAdminMemberService implements CreateAdminMemberUsecase {
 						.filter(MemberEntity::isAdmin)
 						.collect(Collectors.toList());
 
-		if (!findAdminAccount() || !members.isEmpty() || !findAdminOauthMember()) return true;
-
-		return false;
+		return !members.isEmpty() || !findAdminAccount() || !findAdminOauthMember();
 	}
 
 	private MemberEntity saveMember(MemberEntity entity) {
