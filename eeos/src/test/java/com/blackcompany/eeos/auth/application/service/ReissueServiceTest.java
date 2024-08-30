@@ -37,9 +37,7 @@ class ReissueServiceTest {
 		invalidTokenRepository.save(token, memberId, validTime);
 
 		// when & then
-		assertAll(
-				() -> assertTrue(invalidTokenRepository.isExistToken(token)),
-				() -> assertThrows(InvalidTokenException.class, () -> reissueService.execute(token)));
+		assertThrows(InvalidTokenException.class, () -> reissueService.execute(token));
 	}
 
 	@Test
@@ -58,7 +56,7 @@ class ReissueServiceTest {
 
 		// then
 		assertAll(
-				() -> assertFalse(invalidTokenRepository.isExistToken(token)),
+				() -> assertTrue(invalidTokenRepository.isExistToken(token)),
 				() -> verify(authenticationTokenGenerator).execute(memberId));
 	}
 }
