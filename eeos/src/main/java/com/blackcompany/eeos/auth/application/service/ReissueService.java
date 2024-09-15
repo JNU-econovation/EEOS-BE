@@ -5,7 +5,7 @@ import com.blackcompany.eeos.auth.application.domain.token.TokenResolver;
 import com.blackcompany.eeos.auth.application.exception.InvalidTokenException;
 import com.blackcompany.eeos.auth.application.support.AuthenticationTokenGenerator;
 import com.blackcompany.eeos.auth.application.usecase.ReissueUsecase;
-import com.blackcompany.eeos.auth.persistence.BlackAuthenticationRepository;
+import com.blackcompany.eeos.auth.persistence.InvalidTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,30 +15,30 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class ReissueService implements ReissueUsecase {
 	private final AuthenticationTokenGenerator authenticationTokenGenerator;
-	private final BlackAuthenticationRepository blackAuthenticationRepository;
+	private final InvalidTokenRepository invalidTokenRepository;
 	private final TokenResolver tokenResolver;
 
 	@Transactional
 	@Override
 	public TokenModel execute(final String token) {
-		Long memberId = tokenResolver.getUserDataByRefreshToken(token);
-
 		validateToken(token);
+
+		Long memberId = tokenResolver.getUserDataByRefreshToken(token);
 		saveUsedToken(token, memberId);
 
 		return authenticationTokenGenerator.execute(memberId);
 	}
 
 	private void validateToken(final String token) {
-		boolean isExistToken = blackAuthenticationRepository.isExistToken(token);
+		Boolean isExistToken = invalidTokenRepository.isExistToken(token);
 
-		if (isExistToken) {
+		if (Boolean.TRUE.equals(isExistToken)) {
 			throw new InvalidTokenException();
 		}
 	}
 
 	private void saveUsedToken(final String token, final Long memberId) {
-		blackAuthenticationRepository.save(token, memberId, getExpiredToken(token));
+		invalidTokenRepository.save(token, memberId, getExpiredToken(token));
 	}
 
 	private Long getExpiredToken(final String token) {

@@ -1,6 +1,5 @@
 package com.blackcompany.eeos.program.application.support;
 
-import com.blackcompany.eeos.program.persistence.ProgramRepository;
 import com.blackcompany.eeos.program.persistence.RedisDelayedQueue;
 import com.blackcompany.eeos.target.application.event.EndAttendModeEvent;
 import java.util.Set;
@@ -15,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProgramAttendScheduler {
 
 	private final RedisDelayedQueue redisDelayedQueue;
-	private final ProgramRepository programRepository;
 	private final ApplicationEventPublisher eventPublisher;
 
 	@Transactional

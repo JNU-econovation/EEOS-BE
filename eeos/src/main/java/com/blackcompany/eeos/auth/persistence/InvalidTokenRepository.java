@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class BlackAuthenticationRepository {
+public class InvalidTokenRepository {
 
 	private final RedisTemplate<String, Object> redisTemplate;
 
@@ -15,7 +15,7 @@ public class BlackAuthenticationRepository {
 		redisTemplate.opsForValue().set(token, memberId, expiration, TimeUnit.MILLISECONDS);
 	}
 
-	public boolean isExistToken(String key) {
+	public Boolean isExistToken(String key) {
 		return redisTemplate.hasKey(key);
 	}
 }
