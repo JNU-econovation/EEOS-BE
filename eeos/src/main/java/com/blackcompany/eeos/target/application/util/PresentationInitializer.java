@@ -9,10 +9,12 @@ import com.blackcompany.eeos.team.persistence.TeamEntity;
 import com.blackcompany.eeos.team.persistence.TeamRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -27,6 +29,9 @@ public class PresentationInitializer implements ApplicationRunner {
     private final ProgramRepository programRepository;
     private final TeamRepository teamRepository;
 
+    @Value("${eeos.team.list}")
+    private String teamList;
+
     @Override
     public void run(ApplicationArguments args) throws Exception {
         System.out.println("------------Presentation Initializer----------");
@@ -34,33 +39,53 @@ public class PresentationInitializer implements ApplicationRunner {
 
         if(programs.isEmpty()) return;
 
-        Set<Long> presentations = getPresentations().stream().map(PresentationEntity::getProgramId).collect(Collectors.toSet());
+        Set<Long> presentations = getPresentations().stream()
+                .map(PresentationEntity::getProgramId)
+                .collect(Collectors.toSet());
 
-        Set<Long> target = programs.stream().filter(programId -> !presentations.contains(programId)).collect(Collectors.toSet());
+        Set<Long> target = programs.stream()
+                .filter(programId -> !presentations.contains(programId))
+                .collect(Collectors.toSet());
 
-        Long defaultTeamId = getTempTeam().getId();
+        List<Long> teams= getTeams().stream()
+                .map(TeamEntity::getId)
+                .toList();
 
-        Set<PresentationEntity> entities = target.stream().map(targetId -> PresentationEntity.builder().teamId(defaultTeamId).programId(targetId).build()).collect(Collectors.toSet());
+        target.stream().forEach(targetId ->
+                {
+                    Set<PresentationEntity> entities =
+                            teams.stream()
+                                    .map(teamId -> PresentationEntity.builder()
+                                            .teamId(teamId)
+                                            .programId(targetId)
+                                            .build())
+                                    .collect(Collectors.toSet());
+                    presentationRepository.saveAll(entities);
+                });
 
-        presentationRepository.saveAll(entities);
         System.out.println("----------------------------------------------");
+    }
+
+    private List<String> getTeamList(){
+        return Arrays.stream(teamList.split(",")).toList();
     }
 
     private List<ProgramEntity> getPrograms(){
         return programRepository.findAll();
     }
 
-    private TeamEntity getTempTeam(){
+    private List<TeamEntity> getTeams(){
+        List<String> teams = getTeamList();
         try {
-            return teamRepository.findTeamEntityByName("임시 활동 팀").stream().findFirst().orElseThrow(()->new NotFoundTeamException(0L));
+            return teamRepository.findAllTeams().stream().filter(team -> teams.contains(team.getName())).toList();
         } catch (NotFoundTeamException e){
-            return createTempTeam();
+            return createTeams();
         }
     }
 
-    private TeamEntity createTempTeam(){
-        TeamEntity newTeam = TeamEntity.builder().name("임시 활동 팀").status(false).build();
-        return teamRepository.save(newTeam);
+    private List<TeamEntity> createTeams(){
+        Set<TeamEntity> teams = getTeamList().stream().map(team -> TeamEntity.builder().name(team).status(false).build()).collect(Collectors.toSet());
+        return teamRepository.saveAll(teams);
     }
 
     private List<PresentationEntity> getPresentations(){
