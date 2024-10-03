@@ -8,3 +8,12 @@ eeos:
     name : ${ADMIN_NAME}
     loginId : ${ADMIN_LOGIN_ID}
     password: ${ADMIN_PASSWORD}
+  team:
+    list: ${ECONOVATION_TEAM_LIST}
+
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
