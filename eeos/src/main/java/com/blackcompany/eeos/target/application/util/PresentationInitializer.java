@@ -4,6 +4,7 @@ import com.blackcompany.eeos.program.persistence.ProgramEntity;
 import com.blackcompany.eeos.program.persistence.ProgramRepository;
 import com.blackcompany.eeos.target.persistence.PresentationEntity;
 import com.blackcompany.eeos.target.persistence.PresentationRepository;
+import com.blackcompany.eeos.team.application.exception.NotFoundTeamException;
 import com.blackcompany.eeos.team.persistence.TeamEntity;
 import com.blackcompany.eeos.team.persistence.TeamRepository;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +38,7 @@ public class PresentationInitializer implements ApplicationRunner {
 
         Set<Long> target = programs.stream().filter(programId -> !presentations.contains(programId)).collect(Collectors.toSet());
 
-        Long defaultTeamId = teamRepository.findById(0L).orElseThrow().getId();
+        Long defaultTeamId = getTempTeam().getId();
 
         Set<PresentationEntity> entities = target.stream().map(targetId -> PresentationEntity.builder().teamId(defaultTeamId).programId(targetId).build()).collect(Collectors.toSet());
 
@@ -47,6 +48,19 @@ public class PresentationInitializer implements ApplicationRunner {
 
     private List<ProgramEntity> getPrograms(){
         return programRepository.findAll();
+    }
+
+    private TeamEntity getTempTeam(){
+        try {
+            return teamRepository.findTeamEntityByName("임시 활동 팀").stream().findFirst().orElseThrow(()->new NotFoundTeamException(0L));
+        } catch (NotFoundTeamException e){
+            return createTempTeam();
+        }
+    }
+
+    private TeamEntity createTempTeam(){
+        TeamEntity newTeam = TeamEntity.builder().name("임시 활동 팀").status(false).build();
+        return teamRepository.save(newTeam);
     }
 
     private List<PresentationEntity> getPresentations(){
