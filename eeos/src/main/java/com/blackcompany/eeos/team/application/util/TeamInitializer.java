@@ -20,12 +20,13 @@ public class TeamInitializer implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
         System.out.println("-----------Team Initializer-----------");
-        if(isEmptyTable()){
+        try {
             TeamEntity defaultTeam = TeamEntity.builder().id(0L).name("임시 활동 팀").status(false).build();
             teamRepository.save(defaultTeam);
             log.info("임시 팀이 생성되었습니다.");
+        } catch (Exception e){
+            log.error("임시 팀이 생성되지 않았습니다.");
         }
-        else log.info("임시 팀이 생성되지 않았습니다.");
         System.out.println("---------------------------------------");
 
     }
