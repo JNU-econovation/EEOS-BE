@@ -32,8 +32,7 @@ public class TeamEntity extends BaseEntity {
 
 	@Column(
 			name = ENTITY_PREFIX + "_status",
-			nullable = false,
-			columnDefinition = "boolean default 1")
+			nullable = false)
 	@Builder.Default
 	private boolean status = true; // 현학기 활동팀 1, 아니면 0
 

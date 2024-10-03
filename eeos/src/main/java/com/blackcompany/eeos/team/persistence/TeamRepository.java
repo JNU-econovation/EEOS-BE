@@ -18,5 +18,9 @@ public interface TeamRepository extends JpaRepository<TeamEntity, Long> {
 	void deleteTeamEntityByName(@Param("teamId") Long teamId);
 
 	@Query("SELECT T FROM TeamEntity T WHERE T.status = true order by T.name")
-	List<TeamEntity> findAllTeamsByStatus();
+	List<TeamEntity> findAllActiveTeams();
+
+
+	@Query("SELECT T FROM TeamEntity T ORDER BY T.name")
+	List<TeamEntity> findAllTeams();
 }

@@ -37,7 +37,7 @@ public class EndAttendModeEventListener {
 		}
 
 		if (event.getProgramIds().isEmpty()) {
-			log.info("Empty Set");
+			log.info("종료할 프로그램이 없습니다.");
 		}
 	}
 }
