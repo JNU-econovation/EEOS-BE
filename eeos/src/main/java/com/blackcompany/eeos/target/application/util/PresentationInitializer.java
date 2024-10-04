@@ -47,14 +47,14 @@ public class PresentationInitializer implements ApplicationRunner {
                 .filter(programId -> !presentations.contains(programId))
                 .collect(Collectors.toSet());
 
-        List<Long> teams= getTeams().stream()
-                .map(TeamEntity::getId)
-                .toList();
+        List<TeamEntity> teams= getTeams();
+        teams.forEach(team->log.info(team.getName()));
 
-        target.stream().forEach(targetId ->
+        target.forEach(targetId ->
                 {
                     Set<PresentationEntity> entities =
                             teams.stream()
+                                    .map(TeamEntity::getId)
                                     .map(teamId -> PresentationEntity.builder()
                                             .teamId(teamId)
                                             .programId(targetId)
