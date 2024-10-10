@@ -40,6 +40,7 @@ public class ProgramRequestConverter
 				.id(programId)
 				.title(source.getTitle())
 				.content(source.getContent())
+				.githubUrl(source.getProgramGithubUrl())
 				.programDate(DateConverter.toEpochSecond(source.getDeadLine()))
 				.programCategory(ProgramCategory.find(source.getCategory()))
 				.programType(ProgramType.find(source.getType()))
