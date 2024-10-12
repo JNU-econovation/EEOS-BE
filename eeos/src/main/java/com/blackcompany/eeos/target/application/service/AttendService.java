@@ -132,7 +132,7 @@ public class AttendService
 	private void validateAttend(ProgramModel programModel, AttendModel attendModel) {
 		if (programModel.getAttendMode().equals(ProgramAttendMode.END)) throw new NotStartAttendException();
 		if(attendModel.isAttended()) throw new DeniedChangeAttendException();
-		if(attendModel.isRelated()) throw new DeniedSaveAttendException();
+		if(!attendModel.isRelated()) throw new DeniedSaveAttendException();
 	}
 
 	private ProgramModel findProgram(final Long programId) {
