@@ -35,6 +35,14 @@ public class AttendModel implements AbstractModel, MemberIdModel {
 		return status.getStatus();
 	}
 
+	public boolean isAttended(){
+		return (!this.status.equals(AttendStatus.NONRESPONSE) && !this.status.equals(AttendStatus.NONRELATED));
+	}
+
+	public boolean isRelated() {
+		return !this.status.equals(AttendStatus.NONRELATED);
+	}
+
 	public static AttendModel of() {
 		return AttendModel.builder().status(AttendStatus.NONRELATED).build();
 	}
@@ -52,22 +60,11 @@ public class AttendModel implements AbstractModel, MemberIdModel {
 	}
 
 	private void validateChange(String afterStatus) {
-		canChange();
 		isSameBeforeStatus(afterStatus);
 	}
 
 	private void validateChangeByManager(String beforeStatus) {
 		isSameBeforeStatus(beforeStatus);
-	}
-
-	private void canChange() {
-		if (AttendStatus.isSame(status.getStatus(), AttendStatus.NONRELATED)) {
-			throw new DeniedSaveAttendException();
-		}
-
-		if (!AttendStatus.isSame(status.getStatus(), AttendStatus.NONRESPONSE)) {
-			throw new DeniedChangeAttendException();
-		}
 	}
 
 	private void isSameBeforeStatus(String status) {

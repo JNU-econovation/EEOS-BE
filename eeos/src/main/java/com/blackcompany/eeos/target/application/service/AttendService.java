@@ -20,6 +20,8 @@ import com.blackcompany.eeos.target.application.dto.converter.AttendInfoConverte
 import com.blackcompany.eeos.target.application.dto.converter.ChangeAttendStatusConverter;
 import com.blackcompany.eeos.target.application.dto.converter.QueryAttendActiveStatusConverter;
 import com.blackcompany.eeos.target.application.dto.converter.QueryAttendStatusResponseConverter;
+import com.blackcompany.eeos.target.application.exception.DeniedChangeAttendException;
+import com.blackcompany.eeos.target.application.exception.DeniedSaveAttendException;
 import com.blackcompany.eeos.target.application.exception.NotFoundAttendException;
 import com.blackcompany.eeos.target.application.exception.NotStartAttendException;
 import com.blackcompany.eeos.target.application.model.AttendModel;
@@ -88,7 +90,10 @@ public class AttendService
 	@Override
 	public ChangeAttendStatusResponse changeStatus(final Long memberId, final Long programId) {
 		AttendModel model = getAttend(memberId, programId);
+
 		ProgramModel program = findProgram(programId);
+
+		validateAttend(program, model);
 
 		AttendModel changedModel = model.changeStatus(program.getAttendMode().getMode());
 
@@ -124,8 +129,10 @@ public class AttendService
 		return queryAttendActiveStatusConverter.of(response);
 	}
 
-	private void validateAttend(ProgramModel model) {
-		if (model.getAttendMode().equals(ProgramAttendMode.END)) throw new NotStartAttendException();
+	private void validateAttend(ProgramModel programModel, AttendModel attendModel) {
+		if (programModel.getAttendMode().equals(ProgramAttendMode.END)) throw new NotStartAttendException();
+		if(attendModel.isAttended()) throw new DeniedChangeAttendException();
+		if(!attendModel.isRelated()) throw new DeniedSaveAttendException();
 	}
 
 	private ProgramModel findProgram(final Long programId) {
