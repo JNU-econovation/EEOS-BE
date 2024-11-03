@@ -30,9 +30,7 @@ public class TeamEntity extends BaseEntity {
 	@Column(unique = true, name = ENTITY_PREFIX + "_name", nullable = false)
 	private String name;
 
-	@Column(
-			name = ENTITY_PREFIX + "_status",
-			nullable = false)
+	@Column(name = ENTITY_PREFIX + "_status", nullable = false)
 	@Builder.Default
 	private boolean status = true; // 현학기 활동팀 1, 아니면 0
 

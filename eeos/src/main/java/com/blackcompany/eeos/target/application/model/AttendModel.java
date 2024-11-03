@@ -2,8 +2,6 @@ package com.blackcompany.eeos.target.application.model;
 
 import com.blackcompany.eeos.common.application.model.MemberIdModel;
 import com.blackcompany.eeos.common.support.AbstractModel;
-import com.blackcompany.eeos.target.application.exception.DeniedChangeAttendException;
-import com.blackcompany.eeos.target.application.exception.DeniedSaveAttendException;
 import com.blackcompany.eeos.target.application.exception.NotSameBeforeAttendStatusException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,8 +33,9 @@ public class AttendModel implements AbstractModel, MemberIdModel {
 		return status.getStatus();
 	}
 
-	public boolean isAttended(){
-		return (!this.status.equals(AttendStatus.NONRESPONSE) && !this.status.equals(AttendStatus.NONRELATED));
+	public boolean isAttended() {
+		return (!this.status.equals(AttendStatus.NONRESPONSE)
+				&& !this.status.equals(AttendStatus.NONRELATED));
 	}
 
 	public boolean isRelated() {
