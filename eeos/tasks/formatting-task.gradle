@@ -3,7 +3,7 @@ spotless {
         importOrder()
         removeUnusedImports()
         trimTrailingWhitespace()
-        googleJavaFormat('1.15.0')
+        googleJavaFormat('1.17.0')
         indentWithTabs(2)
         endWithNewline()
         target 'src/*/java/**/*.java'

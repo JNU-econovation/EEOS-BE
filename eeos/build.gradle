@@ -4,7 +4,7 @@
         projectVersion = '1.0.1'
         springBootVersion = '2.7.5'
         dependencyManagementVersion = '1.0.15.RELEASE'
-        spotlessVersion = '6.8.0'
+        spotlessVersion = '6.22.0'
 
         set('springCloudVersion', "2021.0.4")
         jsonwebtokenVersion = '0.11.5'
