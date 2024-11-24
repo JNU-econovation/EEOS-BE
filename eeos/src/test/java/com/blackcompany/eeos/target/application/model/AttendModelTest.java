@@ -2,7 +2,6 @@ package com.blackcompany.eeos.target.application.model;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.blackcompany.eeos.target.application.exception.DeniedSaveAttendException;
 import com.blackcompany.eeos.target.application.exception.NotSameBeforeAttendStatusException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
