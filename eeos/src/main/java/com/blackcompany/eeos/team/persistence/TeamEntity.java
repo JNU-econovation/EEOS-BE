@@ -1,8 +1,19 @@
 package com.blackcompany.eeos.team.persistence;
 
 import com.blackcompany.eeos.common.persistence.BaseEntity;
-import javax.persistence.*;
-import lombok.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 @Getter
@@ -30,9 +41,7 @@ public class TeamEntity extends BaseEntity {
 	@Column(unique = true, name = ENTITY_PREFIX + "_name", nullable = false)
 	private String name;
 
-	@Column(
-			name = ENTITY_PREFIX + "_status",
-			nullable = false)
+	@Column(name = ENTITY_PREFIX + "_status", nullable = false)
 	@Builder.Default
 	private boolean status = true; // 현학기 활동팀 1, 아니면 0
 

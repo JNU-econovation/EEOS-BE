@@ -20,7 +20,6 @@ public interface TeamRepository extends JpaRepository<TeamEntity, Long> {
 	@Query("SELECT T FROM TeamEntity T WHERE T.status = true order by T.name")
 	List<TeamEntity> findAllActiveTeams();
 
-
 	@Query("SELECT T FROM TeamEntity T ORDER BY T.name")
 	List<TeamEntity> findAllTeams();
 }
