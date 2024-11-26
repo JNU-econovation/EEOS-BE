@@ -4,6 +4,7 @@ import com.blackcompany.eeos.common.persistence.BaseEntity;
 import javax.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -39,4 +40,8 @@ public class CommentEntity extends BaseEntity {
 
 	@Column(name = ENTITY_PREFIX + "_super_comment_id", nullable = false)
 	private Long superCommentId;
+
+	@Column(name = ENTITY_PREFIX + "_isChecked", nullable = false)
+	@ColumnDefault("0")
+	private Boolean isChecked;
 }
