@@ -24,6 +24,11 @@ public class CommentModel implements AbstractModel {
 	private Timestamp updatedDate;
 	private String content;
 	private Long writer;
+	private Boolean isChecked;
+
+	public void setAnonymous(boolean isAnonymous) {
+		this.isChecked = isAnonymous;
+	}
 
 	public String getAccessRight(Long memberId) {
 		if (isEdit(memberId)) return AccessRights.EDIT.getAccessRight();
