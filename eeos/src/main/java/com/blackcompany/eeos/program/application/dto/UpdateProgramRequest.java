@@ -1,6 +1,6 @@
 package com.blackcompany.eeos.program.application.dto;
 
-import com.blackcompany.eeos.program.application.dto.CreateProgramRequest.*;
+import com.blackcompany.eeos.program.application.dto.CreateProgramRequest.Team;
 import java.sql.Timestamp;
 import java.util.List;
 import javax.validation.constraints.NotNull;

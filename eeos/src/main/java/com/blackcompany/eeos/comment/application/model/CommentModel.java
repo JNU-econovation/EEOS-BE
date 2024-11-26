@@ -6,7 +6,10 @@ import com.blackcompany.eeos.comment.application.exception.UnExpectedNPException
 import com.blackcompany.eeos.common.support.AbstractModel;
 import com.blackcompany.eeos.program.application.model.AccessRights;
 import java.sql.Timestamp;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.ToString;
 
 @AllArgsConstructor
 @ToString

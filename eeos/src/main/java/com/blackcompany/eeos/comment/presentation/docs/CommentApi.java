@@ -1,12 +1,17 @@
 package com.blackcompany.eeos.comment.presentation.docs;
 
-import com.blackcompany.eeos.comment.application.dto.*;
+import com.blackcompany.eeos.comment.application.dto.CommandCommentResponse;
+import com.blackcompany.eeos.comment.application.dto.CreateCommentRequest;
+import com.blackcompany.eeos.comment.application.dto.QueryCommentsResponse;
+import com.blackcompany.eeos.comment.application.dto.UpdateCommentRequest;
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponse;
-import com.blackcompany.eeos.common.presentation.respnose.ApiResponseBody.*;
+import com.blackcompany.eeos.common.presentation.respnose.ApiResponseBody.SuccessBody;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "질문 및 댓글", description = "댓글 및 질문 관련 API")
 public interface CommentApi {

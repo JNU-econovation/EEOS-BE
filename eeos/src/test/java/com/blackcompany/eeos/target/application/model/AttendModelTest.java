@@ -2,7 +2,7 @@ package com.blackcompany.eeos.target.application.model;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.blackcompany.eeos.target.application.exception.DeniedSaveAttendException;
+import com.blackcompany.eeos.target.application.exception.NotSameBeforeAttendStatusException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -22,12 +22,12 @@ class AttendModelTest {
 	}
 
 	@Test
-	@DisplayName("이전 참석 정보가 참석 대상자가 아니라면 참석 상태를 변경하지 못 한다.")
+	@DisplayName("이전 참석 정보와 똑같은 참석 정보의 요청이 들어오면 에러가 발생한다.")
 	void fail_change_status_when_noRelated() {
 		// given
 		AttendModel model = AttendModel.builder().status(AttendStatus.NONRELATED).build();
 
 		// when & then
-		assertThrows(DeniedSaveAttendException.class, () -> model.changeStatus("attend"));
+		assertThrows(NotSameBeforeAttendStatusException.class, () -> model.changeStatus("nonRelated"));
 	}
 }
