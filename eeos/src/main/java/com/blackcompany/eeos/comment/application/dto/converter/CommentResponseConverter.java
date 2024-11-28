@@ -11,7 +11,6 @@ import com.blackcompany.eeos.member.persistence.MemberRepository;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.xml.stream.events.Comment;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +19,7 @@ import org.springframework.stereotype.Component;
 public class CommentResponseConverter {
 
 	private final MemberRepository memberRepository;
+	private final String ANONYMOUS_USER_NAME = "익명";
 
 	public CommandCommentResponse from(CommentModel source) {
 		return CommandCommentResponse.builder().commentId(source.getId()).build();
@@ -60,8 +60,8 @@ public class CommentResponseConverter {
 	}
 
 	private String findMemberName(Long memberId, CommentModel source) {
-		if(source.getIsAnonymous()){
-			return "익명";
+		if(Boolean.TRUE.equals(source.getIsAnonymous())){
+			return ANONYMOUS_USER_NAME;
 		}
 		return memberRepository.findById(memberId).orElseThrow(NotFoundMemberException::new).getName();
 	}
