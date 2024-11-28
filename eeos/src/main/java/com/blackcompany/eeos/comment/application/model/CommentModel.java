@@ -27,11 +27,9 @@ public class CommentModel implements AbstractModel {
 	private Timestamp updatedDate;
 	private String content;
 	private Long writer;
-	private Boolean isChecked;
+	private Boolean isAnonymous;
 
-	public void setAnonymous(boolean isAnonymous) {
-		this.isChecked = isAnonymous;
-	}
+
 
 	public String getAccessRight(Long memberId) {
 		if (isEdit(memberId)) return AccessRights.EDIT.getAccessRight();
@@ -74,4 +72,6 @@ public class CommentModel implements AbstractModel {
 			throw new UnExpectedNPException();
 		}
 	}
+
+
 }
