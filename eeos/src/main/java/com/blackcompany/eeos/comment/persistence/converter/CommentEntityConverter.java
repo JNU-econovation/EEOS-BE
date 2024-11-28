@@ -17,7 +17,7 @@ public class CommentEntityConverter
 				.writer(model.getWriter())
 				.presentingTeamId(model.getPresentingTeam())
 				.content(model.getContent())
-				.isChecked(model.getIsChecked())
+				.isAnonymous(model.getIsAnonymous())
 				.build();
 	}
 
@@ -32,7 +32,7 @@ public class CommentEntityConverter
 				.updatedDate(entity.getUpdatedDate())
 				.content(entity.getContent())
 				.superCommentId(entity.getSuperCommentId())
-				.isChecked(entity.getIsChecked())
+				.isAnonymous(entity.getIsAnonymous())
 				.build();
 	}
 }
