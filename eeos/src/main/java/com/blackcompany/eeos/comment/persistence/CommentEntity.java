@@ -50,7 +50,7 @@ public class CommentEntity extends BaseEntity {
 	@Column(name = ENTITY_PREFIX + "_super_comment_id", nullable = false)
 	private Long superCommentId;
 
-	@Column(name = ENTITY_PREFIX + "_isChecked", nullable = false)
+	@Column(name = ENTITY_PREFIX + "_isAnonymous", nullable = false)
 	@ColumnDefault("0")
-	private Boolean isChecked;
+	private Boolean isAnonymous;
 }
