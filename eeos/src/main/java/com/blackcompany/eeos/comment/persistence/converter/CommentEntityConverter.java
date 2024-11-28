@@ -17,6 +17,7 @@ public class CommentEntityConverter
 				.writer(model.getWriter())
 				.presentingTeamId(model.getPresentingTeam())
 				.content(model.getContent())
+				.isChecked(model.getIsChecked())
 				.build();
 	}
 
@@ -31,6 +32,7 @@ public class CommentEntityConverter
 				.updatedDate(entity.getUpdatedDate())
 				.content(entity.getContent())
 				.superCommentId(entity.getSuperCommentId())
+				.isChecked(entity.getIsChecked())
 				.build();
 	}
 }
