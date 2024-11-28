@@ -17,4 +17,5 @@ public class CreateCommentRequest implements AbstractRequestDto {
 	private @NotNull Long teamId;
 	private @NotNull Long parentsCommentId;
 	private @NotNull String content;
+	private @NotNull boolean isAnonymous;
 }
