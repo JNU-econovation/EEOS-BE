@@ -76,7 +76,7 @@ public class CommentService
 			throw new NullPointerException("programId 값이 null 입니다.");
 		}
 
-		return findCommentsByProgramIdAndTeam(programId, teamId);
+        return findCommentsByProgramIdAndTeam(programId, teamId);
 	}
 
 	@Transactional(readOnly = true)
