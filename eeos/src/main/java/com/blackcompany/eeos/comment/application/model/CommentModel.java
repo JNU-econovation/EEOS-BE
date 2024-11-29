@@ -59,7 +59,7 @@ public class CommentModel implements AbstractModel {
 	}
 
 	private boolean isExceedLengthLimit() {
-		return getContentLength() > contentLimitLength;
+		return false; // 코멘트 글자수 제한이 없음
 	}
 
 	private long getContentLength() {
