@@ -17,12 +17,13 @@ public class CommentEntityConverter
 				.writer(model.getWriter())
 				.presentingTeamId(model.getPresentingTeam())
 				.content(model.getContent())
-				.isAnonymous(model.getIsAnonymous())
+				.commentType(model.getCommentType())
 				.build();
 	}
 
 	@Override
 	public CommentModel from(CommentEntity entity) {
+
 		return CommentModel.builder()
 				.id(entity.getId())
 				.programId(entity.getProgramId())
@@ -32,7 +33,7 @@ public class CommentEntityConverter
 				.updatedDate(entity.getUpdatedDate())
 				.content(entity.getContent())
 				.superCommentId(entity.getSuperCommentId())
-				.isAnonymous(entity.getIsAnonymous())
+				.commentType(entity.getCommentType())
 				.build();
 	}
 }
