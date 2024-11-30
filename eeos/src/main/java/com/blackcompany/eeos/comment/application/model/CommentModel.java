@@ -27,7 +27,7 @@ public class CommentModel implements AbstractModel {
 	private Timestamp updatedDate;
 	private String content;
 	private Long writer;
-	private Boolean isAnonymous;
+	private CommentType commentType;
 
 
 
