@@ -1,8 +1,11 @@
 package com.blackcompany.eeos.comment.persistence;
 
+import com.blackcompany.eeos.comment.application.model.CommentType;
 import com.blackcompany.eeos.common.persistence.BaseEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -50,7 +53,7 @@ public class CommentEntity extends BaseEntity {
 	@Column(name = ENTITY_PREFIX + "_super_comment_id", nullable = false)
 	private Long superCommentId;
 
-	@Column(name = ENTITY_PREFIX + "_isAnonymous", nullable = false)
-	@ColumnDefault("0")
-	private Boolean isAnonymous;
+	@Column(name = ENTITY_PREFIX + "_commentType", nullable = false)
+	@Enumerated(EnumType.STRING)
+	private CommentType commentType;
 }
