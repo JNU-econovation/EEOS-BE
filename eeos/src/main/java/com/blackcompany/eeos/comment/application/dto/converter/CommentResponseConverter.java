@@ -6,6 +6,7 @@ import com.blackcompany.eeos.comment.application.dto.QueryCommentResponse;
 import com.blackcompany.eeos.comment.application.dto.QueryCommentsResponse;
 import com.blackcompany.eeos.comment.application.exception.NotConvertedCommentException;
 import com.blackcompany.eeos.comment.application.model.CommentModel;
+import com.blackcompany.eeos.comment.application.model.CommentType;
 import com.blackcompany.eeos.member.application.exception.NotFoundMemberException;
 import com.blackcompany.eeos.member.persistence.MemberRepository;
 import java.time.format.DateTimeFormatter;
@@ -60,7 +61,9 @@ public class CommentResponseConverter {
 	}
 
 	private String findMemberName(Long memberId, CommentModel source) {
-		if(Boolean.TRUE.equals(source.getIsAnonymous())){
+		System.out.println("writer : "+source.getWriter());
+		System.out.println("check : "+source.getCommentType());
+		if(source.getCommentType().equals(CommentType.ANONYMOUS)){
 			return ANONYMOUS_USER_NAME;
 		}
 		return memberRepository.findById(memberId).orElseThrow(NotFoundMemberException::new).getName();
