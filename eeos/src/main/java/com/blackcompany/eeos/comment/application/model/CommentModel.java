@@ -29,8 +29,6 @@ public class CommentModel implements AbstractModel {
 	private Long writer;
 	private CommentType commentType;
 
-
-
 	public String getAccessRight(Long memberId) {
 		if (isEdit(memberId)) return AccessRights.EDIT.getAccessRight();
 		return AccessRights.READ_ONLY.getAccessRight();
@@ -72,7 +70,4 @@ public class CommentModel implements AbstractModel {
 			throw new UnExpectedNPException();
 		}
 	}
-
-
-
 }

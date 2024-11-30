@@ -32,5 +32,4 @@ public class CommentModelConverter
 	public CommentModel from(Long memberId, CreateCommentRequest request) {
 		return from(request).toBuilder().writer(memberId).build();
 	}
-
 }

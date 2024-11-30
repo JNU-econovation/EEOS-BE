@@ -61,9 +61,9 @@ public class CommentResponseConverter {
 	}
 
 	private String findMemberName(Long memberId, CommentModel source) {
-		System.out.println("writer : "+source.getWriter());
-		System.out.println("check : "+source.getCommentType());
-		if(source.getCommentType().equals(CommentType.ANONYMOUS)){
+		System.out.println("writer : " + source.getWriter());
+		System.out.println("check : " + source.getCommentType());
+		if (source.getCommentType().equals(CommentType.ANONYMOUS)) {
 			return ANONYMOUS_USER_NAME;
 		}
 		return memberRepository.findById(memberId).orElseThrow(NotFoundMemberException::new).getName();
