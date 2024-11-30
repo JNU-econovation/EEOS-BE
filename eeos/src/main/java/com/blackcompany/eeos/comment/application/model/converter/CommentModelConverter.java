@@ -16,7 +16,7 @@ public class CommentModelConverter
 				.superCommentId(request.getParentsCommentId())
 				.content(request.getContent())
 				.presentingTeam(request.getTeamId())
-				.isAnonymous(request.isAnonymous())
+				.commentType(request.getCommentType())
 				.build();
 	}
 
