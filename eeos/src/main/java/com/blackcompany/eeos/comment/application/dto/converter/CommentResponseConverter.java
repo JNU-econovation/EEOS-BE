@@ -6,6 +6,7 @@ import com.blackcompany.eeos.comment.application.dto.QueryCommentResponse;
 import com.blackcompany.eeos.comment.application.dto.QueryCommentsResponse;
 import com.blackcompany.eeos.comment.application.exception.NotConvertedCommentException;
 import com.blackcompany.eeos.comment.application.model.CommentModel;
+import com.blackcompany.eeos.comment.application.model.CommentType;
 import com.blackcompany.eeos.member.application.exception.NotFoundMemberException;
 import com.blackcompany.eeos.member.persistence.MemberRepository;
 import java.time.format.DateTimeFormatter;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Component;
 public class CommentResponseConverter {
 
 	private final MemberRepository memberRepository;
+	private final String ANONYMOUS_USER_NAME = "익명";
 
 	public CommandCommentResponse from(CommentModel source) {
 		return CommandCommentResponse.builder().commentId(source.getId()).build();
@@ -38,7 +40,7 @@ public class CommentResponseConverter {
 				.time(getCreateTimeString(source))
 				.content(source.getContent())
 				.teamId(source.getPresentingTeam())
-				.writer(findMemberName(source.getWriter()))
+				.writer(findMemberName(source.getWriter(), source))
 				.commentId(source.getId())
 				.accessRight(source.getAccessRight(memberId))
 				.answers(answersResponse)
@@ -51,14 +53,19 @@ public class CommentResponseConverter {
 				QueryAnswerResponse.builder()
 						.commentId(source.getId())
 						.content(source.getContent())
-						.writer(findMemberName(source.getWriter()))
+						.writer(findMemberName(source.getWriter(), source))
 						.time(getCreateTimeString(source))
 						.accessRight(source.getAccessRight(memberId))
 						.build();
 		return response;
 	}
 
-	private String findMemberName(Long memberId) {
+	private String findMemberName(Long memberId, CommentModel source) {
+		System.out.println("writer : " + source.getWriter());
+		System.out.println("check : " + source.getCommentType());
+		if (source.getCommentType().equals(CommentType.ANONYMOUS)) {
+			return ANONYMOUS_USER_NAME;
+		}
 		return memberRepository.findById(memberId).orElseThrow(NotFoundMemberException::new).getName();
 	}
 
