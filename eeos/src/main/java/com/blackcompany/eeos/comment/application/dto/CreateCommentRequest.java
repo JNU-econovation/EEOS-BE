@@ -1,5 +1,6 @@
 package com.blackcompany.eeos.comment.application.dto;
 
+import com.blackcompany.eeos.comment.application.model.CommentType;
 import com.blackcompany.eeos.common.support.dto.AbstractRequestDto;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -17,4 +18,5 @@ public class CreateCommentRequest implements AbstractRequestDto {
 	private @NotNull Long teamId;
 	private @NotNull Long parentsCommentId;
 	private @NotNull String content;
+	private @NotNull CommentType commentType;
 }

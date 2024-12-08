@@ -27,6 +27,7 @@ public class CommentModel implements AbstractModel {
 	private Timestamp updatedDate;
 	private String content;
 	private Long writer;
+	private CommentType commentType;
 
 	public String getAccessRight(Long memberId) {
 		if (isEdit(memberId)) return AccessRights.EDIT.getAccessRight();
@@ -59,7 +60,7 @@ public class CommentModel implements AbstractModel {
 	}
 
 	private boolean isExceedLengthLimit() {
-		return false; // 코멘트 글자수 제한이 없음
+		return false; // 코멘트 길이 수는 제한이 없다
 	}
 
 	private long getContentLength() {
