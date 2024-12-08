@@ -27,4 +27,11 @@ public class AuthFacadeService implements LoginUsecase {
 		OAuthMemberEntity entity = authService.authenticate(loginId, password);
 		return authenticationTokenGenerator.execute(entity.getMemberId());
 	}
+
+	private String validate(String uri){
+		if(uri.contains("\n")) uri = uri.replace("\n", "");
+		if(uri.contains(" ")) uri = uri.replace(" ", "");
+		return uri;
+	}
+
 }
