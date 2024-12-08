@@ -18,7 +18,8 @@ public class AuthFacadeService implements LoginUsecase {
 	@Override
 	public TokenModel login(String oauthServerType, String authCode, String uri) {
 		String validatedUri = validate(uri);
-		OauthMemberModel model = oauthClientService.getOauthMember(oauthServerType, authCode, validatedUri);
+		OauthMemberModel model =
+				oauthClientService.getOauthMember(oauthServerType, authCode, validatedUri);
 		OAuthMemberEntity entity = authService.authenticate(model);
 		return authenticationTokenGenerator.execute(entity.getMemberId());
 	}
@@ -29,10 +30,9 @@ public class AuthFacadeService implements LoginUsecase {
 		return authenticationTokenGenerator.execute(entity.getMemberId());
 	}
 
-	private String validate(String uri){
-		if(uri.contains("\n")) uri = uri.replace("\n", "");
-		if(uri.contains(" ")) uri = uri.replace(" ", "");
+	private String validate(String uri) {
+		if (uri.contains("\n")) uri = uri.replace("\n", "");
+		if (uri.contains(" ")) uri = uri.replace(" ", "");
 		return uri;
 	}
-
 }
