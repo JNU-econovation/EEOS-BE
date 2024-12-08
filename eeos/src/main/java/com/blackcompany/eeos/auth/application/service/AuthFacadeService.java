@@ -31,8 +31,7 @@ public class AuthFacadeService implements LoginUsecase {
 	}
 
 	private String validate(String uri) {
-		if (uri.contains("\n")) uri = uri.replace("\n", "");
-		if (uri.contains(" ")) uri = uri.replace(" ", "");
-		return uri;
+		return uri.trim()
+				.replaceAll("[\n\r\t ]", "");
 	}
 }
