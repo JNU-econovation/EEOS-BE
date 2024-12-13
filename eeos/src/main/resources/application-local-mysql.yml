@@ -3,13 +3,13 @@ spring:
     activate:
       on-profile: local-mysql
   datasource:
-    url: jdbc:mysql://localhost:3306/eeos?useSSL=false&serverTimezone=Asia/Seoul&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:13308/eeos?useSSL=false&serverTimezone=Asia/Seoul&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true
     username: root
-    password: gksktodaud1!
+    password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:
         format_sql: true
