@@ -12,10 +12,12 @@ public class CommentModelTest {
 	@DisplayName("내용 길이가 500자 이상일 경우 예외가 발생하지 않는다.")
 	void createTest() {
 		// given
-		String length_501_word = new Random().ints(32,127)
-				.limit(501)
-				.mapToObj(number -> String.valueOf((char)number))
-				.collect(Collectors.joining());
+		String length_501_word =
+				new Random()
+						.ints(32, 127)
+						.limit(501)
+						.mapToObj(number -> String.valueOf((char) number))
+						.collect(Collectors.joining());
 
 		CommentModel comment = CommentModel.builder().content(length_501_word).build();
 
