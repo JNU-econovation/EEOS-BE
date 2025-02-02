@@ -1,7 +1,7 @@
 package com.blackcompany.eeos.auth.presentation.support;
 
 import com.blackcompany.eeos.auth.application.exception.NotFoundHeaderTokenException;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 

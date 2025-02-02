@@ -9,7 +9,7 @@ import com.blackcompany.eeos.teamBuilding.application.usecase.QueryTeamBuildingR
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 @Tag(name = "팀빌딩", description = "팀 빌딩 관련 API")
 public interface TeamBuildingApi {

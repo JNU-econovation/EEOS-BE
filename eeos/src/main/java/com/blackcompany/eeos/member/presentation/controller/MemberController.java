@@ -13,7 +13,7 @@ import com.blackcompany.eeos.member.application.usecase.ChangeActiveStatusUsecas
 import com.blackcompany.eeos.member.application.usecase.GetMemberByActiveStatus;
 import com.blackcompany.eeos.member.application.usecase.GetMembersByActiveStatus;
 import com.blackcompany.eeos.member.presentation.docs.MemberApi;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;

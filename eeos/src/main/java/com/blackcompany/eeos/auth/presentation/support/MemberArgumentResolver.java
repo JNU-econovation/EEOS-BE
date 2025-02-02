@@ -1,7 +1,7 @@
 package com.blackcompany.eeos.auth.presentation.support;
 
 import com.blackcompany.eeos.auth.application.domain.token.TokenResolver;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.MethodParameter;

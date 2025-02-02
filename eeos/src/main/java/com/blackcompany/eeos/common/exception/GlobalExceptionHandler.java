@@ -16,7 +16,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-	/** javax.validation.Valid 또는 @Validated binding error가 발생할 경우 */
+	/** jakarta.validation.Valid 또는 @Validated binding error가 발생할 경우 */
 	@ExceptionHandler(BindException.class)
 	protected ApiResponse<FailureBody> handleBindException(BindException e) {
 		log.warn("handleBindException", e);
