@@ -12,7 +12,7 @@ import com.blackcompany.eeos.team.application.usecase.CreateTeamUsecase;
 import com.blackcompany.eeos.team.application.usecase.DeleteTeamUsecase;
 import com.blackcompany.eeos.team.application.usecase.GetTeamsByActiveStatus;
 import com.blackcompany.eeos.team.presetation.docs.TeamApi;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;

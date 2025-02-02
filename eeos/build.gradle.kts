@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.builtins.StandardNames.FqNames.target
+
 plugins {
     java
     alias(libs.plugins.spring.boot)
@@ -70,7 +72,7 @@ dependencyManagement {
 spotless {
     java {
         googleJavaFormat("1.17.0")
-        indentWithSpaces(2)
+        indentWithTabs(2)
         endWithNewline()
         removeUnusedImports()
         trimTrailingWhitespace()
@@ -80,7 +82,7 @@ spotless {
     format("misc") {
         target("**/*.gradle.kts", "**/*.md", "**/.gitignore")
         targetExclude(".release/*.*")
-        indentWithSpaces(2)
+        indentWithSpaces()
         trimTrailingWhitespace()
         endWithNewline()
     }

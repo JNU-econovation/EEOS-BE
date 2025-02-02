@@ -1,7 +1,7 @@
 package com.blackcompany.eeos.config;
 
+import jakarta.annotation.PostConstruct;
 import java.util.TimeZone;
-import javax.annotation.PostConstruct;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration

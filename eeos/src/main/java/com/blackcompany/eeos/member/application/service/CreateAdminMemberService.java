@@ -13,9 +13,9 @@ import com.blackcompany.eeos.member.application.model.converter.MemberEntityConv
 import com.blackcompany.eeos.member.application.usecase.CreateAdminMemberUsecase;
 import com.blackcompany.eeos.member.persistence.MemberEntity;
 import com.blackcompany.eeos.member.persistence.MemberRepository;
+import jakarta.annotation.PostConstruct;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

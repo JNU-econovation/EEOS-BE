@@ -1,6 +1,6 @@
 package com.blackcompany.eeos.common.persistence;
 
-import javax.persistence.PreRemove;
+import jakarta.persistence.PreRemove;
 
 public class SoftDeleteListener {
 

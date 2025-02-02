@@ -8,7 +8,7 @@ import com.blackcompany.eeos.team.application.dto.QueryTeamsResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 @Tag(name = "팀", description = "팀 관한 API")
 public interface TeamApi {
