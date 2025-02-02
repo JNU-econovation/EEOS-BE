@@ -69,6 +69,13 @@ dependencyManagement {
     }
 }
 
+tasks.withType<Test> {
+    useJUnitPlatform()
+    testLogging {
+        events("passed", "skipped", "failed")
+    }
+}
+
 spotless {
     java {
         googleJavaFormat("1.17.0")
