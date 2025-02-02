@@ -1,9 +1,9 @@
 package com.blackcompany.eeos.auth.presentation.support;
 
 import com.blackcompany.eeos.auth.application.exception.NotFoundCookieException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Objects;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
 
 @Component("cookie")

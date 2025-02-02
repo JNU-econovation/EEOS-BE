@@ -13,7 +13,7 @@ import com.blackcompany.eeos.program.application.dto.UpdateProgramRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 @Tag(name = "행사", description = "행사에 관한 API")
 public interface ProgramApi {

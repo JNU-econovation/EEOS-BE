@@ -1,0 +1,61 @@
+[versions]
+# Spring
+spring-boot = "3.2.2"
+spring-dependency-management = "1.1.4"
+spring-cloud = "2023.0.0"
+spring-doc-openapi = "2.3.0"
+
+# Plugins
+spotless = "6.25.0"
+asciidoctor = "4.0.2"
+epages-restdocs = "0.18.2"
+swagger = "5.10.3"
+
+# Security
+jwt = "0.12.3"
+jbcrypt = "0.4"
+
+# Database
+flyway = "10.7.1"
+
+[libraries]
+# Spring Boot
+spring-boot-starter-web = { group = "org.springframework.boot", name = "spring-boot-starter-web" }
+spring-boot-starter-validation = { group = "org.springframework.boot", name = "spring-boot-starter-validation" }
+spring-boot-starter-actuator = { group = "org.springframework.boot", name = "spring-boot-starter-actuator" }
+spring-boot-starter-data-jpa = { group = "org.springframework.boot", name = "spring-boot-starter-data-jpa" }
+spring-boot-starter-data-redis = { group = "org.springframework.boot", name = "spring-boot-starter-data-redis" }
+spring-boot-starter-test = { group = "org.springframework.boot", name = "spring-boot-starter-test" }
+
+# Spring Cloud
+spring-cloud-starter-openfeign = { group = "org.springframework.cloud", name = "spring-cloud-starter-openfeign" }
+spring-cloud-starter-contract-stub-runner = { group = "org.springframework.cloud", name = "spring-cloud-starter-contract-stub-runner" }
+spring-cloud-dependencies = { group = "org.springframework.cloud", name = "spring-cloud-dependencies", version.ref = "spring-cloud" }
+
+# Database
+mysql-connector = { group = "com.mysql", name = "mysql-connector-j" }
+flyway-core = { group = "org.flywaydb", name = "flyway-core" }
+flyway-mysql = { group = "org.flywaydb", name = "flyway-mysql" }
+
+# Documentation
+springdoc-openapi = { group = "org.springdoc", name = "springdoc-openapi-starter-webmvc-ui", version.ref = "spring-doc-openapi" }
+spring-restdocs-mockmvc = { group = "org.springframework.restdocs", name = "spring-restdocs-mockmvc" }
+epages-restdocs = { group = "com.epages", name = "restdocs-api-spec-mockmvc", version.ref = "epages-restdocs" }
+swagger-ui = { group = "org.webjars", name = "swagger-ui", version.ref = "swagger" }
+
+# Security
+jwt-api = { group = "io.jsonwebtoken", name = "jjwt-api", version.ref = "jwt" }
+jwt-impl = { group = "io.jsonwebtoken", name = "jjwt-impl", version.ref = "jwt" }
+jwt-jackson = { group = "io.jsonwebtoken", name = "jjwt-jackson", version.ref = "jwt" }
+jbcrypt = { group = "org.mindrot", name = "jbcrypt", version.ref = "jbcrypt" }
+
+# Lombok
+lombok = { group = "org.projectlombok", name = "lombok" }
+
+[plugins]
+spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
+spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+asciidoctor = { id = "org.asciidoctor.jvm.convert", version.ref = "asciidoctor" }
+epages-restdocs = { id = "com.epages.restdocs-api-spec", version.ref = "epages-restdocs" }
+flyway = { id = "org.flywaydb.flyway", version.ref = "flyway" }

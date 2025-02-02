@@ -22,7 +22,7 @@ import com.blackcompany.eeos.program.application.usecase.GetProgramsUsecase;
 import com.blackcompany.eeos.program.application.usecase.NotifyProgramUsecase;
 import com.blackcompany.eeos.program.application.usecase.UpdateProgramUsecase;
 import com.blackcompany.eeos.program.presentation.docs.ProgramApi;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;

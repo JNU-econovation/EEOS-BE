@@ -17,7 +17,7 @@ import com.blackcompany.eeos.teamBuilding.application.usecase.GetTeamBuildingUse
 import com.blackcompany.eeos.teamBuilding.application.usecase.QueryTeamBuildingResponse;
 import com.blackcompany.eeos.teamBuilding.application.usecase.ValidateTeamBuildingUsecase;
 import com.blackcompany.eeos.teamBuilding.presentation.docs.TeamBuildingApi;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
