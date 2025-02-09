@@ -2,6 +2,7 @@ package com.blackcompany.eeos.common.presentation.respnose;
 
 import java.util.List;
 import lombok.experimental.UtilityClass;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -32,6 +33,14 @@ public class ApiResponseGenerator {
 		return new ApiResponse<>(
 				new ApiResponseBody.FailureBody(
 						String.valueOf(status.value()), code, createErrorMessage(bindingResult)),
+				status);
+	}
+
+	public static ApiResponse<ApiResponseBody.FailureBody> fail(
+			final String message, final String code, final HttpStatus status, final HttpHeaders headers) {
+		return new ApiResponse<>(
+				new ApiResponseBody.FailureBody(String.valueOf(status.value()), code, message),
+				headers,
 				status);
 	}
 
