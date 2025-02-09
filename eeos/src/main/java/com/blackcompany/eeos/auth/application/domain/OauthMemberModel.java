@@ -18,6 +18,7 @@ public class OauthMemberModel implements AbstractModel {
 	private String oauthId;
 	private String name;
 	private OauthServerType oauthServerType;
+	private boolean isRequiresAdditionalInfo = false;
 
 	public void validateNameFormat() {
 		if (!ValidatorNameFormat.isSatisfy(name)) {
