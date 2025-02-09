@@ -65,7 +65,8 @@ public class AuthController implements AuthApi {
 			@RequestParam("code") String code,
 			@RequestParam("redirect_uri") String uri,
 			HttpServletResponse httpResponse) {
-		TokenModel tokenModel = loginUsecase.login(oauthServerType, code, uri);
+		String formatUri = uri.trim().replaceAll("[\n\r\t ]", "");
+		TokenModel tokenModel = loginUsecase.login(oauthServerType, code, formatUri);
 		TokenResponse response = generateTokenResponse(tokenModel, httpResponse);
 
 		return ApiResponseGenerator.success(response, HttpStatus.CREATED, MessageCode.CREATE);
