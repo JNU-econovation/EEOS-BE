@@ -1,9 +1,12 @@
 package com.blackcompany.eeos.common.exception;
 
+import com.blackcompany.eeos.auth.application.exception.RequiredSignupInfoException;
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponse;
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponseBody.FailureBody;
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponseGenerator;
+import com.blackcompany.eeos.common.presentation.support.AuthorizationScheme;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -49,14 +52,6 @@ public class GlobalExceptionHandler {
 		return ApiResponseGenerator.fail(e.getMessage(), e.getCode(), e.getHttpStatus());
 	}
 
-	/** 나머지 예외 발생 */
-	@ExceptionHandler(Exception.class)
-	protected ApiResponse<FailureBody> handleException(Exception e) {
-		log.error("Exception", e);
-		String code = String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value());
-		return ApiResponseGenerator.fail(e.getMessage(), code, HttpStatus.INTERNAL_SERVER_ERROR);
-	}
-
 	@ExceptionHandler({MethodArgumentNotValidException.class})
 	protected ApiResponse<FailureBody> handleMethodArgumentNotValidException(
 			MethodArgumentNotValidException e) {
@@ -66,5 +61,25 @@ public class GlobalExceptionHandler {
 				e.getBindingResult().getFieldErrors().get(0).getDefaultMessage(),
 				code,
 				HttpStatus.BAD_REQUEST);
+	}
+
+	/** OAuth 로그인 후 추가 정보 필요한 경우 */
+	@ExceptionHandler(RequiredSignupInfoException.class)
+	protected ApiResponse<FailureBody> handleRequiredSignupInfo(RequiredSignupInfoException e) {
+		log.warn("RequiredSignupInfoException", e);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.add(
+				HttpHeaders.AUTHORIZATION, AuthorizationScheme.VERIFICATION + e.getVerificationId());
+
+		return ApiResponseGenerator.fail(e.getMessage(), e.getCode(), e.getHttpStatus(), headers);
+	}
+
+	/** 나머지 예외 발생 */
+	@ExceptionHandler(Exception.class)
+	protected ApiResponse<FailureBody> handleException(Exception e) {
+		log.error("Exception", e);
+		String code = String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value());
+		return ApiResponseGenerator.fail(e.getMessage(), code, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }
