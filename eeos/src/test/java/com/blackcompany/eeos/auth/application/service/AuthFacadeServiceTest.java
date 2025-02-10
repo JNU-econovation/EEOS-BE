@@ -33,8 +33,7 @@ class AuthFacadeServiceTest {
 		OauthMemberModel oauthMemberModel = FakeOauthMember.oauthMemberModel();
 
 		when(oauthClientService.getOauthMember(type, authCode, uri)).thenReturn(oauthMemberModel);
-		when(authService.authenticate(oauthMemberModel))
-				.thenReturn(oauthMemberModel.toBuilder().memberId(memberId).build());
+		when(authService.authenticate(oauthMemberModel)).thenReturn(memberId);
 
 		// when
 		authFacadeService.login(type, authCode, uri);

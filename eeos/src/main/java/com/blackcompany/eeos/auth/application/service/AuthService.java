@@ -7,7 +7,6 @@ import com.blackcompany.eeos.auth.application.support.EncryptHelper;
 import com.blackcompany.eeos.auth.persistence.AccountRepository;
 import com.blackcompany.eeos.auth.persistence.OAuthMemberEntity;
 import com.blackcompany.eeos.member.application.model.MemberModel;
-import com.blackcompany.eeos.member.application.model.converter.MemberEntityConverter;
 import com.blackcompany.eeos.member.application.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,10 +24,11 @@ public class AuthService {
 	private final AccountRepository accountRepository;
 
 	@Transactional
-	public OauthMemberModel authenticate(final OauthMemberModel model) {
+	public Long authenticate(final OauthMemberModel model) {
 		return oAuthMemberRepository
 				.findByOauthId(model.getOauthId())
-				.orElseGet(() -> signUpMember(model)); // TODO : 반환형 바꾸기 -> Long
+				.orElseGet(() -> signUpMember(model))
+				.getMemberId();
 	}
 
 	@Transactional

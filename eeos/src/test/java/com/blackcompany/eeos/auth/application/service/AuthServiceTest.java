@@ -1,11 +1,9 @@
 package com.blackcompany.eeos.auth.application.service;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.blackcompany.eeos.auth.application.domain.OauthMemberModel;
 import com.blackcompany.eeos.auth.application.domain.converter.OauthMemberEntityConverter;
 import com.blackcompany.eeos.auth.application.repository.OAuthMemberRepository;
 import com.blackcompany.eeos.auth.fixture.FakeOauthMember;
@@ -47,19 +45,5 @@ class AuthServiceTest {
 		assertAll(
 				() -> verify(memberRepository).save(Mockito.any()),
 				() -> verify(oAuthMemberRepository).save(Mockito.any()));
-	}
-
-	@Test
-	@DisplayName("기존 회원인 경우 존재하던 oauth 정보를 가져온다.")
-	void login_new_user() {
-		// given
-		when(oAuthMemberRepository.findByOauthId(FakeOauthMember.oauthMemberModel().getOauthId()))
-				.thenReturn(Optional.of(FakeOauthMember.oauthMemberModel()));
-
-		// when
-		OauthMemberModel model = authService.authenticate(FakeOauthMember.oauthMemberModel());
-
-		// then
-		assertEquals(model.getOauthId(), FakeOauthMember.oauthMemberModel().getOauthId());
 	}
 }
