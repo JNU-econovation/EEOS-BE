@@ -1,4 +1,4 @@
-FROM openjdk:17-oracle
+FROM openjdk:21-oracle
 RUN mkdir -p /logs
 
 ENV	PROFILE defaultgi
