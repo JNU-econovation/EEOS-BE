@@ -5,14 +5,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.blackcompany.eeos.auth.application.domain.OauthMemberModel;
 import com.blackcompany.eeos.auth.application.domain.converter.OauthMemberEntityConverter;
+import com.blackcompany.eeos.auth.application.repository.OAuthMemberRepository;
 import com.blackcompany.eeos.auth.fixture.FakeOauthMember;
-import com.blackcompany.eeos.auth.persistence.OAuthMemberEntity;
-import com.blackcompany.eeos.auth.persistence.OAuthMemberRepository;
 import com.blackcompany.eeos.member.application.model.ActiveStatus;
 import com.blackcompany.eeos.member.application.model.converter.MemberEntityConverter;
+import com.blackcompany.eeos.member.application.repository.MemberRepository;
 import com.blackcompany.eeos.member.fixture.MemberFixture;
-import com.blackcompany.eeos.member.persistence.MemberRepository;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,8 +38,7 @@ class AuthServiceTest {
 		// given
 		when(oAuthMemberRepository.findByOauthId(FakeOauthMember.oauthMemberModel().getOauthId()))
 				.thenReturn(Optional.ofNullable(null));
-		when(memberRepository.save(Mockito.any()))
-				.thenReturn(MemberFixture.멤버_엔티티(1L, ActiveStatus.AM));
+		when(memberRepository.save(Mockito.any())).thenReturn(MemberFixture.멤버_모델(1L, ActiveStatus.AM));
 
 		// when
 		authService.authenticate(FakeOauthMember.oauthMemberModel());
@@ -55,12 +54,12 @@ class AuthServiceTest {
 	void login_new_user() {
 		// given
 		when(oAuthMemberRepository.findByOauthId(FakeOauthMember.oauthMemberModel().getOauthId()))
-				.thenReturn(Optional.of(FakeOauthMember.oauthInfoEntity()));
+				.thenReturn(Optional.of(FakeOauthMember.oauthMemberModel()));
 
 		// when
-		OAuthMemberEntity entity = authService.authenticate(FakeOauthMember.oauthMemberModel());
+		OauthMemberModel model = authService.authenticate(FakeOauthMember.oauthMemberModel());
 
 		// then
-		assertEquals(entity.getOauthId(), FakeOauthMember.oauthMemberModel().getOauthId());
+		assertEquals(model.getOauthId(), FakeOauthMember.oauthMemberModel().getOauthId());
 	}
 }

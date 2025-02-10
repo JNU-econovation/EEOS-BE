@@ -1,12 +1,10 @@
 package com.blackcompany.eeos.auth.application.service;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 import com.blackcompany.eeos.auth.application.domain.OauthMemberModel;
 import com.blackcompany.eeos.auth.application.support.AuthenticationTokenGenerator;
 import com.blackcompany.eeos.auth.fixture.FakeOauthMember;
-import com.blackcompany.eeos.auth.persistence.OAuthMemberEntity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,10 +31,10 @@ class AuthFacadeServiceTest {
 		String uri = "uri";
 
 		OauthMemberModel oauthMemberModel = FakeOauthMember.oauthMemberModel();
-		OAuthMemberEntity oAuthMemberEntity = FakeOauthMember.oauthInfoEntity();
 
 		when(oauthClientService.getOauthMember(type, authCode, uri)).thenReturn(oauthMemberModel);
-		when(authService.authenticate(oauthMemberModel)).thenReturn(oAuthMemberEntity);
+		when(authService.authenticate(oauthMemberModel))
+				.thenReturn(oauthMemberModel.toBuilder().memberId(memberId).build());
 
 		// when
 		authFacadeService.login(type, authCode, uri);

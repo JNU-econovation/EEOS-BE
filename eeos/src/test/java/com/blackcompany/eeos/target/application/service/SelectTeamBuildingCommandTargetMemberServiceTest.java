@@ -6,8 +6,8 @@ import static org.mockito.Mockito.when;
 
 import com.blackcompany.eeos.member.application.model.ActiveStatus;
 import com.blackcompany.eeos.member.application.model.converter.MemberEntityConverter;
+import com.blackcompany.eeos.member.application.repository.MemberRepository;
 import com.blackcompany.eeos.member.fixture.MemberFixture;
-import com.blackcompany.eeos.member.persistence.MemberRepository;
 import com.blackcompany.eeos.target.application.dto.TargetMember;
 import com.blackcompany.eeos.target.application.model.converter.TeamBuildingTargetEntityConverter;
 import com.blackcompany.eeos.target.fixture.TargetMemberFixture;
@@ -43,8 +43,8 @@ class SelectTeamBuildingCommandTargetMemberServiceTest {
 						수민_바다_팀빌딩_대상자.stream().map(TargetMember::getMemberId).collect(Collectors.toList())))
 				.thenReturn(
 						List.of(
-								MemberFixture.멤버_엔티티(1L, ActiveStatus.AM),
-								MemberFixture.멤버_엔티티(2L, ActiveStatus.AM)));
+								MemberFixture.멤버_모델(1L, ActiveStatus.AM),
+								MemberFixture.멤버_모델(2L, ActiveStatus.AM)));
 
 		// when
 		selectTeamBuildingTargetService.save(1L, 수민_바다_팀빌딩_대상자);

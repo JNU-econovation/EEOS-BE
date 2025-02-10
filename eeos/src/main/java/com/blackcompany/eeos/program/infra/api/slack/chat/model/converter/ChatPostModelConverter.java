@@ -1,7 +1,6 @@
 package com.blackcompany.eeos.program.infra.api.slack.chat.model.converter;
 
-import com.blackcompany.eeos.member.application.exception.NotFoundMemberException;
-import com.blackcompany.eeos.member.persistence.MemberRepository;
+import com.blackcompany.eeos.member.application.repository.MemberRepository;
 import com.blackcompany.eeos.program.application.model.ProgramNotificationModel;
 import com.blackcompany.eeos.program.infra.api.slack.chat.model.BlockTypes;
 import com.blackcompany.eeos.program.infra.api.slack.chat.model.ChatPostModel;
@@ -70,9 +69,6 @@ public class ChatPostModelConverter {
 	}
 
 	private String getUsername(ProgramNotificationModel model) {
-		return memberRepository
-				.findById(model.getWriter())
-				.map(m -> m.getName())
-				.orElseThrow(() -> new NotFoundMemberException());
+		return memberRepository.findById(model.getWriter()).getName();
 	}
 }
