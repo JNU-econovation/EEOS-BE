@@ -29,6 +29,10 @@ public interface ProgramRepository extends JpaRepository<ProgramEntity, Long> {
 			"SELECT p FROM ProgramEntity p WHERE p.programDate >=:now AND p.isDeleted=false ORDER BY p.programDate DESC, p.title ASC ")
 	Page<ProgramEntity> findAllByIng(@Param("now") Timestamp now, Pageable pageable);
 
+	@Query(
+			"SELECT p FROM ProgramEntity p WHERE p.programDate >=:startDate AND p.programDate <=:endDate AND p.isDeleted=false ORDER BY p.programDate DESC, p.title ASC ")
+	Page<ProgramEntity> findByDateRange(@Param("startDate") Timestamp startDate, @Param("endDate") Timestamp endDate, Pageable pageable);
+
 	@Modifying
 	@Query("UPDATE ProgramEntity p SET p.attendMode=:attendMode WHERE p.id=:programId")
 	Integer changeAttendMode(
