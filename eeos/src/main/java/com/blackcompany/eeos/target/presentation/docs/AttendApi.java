@@ -1,5 +1,6 @@
 package com.blackcompany.eeos.target.presentation.docs;
 
+import com.blackcompany.eeos.auth.presentation.support.Member;
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponse;
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponseBody.SuccessBody;
 import com.blackcompany.eeos.target.application.dto.AttendInfoResponse;
@@ -11,6 +12,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "행사 참여", description = "행사 참여 관련 API")
 public interface AttendApi {
@@ -48,6 +51,11 @@ public interface AttendApi {
 			summary = "나의 출석 현황 정보들 조회",
 			description = "MemberId를 사용하여 나의 출석 현황 정보들을 가져온다."
 	)
-	ApiResponse<SuccessBody<AttendInfosWithProgramResponses>>
-		getMyAttendInfosWithProgram(@Parameter(hidden = true) Long memberId);
+	@GetMapping("/api/attend/programs")
+	ApiResponse<SuccessBody<AttendInfosWithProgramResponses>> getMyAttendInfosWithProgram(
+			@Member Long memberId,
+			@RequestParam("startDate") Long startDate,
+			@RequestParam("endDate") Long endDate,
+			@RequestParam("size") int size,
+			@RequestParam("page") int page);
 }
