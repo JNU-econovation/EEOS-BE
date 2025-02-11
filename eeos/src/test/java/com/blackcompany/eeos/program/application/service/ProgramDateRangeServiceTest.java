@@ -6,9 +6,12 @@ import static org.mockito.Mockito.verify;
 
 import com.blackcompany.eeos.program.persistence.ProgramEntity;
 import com.blackcompany.eeos.program.persistence.ProgramRepository;
+import jakarta.persistence.criteria.CriteriaBuilder.In;
 import java.sql.Timestamp;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.bouncycastle.util.Times;
 import org.junit.jupiter.api.DisplayName;
@@ -32,8 +35,8 @@ public class ProgramDateRangeServiceTest {
     @DisplayName("특정범위_사이의_행사_리스트를_조회한다.")
     void get_program_date_range() {
         // given
-        Timestamp startDate = Timestamp.from(Instant.from(LocalDate.of(2024,9,1)));
-        Timestamp endDate = Timestamp.from(Instant.from(LocalDate.of(2024,9,10)));
+        Timestamp startDate = Timestamp.from(Instant.now());
+        Timestamp endDate = Timestamp.from(Instant.now().plus(Duration.ofDays(1)));
         int page = 1;
         int size = 1;
         Pageable pageable = PageRequest.of(page, size);
