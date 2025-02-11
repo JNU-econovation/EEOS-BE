@@ -21,6 +21,7 @@ public class AttendModel implements AbstractModel, MemberIdModel {
 	private Long memberId;
 	private Long programId;
 	private AttendStatus status;
+	private Integer PenaltyScore;
 
 	public AttendModel changeStatus(String afterStatus) {
 		validateChange(afterStatus);
