@@ -74,7 +74,13 @@ public class AuthController implements AuthApi {
 		TokenModel tokenModel = loginUsecase.login(oauthServerType, code, formatUri);
 		TokenResponse response = generateTokenResponse(tokenModel, httpResponse);
 
-		return ApiResponseGenerator.success(response, HttpStatus.CREATED, MessageCode.CREATE);
+		// 마이그레이션 필요 체크 - 임시 코드
+		HttpHeaders headers = new HttpHeaders();
+		if ("slack".equals(oauthServerType)) {
+			headers.add("Migration-Required", "true");
+		}
+
+		return ApiResponseGenerator.success(response, HttpStatus.CREATED, headers, MessageCode.CREATE);
 	}
 
 	@Override
