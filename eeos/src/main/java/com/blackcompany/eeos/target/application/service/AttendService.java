@@ -143,7 +143,7 @@ public class AttendService
 			Long memberId, Long startDate, Long endDate, Integer size, Integer page) {
 
 		validateParameter(startDate, endDate, size, page);
-		
+
 		// 필요한 정보 : ProgramModel , AttendModel, MemberId
 		List<ProgramModel> programs =
 				programDateRangeService.getPrograms(startDate, endDate, size, page);
@@ -168,6 +168,11 @@ public class AttendService
 	}
 
 	private void validateParameter(Long startDate, Long endDate, Integer size, Integer page) {
+		if (startDate == null || endDate == null) {
+			startDate = Instant.from(LocalDateTime.of(1970, 1, 1, 0, 0)).toEpochMilli();
+			endDate = Instant.from(LocalDateTime.of(2025, 07, 15, 0, 0)).toEpochMilli();
+		}
+
 		if (size == null || page == null) {
 			throw new IllegalArgumentException();
 		}
@@ -184,10 +189,7 @@ public class AttendService
 			throw new IllegalArgumentException();
 		}
 
-		if (startDate == null || endDate == null) {
-			startDate = Instant.from(LocalDateTime.of(1970, 1, 1, 0, 0)).toEpochMilli();
-			endDate = Instant.from(LocalDateTime.of(2025, 07, 15, 0, 0)).toEpochMilli();
-		}
+
 	}
 
 	private void validateAttend(ProgramModel programModel, AttendModel attendModel) {
