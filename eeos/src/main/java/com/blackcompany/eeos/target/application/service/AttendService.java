@@ -144,6 +144,16 @@ public class AttendService
 	public List<AttendInfoWithProgramResponse> findMyAttendInfo(
 			Long memberId, Long startDate, Long endDate, Integer size, Integer page) {
 
+		if (startDate == null || endDate == null) {
+			ZoneId asiaSeoul = ZoneId.of("Asia/Seoul");
+
+			LocalDateTime start = LocalDateTime.of(2025, 3, 1, 0, 0);
+			LocalDateTime end = LocalDateTime.of(2025, 7, 15, 0, 0);
+
+			startDate = Instant.from(ZonedDateTime.of(start, asiaSeoul)).toEpochMilli();
+			endDate = Instant.from(ZonedDateTime.of(end, asiaSeoul)).toEpochMilli();
+		}
+
 		validateParameter(startDate, endDate, size, page);
 
 		// 필요한 정보 : ProgramModel , AttendModel, MemberId
@@ -170,17 +180,7 @@ public class AttendService
 	}
 
 	private void validateParameter(Long startDate, Long endDate, Integer size, Integer page) {
-		if (startDate == null || endDate == null) {
-			ZoneId asiaSeoul = ZoneId.of("Asia/Seoul");
-
-			LocalDateTime start = LocalDateTime.of(2025, 3, 1, 0, 0);
-			LocalDateTime end = LocalDateTime.of(2025, 7, 15, 0, 0);
-
-			startDate = Instant.from(ZonedDateTime.of(start, asiaSeoul)).toEpochMilli();
-			endDate = Instant.from(ZonedDateTime.of(end, asiaSeoul)).toEpochMilli();
-		}
-
-		if (size == null || page == null) {
+		if (startDate == null || endDate == null || size == null || page == null) {
 			throw new IllegalArgumentException();
 		}
 
