@@ -87,8 +87,8 @@ public class AttendController implements AttendApi {
 	@Override
 	public ApiResponse<SuccessBody<AttendInfosWithProgramResponses>> getMyAttendInfosWithProgram(
 			@Member Long memberId,
-			@RequestParam("startDate") Long startDate,
-			@RequestParam("endDate") Long endDate,
+			@RequestParam(value = "startDate", required = false) Long startDate,
+			@RequestParam(value = "endDate", required = false) Long endDate,
 			@RequestParam("size") int size,
 			@RequestParam("page") int page) {
 		List<AttendInfoWithProgramResponse> responses =
