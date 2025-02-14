@@ -91,7 +91,9 @@ public class AttendController implements AttendApi {
 			@RequestParam("endDate") Long endDate,
 			@RequestParam("size") int size,
 			@RequestParam("page") int page) {
-		List<AttendInfoWithProgramResponse> responses = getAttendantInfoUsecase.findMyAttendInfo(memberId, startDate, endDate, size, page);
-		return ApiResponseGenerator.success(new AttendInfosWithProgramResponses(responses), HttpStatus.OK, MessageCode.GET);
+		List<AttendInfoWithProgramResponse> responses =
+				getAttendantInfoUsecase.findMyAttendInfo(memberId, startDate, endDate, size, page);
+		return ApiResponseGenerator.success(
+				new AttendInfosWithProgramResponses(responses), HttpStatus.OK, MessageCode.GET);
 	}
 }

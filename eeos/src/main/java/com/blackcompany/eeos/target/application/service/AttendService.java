@@ -10,7 +10,6 @@ import com.blackcompany.eeos.program.application.model.ProgramAttendMode;
 import com.blackcompany.eeos.program.application.model.ProgramModel;
 import com.blackcompany.eeos.program.application.model.converter.ProgramEntityConverter;
 import com.blackcompany.eeos.program.application.service.ProgramDateRangeService;
-import com.blackcompany.eeos.program.persistence.ProgramEntity;
 import com.blackcompany.eeos.program.persistence.ProgramRepository;
 import com.blackcompany.eeos.target.application.dto.AttendInfoActiveStatusResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfoResponse;
@@ -42,12 +41,8 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.query.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,7 +53,7 @@ public class AttendService
 		implements GetAttendantInfoUsecase,
 				ChangeAttendStatusUsecase,
 				GetAttendStatusUsecase,
-				GetAttendAllInfoSortActiveStatusUsecase{
+				GetAttendAllInfoSortActiveStatusUsecase {
 
 	private final AttendRepository attendRepository;
 	private final MemberRepository memberRepository;
@@ -144,23 +139,27 @@ public class AttendService
 	}
 
 	@Override
-	public List<AttendInfoWithProgramResponse> findMyAttendInfo(Long memberId, Long startDate,
-																Long endDate, Integer size, Integer page) {
+	public List<AttendInfoWithProgramResponse> findMyAttendInfo(
+			Long memberId, Long startDate, Long endDate, Integer size, Integer page) {
 
 		validateParameter(startDate, endDate, size, page);
-
+		
 		// 필요한 정보 : ProgramModel , AttendModel, MemberId
-		List<ProgramModel> programs = programDateRangeService.getPrograms(startDate, endDate, size, page);
+		List<ProgramModel> programs =
+				programDateRangeService.getPrograms(startDate, endDate, size, page);
 
-		if(!programs.isEmpty()){
+		if (!programs.isEmpty()) {
 			return programs.stream()
-					.map(program -> {
-						AttendModel attendModel = attendRepository.findByProgramIdAndMemberId(program.getId(), memberId)
-								.map(attendEntityConverter::from)
-								.orElse(null);
-						if(attendModel == null) return null;
-                        return attendInfoWithProgramConverter.from(attendModel, program);
-					})
+					.map(
+							program -> {
+								AttendModel attendModel =
+										attendRepository
+												.findByProgramIdAndMemberId(program.getId(), memberId)
+												.map(attendEntityConverter::from)
+												.orElse(null);
+								if (attendModel == null) return null;
+								return attendInfoWithProgramConverter.from(attendModel, program);
+							})
 					.filter(Objects::nonNull)
 					.toList();
 		}
@@ -185,11 +184,10 @@ public class AttendService
 			throw new IllegalArgumentException();
 		}
 
-		if(startDate == null || endDate == null){
+		if (startDate == null || endDate == null) {
 			startDate = Instant.from(LocalDateTime.of(1970, 1, 1, 0, 0)).toEpochMilli();
-			endDate = Instant.from(LocalDateTime.of(2025,07,15,0,0)).toEpochMilli();
+			endDate = Instant.from(LocalDateTime.of(2025, 07, 15, 0, 0)).toEpochMilli();
 		}
-
 	}
 
 	private void validateAttend(ProgramModel programModel, AttendModel attendModel) {
