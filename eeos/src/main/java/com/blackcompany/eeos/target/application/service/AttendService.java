@@ -9,14 +9,18 @@ import com.blackcompany.eeos.program.application.exception.NotFoundProgramExcept
 import com.blackcompany.eeos.program.application.model.ProgramAttendMode;
 import com.blackcompany.eeos.program.application.model.ProgramModel;
 import com.blackcompany.eeos.program.application.model.converter.ProgramEntityConverter;
+import com.blackcompany.eeos.program.application.service.ProgramDateRangeService;
+import com.blackcompany.eeos.program.persistence.ProgramEntity;
 import com.blackcompany.eeos.program.persistence.ProgramRepository;
 import com.blackcompany.eeos.target.application.dto.AttendInfoActiveStatusResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfoResponse;
+import com.blackcompany.eeos.target.application.dto.AttendInfoWithProgramResponse;
 import com.blackcompany.eeos.target.application.dto.ChangeAttendStatusResponse;
 import com.blackcompany.eeos.target.application.dto.QueryAttendActiveStatusResponse;
 import com.blackcompany.eeos.target.application.dto.QueryAttendStatusResponse;
 import com.blackcompany.eeos.target.application.dto.converter.AttendInfoActiveStatusConverter;
 import com.blackcompany.eeos.target.application.dto.converter.AttendInfoConverter;
+import com.blackcompany.eeos.target.application.dto.converter.AttendInfoWithProgramConverter;
 import com.blackcompany.eeos.target.application.dto.converter.ChangeAttendStatusConverter;
 import com.blackcompany.eeos.target.application.dto.converter.QueryAttendActiveStatusConverter;
 import com.blackcompany.eeos.target.application.dto.converter.QueryAttendStatusResponseConverter;
@@ -33,9 +37,17 @@ import com.blackcompany.eeos.target.application.usecase.GetAttendStatusUsecase;
 import com.blackcompany.eeos.target.application.usecase.GetAttendantInfoUsecase;
 import com.blackcompany.eeos.target.persistence.AttendEntity;
 import com.blackcompany.eeos.target.persistence.AttendRepository;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.query.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,7 +58,7 @@ public class AttendService
 		implements GetAttendantInfoUsecase,
 				ChangeAttendStatusUsecase,
 				GetAttendStatusUsecase,
-				GetAttendAllInfoSortActiveStatusUsecase {
+				GetAttendAllInfoSortActiveStatusUsecase{
 
 	private final AttendRepository attendRepository;
 	private final MemberRepository memberRepository;
@@ -59,6 +71,8 @@ public class AttendService
 	private final QueryAttendStatusResponseConverter attendStatusResponseConverter;
 	private final AttendInfoActiveStatusConverter attendInfoActiveStatusConverter;
 	private final QueryAttendActiveStatusConverter queryAttendActiveStatusConverter;
+	private final AttendInfoWithProgramConverter attendInfoWithProgramConverter;
+	private final ProgramDateRangeService programDateRangeService;
 	private final ProgramRepository programRepository;
 	private final ProgramEntityConverter programEntityConverter;
 
@@ -127,6 +141,55 @@ public class AttendService
 						.collect(Collectors.toList());
 
 		return queryAttendActiveStatusConverter.of(response);
+	}
+
+	@Override
+	public List<AttendInfoWithProgramResponse> findMyAttendInfo(Long memberId, Long startDate,
+																Long endDate, Integer size, Integer page) {
+
+		validateParameter(startDate, endDate, size, page);
+
+		// 필요한 정보 : ProgramModel , AttendModel, MemberId
+		List<ProgramModel> programs = programDateRangeService.getPrograms(startDate, endDate, size, page);
+
+		if(!programs.isEmpty()){
+			return programs.stream()
+					.map(program -> {
+						AttendModel attendModel = attendRepository.findByProgramIdAndMemberId(program.getId(), memberId)
+								.map(attendEntityConverter::from)
+								.orElse(null);
+						if(attendModel == null) return null;
+                        return attendInfoWithProgramConverter.from(attendModel, program);
+					})
+					.filter(Objects::nonNull)
+					.toList();
+		}
+
+		return Collections.emptyList();
+	}
+
+	private void validateParameter(Long startDate, Long endDate, Integer size, Integer page) {
+		if (size == null || page == null) {
+			throw new IllegalArgumentException();
+		}
+
+		if (startDate > endDate) {
+			throw new IllegalArgumentException();
+		}
+
+		if (size < 0 || page < 0) {
+			throw new IllegalArgumentException();
+		}
+
+		if (size == 0 || page == 0) {
+			throw new IllegalArgumentException();
+		}
+
+		if(startDate == null || endDate == null){
+			startDate = Instant.from(LocalDateTime.of(1970, 1, 1, 0, 0)).toEpochMilli();
+			endDate = Instant.from(LocalDateTime.of(2025,07,15,0,0)).toEpochMilli();
+		}
+
 	}
 
 	private void validateAttend(ProgramModel programModel, AttendModel attendModel) {
