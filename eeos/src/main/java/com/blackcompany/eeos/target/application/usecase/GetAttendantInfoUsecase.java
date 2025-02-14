@@ -18,8 +18,8 @@ public interface GetAttendantInfoUsecase {
 	QueryAttendStatusResponse findAttendInfo(final Long programId, final String attendStatus);
 
 	List<AttendInfoWithProgramResponse> findMyAttendInfo(final Long memberId,
-														 final long startDate,
-														 final long endDate,
-														 final int size,
-														 final int page);
+														 final Long startDate,
+														 final Long endDate,
+														 final Integer size,
+														 final Integer page);
 }
