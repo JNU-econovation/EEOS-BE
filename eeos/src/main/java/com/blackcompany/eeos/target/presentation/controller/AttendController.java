@@ -83,7 +83,7 @@ public class AttendController implements AttendApi {
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
 	}
 
-	@GetMapping("/api/attend/programs")
+	@GetMapping("/attend/programs")
 	@Override
 	public ApiResponse<SuccessBody<AttendInfosWithProgramResponses>> getMyAttendInfosWithProgram(
 			@Member Long memberId,
