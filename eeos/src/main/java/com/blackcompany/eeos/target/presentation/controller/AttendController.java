@@ -6,6 +6,8 @@ import com.blackcompany.eeos.common.presentation.respnose.ApiResponseBody.Succes
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponseGenerator;
 import com.blackcompany.eeos.common.presentation.respnose.MessageCode;
 import com.blackcompany.eeos.target.application.dto.AttendInfoResponse;
+import com.blackcompany.eeos.target.application.dto.AttendInfoWithProgramResponse;
+import com.blackcompany.eeos.target.application.dto.AttendInfosWithProgramResponses;
 import com.blackcompany.eeos.target.application.dto.ChangeAttendStatusResponse;
 import com.blackcompany.eeos.target.application.dto.QueryAttendActiveStatusResponse;
 import com.blackcompany.eeos.target.application.dto.QueryAttendStatusResponse;
@@ -79,5 +81,17 @@ public class AttendController implements AttendApi {
 		QueryAttendActiveStatusResponse response =
 				getAttendAllInfoSortActiveStatusUsecase.getAttendInfo(programId, activeStatus);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
+	}
+
+	@GetMapping("/api/attend/programs")
+	@Override
+	public ApiResponse<SuccessBody<AttendInfosWithProgramResponses>> getMyAttendInfosWithProgram(
+			@Member Long memberId,
+			@RequestParam("startDate") Long startDate,
+			@RequestParam("endDate") Long endDate,
+			@RequestParam("size") int size,
+			@RequestParam("page") int page) {
+		List<AttendInfoWithProgramResponse> responses = getAttendantInfoUsecase.findMyAttendInfo(memberId, startDate, endDate, size, page);
+		return ApiResponseGenerator.success(new AttendInfosWithProgramResponses(responses), HttpStatus.OK, MessageCode.GET);
 	}
 }
