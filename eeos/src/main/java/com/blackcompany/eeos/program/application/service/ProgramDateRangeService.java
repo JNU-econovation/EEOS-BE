@@ -8,6 +8,7 @@ import com.blackcompany.eeos.program.persistence.ProgramRepository;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,10 +26,12 @@ public class ProgramDateRangeService {
 	public List<ProgramModel> getPrograms(Long startDate, Long endDate, int size, int page) {
 		Pageable pageable = PageRequest.of(page, size);
 
+        ZoneId asiaSeoul = ZoneId.of("Asia/Seoul"); // TODO: 하드 코딩이 아니라, 외부에서 관리할 수 없을까..?
+
 		Timestamp startDateTimestamp =
-				DateConverter.toEpochSecond(LocalDate.from(Instant.ofEpochMilli(startDate)));
+                DateConverter.toEpochSecond(Instant.ofEpochMilli(startDate).atZone(asiaSeoul).toLocalDate());
 		Timestamp endDateTimestamp =
-				DateConverter.toEpochSecond(LocalDate.from(Instant.ofEpochMilli(endDate)));
+                DateConverter.toEpochSecond(Instant.ofEpochMilli(endDate).atZone(asiaSeoul).toLocalDate());
 
 		Page<ProgramEntity> pages =
 				programRepository.findByDateRange(startDateTimestamp, endDateTimestamp, pageable);
