@@ -38,6 +38,8 @@ import com.blackcompany.eeos.target.persistence.AttendEntity;
 import com.blackcompany.eeos.target.persistence.AttendRepository;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -169,8 +171,13 @@ public class AttendService
 
 	private void validateParameter(Long startDate, Long endDate, Integer size, Integer page) {
 		if (startDate == null || endDate == null) {
-			startDate = Instant.from(LocalDateTime.of(1970, 1, 1, 0, 0)).toEpochMilli();
-			endDate = Instant.from(LocalDateTime.of(2025, 07, 15, 0, 0)).toEpochMilli();
+			ZoneId asiaSeoul = ZoneId.of("Asia/Seoul");
+
+			LocalDateTime start = LocalDateTime.of(2025, 3, 1, 0, 0);
+			LocalDateTime end = LocalDateTime.of(2025, 7, 15, 0, 0);
+
+			startDate = Instant.from(ZonedDateTime.of(start, asiaSeoul)).toEpochMilli();
+			endDate = Instant.from(ZonedDateTime.of(end, asiaSeoul)).toEpochMilli();
 		}
 
 		if (size == null || page == null) {
@@ -188,8 +195,6 @@ public class AttendService
 		if (size == 0 || page == 0) {
 			throw new IllegalArgumentException();
 		}
-
-
 	}
 
 	private void validateAttend(ProgramModel programModel, AttendModel attendModel) {

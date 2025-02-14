@@ -19,20 +19,20 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ProgramDateRangeService {
 
-    private final ProgramRepository programRepository;
-    private final ProgramEntityConverter programEntityConverter;
+	private final ProgramRepository programRepository;
+	private final ProgramEntityConverter programEntityConverter;
 
-    public List<ProgramModel> getPrograms(long startDate, long endDate, int size, int page) {
-        Pageable pageable = PageRequest.of(page, size);
+	public List<ProgramModel> getPrograms(Long startDate, Long endDate, int size, int page) {
+		Pageable pageable = PageRequest.of(page, size);
 
-        Timestamp startDateTimestamp = DateConverter.toEpochSecond(LocalDate.from(Instant.ofEpochMilli(startDate)));
-        Timestamp endDateTimestamp = DateConverter.toEpochSecond(LocalDate.from(Instant.ofEpochMilli(endDate)));
+		Timestamp startDateTimestamp =
+				DateConverter.toEpochSecond(LocalDate.from(Instant.ofEpochMilli(startDate)));
+		Timestamp endDateTimestamp =
+				DateConverter.toEpochSecond(LocalDate.from(Instant.ofEpochMilli(endDate)));
 
-        Page<ProgramEntity> pages = programRepository.findByDateRange(startDateTimestamp, endDateTimestamp, pageable);
+		Page<ProgramEntity> pages =
+				programRepository.findByDateRange(startDateTimestamp, endDateTimestamp, pageable);
 
-        return pages.get()
-                .map(programEntityConverter::from)
-                .toList();
-    }
-
+		return pages.get().map(programEntityConverter::from).toList();
+	}
 }
