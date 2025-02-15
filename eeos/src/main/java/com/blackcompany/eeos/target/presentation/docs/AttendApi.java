@@ -42,4 +42,9 @@ public interface AttendApi {
 					"PathVariable에 담긴 프로그램 정보와 RequestParam에 담긴 activeStatus를 이용해 프로그램의 참석정보를 회원상태 기준으로 불러온다.")
 	ApiResponse<SuccessBody<QueryAttendActiveStatusResponse>>
 			getAttendAllInfoByProgramSortActiveStatus(Long programId, String activeStatus);
+
+	@Operation(
+			summary = "파이어핑거 top10 회원 조회",
+			description = "PathVariable에 담긴 프로그램를 이용해 특정 프로그램에서 출석을 빠르게 한 사용자의 정보를 가져온다.")
+	ApiResponse<SuccessBody<List<AttendInfoResponse>>> getAttendInfoByTop10(Long programId);
 }
