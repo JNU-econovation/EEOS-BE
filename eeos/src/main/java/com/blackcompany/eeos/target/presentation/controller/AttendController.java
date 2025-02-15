@@ -80,4 +80,12 @@ public class AttendController implements AttendApi {
 				getAttendAllInfoSortActiveStatusUsecase.getAttendInfo(programId, activeStatus);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
 	}
+
+	@Override
+	@GetMapping("/attend/programs/fire-finger/{programId}")
+	public ApiResponse<SuccessBody<List<AttendInfoResponse>>> getAttendInfoByTop10(
+			@PathVariable("programId") Long programId) {
+		List<AttendInfoResponse> response = getAttendantInfoUsecase.findFireFingerMembers(programId);
+		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
+	}
 }
