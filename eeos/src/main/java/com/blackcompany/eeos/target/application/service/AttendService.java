@@ -5,7 +5,6 @@ import com.blackcompany.eeos.member.application.model.ActiveStatus;
 import com.blackcompany.eeos.member.application.model.MemberModel;
 import com.blackcompany.eeos.member.application.model.converter.MemberEntityConverter;
 import com.blackcompany.eeos.member.application.service.QueryMemberService;
-import com.blackcompany.eeos.member.persistence.MemberEntity;
 import com.blackcompany.eeos.member.persistence.MemberRepository;
 import com.blackcompany.eeos.program.application.exception.NotFoundProgramException;
 import com.blackcompany.eeos.program.application.model.ProgramAttendMode;
@@ -135,19 +134,27 @@ public class AttendService
 	public List<AttendInfoResponse> findFireFingerMembers(final Long programId) {
 		validateExistsProgram(programId);
 
-		List<AttendEntity> attendEntities =
-				attendRepository.findTop10ByProgramIdAndStatusOrderByUpdatedDateAsc(
-						programId, AttendStatus.ATTEND);
+		List<AttendModel> attendModels = findTop10Attendants(programId);
 
-		return attendEntities.stream()
+
+
+		return attendModels.stream()
 				.map(
 						attend -> {
-							MemberEntity member =
+							MemberModel member =
 									memberRepository
 											.findById(attend.getMemberId())
+											.map(memberEntityConverter::from)
 											.orElseThrow(NotFoundMemberException::new);
-							return attendInfoConverter.from(member, attend.getStatus().getStatus());
+							return attendInfoConverter.from(member, attend.getStatus());
 						})
+				.collect(Collectors.toList());
+	}
+
+	private List<AttendModel> findTop10Attendants(Long programId) {
+		return attendRepository
+				.findTop10ByProgramIdAndStatusOrderByUpdatedDateAsc(programId, AttendStatus.ATTEND).stream()
+				.map(attendEntityConverter::from)
 				.collect(Collectors.toList());
 	}
 
@@ -243,4 +250,6 @@ public class AttendService
 			throw new NotFoundProgramException(programId);
 		}
 	}
+
+
 }
