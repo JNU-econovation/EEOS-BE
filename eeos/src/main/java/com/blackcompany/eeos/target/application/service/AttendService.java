@@ -158,7 +158,7 @@ public class AttendService
 
 		// 필요한 정보 : ProgramModel , AttendModel, MemberId
 		List<ProgramModel> programs =
-				programDateRangeService.getPrograms(startDate, endDate, size, page);
+				programDateRangeService.getPrograms(startDate, endDate, size, page-1);
 
 		if (!programs.isEmpty()) {
 			return programs.stream()
