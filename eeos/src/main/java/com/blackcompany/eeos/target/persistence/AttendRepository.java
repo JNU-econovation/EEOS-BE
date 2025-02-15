@@ -38,4 +38,7 @@ public interface AttendRepository extends JpaRepository<AttendEntity, Long> {
 			@Param("programId") Long programId,
 			@Param("beforeStatus") AttendStatus beforeStatus,
 			@Param("afterStatus") AttendStatus afterStatus);
+
+	List<AttendEntity> findTop10ByProgramIdAndStatusOrderByUpdatedDateAsc(
+			Long programId, AttendStatus status);
 }
