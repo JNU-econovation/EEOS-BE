@@ -1,9 +1,11 @@
 package com.blackcompany.eeos.target.application.service;
 
+import com.blackcompany.eeos.member.application.exception.NotFoundMemberException;
 import com.blackcompany.eeos.member.application.model.ActiveStatus;
 import com.blackcompany.eeos.member.application.model.MemberModel;
 import com.blackcompany.eeos.member.application.model.converter.MemberEntityConverter;
 import com.blackcompany.eeos.member.application.service.QueryMemberService;
+import com.blackcompany.eeos.member.persistence.MemberEntity;
 import com.blackcompany.eeos.member.persistence.MemberRepository;
 import com.blackcompany.eeos.program.application.exception.NotFoundProgramException;
 import com.blackcompany.eeos.program.application.model.ProgramAttendMode;
@@ -127,6 +129,26 @@ public class AttendService
 						.collect(Collectors.toList());
 
 		return queryAttendActiveStatusConverter.of(response);
+	}
+
+	@Override
+	public List<AttendInfoResponse> findFireFingerMembers(final Long programId) {
+		validateExistsProgram(programId);
+
+		List<AttendEntity> attendEntities =
+				attendRepository.findTop10ByProgramIdAndStatusOrderByUpdatedDateAsc(
+						programId, AttendStatus.ATTEND);
+
+		return attendEntities.stream()
+				.map(
+						attend -> {
+							MemberEntity member =
+									memberRepository
+											.findById(attend.getMemberId())
+											.orElseThrow(NotFoundMemberException::new);
+							return attendInfoConverter.from(member, attend.getStatus().getStatus());
+						})
+				.collect(Collectors.toList());
 	}
 
 	private void validateAttend(ProgramModel programModel, AttendModel attendModel) {
