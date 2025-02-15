@@ -8,13 +8,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class AttendInfoWithProgramConverter {
 
-    public AttendInfoWithProgramResponse from(AttendModel attendModel, ProgramModel programModel){
-        return AttendInfoWithProgramResponse.builder()
-                .attendStatus(attendModel.getStatus())
-                .programId(programModel.getId())
-                .programStatus(programModel.getProgramStatus())
-                .title(programModel.getTitle())
-                .build();
-    }
-
+	public AttendInfoWithProgramResponse from(AttendModel attendModel, ProgramModel programModel) {
+		return AttendInfoWithProgramResponse.builder()
+				.attendStatus(attendModel.getStatus())
+				.programId(programModel.getId())
+				.programStatus(programModel.getProgramStatus())
+				.title(programModel.getTitle())
+				.build();
+	}
 }

@@ -5,9 +5,5 @@ import lombok.Builder;
 
 @Builder
 public record AttendInfoWithProgramResponse(
-        Long programId,
-        String title,
-        String programStatus,
-        String attendStatus
-) implements AbstractResponseDto {
-}
+		Long programId, String title, String programStatus, String attendStatus)
+		implements AbstractResponseDto {}
