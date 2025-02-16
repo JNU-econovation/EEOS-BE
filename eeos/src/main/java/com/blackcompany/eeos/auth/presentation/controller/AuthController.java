@@ -4,6 +4,7 @@ import com.blackcompany.eeos.auth.application.domain.TokenModel;
 import com.blackcompany.eeos.auth.application.dto.converter.TokenResponseConverter;
 import com.blackcompany.eeos.auth.application.dto.request.AdditionalInfoApplicationCommand;
 import com.blackcompany.eeos.auth.application.dto.request.EEOSLoginRequest;
+import com.blackcompany.eeos.auth.application.dto.request.OAuthLoginRequestCommand;
 import com.blackcompany.eeos.auth.application.dto.response.TokenResponse;
 import com.blackcompany.eeos.auth.application.usecase.*;
 import com.blackcompany.eeos.auth.presentation.docs.AuthApi;
@@ -71,7 +72,11 @@ public class AuthController implements AuthApi {
 			@RequestParam("redirect_uri") String uri,
 			HttpServletResponse httpResponse) {
 		String formatUri = uri.trim().replaceAll("[\n\r\t ]", "");
-		TokenModel tokenModel = loginUsecase.login(oauthServerType, code, formatUri);
+
+		OAuthLoginRequestCommand command =
+				new OAuthLoginRequestCommand(oauthServerType, code, formatUri);
+		TokenModel tokenModel = loginUsecase.login(command);
+
 		TokenResponse response = generateTokenResponse(tokenModel, httpResponse);
 
 		// 마이그레이션 필요 체크 - 임시 코드

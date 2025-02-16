@@ -4,6 +4,7 @@ import static org.mockito.Mockito.when;
 
 import com.blackcompany.eeos.auth.application.domain.OauthMemberModel;
 import com.blackcompany.eeos.auth.application.domain.OauthServerType;
+import com.blackcompany.eeos.auth.application.dto.request.OAuthLoginRequestCommand;
 import com.blackcompany.eeos.auth.application.support.AuthenticationTokenGenerator;
 import com.blackcompany.eeos.auth.fixture.FakeOauthMember;
 import org.junit.jupiter.api.DisplayName;
@@ -38,7 +39,7 @@ class AuthFacadeServiceTest {
 		when(authService.authenticate(oauthMemberModel)).thenReturn(memberId);
 
 		// when
-		authFacadeService.login(type, authCode, uri);
+		authFacadeService.login(new OAuthLoginRequestCommand(type, authCode, uri));
 
 		// then
 		Mockito.verify(authenticationTokenGenerator).execute(memberId);
