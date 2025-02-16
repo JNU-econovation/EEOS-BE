@@ -25,13 +25,10 @@ public class ProgramDateRangeService {
 	public List<ProgramModel> getPrograms(Long startDate, Long endDate, int size, int page) {
 		Pageable pageable = PageRequest.of(page, size);
 
-		ZoneId asiaSeoul = ZoneId.of("Asia/Seoul"); // TODO: 하드 코딩이 아니라, 외부에서 관리할 수 없을까..?
-
 		Timestamp startDateTimestamp =
-				DateConverter.toEpochSecond(
-						Instant.ofEpochMilli(startDate).atZone(asiaSeoul).toLocalDate());
+				DateConverter.toEpochSecond(DateConverter.toLocalDate(startDate));
 		Timestamp endDateTimestamp =
-				DateConverter.toEpochSecond(Instant.ofEpochMilli(endDate).atZone(asiaSeoul).toLocalDate());
+				DateConverter.toEpochSecond(DateConverter.toLocalDate(endDate));
 
 		Page<ProgramEntity> pages =
 				programRepository.findByDateRange(startDateTimestamp, endDateTimestamp, pageable);
