@@ -1,19 +1,18 @@
 package com.blackcompany.eeos.auth.application.service;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.blackcompany.eeos.auth.application.domain.OauthMemberModel;
+import com.blackcompany.eeos.auth.application.domain.OauthServerType;
 import com.blackcompany.eeos.auth.application.domain.converter.OauthMemberEntityConverter;
+import com.blackcompany.eeos.auth.application.exception.OAuthSignupRestrictedException;
 import com.blackcompany.eeos.auth.application.repository.OAuthMemberRepository;
 import com.blackcompany.eeos.auth.fixture.FakeOauthMember;
-import com.blackcompany.eeos.member.application.model.ActiveStatus;
 import com.blackcompany.eeos.member.application.model.MemberModel;
 import com.blackcompany.eeos.member.application.model.converter.MemberEntityConverter;
 import com.blackcompany.eeos.member.application.repository.MemberRepository;
-import com.blackcompany.eeos.member.fixture.MemberFixture;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,23 +32,77 @@ class AuthServiceTest {
 	@InjectMocks AuthService authService;
 
 	@Test
-	@DisplayName("신규 회원인 경우 oauth에서 가져온 회원 정보를 저장한다.")
-	void login_existing_user() {
+	@DisplayName("슬랙을 통한 신규 회원가입은 불가능하다.")
+	void sign_up_slack_user() {
 		// given
-		OauthMemberModel expectedModel = FakeOauthMember.oauthMemberModel();
-		MemberModel savedMember = MemberFixture.멤버_모델(1L, ActiveStatus.AM);
+		OauthMemberModel slackOAuthMember = FakeOauthMember.oauthMemberModel(OauthServerType.SLACK);
 
-		when(oAuthMemberRepository.findByOauthId(expectedModel.getOauthId()))
+		when(oAuthMemberRepository.findByOauthId(slackOAuthMember.getOauthId()))
 				.thenReturn(Optional.empty());
-		when(memberRepository.save(any())).thenReturn(savedMember);
-		when(oAuthMemberRepository.save(any())).thenReturn(expectedModel);
+
+		// when & then
+		assertThrows(
+				OAuthSignupRestrictedException.class,
+				() -> {
+					authService.authenticate(slackOAuthMember);
+				});
+	}
+
+	@Test
+	@DisplayName("슬랙을 통한 로그인은 가능하다.")
+	void login_slack_user() {
+		// given
+		OauthMemberModel slackOAuthMember = FakeOauthMember.oauthMemberModel(OauthServerType.SLACK, 1L);
+		when(oAuthMemberRepository.findByOauthId(slackOAuthMember.getOauthId()))
+				.thenReturn(Optional.of(slackOAuthMember));
 
 		// when
-		authService.authenticate(expectedModel);
+		Long memberId = authService.authenticate(slackOAuthMember);
 
 		// then
-		assertAll(
-				() -> verify(memberRepository).save(any()),
-				() -> verify(oAuthMemberRepository).save(any()));
+		assertEquals(memberId, 1L);
+	}
+
+	@Test
+	@DisplayName("깃허브를 통한 신규 회원가입은 가능하다.")
+	void sign_up_github_user() {
+		// given
+		OauthMemberModel githubOAuthMember = FakeOauthMember.oauthMemberModel(OauthServerType.GITHUB);
+		MemberModel savedMember =
+				MemberModel.builder()
+						.id(1L)
+						.name(githubOAuthMember.getName())
+						.oauthServerType(OauthServerType.GITHUB)
+						.build();
+
+		OauthMemberModel savedOAuthMember =
+				githubOAuthMember.toBuilder().memberId(savedMember.getId()).build();
+
+		when(oAuthMemberRepository.findByOauthId(githubOAuthMember.getOauthId()))
+				.thenReturn(Optional.empty());
+		when(memberRepository.save(any(MemberModel.class))).thenReturn(savedMember);
+		when(oAuthMemberRepository.save(any(OauthMemberModel.class))).thenReturn(savedOAuthMember);
+
+		// when
+		Long authenticatedMemberId = authService.authenticate(githubOAuthMember);
+
+		// then
+		assertEquals(authenticatedMemberId, savedMember.getId());
+	}
+
+	@Test
+	@DisplayName("깃허브를 통한 로그인은 가능하다.")
+	void login_github_user() {
+		// given
+		OauthMemberModel slackOAuthMember =
+				FakeOauthMember.oauthMemberModel(OauthServerType.GITHUB, 1L);
+		when(oAuthMemberRepository.findByOauthId(slackOAuthMember.getOauthId()))
+				.thenReturn(Optional.of(slackOAuthMember));
+
+		// when
+		Long memberId = authService.authenticate(slackOAuthMember);
+
+		// then
+		assertEquals(memberId, 1L);
 	}
 }

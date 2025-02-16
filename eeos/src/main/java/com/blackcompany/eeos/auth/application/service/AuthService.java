@@ -1,7 +1,9 @@
 package com.blackcompany.eeos.auth.application.service;
 
 import com.blackcompany.eeos.auth.application.domain.OauthMemberModel;
+import com.blackcompany.eeos.auth.application.domain.OauthServerType;
 import com.blackcompany.eeos.auth.application.exception.NotFoundAccountException;
+import com.blackcompany.eeos.auth.application.exception.OAuthSignupRestrictedException;
 import com.blackcompany.eeos.auth.application.repository.OAuthMemberRepository;
 import com.blackcompany.eeos.auth.application.support.EncryptHelper;
 import com.blackcompany.eeos.auth.persistence.AccountRepository;
@@ -34,14 +36,17 @@ public class AuthService {
 	@Transactional
 	public OAuthMemberEntity authenticate(final String loginId, final String password) {
 		String encryptedPassword =
-				accountRepository.findByLoginId(loginId).orElseThrow(() -> new NotFoundAccountException());
+				accountRepository.findByLoginId(loginId).orElseThrow(NotFoundAccountException::new);
 		checkPassword(password, encryptedPassword);
-		return oAuthMemberRepository
-				.findByAccount(loginId)
-				.orElseThrow(() -> new NotFoundAccountException());
+		return oAuthMemberRepository.findByAccount(loginId).orElseThrow(NotFoundAccountException::new);
 	}
 
 	private OauthMemberModel signUpMember(final OauthMemberModel model) {
+		// Slack 신규 유저는 막기
+		if (model.getOauthServerType() == OauthServerType.SLACK) {
+			throw new OAuthSignupRestrictedException(OauthServerType.SLACK.getOauthServer());
+		}
+
 		MemberModel member =
 				MemberModel.builder()
 						.name(model.getName())

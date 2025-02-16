@@ -3,6 +3,7 @@ package com.blackcompany.eeos.auth.application.service;
 import static org.mockito.Mockito.when;
 
 import com.blackcompany.eeos.auth.application.domain.OauthMemberModel;
+import com.blackcompany.eeos.auth.application.domain.OauthServerType;
 import com.blackcompany.eeos.auth.application.support.AuthenticationTokenGenerator;
 import com.blackcompany.eeos.auth.fixture.FakeOauthMember;
 import org.junit.jupiter.api.DisplayName;
@@ -30,7 +31,8 @@ class AuthFacadeServiceTest {
 		Long memberId = 1L;
 		String uri = "uri";
 
-		OauthMemberModel oauthMemberModel = FakeOauthMember.oauthMemberModel();
+		OauthMemberModel oauthMemberModel =
+				FakeOauthMember.oauthMemberModel(OauthServerType.SLACK, memberId);
 
 		when(oauthClientService.getOauthMember(type, authCode, uri)).thenReturn(oauthMemberModel);
 		when(authService.authenticate(oauthMemberModel)).thenReturn(memberId);
