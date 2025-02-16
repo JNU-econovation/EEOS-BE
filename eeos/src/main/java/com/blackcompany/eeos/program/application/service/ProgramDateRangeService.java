@@ -6,8 +6,6 @@ import com.blackcompany.eeos.program.application.model.converter.ProgramEntityCo
 import com.blackcompany.eeos.program.persistence.ProgramEntity;
 import com.blackcompany.eeos.program.persistence.ProgramRepository;
 import java.sql.Timestamp;
-import java.time.Instant;
-import java.time.ZoneId;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,8 +25,7 @@ public class ProgramDateRangeService {
 
 		Timestamp startDateTimestamp =
 				DateConverter.toEpochSecond(DateConverter.toLocalDate(startDate));
-		Timestamp endDateTimestamp =
-				DateConverter.toEpochSecond(DateConverter.toLocalDate(endDate));
+		Timestamp endDateTimestamp = DateConverter.toEpochSecond(DateConverter.toLocalDate(endDate));
 
 		Page<ProgramEntity> pages =
 				programRepository.findByDateRange(startDateTimestamp, endDateTimestamp, pageable);

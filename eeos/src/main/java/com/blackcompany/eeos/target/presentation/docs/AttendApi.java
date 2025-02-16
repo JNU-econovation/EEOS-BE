@@ -15,7 +15,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "행사 참여", description = "행사 참여 관련 API")
 public interface AttendApi {
@@ -52,6 +51,5 @@ public interface AttendApi {
 	@Operation(summary = "나의 출석 현황 정보들 조회", description = "MemberId를 사용하여 나의 출석 현황 정보들을 가져온다.")
 	@GetMapping("/api/attend/programs")
 	ApiResponse<SuccessBody<AttendInfosWithProgramResponses>> getMyAttendInfosWithProgram(
-			@Member Long memberId,
-			@Valid AttendInfosSearchRequest request);
+			@Member Long memberId, @Valid AttendInfosSearchRequest request);
 }

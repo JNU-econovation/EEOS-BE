@@ -88,8 +88,7 @@ public class AttendController implements AttendApi {
 	@GetMapping("/attend/programs")
 	@Override
 	public ApiResponse<SuccessBody<AttendInfosWithProgramResponses>> getMyAttendInfosWithProgram(
-			@Member Long memberId,
-			@Valid AttendInfosSearchRequest request) {
+			@Member Long memberId, @Valid AttendInfosSearchRequest request) {
 		List<AttendInfoWithProgramResponse> responses =
 				getAttendantInfoUsecase.findMyAttendInfo(memberId, request);
 		return ApiResponseGenerator.success(
