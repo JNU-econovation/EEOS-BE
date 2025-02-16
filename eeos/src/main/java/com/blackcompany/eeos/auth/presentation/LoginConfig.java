@@ -5,6 +5,7 @@ import com.blackcompany.eeos.auth.presentation.interceptor.AuthInterceptor;
 import com.blackcompany.eeos.auth.presentation.support.CookieTokenExtractor;
 import com.blackcompany.eeos.auth.presentation.support.HeaderTokenExtractor;
 import com.blackcompany.eeos.auth.presentation.support.MemberArgumentResolver;
+import com.blackcompany.eeos.auth.presentation.support.VerificationAuthorizationResolver;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +18,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @RequiredArgsConstructor
 public class LoginConfig implements WebMvcConfigurer {
 	private final MemberArgumentResolver memberArgumentResolver;
+	private final VerificationAuthorizationResolver verificationAuthorizationResolver;
 	private final TokenResolver tokenResolver;
 
 	@Override
@@ -34,7 +36,7 @@ public class LoginConfig implements WebMvcConfigurer {
 
 	@Override
 	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-		resolvers.add(memberArgumentResolver);
+		resolvers.addAll(List.of(memberArgumentResolver, verificationAuthorizationResolver));
 	}
 
 	@Bean
