@@ -6,8 +6,5 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 @DataJpaTest
 public class ProgramRangeTest {
 
-    @Autowired ProgramRepository programRepository;
-
-
-
+	@Autowired ProgramRepository programRepository;
 }
