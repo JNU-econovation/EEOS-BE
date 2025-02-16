@@ -7,6 +7,7 @@ import com.blackcompany.eeos.common.presentation.respnose.ApiResponseGenerator;
 import com.blackcompany.eeos.common.presentation.respnose.MessageCode;
 import com.blackcompany.eeos.target.application.dto.AttendInfoResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfoWithProgramResponse;
+import com.blackcompany.eeos.target.application.dto.AttendInfosSearchRequest;
 import com.blackcompany.eeos.target.application.dto.AttendInfosWithProgramResponses;
 import com.blackcompany.eeos.target.application.dto.ChangeAttendStatusResponse;
 import com.blackcompany.eeos.target.application.dto.QueryAttendActiveStatusResponse;
@@ -16,6 +17,7 @@ import com.blackcompany.eeos.target.application.usecase.GetAttendAllInfoSortActi
 import com.blackcompany.eeos.target.application.usecase.GetAttendStatusUsecase;
 import com.blackcompany.eeos.target.application.usecase.GetAttendantInfoUsecase;
 import com.blackcompany.eeos.target.presentation.docs.AttendApi;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -87,12 +89,9 @@ public class AttendController implements AttendApi {
 	@Override
 	public ApiResponse<SuccessBody<AttendInfosWithProgramResponses>> getMyAttendInfosWithProgram(
 			@Member Long memberId,
-			@RequestParam(value = "startDate", required = false) Long startDate,
-			@RequestParam(value = "endDate", required = false) Long endDate,
-			@RequestParam("size") int size,
-			@RequestParam("page") int page) {
+			@Valid AttendInfosSearchRequest request) {
 		List<AttendInfoWithProgramResponse> responses =
-				getAttendantInfoUsecase.findMyAttendInfo(memberId, startDate, endDate, size, page);
+				getAttendantInfoUsecase.findMyAttendInfo(memberId, request);
 		return ApiResponseGenerator.success(
 				new AttendInfosWithProgramResponses(responses), HttpStatus.OK, MessageCode.GET);
 	}

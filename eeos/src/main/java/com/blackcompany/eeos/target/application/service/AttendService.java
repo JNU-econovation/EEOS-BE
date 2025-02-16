@@ -14,6 +14,7 @@ import com.blackcompany.eeos.program.persistence.ProgramRepository;
 import com.blackcompany.eeos.target.application.dto.AttendInfoActiveStatusResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfoResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfoWithProgramResponse;
+import com.blackcompany.eeos.target.application.dto.AttendInfosSearchRequest;
 import com.blackcompany.eeos.target.application.dto.ChangeAttendStatusResponse;
 import com.blackcompany.eeos.target.application.dto.QueryAttendActiveStatusResponse;
 import com.blackcompany.eeos.target.application.dto.QueryAttendStatusResponse;
@@ -142,19 +143,12 @@ public class AttendService
 
 	@Override
 	public List<AttendInfoWithProgramResponse> findMyAttendInfo(
-			Long memberId, Long startDate, Long endDate, Integer size, Integer page) {
+			Long memberId, AttendInfosSearchRequest request) {
 
-		if (startDate == null || endDate == null) {
-			ZoneId asiaSeoul = ZoneId.of("Asia/Seoul");
-
-			LocalDateTime start = LocalDateTime.of(2025, 3, 1, 0, 0);
-			LocalDateTime end = LocalDateTime.of(2025, 7, 15, 0, 0);
-
-			startDate = Instant.from(ZonedDateTime.of(start, asiaSeoul)).toEpochMilli();
-			endDate = Instant.from(ZonedDateTime.of(end, asiaSeoul)).toEpochMilli();
-		}
-
-		validateParameter(startDate, endDate, size, page);
+		Long startDate = request.getStartDate();
+		Long endDate = request.getEndDate();
+		int size = request.getSize();
+		int page = request.getPage();
 
 		// 필요한 정보 : ProgramModel , AttendModel, MemberId
 		List<ProgramModel> programs =
