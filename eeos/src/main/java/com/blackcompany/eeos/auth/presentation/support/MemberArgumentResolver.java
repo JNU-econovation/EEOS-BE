@@ -1,6 +1,7 @@
 package com.blackcompany.eeos.auth.presentation.support;
 
 import com.blackcompany.eeos.auth.application.domain.token.TokenResolver;
+import com.blackcompany.eeos.auth.application.exception.NotFoundHeaderTokenException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -36,6 +37,14 @@ public class MemberArgumentResolver implements HandlerMethodArgumentResolver {
 			WebDataBinderFactory binderFactory) {
 		HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
 		String token = tokenExtractor.extract(request);
+
+		if (token == null) {
+			Member annotation = parameter.getParameterAnnotation(Member.class);
+			if (annotation.required()) {
+				throw new NotFoundHeaderTokenException();
+			}
+			return null;
+		}
 		return tokenResolver.getUserDataByAccessToken(token);
 	}
 }
