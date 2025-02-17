@@ -2,6 +2,8 @@ name: PR Review Slack Notification
 on:
   pull_request_review:
     types: [submitted]
+  pull_request_review_requested:
+    types: [created]
 jobs:
   notify_pr_author:
     runs-on: ubuntu-latest
@@ -15,80 +17,86 @@ jobs:
         PR_TITLE="${{ github.event.pull_request.title }}"
         PR_URL="${{ github.event.pull_request.html_url }}"
         PR_AUTHOR="${{ github.event.pull_request.user.login }}"
-        REVIEW_STATE="${{ github.event.review.state }}"
-        REVIEWER="${{ github.event.review.user.login }}"
         
-        # 자신의 PR에 댓글을 단 경우 제외
-        if [ "$PR_AUTHOR" = "$REVIEWER" ]; then
-          echo "Skipping notification: PR author and reviewer are the same"
-          exit 0
-        fi
-        
-        # 봇 계정인 경우 제외 (봇 계정 이름을 배열로 정의)
-        BOT_USERS=("github-actions[bot]" "dependabot[bot]" "coderabbitai[bot]")
-        for bot in "${BOT_USERS[@]}"; do
-          if [ "$REVIEWER" = "$bot" ]; then
-            echo "Skipping notification: Review by bot account"
-            exit 0
-          fi
-        done
-        
-        # Parse SLACK_IDS as JSON
-        SLACK_IDS_JSON=$(echo "$SLACK_IDS" | jq -r '.' 2>/dev/null || echo "{}")
-        if [ "$SLACK_IDS_JSON" == "{}" ]; then
-          echo "Warning: SLACK_IDS is not a valid JSON. Attempting to parse as a string."
-          SLACK_IDS_JSON=$(echo "$SLACK_IDS" | sed 's/^"//; s/"$//' | jq -R 'split(",") | map(split(":")) | from_entries' 2>/dev/null || echo "{}")
-          if [ "$SLACK_IDS_JSON" == "{}" ]; then
-            echo "Error: Failed to parse SLACK_IDS as JSON or string. Please check the format."
-            exit 1
-          fi
-        fi
-        
-        get_slack_id() {
-          local github_username="$1"
-          echo "$SLACK_IDS_JSON" | jq -r --arg user "$github_username" '.[$user] // empty'
-        }
-        
-        author_slack_id=$(get_slack_id "$PR_AUTHOR")
-        reviewer_slack_id=$(get_slack_id "$REVIEWER")
-        
-        if [ -n "$author_slack_id" ]; then
-          author_mention="<@$author_slack_id>"
-        else
-          author_mention="$PR_AUTHOR"
-          echo "Warning: No Slack ID found for PR author $PR_AUTHOR" >&2
-        fi
-        
-        if [ -n "$reviewer_slack_id" ]; then
-          reviewer_mention="<@$reviewer_slack_id>"
-        else
-          reviewer_mention="$REVIEWER"
-          echo "Warning: No Slack ID found for reviewer $REVIEWER" >&2
-        fi
-        
-        case "$REVIEW_STATE" in
-          "changes_requested")
-            message="$author_mention님, $reviewer_mention님이 PR에 변경을 요청했습니다: <$PR_URL|$PR_TITLE>"
-            ;;
-          "commented")
-            message="$author_mention님, $reviewer_mention님이 PR에 댓글을 달았습니다: <$PR_URL|$PR_TITLE>"
-            ;;
-          "approved")
-            message="$author_mention님, 축하합니다! $reviewer_mention님이 PR을 승인했습니다: <$PR_URL|$PR_TITLE>"
-            ;;
-        esac
-        
-        if [ -n "$message" ]; then
-          response=$(curl -s -o /dev/null -w "%{http_code}" -X POST -H 'Content-type: application/json' \
-            --data "{\"text\":\"$message\"}" \
-            "$SLACK_WEBHOOK_URL")
+        if [ "${{ github.event_name }}" = "pull_request_review" ]; then
+          REVIEW_STATE="${{ github.event.review.state }}"
+          REVIEWER="${{ github.event.review.user.login }}"
           
-          if [ "$response" = "200" ]; then
-            echo "Successfully sent Slack notification"
-          else
-            echo "Error: Failed to send Slack notification. HTTP status code: $response" >&2
+          # 바로 직전 댓글의 작성자 확인
+          PARENT_COMMENT_AUTHOR="${{ github.event.review.in_reply_to_id && github.event.pull_request.comments[github.event.review.in_reply_to_id].user.login || '' }}"
+          
+          # 봇 계정 리스트
+          BOT_USERS=("github-actions[bot]" "dependabot[bot]" "coderabbitai[bot]")
+          
+          # 봇이 리뷰어인 경우 제외
+          for bot in "${BOT_USERS[@]}"; do
+            if [ "$REVIEWER" = "$bot" ]; then
+              echo "알림 제외: 봇 계정의 리뷰"
+              exit 0
+            fi
+          done
+          
+          # PR 작성자가 봇의 댓글에 직접 답글을 다는 경우만 제외
+          for bot in "${BOT_USERS[@]}"; do
+            if [ "$PARENT_COMMENT_AUTHOR" = "$bot" ] && [ "$REVIEWER" = "$PR_AUTHOR" ]; then
+              echo "알림 제외: PR 작성자가 봇의 댓글에 직접 답글을 달았습니다"
+              exit 0
+            fi
+          done
+          
+          # SLACK_IDS를 JSON으로 파싱
+          SLACK_IDS_JSON=$(echo "$SLACK_IDS" | jq -r '.' 2>/dev/null || echo "{}")
+          if [ "$SLACK_IDS_JSON" == "{}" ]; then
+            echo "에러: SLACK_IDS가 올바른 JSON 형식이 아닙니다"
             exit 1
           fi
-        else
-          echo "No notification to send"
+          
+          get_slack_id() {
+            local github_username="$1"
+            echo "$SLACK_IDS_JSON" | jq -r --arg user "$github_username" '.[$user] // empty'
+          }
+          
+          author_slack_id=$(get_slack_id "$PR_AUTHOR")
+          reviewer_slack_id=$(get_slack_id "$REVIEWER")
+          
+          if [ -n "$author_slack_id" ]; then
+            author_mention="<@$author_slack_id>"
+          else
+            author_mention="$PR_AUTHOR"
+            echo "경고: PR 작성자 $PR_AUTHOR의 Slack ID를 찾을 수 없습니다" >&2
+          fi
+          
+          if [ -n "$reviewer_slack_id" ]; then
+            reviewer_mention="<@$reviewer_slack_id>"
+          else
+            reviewer_mention="$REVIEWER"
+            echo "경고: 리뷰어 $REVIEWER의 Slack ID를 찾을 수 없습니다" >&2
+          fi
+          
+          case "$REVIEW_STATE" in
+            "changes_requested")
+              message="$author_mention님, $reviewer_mention님이 PR에 변경을 요청했습니다: <$PR_URL|$PR_TITLE>"
+              ;;
+            "commented")
+              message="$author_mention님, $reviewer_mention님이 PR에 댓글을 달았습니다: <$PR_URL|$PR_TITLE>"
+              ;;
+            "approved")
+              message="$author_mention님, 축하합니다! $reviewer_mention님이 PR을 승인했습니다: <$PR_URL|$PR_TITLE>"
+              ;;
+          esac
+          
+          if [ -n "$message" ]; then
+            response=$(curl -s -o /dev/null -w "%{http_code}" -X POST -H 'Content-type: application/json' \
+              --data "{\"text\":\"$message\"}" \
+              "$SLACK_WEBHOOK_URL")
+            
+            if [ "$response" = "200" ]; then
+              echo "Slack 알림 전송 성공"
+            else
+              echo "에러: Slack 알림 전송 실패. HTTP 상태 코드: $response" >&2
+              exit 1
+            fi
+          else
+            echo "전송할 알림 없음"
+          fi
         fi
