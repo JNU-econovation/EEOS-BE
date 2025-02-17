@@ -2,7 +2,6 @@ package com.blackcompany.eeos.auth.presentation;
 
 import com.blackcompany.eeos.auth.application.domain.token.TokenResolver;
 import com.blackcompany.eeos.auth.presentation.interceptor.AuthInterceptor;
-import com.blackcompany.eeos.auth.presentation.support.CookieNameFormatter;
 import com.blackcompany.eeos.auth.presentation.support.CookieTokenExtractor;
 import com.blackcompany.eeos.auth.presentation.support.HeaderTokenExtractor;
 import com.blackcompany.eeos.auth.presentation.support.MemberArgumentResolver;
@@ -19,7 +18,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class LoginConfig implements WebMvcConfigurer {
 	private final MemberArgumentResolver memberArgumentResolver;
 	private final TokenResolver tokenResolver;
-	private final CookieNameFormatter cookieNameFormatter;
+	private final HeaderTokenExtractor headerTokenExtractor;
+	private final CookieTokenExtractor cookieTokenExtractor;
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
@@ -42,7 +42,7 @@ public class LoginConfig implements WebMvcConfigurer {
 	@Bean
 	public AuthInterceptor memberAuthInterceptor() {
 		return AuthInterceptor.builder()
-				.tokenExtractor(new HeaderTokenExtractor())
+				.tokenExtractor(headerTokenExtractor)
 				.tokenResolver(tokenResolver)
 				.build();
 	}
@@ -50,7 +50,7 @@ public class LoginConfig implements WebMvcConfigurer {
 	@Bean
 	public AuthInterceptor reissueAuthInterceptor() {
 		return AuthInterceptor.builder()
-				.tokenExtractor(new CookieTokenExtractor(cookieNameFormatter))
+				.tokenExtractor(cookieTokenExtractor)
 				.tokenResolver(tokenResolver)
 				.build();
 	}
