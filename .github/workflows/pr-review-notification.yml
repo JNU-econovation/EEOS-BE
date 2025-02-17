@@ -28,7 +28,7 @@ jobs:
           # 봇 계정 리스트
           BOT_USERS=("github-actions[bot]" "dependabot[bot]" "coderabbitai[bot]")
           
-          # 봇이 리뷰어인 경우 제외
+          # 1. 봇이 리뷰어인 경우 제외
           for bot in "${BOT_USERS[@]}"; do
             if [ "$REVIEWER" = "$bot" ]; then
               echo "알림 제외: 봇 계정의 리뷰"
@@ -36,7 +36,7 @@ jobs:
             fi
           done
           
-          # PR 작성자가 봇의 댓글에 직접 답글을 다는 경우만 제외
+          # 2. PR 작성자가 봇의 댓글에 직접 답글을 다는 경우만 제외
           for bot in "${BOT_USERS[@]}"; do
             if [ "$PARENT_COMMENT_AUTHOR" = "$bot" ] && [ "$REVIEWER" = "$PR_AUTHOR" ]; then
               echo "알림 제외: PR 작성자가 봇의 댓글에 직접 답글을 달았습니다"
