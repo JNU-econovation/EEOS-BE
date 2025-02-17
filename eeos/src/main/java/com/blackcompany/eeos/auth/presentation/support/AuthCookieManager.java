@@ -1,7 +1,6 @@
 package com.blackcompany.eeos.auth.presentation.support;
 
 import com.blackcompany.eeos.common.presentation.support.CookieManager;
-import com.blackcompany.eeos.common.utils.ProfileUtil;
 import com.blackcompany.eeos.common.utils.TimeUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,7 +11,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class AuthCookieManager implements CookieManager {
 
-	private final ProfileUtil profile;
+	private final CookieNameFormatter cookieNameFormatter;
 
 	private static final Boolean HTTP_ONLY = true;
 	private static final Boolean SECURE = true;
@@ -30,7 +29,7 @@ public class AuthCookieManager implements CookieManager {
 
 	@Override
 	public ResponseCookie setCookie(String key, String value) {
-		return ResponseCookie.from(getCookieName(key), value)
+		return ResponseCookie.from(cookieNameFormatter.format(key), value)
 				.path(path)
 				.domain(domain)
 				.httpOnly(HTTP_ONLY)
@@ -42,7 +41,7 @@ public class AuthCookieManager implements CookieManager {
 
 	@Override
 	public ResponseCookie deleteCookie(String key) {
-		return ResponseCookie.from(getCookieName(key), "")
+		return ResponseCookie.from(cookieNameFormatter.format(key), "")
 				.path(path)
 				.domain(domain)
 				.httpOnly(HTTP_ONLY)
@@ -50,9 +49,5 @@ public class AuthCookieManager implements CookieManager {
 				.sameSite(SAMESITE)
 				.maxAge(TimeUtil.convertSecondsFromMillis(EXPIRATION))
 				.build();
-	}
-
-	private String getCookieName(String key) {
-		return String.format("%s_%s", profile.getProfile(), key);
 	}
 }
