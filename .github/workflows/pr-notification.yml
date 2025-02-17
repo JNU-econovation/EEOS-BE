@@ -8,87 +8,109 @@ jobs:
   notify_reviewers:
     runs-on: ubuntu-latest
     steps:
-    - name: Check required secrets
-      run: |
-        if [ -z "${{ secrets.SLACK_PR_CREATE_WEBHOOK_URL }}" ]; then
-          echo "Error: SLACK_PR_CREATE_WEBHOOK_URL is not set"
-          exit 1
-        fi
-        if [ -z "${{ secrets.SLACK_IDS }}" ]; then
-          echo "Error: SLACK_IDS is not set"
-          exit 1
-        fi
-    - name: Set environment variables
-      run: |
-        echo "SLACK_WEBHOOK_URL=${{ secrets.SLACK_PR_CREATE_WEBHOOK_URL }}" >> $GITHUB_ENV
-        echo 'SLACK_IDS=${{ toJson(secrets.SLACK_IDS) }}' >> $GITHUB_ENV
-      shell: bash
-    - name: Send Slack notification for new PR
-      shell: bash
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        set -e
-        PR_TITLE="${{ github.event.pull_request.title }}"
-        PR_URL="${{ github.event.pull_request.html_url }}"
-        PR_AUTHOR="${{ github.event.pull_request.user.login }}"
-        REVIEWERS='${{ toJson(github.event.pull_request.requested_reviewers) }}'
-        
-        if [ "$REVIEWERS" == "null" ] || [ "$REVIEWERS" == "[]" ]; then
-          echo "No reviewers requested for this PR"
-          exit 0
-        fi
-        
-        # Parse SLACK_IDS as JSON
-        SLACK_IDS_JSON=$(echo "$SLACK_IDS" | jq -r '.' 2>/dev/null || echo "{}")
-        if [ "$SLACK_IDS_JSON" == "{}" ]; then
-          echo "Warning: SLACK_IDS is not a valid JSON. Attempting to parse as a string."
-          SLACK_IDS_JSON=$(echo "$SLACK_IDS" | sed 's/^"//; s/"$//' | jq -R 'split(",") | map(split(":")) | from_entries' 2>/dev/null || echo "{}")
+      - name: 필수 시크릿 체크
+        run: |
+          if [ -z "${{ secrets.SLACK_PR_CREATE_WEBHOOK_URL }}" ]; then
+            echo "에러: SLACK_PR_CREATE_WEBHOOK_URL이 설정되지 않았습니다"
+            exit 1
+          fi
+          if [ -z "${{ secrets.SLACK_IDS }}" ]; then
+            echo "에러: SLACK_IDS가 설정되지 않았습니다"
+            exit 1
+          fi
+      - name: 환경 변수 설정
+        run: |
+          echo "SLACK_WEBHOOK_URL=${{ secrets.SLACK_PR_CREATE_WEBHOOK_URL }}" >> $GITHUB_ENV
+          echo 'SLACK_IDS=${{ toJson(secrets.SLACK_IDS) }}' >> $GITHUB_ENV
+        shell: bash
+      - name: 새로운 PR에 대한 Slack 알림 전송
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          PR_URL="${{ github.event.pull_request.html_url }}"
+          PR_AUTHOR="${{ github.event.pull_request.user.login }}"
+          REVIEWERS='${{ toJson(github.event.pull_request.requested_reviewers) }}'
+          
+          if [ "$REVIEWERS" == "null" ] || [ "$REVIEWERS" == "[]" ]; then
+            echo "이 PR에 요청된 리뷰어가 없습니다"
+            exit 0
+          fi
+          
+          # SLACK_IDS를 JSON으로 파싱
+          SLACK_IDS_JSON=$(echo "$SLACK_IDS" | jq -r '.' 2>/dev/null || echo "{}")
           if [ "$SLACK_IDS_JSON" == "{}" ]; then
-            echo "Error: Failed to parse SLACK_IDS as JSON or string. Please check the format."
-            exit 1
+            echo "경고: SLACK_IDS가 유효한 JSON이 아닙니다. 문자열로 파싱을 시도합니다."
+            SLACK_IDS_JSON=$(echo "$SLACK_IDS" | sed 's/^"//; s/"$//' | jq -R 'split(",") | map(split(":")) | from_entries' 2>/dev/null || echo "{}")
+            if [ "$SLACK_IDS_JSON" == "{}" ]; then
+              echo "에러: SLACK_IDS를 JSON이나 문자열로 파싱하는데 실패했습니다. 형식을 확인해주세요."
+              exit 1
+            fi
           fi
-        fi
-        
-        get_slack_id() {
-          local github_username="$1"
-          echo "$SLACK_IDS_JSON" | jq -r --arg user "$github_username" '.[$user] // empty'
-        }
-        
-        reviewers=$(echo "$REVIEWERS" | jq -r '.[].login // empty')
-        mentions=""
-        
-        for reviewer in $reviewers; do
-          slack_id=$(get_slack_id "$reviewer")
           
-          if [ -n "$slack_id" ]; then
-            mentions="$mentions <@$slack_id>"
-          else
-            mentions="$mentions $reviewer"
-            echo "Warning: No Slack ID found for GitHub user $reviewer" >&2
-          fi
-        done
-        
-        author_slack_id=$(get_slack_id "$PR_AUTHOR")
-        if [ -n "$author_slack_id" ]; then
-          author_mention="<@$author_slack_id>"
-        else
-          author_mention="$PR_AUTHOR"
-          echo "Warning: No Slack ID found for PR author $PR_AUTHOR" >&2
-        fi
-        
-        if [ -n "$mentions" ]; then
-          message="$mentions 님, $author_mention 님이 새로운 PR을 생성하였습니다: <$PR_URL|$PR_TITLE>"
-          response=$(curl -s -o /dev/null -w "%{http_code}" -X POST -H 'Content-type: application/json' \
-            --data "{\"text\":\"$message\"}" \
-            "$SLACK_WEBHOOK_URL")
+          get_slack_id() {
+            local github_username="$1"
+            echo "$SLACK_IDS_JSON" | jq -r --arg user "$github_username" '.[$user] // empty'
+          }
           
-          if [ "$response" = "200" ]; then
-            echo "Successfully sent Slack notification"
+          # PR 작성자의 Slack ID 가져오기
+          author_slack_id=$(get_slack_id "$PR_AUTHOR")
+          if [ -n "$author_slack_id" ]; then
+            author_mention="<@$author_slack_id>"
           else
-            echo "Error: Failed to send Slack notification. HTTP status code: $response" >&2
-            exit 1
+            author_mention="$PR_AUTHOR"
+            echo "경고: PR 작성자 $PR_AUTHOR의 Slack ID를 찾을 수 없습니다" >&2
           fi
-        else
-          echo "No reviewers to notify"
-        fi
+          
+          # 리뷰어 목록 확인
+          reviewers=$(echo "$REVIEWERS" | jq -r '.[].login // empty')
+          mentions=""
+          
+          # EEOS-BE가 리뷰어인지 확인
+          if echo "$reviewers" | grep -q "EEOS-BE"; then
+            echo "EEOS-BE가 리뷰어로 지정되었습니다. 모든 등록된 사용자에게 알림을 보냅니다."
+          
+            # SLACK_IDS에 등록된 모든 사용자에게 알림
+            registered_users=$(echo "$SLACK_IDS_JSON" | jq -r 'keys[]')
+            for user in $registered_users; do
+              # PR 작성자는 제외
+              if [ "$user" = "$PR_AUTHOR" ]; then
+                continue
+              fi
+          
+              user_slack_id=$(echo "$SLACK_IDS_JSON" | jq -r --arg user "$user" '.[$user] // empty')
+              if [ -n "$user_slack_id" ]; then
+                mentions="$mentions <@$user_slack_id>"
+              fi
+            done
+          else
+            # 일반적인 리뷰어 처리
+            for reviewer in $reviewers; do
+              slack_id=$(get_slack_id "$reviewer")
+          
+              if [ -n "$slack_id" ]; then
+                mentions="$mentions <@$slack_id>"
+              else
+                mentions="$mentions $reviewer"
+                echo "경고: GitHub 사용자 $reviewer의 Slack ID를 찾을 수 없습니다" >&2
+              fi
+            done
+          fi
+          
+          if [ -n "$mentions" ]; then
+            message="$mentions 님, $author_mention 님이 새로운 PR을 생성하였습니다: <$PR_URL|$PR_TITLE>"
+            response=$(curl -s -o /dev/null -w "%{http_code}" -X POST -H 'Content-type: application/json' \
+              --data "{\"text\":\"$message\"}" \
+              "$SLACK_WEBHOOK_URL")
+          
+            if [ "$response" = "200" ]; then
+              echo "Slack 알림 전송 성공"
+            else
+              echo "에러: Slack 알림 전송 실패. HTTP 상태 코드: $response" >&2
+              exit 1
+            fi
+          else
+            echo "알림을 보낼 리뷰어가 없습니다"
+          fi
