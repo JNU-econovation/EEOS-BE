@@ -18,6 +18,21 @@ jobs:
         REVIEW_STATE="${{ github.event.review.state }}"
         REVIEWER="${{ github.event.review.user.login }}"
         
+        # 자신의 PR에 댓글을 단 경우 제외
+        if [ "$PR_AUTHOR" = "$REVIEWER" ]; then
+          echo "Skipping notification: PR author and reviewer are the same"
+          exit 0
+        fi
+        
+        # 봇 계정인 경우 제외 (봇 계정 이름을 배열로 정의)
+        BOT_USERS=("github-actions[bot]" "dependabot[bot]" "coderabbitai[bot]")
+        for bot in "${BOT_USERS[@]}"; do
+          if [ "$REVIEWER" = "$bot" ]; then
+            echo "Skipping notification: Review by bot account"
+            exit 0
+          fi
+        done
+        
         # Parse SLACK_IDS as JSON
         SLACK_IDS_JSON=$(echo "$SLACK_IDS" | jq -r '.' 2>/dev/null || echo "{}")
         if [ "$SLACK_IDS_JSON" == "{}" ]; then
