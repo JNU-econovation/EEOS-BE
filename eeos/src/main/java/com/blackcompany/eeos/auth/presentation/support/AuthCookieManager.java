@@ -30,7 +30,7 @@ public class AuthCookieManager implements CookieManager {
 
 	@Override
 	public ResponseCookie setCookie(String key, String value) {
-		return ResponseCookie.from(profile.getProfile() + key, value)
+		return ResponseCookie.from(getCookieName(key), value)
 				.path(path)
 				.domain(domain)
 				.httpOnly(HTTP_ONLY)
@@ -42,7 +42,7 @@ public class AuthCookieManager implements CookieManager {
 
 	@Override
 	public ResponseCookie deleteCookie(String key) {
-		return ResponseCookie.from(profile.getProfile() + key, "")
+		return ResponseCookie.from(getCookieName(key), "")
 				.path(path)
 				.domain(domain)
 				.httpOnly(HTTP_ONLY)
@@ -50,5 +50,9 @@ public class AuthCookieManager implements CookieManager {
 				.sameSite(SAMESITE)
 				.maxAge(TimeUtil.convertSecondsFromMillis(EXPIRATION))
 				.build();
+	}
+
+	private String getCookieName(String key) {
+		return String.format("%s_%s", profile.getProfile(), key);
 	}
 }
