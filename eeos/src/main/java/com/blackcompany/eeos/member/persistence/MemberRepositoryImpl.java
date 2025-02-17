@@ -1,5 +1,6 @@
 package com.blackcompany.eeos.member.persistence;
 
+import com.blackcompany.eeos.member.application.exception.NotFoundMemberException;
 import com.blackcompany.eeos.member.application.model.ActiveStatus;
 import com.blackcompany.eeos.member.application.model.MemberModel;
 import com.blackcompany.eeos.member.application.model.converter.MemberEntityConverter;
@@ -38,7 +39,10 @@ public class MemberRepositoryImpl implements MemberRepository {
 
 	@Override
 	public MemberModel findById(Long memberId) {
-		return jpaRepository.findById(memberId).map(converter::from).orElseThrow();
+		return jpaRepository
+				.findById(memberId)
+				.map(converter::from)
+				.orElseThrow(NotFoundMemberException::new);
 	}
 
 	@Override
