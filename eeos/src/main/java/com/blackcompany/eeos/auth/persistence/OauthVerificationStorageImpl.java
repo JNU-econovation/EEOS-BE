@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class OauthVerificationStorageImpl implements OauthVerificationStorage {
 	private final RedisTemplate<String, Object> redisTemplate;
+	private final ObjectMapper mapper;
+
 	private static final String KEY_PREFIX = "oauth:verification:";
 	private static final long EXPIRE_MINUTES = 30;
 
@@ -40,7 +42,6 @@ public class OauthVerificationStorageImpl implements OauthVerificationStorage {
 		}
 		redisTemplate.delete(key);
 
-		ObjectMapper mapper = new ObjectMapper();
 		return mapper.convertValue(value, OAuthInfo.class);
 	}
 
