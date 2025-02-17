@@ -2,6 +2,7 @@ package com.blackcompany.eeos.common.utils;
 
 import java.util.Arrays;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.env.Environment;
@@ -11,11 +12,12 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ProfileUtil {
 	private final Environment environment;
-	private Set<String> activeProfiles;
+	private final Set<String> activeProfiles = new CopyOnWriteArraySet<>();
 
 	private Set<String> getActiveProfiles() {
-		if (activeProfiles == null) {
-			activeProfiles = Arrays.stream(environment.getActiveProfiles()).collect(Collectors.toSet());
+		if (activeProfiles.isEmpty()) {
+			activeProfiles.addAll(
+					Arrays.stream(environment.getActiveProfiles()).collect(Collectors.toSet()));
 		}
 		return activeProfiles;
 	}
