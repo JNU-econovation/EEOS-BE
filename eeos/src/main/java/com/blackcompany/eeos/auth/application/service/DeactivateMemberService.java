@@ -50,7 +50,7 @@ public class DeactivateMemberService implements LogOutUsecase, WithDrawUsecase {
 	}
 
 	private boolean isNotMember(Long memberId) {
-		return memberRepository.existsById(memberId);
+		return !memberRepository.existsById(memberId);
 	}
 
 	private void removeMemberRecord(Long memberId) {
