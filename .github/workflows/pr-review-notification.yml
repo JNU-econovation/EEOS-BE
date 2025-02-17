@@ -2,8 +2,8 @@ name: PR Review Slack Notification
 on:
   pull_request_review:
     types: [submitted]
-  pull_request_review_requested:
-    types: [created]
+  pull_request:
+    types: [review_requested]
 jobs:
   notify_pr_author:
     runs-on: ubuntu-latest
