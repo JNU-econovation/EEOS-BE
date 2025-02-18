@@ -1,15 +1,20 @@
 package com.blackcompany.eeos.target.presentation.docs;
 
+import com.blackcompany.eeos.auth.presentation.support.Member;
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponse;
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponseBody.SuccessBody;
 import com.blackcompany.eeos.target.application.dto.AttendInfoResponse;
+import com.blackcompany.eeos.target.application.dto.AttendInfosSearchRequest;
+import com.blackcompany.eeos.target.application.dto.AttendInfosWithProgramResponses;
 import com.blackcompany.eeos.target.application.dto.ChangeAttendStatusResponse;
 import com.blackcompany.eeos.target.application.dto.QueryAttendActiveStatusResponse;
 import com.blackcompany.eeos.target.application.dto.QueryAttendStatusResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @Tag(name = "행사 참여", description = "행사 참여 관련 API")
 public interface AttendApi {
@@ -42,4 +47,9 @@ public interface AttendApi {
 					"PathVariable에 담긴 프로그램 정보와 RequestParam에 담긴 activeStatus를 이용해 프로그램의 참석정보를 회원상태 기준으로 불러온다.")
 	ApiResponse<SuccessBody<QueryAttendActiveStatusResponse>>
 			getAttendAllInfoByProgramSortActiveStatus(Long programId, String activeStatus);
+
+	@Operation(summary = "나의 출석 현황 정보들 조회", description = "MemberId를 사용하여 나의 출석 현황 정보들을 가져온다.")
+	@GetMapping("/api/attend/programs")
+	ApiResponse<SuccessBody<AttendInfosWithProgramResponses>> getMyAttendInfosWithProgram(
+			@Member Long memberId, @Valid AttendInfosSearchRequest request);
 }

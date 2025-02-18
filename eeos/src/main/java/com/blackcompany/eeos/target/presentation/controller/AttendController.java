@@ -6,6 +6,9 @@ import com.blackcompany.eeos.common.presentation.respnose.ApiResponseBody.Succes
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponseGenerator;
 import com.blackcompany.eeos.common.presentation.respnose.MessageCode;
 import com.blackcompany.eeos.target.application.dto.AttendInfoResponse;
+import com.blackcompany.eeos.target.application.dto.AttendInfoWithProgramResponse;
+import com.blackcompany.eeos.target.application.dto.AttendInfosSearchRequest;
+import com.blackcompany.eeos.target.application.dto.AttendInfosWithProgramResponses;
 import com.blackcompany.eeos.target.application.dto.ChangeAttendStatusResponse;
 import com.blackcompany.eeos.target.application.dto.QueryAttendActiveStatusResponse;
 import com.blackcompany.eeos.target.application.dto.QueryAttendStatusResponse;
@@ -14,6 +17,7 @@ import com.blackcompany.eeos.target.application.usecase.GetAttendAllInfoSortActi
 import com.blackcompany.eeos.target.application.usecase.GetAttendStatusUsecase;
 import com.blackcompany.eeos.target.application.usecase.GetAttendantInfoUsecase;
 import com.blackcompany.eeos.target.presentation.docs.AttendApi;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -79,5 +83,15 @@ public class AttendController implements AttendApi {
 		QueryAttendActiveStatusResponse response =
 				getAttendAllInfoSortActiveStatusUsecase.getAttendInfo(programId, activeStatus);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
+	}
+
+	@GetMapping("/attend/programs")
+	@Override
+	public ApiResponse<SuccessBody<AttendInfosWithProgramResponses>> getMyAttendInfosWithProgram(
+			@Member Long memberId, @Valid AttendInfosSearchRequest request) {
+		List<AttendInfoWithProgramResponse> responses =
+				getAttendantInfoUsecase.findMyAttendInfo(memberId, request);
+		return ApiResponseGenerator.success(
+				new AttendInfosWithProgramResponses(responses), HttpStatus.OK, MessageCode.GET);
 	}
 }

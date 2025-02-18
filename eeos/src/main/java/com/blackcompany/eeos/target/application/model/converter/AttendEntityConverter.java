@@ -15,6 +15,7 @@ public class AttendEntityConverter implements AbstractEntityConverter<AttendEnti
 				.id(source.getId())
 				.memberId(source.getMemberId())
 				.programId(source.getProgramId())
+				.penaltyScore(source.getPenaltyScore())
 				.status(source.getStatus())
 				.build();
 	}
@@ -25,6 +26,7 @@ public class AttendEntityConverter implements AbstractEntityConverter<AttendEnti
 				.id(source.getId())
 				.memberId(source.getMemberId())
 				.programId(source.getProgramId())
+				.penaltyScore(source.getPenaltyScore())
 				.status(AttendStatus.find(source.getStatus()))
 				.build();
 	}

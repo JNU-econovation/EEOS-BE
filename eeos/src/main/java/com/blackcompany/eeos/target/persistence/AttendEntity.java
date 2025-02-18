@@ -53,4 +53,8 @@ public class AttendEntity extends BaseEntity {
 	@Column(name = ENTITY_PREFIX + "_status", nullable = false)
 	@Builder.Default
 	private AttendStatus status = AttendStatus.NONRELATED;
+
+	@Column(name = ENTITY_PREFIX + "_penalty_score", nullable = false)
+	@Builder.Default
+	private Integer penaltyScore = 0;
 }
