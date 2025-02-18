@@ -2,24 +2,17 @@ package com.blackcompany.eeos.common.utils;
 
 import java.util.Arrays;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
 public class ProfileUtil {
-	private final Environment environment;
-	private final Set<String> activeProfiles = new CopyOnWriteArraySet<>();
+	private final Set<String> activeProfiles;
 
-	private Set<String> getActiveProfiles() {
-		if (activeProfiles.isEmpty()) {
-			activeProfiles.addAll(
-					Arrays.stream(environment.getActiveProfiles()).collect(Collectors.toSet()));
-		}
-		return activeProfiles;
+	public ProfileUtil(Environment environment) {
+		this.activeProfiles =
+				Arrays.stream(environment.getActiveProfiles()).collect(Collectors.toSet());
 	}
 
 	public String getProfile() {
@@ -27,25 +20,21 @@ public class ProfileUtil {
 			return "local";
 		} else if (isDev()) {
 			return "dev";
-		} else if (isLive()) {
+		} else if (isProd()) {
 			return "live";
 		}
-		return getFirstProfile();
+		return activeProfiles.stream().findFirst().orElse("unknown");
 	}
 
-	public boolean isLocal() {
-		return getActiveProfiles().contains("local");
+	private boolean isLocal() {
+		return activeProfiles.contains("local");
 	}
 
-	public boolean isDev() {
-		return getActiveProfiles().contains("dev");
+	private boolean isDev() {
+		return activeProfiles.contains("dev");
 	}
 
-	public boolean isLive() {
-		return getActiveProfiles().contains("live");
-	}
-
-	private String getFirstProfile() {
-		return Arrays.stream(environment.getActiveProfiles()).findFirst().orElse("unknown");
+	private boolean isProd() {
+		return activeProfiles.contains("prod");
 	}
 }
