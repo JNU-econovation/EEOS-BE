@@ -2,11 +2,12 @@ package com.blackcompany.eeos.auth.application.service;
 
 import com.blackcompany.eeos.auth.application.domain.token.TokenResolver;
 import com.blackcompany.eeos.auth.application.event.DeletedMemberEvent;
+import com.blackcompany.eeos.auth.application.repository.OAuthMemberRepository;
 import com.blackcompany.eeos.auth.application.usecase.LogOutUsecase;
 import com.blackcompany.eeos.auth.application.usecase.WithDrawUsecase;
+import com.blackcompany.eeos.auth.persistence.AccountRepository;
 import com.blackcompany.eeos.auth.persistence.InvalidTokenRepository;
-import com.blackcompany.eeos.auth.persistence.OAuthMemberRepository;
-import com.blackcompany.eeos.member.persistence.MemberRepository;
+import com.blackcompany.eeos.member.application.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ public class DeactivateMemberService implements LogOutUsecase, WithDrawUsecase {
 	private final ApplicationEventPublisher eventPublisher;
 	private final MemberRepository memberRepository;
 	private final OAuthMemberRepository oAuthMemberRepository;
+	private final AccountRepository accountRepository;
 
 	@Override
 	@Transactional
@@ -34,7 +36,8 @@ public class DeactivateMemberService implements LogOutUsecase, WithDrawUsecase {
 		if (isNotMember(memberId)) {
 			return;
 		}
-		deleteMemberData(memberId);
+
+		removeMemberRecord(memberId);
 		eventPublisher.publishEvent(DeletedMemberEvent.of(memberId, token));
 	}
 
@@ -47,11 +50,11 @@ public class DeactivateMemberService implements LogOutUsecase, WithDrawUsecase {
 	}
 
 	private boolean isNotMember(Long memberId) {
-		return memberRepository.findById(memberId).isEmpty();
+		return !memberRepository.existsById(memberId);
 	}
 
-	private void deleteMemberData(Long memberId) {
-		memberRepository.deleteById(memberId);
-		oAuthMemberRepository.findByMemberId(memberId).ifPresent(oAuthMemberRepository::delete);
+	private void removeMemberRecord(Long memberId) {
+		oAuthMemberRepository.deleteById(memberId);
+		accountRepository.deleteById(memberId);
 	}
 }

@@ -35,5 +35,5 @@ public class OAuthMemberEntity extends BaseEntity {
 	private String oauthId = "NONE";
 
 	@Column(name = ENTITY_PREFIX + "_member_id", nullable = false)
-	private Long memberId;
+	private Long memberId; // TODO : 인덱스 추가
 }

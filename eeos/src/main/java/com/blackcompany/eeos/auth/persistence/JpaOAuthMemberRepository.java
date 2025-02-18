@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface OAuthMemberRepository extends JpaRepository<OAuthMemberEntity, Long> {
+public interface JpaOAuthMemberRepository extends JpaRepository<OAuthMemberEntity, Long> {
 	@Query("SELECT o FROM OAuthMemberEntity  o WHERE o.oauthId=:oauthId")
 	Optional<OAuthMemberEntity> findByOauthId(@Param("oauthId") String oauthId);
 
@@ -14,5 +14,5 @@ public interface OAuthMemberRepository extends JpaRepository<OAuthMemberEntity, 
 
 	@Query(
 			"SELECT o FROM OAuthMemberEntity  o WHERE o.memberId = (SELECT a.memberId FROM AccountEntity a WHERE a.loginId=:loginId)")
-	Optional<OAuthMemberEntity> findByAccount(@Param("loginId") String loginId);
+	Optional<OAuthMemberEntity> findByAccount(@Param("loginId") String loginId); // TODO : 쿼리 확인
 }

@@ -44,7 +44,7 @@ public class SlackOauthMemberClient implements OauthMemberClient {
 				execute(
 						slackApiClient::fetchMember,
 						MEMBER_INFO_METHOD_NAME,
-						requestToken(slackToken.getToken()));
+						formatBearerToken(slackToken.getToken()));
 
 		return oauthModelConverter.from(
 				slackToken.getUserId(), slackMember.getName(), OauthServerType.SLACK);
@@ -67,10 +67,6 @@ public class SlackOauthMemberClient implements OauthMemberClient {
 		T result = slackFunction.execute(request);
 		validateResponse(methodName, result);
 		return result;
-	}
-
-	private String requestToken(String token) {
-		return String.format("%s %s", BEARER, token);
 	}
 
 	private <T extends SlackApiResponse> void validateResponse(String methodName, T response) {

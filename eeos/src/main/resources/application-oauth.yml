@@ -7,3 +7,6 @@ oauth:
     slack:
       clientId: ${SLACK_CLIENT_ID}
       clientSecret: ${SLACK_CLIENT_SECRET}
+    github:
+      clientId: ${GITHUB_CLIENT_ID}
+      clientSecret: ${GITHUB_CLIENT_SECRET}

@@ -3,8 +3,8 @@ package com.blackcompany.eeos.target.application.service;
 import com.blackcompany.eeos.member.application.model.ActiveStatus;
 import com.blackcompany.eeos.member.application.model.MemberModel;
 import com.blackcompany.eeos.member.application.model.converter.MemberEntityConverter;
+import com.blackcompany.eeos.member.application.repository.MemberRepository;
 import com.blackcompany.eeos.member.application.service.QueryMemberService;
-import com.blackcompany.eeos.member.persistence.MemberRepository;
 import com.blackcompany.eeos.program.application.exception.NotFoundProgramException;
 import com.blackcompany.eeos.program.application.model.ProgramAttendMode;
 import com.blackcompany.eeos.program.application.model.ProgramModel;
@@ -186,9 +186,7 @@ public class AttendService
 		List<Long> memberIds =
 				attends.stream().map(AttendModel::getMemberId).collect(Collectors.toList());
 
-		return memberRepository.findMembersByIds(memberIds).stream()
-				.map(memberEntityConverter::from)
-				.collect(Collectors.toList());
+		return memberRepository.findMembersByIds(memberIds);
 	}
 
 	private List<AttendModel> findAttendByAttendStatus(final Long programId, final String status) {
@@ -206,14 +204,10 @@ public class AttendService
 
 	private List<MemberModel> findMembersByActiveStatus(final String activeStatus) {
 		if (ActiveStatus.isSame(activeStatus, ActiveStatus.ALL)) {
-			return memberRepository.findMembers().stream()
-					.map(memberEntityConverter::from)
-					.collect(Collectors.toList());
+			return memberRepository.findMembers();
 		}
 
-		return memberRepository.findMembersByActiveStatus(ActiveStatus.find(activeStatus)).stream()
-				.map(memberEntityConverter::from)
-				.collect(Collectors.toList());
+		return memberRepository.findMembersByActiveStatus(ActiveStatus.find(activeStatus));
 	}
 
 	private void validateExistsProgram(Long programId) {

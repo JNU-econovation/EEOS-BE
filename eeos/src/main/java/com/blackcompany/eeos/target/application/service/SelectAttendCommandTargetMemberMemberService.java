@@ -3,7 +3,7 @@ package com.blackcompany.eeos.target.application.service;
 import com.blackcompany.eeos.common.application.model.MemberIdModel;
 import com.blackcompany.eeos.member.application.exception.NotFoundMemberException;
 import com.blackcompany.eeos.member.application.model.converter.MemberEntityConverter;
-import com.blackcompany.eeos.member.persistence.MemberRepository;
+import com.blackcompany.eeos.member.application.repository.MemberRepository;
 import com.blackcompany.eeos.program.application.dto.ChangeAllAttendStatusRequest;
 import com.blackcompany.eeos.program.application.model.AttendManager;
 import com.blackcompany.eeos.target.application.dto.TargetMember;
