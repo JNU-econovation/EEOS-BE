@@ -20,6 +20,8 @@ public class LoginConfig implements WebMvcConfigurer {
 	private final MemberArgumentResolver memberArgumentResolver;
 	private final VerificationAuthorizationResolver verificationAuthorizationResolver;
 	private final TokenResolver tokenResolver;
+	private final HeaderTokenExtractor headerTokenExtractor;
+	private final CookieTokenExtractor cookieTokenExtractor;
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
@@ -42,7 +44,7 @@ public class LoginConfig implements WebMvcConfigurer {
 	@Bean
 	public AuthInterceptor memberAuthInterceptor() {
 		return AuthInterceptor.builder()
-				.tokenExtractor(new HeaderTokenExtractor())
+				.tokenExtractor(headerTokenExtractor)
 				.tokenResolver(tokenResolver)
 				.build();
 	}
@@ -50,7 +52,7 @@ public class LoginConfig implements WebMvcConfigurer {
 	@Bean
 	public AuthInterceptor reissueAuthInterceptor() {
 		return AuthInterceptor.builder()
-				.tokenExtractor(new CookieTokenExtractor())
+				.tokenExtractor(cookieTokenExtractor)
 				.tokenResolver(tokenResolver)
 				.build();
 	}
