@@ -3,6 +3,7 @@ package com.blackcompany.eeos.target.application.usecase;
 import com.blackcompany.eeos.target.application.dto.AttendInfoResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfoWithProgramResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfosSearchRequest;
+import com.blackcompany.eeos.target.application.dto.AttendSummaryInfoResponse;
 import com.blackcompany.eeos.target.application.dto.QueryAttendStatusResponse;
 import java.util.List;
 
@@ -20,4 +21,6 @@ public interface GetAttendantInfoUsecase {
 
 	List<AttendInfoWithProgramResponse> findMyAttendInfo(
 			final Long memberId, final AttendInfosSearchRequest request);
+
+	AttendSummaryInfoResponse getMyAttendSummary(final Long memberId);
 }
