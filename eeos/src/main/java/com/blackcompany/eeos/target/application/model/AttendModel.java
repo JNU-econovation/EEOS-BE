@@ -26,7 +26,6 @@ public class AttendModel implements AbstractModel, MemberIdModel {
 
 	private Integer penaltyScore;
 
-
 	public AttendModel changeStatus(String afterStatus) {
 		validateChange(afterStatus);
 		this.status = AttendStatus.find(afterStatus);

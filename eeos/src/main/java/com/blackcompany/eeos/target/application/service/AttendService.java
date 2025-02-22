@@ -1,6 +1,5 @@
 package com.blackcompany.eeos.target.application.service;
 
-import com.blackcompany.eeos.member.application.exception.NotFoundMemberException;
 import com.blackcompany.eeos.member.application.model.ActiveStatus;
 import com.blackcompany.eeos.member.application.model.MemberModel;
 import com.blackcompany.eeos.member.application.model.converter.MemberEntityConverter;
@@ -152,11 +151,7 @@ public class AttendService
 		return attendModels.stream()
 				.map(
 						attend -> {
-							MemberModel member =
-									memberRepository
-											.findById(attend.getMemberId())
-											.map(memberEntityConverter::from)
-											.orElseThrow(NotFoundMemberException::new);
+							MemberModel member = memberRepository.findById(attend.getMemberId());
 							return attendInfoConverter.from(member, attend.getStatus());
 						})
 				.collect(Collectors.toList());
@@ -168,6 +163,7 @@ public class AttendService
 				.stream()
 				.map(attendEntityConverter::from)
 				.collect(Collectors.toList());
+	}
 
 	public List<AttendInfoWithProgramResponse> findMyAttendInfo(
 			Long memberId, AttendInfosSearchRequest request) {
