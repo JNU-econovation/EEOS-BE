@@ -40,4 +40,12 @@ public class RequestScopeTest {
         Assertions.assertNull(RequestScope.getMemberId());
     }
 
+    @Test
+    @DisplayName("저장한_값을_삭제하면_null이_반환된다")
+    public void clearValue(){
+        RequestScope.setMemberId(1L);
+        RequestScope.clear();
+        Assertions.assertNull(RequestScope.getMemberId());
+    }
+
 }
