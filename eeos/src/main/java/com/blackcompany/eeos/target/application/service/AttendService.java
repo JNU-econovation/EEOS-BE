@@ -98,7 +98,7 @@ public class AttendService
 
 		AttendModel changedModel = model.changeStatus(program.getAttendMode().getMode());
 
-		if(changedModel.getStatus().equals("attend")){
+		if (changedModel.getStatus().equals("attend")) {
 			Long rank = calculateRank(programId);
 			changedModel.setRank(rank);
 		}
@@ -141,7 +141,6 @@ public class AttendService
 
 		List<AttendModel> attendModels = findTop5Attendants(programId);
 
-
 		return attendModels.stream()
 				.map(
 						attend -> {
@@ -157,7 +156,8 @@ public class AttendService
 
 	private List<AttendModel> findTop5Attendants(Long programId) {
 		return attendRepository
-				.findTop5ByProgramIdAndStatusOrderByUpdatedDateAscRankAsc(programId, AttendStatus.ATTEND).stream()
+				.findTop5ByProgramIdAndStatusOrderByUpdatedDateAscRankAsc(programId, AttendStatus.ATTEND)
+				.stream()
 				.map(attendEntityConverter::from)
 				.collect(Collectors.toList());
 	}
@@ -255,9 +255,8 @@ public class AttendService
 		}
 	}
 
-	private Long calculateRank(Long programId){
-		return attendRepository.countAttendStatusByProgramIdAndStatus(programId, AttendStatus.ATTEND) +1;
+	private Long calculateRank(Long programId) {
+		return attendRepository.countAttendStatusByProgramIdAndStatus(programId, AttendStatus.ATTEND)
+				+ 1;
 	}
-
-
 }

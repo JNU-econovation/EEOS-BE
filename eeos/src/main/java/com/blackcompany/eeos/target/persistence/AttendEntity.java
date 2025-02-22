@@ -20,7 +20,6 @@ import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
-import org.hibernate.boot.model.source.spi.PluralAttributeElementSourceOneToMany;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

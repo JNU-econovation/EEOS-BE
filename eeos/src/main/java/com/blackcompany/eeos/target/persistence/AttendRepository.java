@@ -41,14 +41,12 @@ public interface AttendRepository extends JpaRepository<AttendEntity, Long> {
 			@Param("beforeStatus") AttendStatus beforeStatus,
 			@Param("afterStatus") AttendStatus afterStatus);
 
-
 	@Lock(LockModeType.PESSIMISTIC_WRITE)
-	@Query("SELECT COUNT(a) FROM AttendEntity  a WHERE a.programId = :programId AND a.status = :status")
-	long countAttendStatusByProgramIdAndStatus(@Param("programId") Long programId, @Param("status") AttendStatus status);
+	@Query(
+			"SELECT COUNT(a) FROM AttendEntity  a WHERE a.programId = :programId AND a.status = :status")
+	long countAttendStatusByProgramIdAndStatus(
+			@Param("programId") Long programId, @Param("status") AttendStatus status);
 
 	List<AttendEntity> findTop5ByProgramIdAndStatusOrderByUpdatedDateAscRankAsc(
 			Long programId, AttendStatus status);
-
-
-
 }
