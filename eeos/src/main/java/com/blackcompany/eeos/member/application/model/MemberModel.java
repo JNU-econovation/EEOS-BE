@@ -1,6 +1,7 @@
 package com.blackcompany.eeos.member.application.model;
 
 import com.blackcompany.eeos.auth.application.domain.OauthServerType;
+import com.blackcompany.eeos.auth.application.support.MemberNameFormatter;
 import com.blackcompany.eeos.common.application.model.MemberIdModel;
 import com.blackcompany.eeos.common.support.AbstractModel;
 import com.blackcompany.eeos.member.application.exception.DeniedUpdateActiveException;
@@ -14,12 +15,12 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder(toBuilder = true)
+@Builder(toBuilder = true, builderMethodName = "internalBuilder")
 public class MemberModel implements AbstractModel, MemberIdModel {
 	private Long id;
 	private String name;
-	private ActiveStatus activeStatus;
-	private boolean isAdmin;
+	@Builder.Default private ActiveStatus activeStatus = ActiveStatus.AM;
+	@Builder.Default private boolean isAdmin = false;
 	private OauthServerType oauthServerType;
 
 	public MemberModel updateActiveStatus(String status) {
@@ -29,6 +30,7 @@ public class MemberModel implements AbstractModel, MemberIdModel {
 		return this;
 	}
 
+	// TODO : Equals 재정의로 고민
 	public boolean validateSame(Long memberId) {
 		return id.equals(memberId);
 	}
@@ -40,6 +42,22 @@ public class MemberModel implements AbstractModel, MemberIdModel {
 	@Override
 	public Long getMemberId() {
 		return id;
+	}
+
+	public static MemberModelBuilder builder() {
+		return internalBuilder();
+	}
+
+	public static class MemberModelBuilder {
+		public MemberModelBuilder name(String name, Integer generation) {
+			this.name = MemberNameFormatter.format(name, generation);
+			return this;
+		}
+
+		public MemberModelBuilder name(String name) {
+			this.name = name;
+			return this;
+		}
 	}
 
 	private void canEdit(ActiveStatus requestStatus) {

@@ -3,14 +3,12 @@ package com.blackcompany.eeos.member.application.service;
 import com.blackcompany.eeos.member.application.dto.QueryMemberResponse;
 import com.blackcompany.eeos.member.application.dto.QueryMembersResponse;
 import com.blackcompany.eeos.member.application.dto.converter.QueryMemberResponseConverter;
-import com.blackcompany.eeos.member.application.exception.NotFoundMemberException;
 import com.blackcompany.eeos.member.application.model.ActiveStatus;
 import com.blackcompany.eeos.member.application.model.MemberModel;
 import com.blackcompany.eeos.member.application.model.converter.MemberEntityConverter;
+import com.blackcompany.eeos.member.application.repository.MemberRepository;
 import com.blackcompany.eeos.member.application.usecase.GetMemberByActiveStatus;
 import com.blackcompany.eeos.member.application.usecase.GetMembersByActiveStatus;
-import com.blackcompany.eeos.member.persistence.MemberEntity;
-import com.blackcompany.eeos.member.persistence.MemberRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -39,36 +37,27 @@ public class QueryMemberService implements GetMembersByActiveStatus, GetMemberBy
 
 	@Override
 	public QueryMemberResponse execute(Long memberId) {
-		MemberEntity member =
-				memberRepository.findById(memberId).orElseThrow(NotFoundMemberException::new);
+		MemberModel model = memberRepository.findById(memberId);
 
-		MemberModel model = entityConverter.from(member);
 		return responseConverter.from(model);
 	}
 
 	public MemberModel findMember(Long memberId) {
-		MemberEntity entity =
-				memberRepository.findById(memberId).orElseThrow(NotFoundMemberException::new);
-		return memberEntityConverter.from(entity);
+		return memberRepository.findById(memberId);
 	}
 
 	public String getName(final Long memberId) {
-		return memberRepository
-				.findById(memberId)
-				.map(MemberEntity::getName)
-				.orElseThrow(NotFoundMemberException::new);
+		return memberRepository.findById(memberId).getName();
 	}
 
 	private List<MemberModel> findMembers() {
 		return memberRepository.findMembers().stream()
-				.map(entityConverter::from)
 				.filter(m -> !m.isAdmin())
 				.collect(Collectors.toList());
 	}
 
 	private List<MemberModel> findMembersByStatus(ActiveStatus activeStatus) {
 		return memberRepository.findMembersByActiveStatus(activeStatus).stream()
-				.map(entityConverter::from)
 				.filter(m -> !m.isAdmin())
 				.collect(Collectors.toList());
 	}

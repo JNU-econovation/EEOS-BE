@@ -1,7 +1,7 @@
 package com.blackcompany.eeos.teamBuilding.application.service;
 
 import com.blackcompany.eeos.member.application.model.converter.MemberEntityConverter;
-import com.blackcompany.eeos.member.persistence.MemberRepository;
+import com.blackcompany.eeos.member.application.repository.MemberRepository;
 import com.blackcompany.eeos.target.application.dto.TargetMember;
 import com.blackcompany.eeos.target.application.model.converter.TeamBuildingTargetEntityConverter;
 import com.blackcompany.eeos.target.application.service.CommandTargetMemberService;

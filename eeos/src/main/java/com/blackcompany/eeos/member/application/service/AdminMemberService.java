@@ -1,17 +1,15 @@
 package com.blackcompany.eeos.member.application.service;
 
-import com.blackcompany.eeos.auth.persistence.OAuthMemberRepository;
+import com.blackcompany.eeos.auth.application.repository.OAuthMemberRepository;
 import com.blackcompany.eeos.member.application.dto.ChangeActiveStatusRequest;
 import com.blackcompany.eeos.member.application.dto.CommandMemberResponse;
 import com.blackcompany.eeos.member.application.dto.converter.CommandMemberResponseConverter;
 import com.blackcompany.eeos.member.application.exception.DeniedMemberEditException;
-import com.blackcompany.eeos.member.application.exception.NotFoundMemberException;
 import com.blackcompany.eeos.member.application.model.MemberModel;
 import com.blackcompany.eeos.member.application.model.converter.MemberEntityConverter;
+import com.blackcompany.eeos.member.application.repository.MemberRepository;
 import com.blackcompany.eeos.member.application.usecase.ChangeActiveStatusUsecase;
 import com.blackcompany.eeos.member.event.DeletedMemberEvent;
-import com.blackcompany.eeos.member.persistence.MemberEntity;
-import com.blackcompany.eeos.member.persistence.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -33,10 +31,9 @@ public class AdminMemberService implements ChangeActiveStatusUsecase {
 		validateAdminPermission(adminMemberId);
 
 		MemberModel model = findMember(memberId);
-		MemberEntity updateMember = updateActiveStatus(model, request.getActiveStatus());
+		MemberModel updateMember = updateActiveStatus(model, request.getActiveStatus());
 
-		return responseConverter.from(
-				updateMember.getName(), updateMember.getActiveStatus().getStatus());
+		return responseConverter.from(updateMember.getName(), updateMember.getActiveStatus());
 	}
 
 	@Override
@@ -61,14 +58,11 @@ public class AdminMemberService implements ChangeActiveStatusUsecase {
 	}
 
 	private MemberModel findMember(final Long memberId) {
-		return memberRepository
-				.findById(memberId)
-				.map(memberConverter::from)
-				.orElseThrow(NotFoundMemberException::new);
+		return memberRepository.findById(memberId);
 	}
 
-	private MemberEntity updateActiveStatus(final MemberModel model, final String status) {
+	private MemberModel updateActiveStatus(final MemberModel model, final String status) {
 		MemberModel memberModel = model.updateActiveStatus(status);
-		return memberRepository.save(memberConverter.toEntity(memberModel));
+		return memberRepository.save(memberModel);
 	}
 }

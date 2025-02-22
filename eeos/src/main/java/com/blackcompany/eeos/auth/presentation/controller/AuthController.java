@@ -2,16 +2,17 @@ package com.blackcompany.eeos.auth.presentation.controller;
 
 import com.blackcompany.eeos.auth.application.domain.TokenModel;
 import com.blackcompany.eeos.auth.application.dto.converter.TokenResponseConverter;
+import com.blackcompany.eeos.auth.application.dto.request.AdditionalInfoApplicationCommand;
 import com.blackcompany.eeos.auth.application.dto.request.EEOSLoginRequest;
+import com.blackcompany.eeos.auth.application.dto.request.OAuthLoginRequestCommand;
 import com.blackcompany.eeos.auth.application.dto.response.TokenResponse;
-import com.blackcompany.eeos.auth.application.usecase.LogOutUsecase;
-import com.blackcompany.eeos.auth.application.usecase.LoginUsecase;
-import com.blackcompany.eeos.auth.application.usecase.ReissueUsecase;
-import com.blackcompany.eeos.auth.application.usecase.WithDrawUsecase;
+import com.blackcompany.eeos.auth.application.usecase.*;
 import com.blackcompany.eeos.auth.presentation.docs.AuthApi;
+import com.blackcompany.eeos.auth.presentation.dto.AdditionalInfoRequest;
 import com.blackcompany.eeos.auth.presentation.support.AuthConstants;
 import com.blackcompany.eeos.auth.presentation.support.Member;
 import com.blackcompany.eeos.auth.presentation.support.TokenExtractor;
+import com.blackcompany.eeos.auth.presentation.support.VerificationId;
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponse;
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponseBody.SuccessBody;
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponseGenerator;
@@ -19,6 +20,8 @@ import com.blackcompany.eeos.common.presentation.respnose.MessageCode;
 import com.blackcompany.eeos.common.presentation.support.CookieManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -40,6 +43,7 @@ public class AuthController implements AuthApi {
 	private final TokenResponseConverter tokenResponseConverter;
 	private final LogOutUsecase logOutUsecase;
 	private final WithDrawUsecase withDrawUsecase;
+	private final OAuthSignUpUseCase oAuthSignUpUseCase;
 
 	public AuthController(
 			LoginUsecase loginUsecase,
@@ -48,7 +52,8 @@ public class AuthController implements AuthApi {
 			TokenResponseConverter tokenResponseConverter,
 			CookieManager cookieManager,
 			LogOutUsecase logOutUsecase,
-			WithDrawUsecase withDrawUsecase) {
+			WithDrawUsecase withDrawUsecase,
+			OAuthSignUpUseCase oAuthSignUpUseCase) {
 		this.loginUsecase = loginUsecase;
 		this.reissueUsecase = reissueUsecase;
 		this.tokenExtractor = tokenExtractor;
@@ -56,6 +61,7 @@ public class AuthController implements AuthApi {
 		this.cookieManager = cookieManager;
 		this.logOutUsecase = logOutUsecase;
 		this.withDrawUsecase = withDrawUsecase;
+		this.oAuthSignUpUseCase = oAuthSignUpUseCase;
 	}
 
 	@Override
@@ -65,10 +71,21 @@ public class AuthController implements AuthApi {
 			@RequestParam("code") String code,
 			@RequestParam("redirect_uri") String uri,
 			HttpServletResponse httpResponse) {
-		TokenModel tokenModel = loginUsecase.login(oauthServerType, code, uri);
+		String formatUri = uri.trim().replaceAll("[\n\r\t ]", "");
+
+		OAuthLoginRequestCommand command =
+				new OAuthLoginRequestCommand(oauthServerType, code, formatUri);
+		TokenModel tokenModel = loginUsecase.login(command);
+
 		TokenResponse response = generateTokenResponse(tokenModel, httpResponse);
 
-		return ApiResponseGenerator.success(response, HttpStatus.CREATED, MessageCode.CREATE);
+		// 마이그레이션 필요 체크 - 임시 코드
+		HttpHeaders headers = new HttpHeaders();
+		if ("slack".equals(oauthServerType)) {
+			headers.add("Migration-Required", "true");
+		}
+
+		return ApiResponseGenerator.success(response, HttpStatus.CREATED, headers, MessageCode.CREATE);
 	}
 
 	@Override
@@ -111,6 +128,23 @@ public class AuthController implements AuthApi {
 		deleteTokenResponse(httpResponse);
 
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.DELETE);
+	}
+
+	@PostMapping("/login/additional-info")
+	public ApiResponse<SuccessBody<TokenResponse>> submitAdditionalInfo(
+			@VerificationId UUID verificationId,
+			@Valid @RequestBody AdditionalInfoRequest request,
+			HttpServletResponse httpResponse) {
+		TokenModel tokenModel =
+				oAuthSignUpUseCase.signUp(
+						new AdditionalInfoApplicationCommand(
+								verificationId,
+								request.getName(),
+								request.getGeneration(),
+								request.getActiveStatus()));
+		TokenResponse response = generateTokenResponse(tokenModel, httpResponse);
+
+		return ApiResponseGenerator.success(response, HttpStatus.CREATED, MessageCode.CREATE);
 	}
 
 	private TokenResponse generateTokenResponse(

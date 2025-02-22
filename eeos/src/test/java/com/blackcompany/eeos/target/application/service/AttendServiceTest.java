@@ -4,11 +4,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 import com.blackcompany.eeos.member.application.model.ActiveStatus;
+import com.blackcompany.eeos.member.application.model.MemberModel;
 import com.blackcompany.eeos.member.application.model.converter.MemberEntityConverter;
+import com.blackcompany.eeos.member.application.repository.MemberRepository;
 import com.blackcompany.eeos.member.application.service.QueryMemberService;
 import com.blackcompany.eeos.member.fixture.MemberFixture;
-import com.blackcompany.eeos.member.persistence.MemberEntity;
-import com.blackcompany.eeos.member.persistence.MemberRepository;
 import com.blackcompany.eeos.program.persistence.ProgramRepository;
 import com.blackcompany.eeos.target.application.dto.AttendInfoActiveStatusResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfoResponse;
@@ -55,8 +55,8 @@ class AttendServiceTest {
 		Long programId = 1L;
 		String attendStatus = "attend";
 
-		MemberEntity 수민 = MemberFixture.멤버_엔티티(1L, ActiveStatus.RM);
-		MemberEntity 바다 = MemberFixture.멤버_엔티티(2L, ActiveStatus.RM);
+		MemberModel 수민 = MemberFixture.멤버_모델(1L, ActiveStatus.RM);
+		MemberModel 바다 = MemberFixture.멤버_모델(2L, ActiveStatus.RM);
 		AttendEntity 수민_참석 =
 				com.blackcompany.eeos.target.fixture.AttendFixture.참석대상자_엔티티(1L, AttendStatus.ATTEND);
 		AttendEntity 바다_참석 =
@@ -90,7 +90,7 @@ class AttendServiceTest {
 		// given
 		Long programId = 1L;
 		String activeStatus = "am";
-		MemberEntity bada = MemberFixture.멤버_엔티티(1L, ActiveStatus.AM);
+		MemberModel bada = MemberFixture.멤버_모델(1L, ActiveStatus.AM);
 
 		when(memberRepository.findMembersByActiveStatus(ActiveStatus.AM)).thenReturn(List.of(bada));
 		when(attendRepository.findAllByProgramId(programId)).thenReturn(List.of());
@@ -114,8 +114,8 @@ class AttendServiceTest {
 		// given
 		Long programId = 1L;
 		String activeStatus = "all";
-		MemberEntity 수민 = MemberFixture.멤버_엔티티(1L, ActiveStatus.RM);
-		MemberEntity 바다 = MemberFixture.멤버_엔티티(2L, ActiveStatus.RM);
+		MemberModel 수민 = MemberFixture.멤버_모델(1L, ActiveStatus.RM);
+		MemberModel 바다 = MemberFixture.멤버_모델(2L, ActiveStatus.RM);
 
 		AttendEntity 수민_참석 =
 				com.blackcompany.eeos.target.fixture.AttendFixture.참석대상자_엔티티(1L, AttendStatus.ATTEND);
@@ -136,13 +136,13 @@ class AttendServiceTest {
 					assertEquals(members.get(0).getMemberId(), 수민_참석.getMemberId());
 					assertEquals(members.get(0).getAttendStatus(), 수민_참석.getStatus().getStatus());
 					assertEquals(members.get(0).getName(), 수민.getName());
-					assertEquals(members.get(0).getActiveStatus(), 수민.getActiveStatus().getStatus());
+					assertEquals(members.get(0).getActiveStatus(), 수민.getActiveStatus());
 				},
 				() -> {
 					assertEquals(members.get(1).getMemberId(), 바다_미응답.getMemberId());
 					assertEquals(members.get(1).getAttendStatus(), 바다_미응답.getStatus().getStatus());
 					assertEquals(members.get(1).getName(), 바다.getName());
-					assertEquals(members.get(1).getActiveStatus(), 바다.getActiveStatus().getStatus());
+					assertEquals(members.get(1).getActiveStatus(), 바다.getActiveStatus());
 				});
 	}
 }
