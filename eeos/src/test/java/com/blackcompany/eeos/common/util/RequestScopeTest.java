@@ -30,8 +30,8 @@ public class RequestScopeTest {
 							Assertions.assertNotEquals(1L, RequestScope.getMemberId());
 						});
 
-        setter.start();
-        getter.start();
+		setter.start();
+		getter.start();
 	}
 
 	@Test
