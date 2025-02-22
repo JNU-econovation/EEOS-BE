@@ -105,6 +105,11 @@ public class AttendService
 
 		AttendModel changedModel = model.changeStatus(program.getAttendMode().getMode());
 
+		if (changedModel.getStatus().equals("attend")) {
+			Long rank = calculateRank(programId);
+			changedModel.setRank(rank);
+		}
+
 		AttendEntity updated = attendRepository.save(attendEntityConverter.toEntity(changedModel));
 
 		String name = queryMemberService.getName(memberId);
@@ -138,6 +143,28 @@ public class AttendService
 	}
 
 	@Override
+	public List<AttendInfoResponse> findFireFingerMembers(final Long programId) {
+		validateExistsProgram(programId);
+
+		List<AttendModel> attendModels = findTop5Attendants(programId);
+
+		return attendModels.stream()
+				.map(
+						attend -> {
+							MemberModel member = memberRepository.findById(attend.getMemberId());
+							return attendInfoConverter.from(member, attend.getStatus());
+						})
+				.collect(Collectors.toList());
+	}
+
+	private List<AttendModel> findTop5Attendants(Long programId) {
+		return attendRepository
+				.findTop5ByProgramIdAndStatusOrderByUpdatedDateAscRankAsc(programId, AttendStatus.ATTEND)
+				.stream()
+				.map(attendEntityConverter::from)
+				.collect(Collectors.toList());
+	}
+
 	public List<AttendInfoWithProgramResponse> findMyAttendInfo(
 			Long memberId, AttendInfosSearchRequest request) {
 
@@ -272,5 +299,10 @@ public class AttendService
 		if (!programRepository.existsById(programId)) {
 			throw new NotFoundProgramException(programId);
 		}
+	}
+
+	private Long calculateRank(Long programId) {
+		return attendRepository.countAttendStatusByProgramIdAndStatus(programId, AttendStatus.ATTEND)
+				+ 1;
 	}
 }
