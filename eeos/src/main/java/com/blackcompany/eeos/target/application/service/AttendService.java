@@ -143,18 +143,18 @@ public class AttendService
 	}
 
 	@Override
-	public List<AttendInfoResponse> findFireFingerMembers(final Long programId) {
+	public QueryAttendStatusResponse findFireFingerMembers(final Long programId) {
 		validateExistsProgram(programId);
 
 		List<AttendModel> attendModels = findTop5Attendants(programId);
+		List<MemberModel> members = findMembers(attendModels);
 
-		return attendModels.stream()
-				.map(
-						attend -> {
-							MemberModel member = memberRepository.findById(attend.getMemberId());
-							return attendInfoConverter.from(member, attend.getStatus());
-						})
-				.collect(Collectors.toList());
+		List<AttendInfoResponse> response =
+				members.stream()
+						.map(member -> combine(member, attendModels, programId))
+						.collect(Collectors.toList());
+
+		return attendStatusResponseConverter.of(response);
 	}
 
 	private List<AttendModel> findTop5Attendants(Long programId) {
