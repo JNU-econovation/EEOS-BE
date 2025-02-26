@@ -56,5 +56,5 @@ public interface AttendApi {
 
 	@Operation(summary = "나의 출석 요약 정보 조회", description = "자신의 출석 요약 정보 (참석 , 지각, 불참, 벌점 통계)를 가져온다.")
 	@GetMapping("api/attend/summary")
-	ApiResponse<SuccessBody<AttendSummaryInfoResponse>> getMyAttendSummaryInfo(@Member Long memberId);
+	ApiResponse<SuccessBody<AttendSummaryInfoResponse>> getMyAttendSummaryInfo();
 }

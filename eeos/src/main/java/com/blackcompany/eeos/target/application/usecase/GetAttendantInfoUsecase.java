@@ -22,5 +22,5 @@ public interface GetAttendantInfoUsecase {
 	List<AttendInfoWithProgramResponse> findMyAttendInfo(
 			final Long memberId, final AttendInfosSearchRequest request);
 
-    AttendSummaryInfoResponse getMyAttendSummary(Long memberId);
+    AttendSummaryInfoResponse getMyAttendSummary();
 }

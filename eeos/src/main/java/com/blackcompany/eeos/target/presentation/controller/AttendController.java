@@ -98,8 +98,8 @@ public class AttendController implements AttendApi {
 
 	@GetMapping("/attend/summary")
 	@Override
-	public ApiResponse<SuccessBody<AttendSummaryInfoResponse>> getMyAttendSummaryInfo(Long memberId) {
-		AttendSummaryInfoResponse response = getAttendantInfoUsecase.getMyAttendSummary(memberId);
+	public ApiResponse<SuccessBody<AttendSummaryInfoResponse>> getMyAttendSummaryInfo() {
+		AttendSummaryInfoResponse response = getAttendantInfoUsecase.getMyAttendSummary();
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
 	}
 }

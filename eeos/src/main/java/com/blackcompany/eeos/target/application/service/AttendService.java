@@ -171,7 +171,8 @@ public class AttendService
 	}
 
 	@Override
-	public AttendSummaryInfoResponse getMyAttendSummary(Long memberId) {
+	public AttendSummaryInfoResponse getMyAttendSummary() {
+
 		return null;
 	}
 
