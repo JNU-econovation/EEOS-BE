@@ -49,6 +49,11 @@ public interface AttendApi {
 	ApiResponse<SuccessBody<QueryAttendActiveStatusResponse>>
 			getAttendAllInfoByProgramSortActiveStatus(Long programId, String activeStatus);
 
+	@Operation(
+			summary = "파이어핑거 top10 회원 조회",
+			description = "PathVariable에 담긴 프로그램를 이용해 특정 프로그램에서 출석을 빠르게 한 사용자의 정보를 가져온다.")
+	ApiResponse<SuccessBody<QueryAttendStatusResponse>> getAttendInfoByTop10(Long programId);
+
 	@Operation(summary = "나의 출석 현황 정보들 조회", description = "나의 출석 현황 정보들을 가져온다.")
 	@GetMapping("/api/attend/programs")
 	ApiResponse<SuccessBody<AttendInfosWithProgramResponses>> getMyAttendInfosWithProgram(

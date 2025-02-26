@@ -21,6 +21,9 @@ public class AttendModel implements AbstractModel, MemberIdModel {
 	private Long memberId;
 	private Long programId;
 	private AttendStatus status;
+
+	private Long rank;
+
 	private Integer penaltyScore;
 
 	public AttendModel changeStatus(String afterStatus) {
@@ -72,5 +75,9 @@ public class AttendModel implements AbstractModel, MemberIdModel {
 			return;
 		}
 		throw new NotSameBeforeAttendStatusException(memberId);
+	}
+
+	public void setRank(Long rank) {
+		this.rank = rank;
 	}
 }

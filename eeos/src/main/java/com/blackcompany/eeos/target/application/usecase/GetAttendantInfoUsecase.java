@@ -19,6 +19,8 @@ public interface GetAttendantInfoUsecase {
 	 */
 	QueryAttendStatusResponse findAttendInfo(final Long programId, final String attendStatus);
 
+	QueryAttendStatusResponse findFireFingerMembers(Long programId);
+
 	List<AttendInfoWithProgramResponse> findMyAttendInfo(
 			final Long memberId, final AttendInfosSearchRequest request);
 
