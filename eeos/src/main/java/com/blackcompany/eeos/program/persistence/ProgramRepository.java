@@ -43,10 +43,7 @@ public interface ProgramRepository extends JpaRepository<ProgramEntity, Long> {
 			@Param("programId") Long programId, @Param("attendMode") ProgramAttendMode attendMode);
 
 	@Query(
-			"SELECT p FROM ProgramEntity p WHERE p.programDate >=:startDate AND p.programDate <=:endDate AND p.isDeleted=false ORDER BY p.programDate DESC, p.title ASC "
-	)
+			"SELECT p FROM ProgramEntity p WHERE p.programDate >=:startDate AND p.programDate <=:endDate AND p.isDeleted=false ORDER BY p.programDate DESC, p.title ASC ")
 	List<ProgramEntity> findByDateRange(
-			@Param("startDate") Timestamp startDate,
-			@Param("endDate") Timestamp endDate
-	);
+			@Param("startDate") Timestamp startDate, @Param("endDate") Timestamp endDate);
 }

@@ -8,28 +8,25 @@ import org.springframework.stereotype.Component;
 @Component
 public class AttendCountCalculate {
 
-    public Long attendCount(List<AttendModel> attendModels){
-        return attendModels.stream()
-                .filter(attend -> AttendStatus.find(attend.getStatus()).equals(AttendStatus.ATTEND))
-                .count();
-    }
+	public Long attendCount(List<AttendModel> attendModels) {
+		return attendModels.stream()
+				.filter(attend -> AttendStatus.find(attend.getStatus()).equals(AttendStatus.ATTEND))
+				.count();
+	}
 
-    public Long absentCount(List<AttendModel> attendModels){
-        return attendModels.stream()
-                .filter(attend -> AttendStatus.find(attend.getStatus()).equals(AttendStatus.ABSENT))
-                .count();
-    }
+	public Long absentCount(List<AttendModel> attendModels) {
+		return attendModels.stream()
+				.filter(attend -> AttendStatus.find(attend.getStatus()).equals(AttendStatus.ABSENT))
+				.count();
+	}
 
-    public Long lateCount(List<AttendModel> attendModels){
-        return attendModels.stream()
-                .filter(attend -> AttendStatus.find(attend.getStatus()).equals(AttendStatus.LATE))
-                .count();
-    }
+	public Long lateCount(List<AttendModel> attendModels) {
+		return attendModels.stream()
+				.filter(attend -> AttendStatus.find(attend.getStatus()).equals(AttendStatus.LATE))
+				.count();
+	}
 
-    public Long penaltyPoint(List<AttendModel> attendModels){
-        return attendModels.stream().reduce(0L , (i, attend) -> i + attend.getPenaltyScore(), Long::sum);
-    }
-
-
-
+	public Long penaltyPoint(List<AttendModel> attendModels) {
+		return attendModels.stream().reduce(0L, (i, attend) -> i + attend.getPenaltyScore(), Long::sum);
+	}
 }

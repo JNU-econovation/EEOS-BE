@@ -38,8 +38,7 @@ public class ProgramDateRangeService {
 				DateConverter.toEpochSecond(DateConverter.toLocalDate(startDate));
 		Timestamp endDateTimestamp = DateConverter.toEpochSecond(DateConverter.toLocalDate(endDate));
 
-		return programRepository.findByDateRange(startDateTimestamp, endDateTimestamp)
-				.stream()
+		return programRepository.findByDateRange(startDateTimestamp, endDateTimestamp).stream()
 				.map(programEntityConverter::from)
 				.toList();
 	}
