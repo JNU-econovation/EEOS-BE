@@ -206,8 +206,8 @@ public class AttendService
 	public AttendSummaryInfoResponse getMyAttendSummary() {
 		Long memberId = RequestScope.getMemberId();
 
-		Long startDate = (long) DateConverter.toEpochSecond(LocalDate.of(2025,3,1)).getNanos() / 1000;
-		Long endDate = (long) DateConverter.toEpochSecond(LocalDate.of(2025,7,25)).getNanos() / 1000;
+		Long startDate = (long) DateConverter.toEpochSecond(LocalDate.of(2025, 3, 1)).getNanos() / 1000;
+		Long endDate = (long) DateConverter.toEpochSecond(LocalDate.of(2025, 7, 25)).getNanos() / 1000;
 
 		List<ProgramModel> programs = programDateRangeService.getPrograms(startDate, endDate);
 
@@ -223,9 +223,12 @@ public class AttendService
 
 	private List<AttendModel> findMyAttends(List<ProgramModel> programs) {
 		Long memberId = RequestScope.getMemberId();
-		return attendRepository.findByProgramIdsAndMemberId(
+		return attendRepository
+				.findByProgramIdsAndMemberId(
 						programs.stream().map(ProgramModel::getId).collect(Collectors.toList()), memberId)
-				.stream().map(attendEntityConverter::from).toList();
+				.stream()
+				.map(attendEntityConverter::from)
+				.toList();
 	}
 
 	private void validateAttend(ProgramModel programModel, AttendModel attendModel) {
