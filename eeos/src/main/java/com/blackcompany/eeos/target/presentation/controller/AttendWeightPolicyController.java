@@ -7,7 +7,7 @@ import com.blackcompany.eeos.common.presentation.respnose.MessageCode;
 import com.blackcompany.eeos.target.application.dto.AttendWeightPolicyApplicationDto;
 import com.blackcompany.eeos.target.application.usecase.CommandAttendWeightPolicyUsecase;
 import com.blackcompany.eeos.target.application.usecase.GetAttendWeightPolicyUsecase;
-import com.blackcompany.eeos.target.presentation.docs.PenaltyApi;
+import com.blackcompany.eeos.target.presentation.docs.AttendWeightPolicyApi;
 import com.blackcompany.eeos.target.presentation.dto.AttendWeightPolicyWebDto;
 import jakarta.validation.Valid;
 import java.util.Collections;
@@ -19,10 +19,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/admin/attend/weight-policy") // TODO : 인터셉터단에서 어드민 이외 유저 제한 필요
-public class AttendWeightPolicyController implements PenaltyApi {
+public class AttendWeightPolicyController implements AttendWeightPolicyApi {
 	private final CommandAttendWeightPolicyUsecase commandWeightPolicyUsecase;
 	private final GetAttendWeightPolicyUsecase getWeightPolicyUsecase;
 
+	@Override
 	@PutMapping
 	public ApiResponse<ApiResponseBody.SuccessBody<Void>> createWeightPolicy(
 			@RequestBody @Valid AttendWeightPolicyWebDto request) {
@@ -30,6 +31,7 @@ public class AttendWeightPolicyController implements PenaltyApi {
 		return ApiResponseGenerator.success(HttpStatus.CREATED, MessageCode.UPDATE);
 	}
 
+	@Override
 	@GetMapping
 	public ApiResponse<ApiResponseBody.SuccessBody<AttendWeightPolicyWebDto>> getWeightPolicy(
 			@RequestParam(required = false) Set<String> attendStatuses) {
