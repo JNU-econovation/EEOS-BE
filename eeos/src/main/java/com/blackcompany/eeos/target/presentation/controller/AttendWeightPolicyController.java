@@ -7,8 +7,10 @@ import com.blackcompany.eeos.common.presentation.respnose.MessageCode;
 import com.blackcompany.eeos.target.application.dto.AttendWeightPolicyApplicationDto;
 import com.blackcompany.eeos.target.application.usecase.CommandAttendWeightPolicyUsecase;
 import com.blackcompany.eeos.target.application.usecase.GetAttendWeightPolicyUsecase;
-import com.blackcompany.eeos.target.presentation.docs.weightPolicy.presentation.docs.PenaltyApi;
+import com.blackcompany.eeos.target.presentation.docs.PenaltyApi;
 import com.blackcompany.eeos.target.presentation.dto.AttendWeightPolicyWebDto;
+import jakarta.validation.Valid;
+import java.util.Collections;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,17 +25,17 @@ public class AttendWeightPolicyController implements PenaltyApi {
 
 	@PutMapping
 	public ApiResponse<ApiResponseBody.SuccessBody<Void>> createWeightPolicy(
-			@RequestBody AttendWeightPolicyWebDto request) {
+			@RequestBody @Valid AttendWeightPolicyWebDto request) {
 		commandWeightPolicyUsecase.changeWeightPolicy(request.toApplicationRequest());
 		return ApiResponseGenerator.success(HttpStatus.CREATED, MessageCode.UPDATE);
 	}
 
 	@GetMapping
 	public ApiResponse<ApiResponseBody.SuccessBody<AttendWeightPolicyWebDto>> getWeightPolicy(
-			@RequestParam Set<String> attendStatuses) {
+			@RequestParam(required = false) Set<String> attendStatuses) {
+		Set<String> statuses = attendStatuses != null ? attendStatuses : Collections.emptySet();
 
-		AttendWeightPolicyApplicationDto result =
-				getWeightPolicyUsecase.getWeightPolicies(attendStatuses);
+		AttendWeightPolicyApplicationDto result = getWeightPolicyUsecase.getWeightPolicies(statuses);
 
 		AttendWeightPolicyWebDto response =
 				AttendWeightPolicyWebDto.builder()
