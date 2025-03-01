@@ -1,6 +1,6 @@
 package com.blackcompany.eeos.target.application.model;
 
-import com.blackcompany.eeos.target.application.exception.NotFoundAttendStatusException;
+import com.blackcompany.eeos.target.application.exception.NotFoundSignTypeException;
 import java.util.Arrays;
 import lombok.Getter;
 
@@ -19,7 +19,7 @@ public enum SignType {
 		return Arrays.stream(SignType.values())
 				.filter(value -> value.getType().equals(type))
 				.findAny()
-				.orElseThrow(() -> new NotFoundAttendStatusException(type)); // TODO : 이거 변경하기
+				.orElseThrow(() -> new NotFoundSignTypeException(type)); // TODO : 이거 변경하기
 	}
 
 	public static boolean isSame(String source, AttendStatus target) {
