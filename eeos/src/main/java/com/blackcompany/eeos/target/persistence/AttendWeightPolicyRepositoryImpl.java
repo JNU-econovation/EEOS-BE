@@ -48,7 +48,7 @@ class AttendWeightPolicyRepositoryImpl implements AttendWeightPolicyRepository {
 		return AttendWeightPolicyEntity.builder()
 				.id(model.getId())
 				.signType(model.getSignType())
-				.signType(model.getSignType())
+				.type(model.getType())
 				.score(model.getScore())
 				.build();
 	}
