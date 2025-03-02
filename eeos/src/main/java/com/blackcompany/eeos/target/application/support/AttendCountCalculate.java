@@ -7,22 +7,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class AttendCountCalculate {
-
-	public Long attendCount(List<AttendModel> attendModels) {
+	
+	public Long countByStatus(String status, List<AttendModel> attendModels) {
 		return attendModels.stream()
-				.filter(attend -> AttendStatus.find(attend.getStatus()).equals(AttendStatus.ATTEND))
-				.count();
-	}
-
-	public Long absentCount(List<AttendModel> attendModels) {
-		return attendModels.stream()
-				.filter(attend -> AttendStatus.find(attend.getStatus()).equals(AttendStatus.ABSENT))
-				.count();
-	}
-
-	public Long lateCount(List<AttendModel> attendModels) {
-		return attendModels.stream()
-				.filter(attend -> AttendStatus.find(attend.getStatus()).equals(AttendStatus.LATE))
+				.filter(attend -> attend.getStatus().equals(status))
 				.count();
 	}
 
