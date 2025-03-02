@@ -213,9 +213,9 @@ public class AttendService
 
 		List<AttendModel> attends = findMyAttends(programs);
 
-		Long attendCount = attendCountCalculate.countByStatus(AttendStatus.ATTEND.getStatus(),attends);
-		Long absentCount = attendCountCalculate.countByStatus(AttendStatus.ABSENT.getStatus(),attends);
-		Long lateCount = attendCountCalculate.countByStatus(AttendStatus.LATE.getStatus(),attends);
+		Long attendCount = attendCountCalculate.countByStatus(AttendStatus.ATTEND.getStatus(), attends);
+		Long absentCount = attendCountCalculate.countByStatus(AttendStatus.ABSENT.getStatus(), attends);
+		Long lateCount = attendCountCalculate.countByStatus(AttendStatus.LATE.getStatus(), attends);
 		Long penaltyPoint = attendCountCalculate.penaltyPoint(attends);
 
 		return new AttendSummaryInfoResponse(memberId, attendCount, absentCount, penaltyPoint);
