@@ -59,8 +59,8 @@ public interface AttendRepository extends JpaRepository<AttendEntity, Long> {
 			@Param("programIds") List<Long> programIds, @Param("memberId") Long memberId);
 
 	@Query(
-			"SELECT temp.memberId FROM (SELECT a.memberId as memberId, SUM(a.penaltyScore) as totalScore FROM AttendEntity a WHERE a.createdDate >= :startDate AND a.createdDate <= :endDate  GROUP BY a.memberId ORDER BY totalScore DESC) AS temp")
-	Page<Long> findByPenaltyPointSum(
+			"SELECT temp.memberId, temp.totalScore FROM (SELECT a.memberId as memberId, SUM(a.penaltyScore) as totalScore FROM AttendEntity a WHERE a.createdDate >= :startDate AND a.createdDate <= :endDate  GROUP BY a.memberId) AS temp")
+	Page<Object[]> findByPenaltyPointSum(
 			@Param("startDate") Timestamp startDate,
 			@Param("endDate") Timestamp endDate,
 			Pageable pageable);
