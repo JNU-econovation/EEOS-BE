@@ -15,6 +15,7 @@ import com.blackcompany.eeos.target.application.dto.AttendInfoActiveStatusRespon
 import com.blackcompany.eeos.target.application.dto.AttendInfoResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfoWithProgramResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfosSearchRequest;
+import com.blackcompany.eeos.target.application.dto.AttendPenaltyResponse;
 import com.blackcompany.eeos.target.application.dto.ChangeAttendStatusResponse;
 import com.blackcompany.eeos.target.application.dto.QueryAttendActiveStatusResponse;
 import com.blackcompany.eeos.target.application.dto.QueryAttendStatusResponse;
@@ -194,6 +195,11 @@ public class AttendService
 		}
 
 		return Collections.emptyList();
+	}
+
+	@Override
+	public List<AttendPenaltyResponse> getPenaltyTop10Info() {
+		return List.of();
 	}
 
 	private void validateParameter(Long startDate, Long endDate, Integer size, Integer page) {
