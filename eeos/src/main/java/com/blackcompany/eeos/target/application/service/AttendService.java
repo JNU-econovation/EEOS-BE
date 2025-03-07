@@ -51,6 +51,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -255,6 +256,7 @@ public class AttendService
 
 		List<Long> topMemberIds =
 				attendRepository.findByPenaltyPointSum(startDate, endDate, pageable).stream().map(o -> (Long) o[0]).toList();
+
 		if (!topMemberIds.isEmpty()) {
 			Map<Long, Long> memberIdToPenaltyPoint =
 					topMemberIds.stream()
@@ -269,10 +271,15 @@ public class AttendService
 					topMemberIds.stream()
 							.map(
 									id -> {
-										MemberModel member = memberRepository.findById(id);
-										Long penaltyPoint = memberIdToPenaltyPoint.get(id);
-										return attendPenaltyResponseConverter.from(
-												member, penaltyPoint, Long.valueOf(topMemberIds.indexOf(id) + 1));
+										Optional<MemberModel> member = memberRepository.findByIdOptional(id);
+
+										return member.map(m -> {
+
+											Long penaltyPoint = memberIdToPenaltyPoint.get(id);
+											return attendPenaltyResponseConverter.from(m, penaltyPoint, Long.valueOf(topMemberIds.indexOf(id) + 1));
+
+										}).orElseGet(() -> new AttendPenaltyResponse(id, "삭제된 회원", memberIdToPenaltyPoint.get(id), Long.valueOf(topMemberIds.indexOf(id) + 1)));
+
 									})
 							.toList();
 
