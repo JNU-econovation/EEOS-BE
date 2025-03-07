@@ -13,6 +13,7 @@ import com.blackcompany.eeos.target.application.dto.AttendPenaltyResponse;
 import com.blackcompany.eeos.target.application.dto.AttendPenaltyResponses;
 import com.blackcompany.eeos.target.application.dto.AttendSummaryInfoResponse;
 import com.blackcompany.eeos.target.application.dto.ChangeAttendStatusResponse;
+import com.blackcompany.eeos.target.application.dto.PenaltyInfoRequest;
 import com.blackcompany.eeos.target.application.dto.QueryAttendActiveStatusResponse;
 import com.blackcompany.eeos.target.application.dto.QueryAttendStatusResponse;
 import com.blackcompany.eeos.target.application.usecase.ChangeAttendStatusUsecase;
@@ -107,7 +108,9 @@ public class AttendController implements AttendApi {
 	}
 
 	@Override
-	public ApiResponse<SuccessBody<AttendPenaltyResponses>> getPenaltyTop10Info() {
+	public ApiResponse<SuccessBody<AttendPenaltyResponses>> getPenaltyInfo(
+			PenaltyInfoRequest request
+	) {
 		List<AttendPenaltyResponse> responses = getAttendantInfoUsecase.getPenaltyTop10Info();
 
 		return ApiResponseGenerator.success(

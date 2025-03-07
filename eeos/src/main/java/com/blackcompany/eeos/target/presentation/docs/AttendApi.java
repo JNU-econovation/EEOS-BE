@@ -9,6 +9,7 @@ import com.blackcompany.eeos.target.application.dto.AttendInfosWithProgramRespon
 import com.blackcompany.eeos.target.application.dto.AttendPenaltyResponses;
 import com.blackcompany.eeos.target.application.dto.AttendSummaryInfoResponse;
 import com.blackcompany.eeos.target.application.dto.ChangeAttendStatusResponse;
+import com.blackcompany.eeos.target.application.dto.PenaltyInfoRequest;
 import com.blackcompany.eeos.target.application.dto.QueryAttendActiveStatusResponse;
 import com.blackcompany.eeos.target.application.dto.QueryAttendStatusResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,6 +17,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Tag(name = "행사 참여", description = "행사 참여 관련 API")
@@ -61,7 +63,7 @@ public interface AttendApi {
 			@Member Long memberId, @Valid AttendInfosSearchRequest request);
 
 	@Operation(summary = "벌점 순위 Top 10 조회", description = "전체 회원 중 벌점을 기준으로 Top 10을 조회합니다.")
-	ApiResponse<SuccessBody<AttendPenaltyResponses>> getPenaltyTop10Info();
+	ApiResponse<SuccessBody<AttendPenaltyResponses>> getPenaltyTop10Info(@ParameterObject PenaltyInfoRequest request);
 
 	@Operation(summary = "나의 출석 요약 정보 조회", description = "자신의 출석 요약 정보 (참석 , 지각, 불참, 벌점 통계)를 가져온다.")
 	@GetMapping("/api/attend/summary")
