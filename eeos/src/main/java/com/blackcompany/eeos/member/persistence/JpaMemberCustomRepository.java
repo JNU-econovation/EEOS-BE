@@ -2,8 +2,6 @@ package com.blackcompany.eeos.member.persistence;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
-import jakarta.persistence.TypedQuery;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -17,16 +15,10 @@ public class JpaMemberCustomRepository {
 
     public List<MemberEntity> findMembersByIdsInOrder(List<Long> idList) {
 
-        StringBuilder ids = new StringBuilder();
-
-        for(Long id : idList) {
-            ids.append(id).append(",");
-        }
-
-        ids.deleteCharAt(ids.length()-1);
+        String ids = String.join(",", idList.stream().map(String::valueOf).toList());
 
         String jpql = "SELECT m FROM MemberEntity m WHERE m.id IN :ids AND m.isDeleted=false ORDER BY FUNCTION('FIELD', m.id, '%Ids%') "
-                .replace("'%Ids%'", ids.toString());
+                .replace("'%Ids%'", ids);
 
         List<MemberEntity> result = em.createQuery(jpql, MemberEntity.class)
                 .setParameter("ids", idList)
