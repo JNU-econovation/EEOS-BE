@@ -2,6 +2,7 @@ package com.blackcompany.eeos.target.persistence;
 
 import com.blackcompany.eeos.target.application.model.AttendStatus;
 import jakarta.persistence.LockModeType;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -54,4 +55,10 @@ public interface AttendRepository extends JpaRepository<AttendEntity, Long> {
 			"SELECT a FROM AttendEntity a WHERE a.programId IN :programIds AND a.memberId=:memberId AND a.isDeleted=false")
 	List<AttendEntity> findByProgramIdsAndMemberId(
 			@Param("programIds") List<Long> programIds, @Param("memberId") Long memberId);
+
+	@Query("SELECT a.memberId FROM AttendEntity a WHERE a.createdDate >= :startDate AND a.createdDate <= :endDate "
+			+ "GROUP BY a.memberId ORDER BY SUM(a.penaltyScore) DESC LIMIT :limit")
+	List<Long> findByPenaltyPointSum(@Param("startDate") Timestamp startDate,
+									 @Param("endDate") Timestamp endDate,
+									 @Param("limit") Long limit);
 }
