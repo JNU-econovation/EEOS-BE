@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 
 public class IsNotGithubUrlException extends BusinessException {
 
-	private static final String FAIL_CODE = "1011";
+	private static final String FAIL_CODE = "1013";
 
 	public IsNotGithubUrlException() {
 		super(FAIL_CODE, HttpStatus.NOT_ACCEPTABLE);
