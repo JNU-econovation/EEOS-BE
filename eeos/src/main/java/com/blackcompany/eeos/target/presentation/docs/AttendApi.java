@@ -63,7 +63,7 @@ public interface AttendApi {
 			@Member Long memberId, @Valid AttendInfosSearchRequest request);
 
 	@Operation(summary = "벌점 순위 Top 10 조회", description = "전체 회원 중 벌점을 기준으로 Top 10을 조회합니다.")
-	ApiResponse<SuccessBody<AttendPenaltyResponses>> getPenaltyTop10Info(@ParameterObject PenaltyInfoRequest request);
+	ApiResponse<SuccessBody<AttendPenaltyResponses>> getPenaltyInfo(@ParameterObject PenaltyInfoRequest request);
 
 	@Operation(summary = "나의 출석 요약 정보 조회", description = "자신의 출석 요약 정보 (참석 , 지각, 불참, 벌점 통계)를 가져온다.")
 	@GetMapping("/api/attend/summary")
