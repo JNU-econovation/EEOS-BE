@@ -25,7 +25,7 @@ public interface GetAttendantInfoUsecase {
 	List<AttendInfoWithProgramResponse> findMyAttendInfo(
 			final Long memberId, final AttendInfosSearchRequest request);
 
-	List<AttendPenaltyResponse> getPenaltyTop10Info();
+	List<AttendPenaltyResponse> getPenaltyInfos(int page, int size, String sortType);
 
 	AttendSummaryInfoResponse getMyAttendSummary();
 }

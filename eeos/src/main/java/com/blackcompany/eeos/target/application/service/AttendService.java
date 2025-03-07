@@ -53,6 +53,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -230,14 +233,26 @@ public class AttendService
 	}
 
 	@Override
-	public List<AttendPenaltyResponse> getPenaltyTop10Info() {
+	public List<AttendPenaltyResponse> getPenaltyInfos(int page, int size, String sortType) {
+		Sort.Order order;
+
+		if(sortType.equals("asc")) {
+			order = Sort.Order.asc("penaltyPoint");
+		}
+		else {
+			order = Sort.Order.desc("penaltyPoint");
+		}
+
+		Pageable pageable = PageRequest.of(page - 1, size, Sort.by(order));
+
 		Timestamp startDate =
 				Timestamp.valueOf(LocalDateTime.of(LocalDate.of(2025, 3, 1), LocalTime.of(0, 0)));
 		Timestamp endDate =
 				Timestamp.valueOf(LocalDateTime.of(LocalDate.of(2025, 8, 1), LocalTime.of(0, 0)));
 		Long limit = 10L;
 
-		List<Long> topMemberIds = attendRepository.findByPenaltyPointSum(startDate, endDate, limit);
+		List<Long> topMemberIds = attendRepository.findByPenaltyPointSum(startDate, endDate, pageable)
+				.stream().toList();
 
 		if (!topMemberIds.isEmpty()) {
 			Map<Long, Long> memberIdToPenaltyPoint =

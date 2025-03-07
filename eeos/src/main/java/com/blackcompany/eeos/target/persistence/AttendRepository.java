@@ -5,6 +5,8 @@ import jakarta.persistence.LockModeType;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Modifying;
@@ -58,11 +60,11 @@ public interface AttendRepository extends JpaRepository<AttendEntity, Long> {
 
 	@Query(
 			"SELECT a.memberId FROM AttendEntity a WHERE a.createdDate >= :startDate AND a.createdDate <= :endDate "
-					+ "GROUP BY a.memberId ORDER BY SUM(a.penaltyScore) DESC LIMIT :limit")
-	List<Long> findByPenaltyPointSum(
+					+ "GROUP BY a.memberId ORDER BY SUM(a.penaltyScore) DESC")
+	Page<Long> findByPenaltyPointSum(
 			@Param("startDate") Timestamp startDate,
 			@Param("endDate") Timestamp endDate,
-			@Param("limit") Long limit);
+			Pageable pageable);
 
 	@Query(
 			"SELECT SUM(a.penaltyScore) FROM AttendEntity a WHERE a.createdDate >= :startDate AND a.createdDate <= :endDate AND a.memberId=:memberId")
