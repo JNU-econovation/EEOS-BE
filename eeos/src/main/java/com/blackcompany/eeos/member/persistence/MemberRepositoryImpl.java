@@ -13,7 +13,9 @@ import org.springframework.stereotype.Repository;
 @AllArgsConstructor
 public class MemberRepositoryImpl implements MemberRepository {
 	private final JpaMemberRepository jpaRepository;
+	private final JpaMemberCustomRepository jpaCustomRepository;
 	private final MemberEntityConverter converter;
+	private final JpaMemberCustomRepository jpaMemberCustomRepository;
 
 	@Override
 	public List<MemberModel> findMembersByProgramId(Long programId) {
@@ -39,7 +41,7 @@ public class MemberRepositoryImpl implements MemberRepository {
 
 	@Override
 	public List<MemberModel> findMembersByIdsInOrder(List<Long> ids) {
-		return jpaRepository.findMembersByIdsInOrder(ids).stream().map(converter::from).toList();
+		return jpaMemberCustomRepository.findMembersByIdsInOrder(ids).stream().map(converter::from).toList();
 	}
 
 	@Override
