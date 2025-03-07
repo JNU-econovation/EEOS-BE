@@ -21,4 +21,7 @@ public interface JpaMemberRepository extends JpaRepository<MemberEntity, Long> {
 
 	@Query("SELECT m FROM MemberEntity  m WHERE m.id IN :ids AND m.isDeleted=false ORDER BY m.name")
 	List<MemberEntity> findMembersByIds(@Param("ids") List<Long> ids);
+
+	@Query("SELECT m FROM MemberEntity  m WHERE m.id IN :ids ORDER BY FUNCTION('FILED', m.id, :ids) ")
+	List<MemberEntity> findMembersByIdsInOrder(@Param("ids") List<Long> ids);
 }

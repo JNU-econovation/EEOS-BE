@@ -39,6 +39,11 @@ public class MemberRepositoryImpl implements MemberRepository {
 	}
 
 	@Override
+	public List<MemberModel> findMembersByIdsInOrder(List<Long> ids) {
+		return jpaRepository.findMembersByIdsInOrder(ids).stream().map(converter::from).toList();
+	}
+
+	@Override
 	public MemberModel findById(Long memberId) {
 		return jpaRepository
 				.findById(memberId)
