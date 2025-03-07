@@ -252,7 +252,7 @@ public class AttendService
 		Long limit = 10L;
 
 		List<Long> topMemberIds = attendRepository.findByPenaltyPointSum(startDate, endDate, pageable)
-				.stream().map(AttendEntity::getMemberId).toList();
+				.stream().map(AttendEntity::getMemberId).distinct().toList();
 
 		if (!topMemberIds.isEmpty()) {
 			Map<Long, Long> memberIdToPenaltyPoint =
