@@ -25,9 +25,8 @@ public class JpaMemberCustomRepository {
 
         ids.deleteCharAt(ids.length()-1);
 
-        String jpql = "SELECT m FROM MemberEntity m WHERE m.id IN :ids AND m.isDeleted=false ORDER BY FUNCTION('FIELD', m.id, '%Ids%') ";
-
-        jpql = jpql.replace("'%Ids%'", ids.toString());
+        String jpql = "SELECT m FROM MemberEntity m WHERE m.id IN :ids AND m.isDeleted=false ORDER BY FUNCTION('FIELD', m.id, '%Ids%') "
+                .replace("'%Ids%'", ids.toString());
 
         List<MemberEntity> result = em.createQuery(jpql, MemberEntity.class)
                 .setParameter("ids", idList)
