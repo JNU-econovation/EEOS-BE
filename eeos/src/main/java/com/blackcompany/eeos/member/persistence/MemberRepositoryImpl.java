@@ -6,6 +6,7 @@ import com.blackcompany.eeos.member.application.model.MemberModel;
 import com.blackcompany.eeos.member.application.model.converter.MemberEntityConverter;
 import com.blackcompany.eeos.member.application.repository.MemberRepository;
 import java.util.List;
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -43,6 +44,13 @@ public class MemberRepositoryImpl implements MemberRepository {
 				.findById(memberId)
 				.map(converter::from)
 				.orElseThrow(NotFoundMemberException::new);
+	}
+
+	@Override
+	public Optional<MemberModel> findByIdOptional(Long memberId) {
+		return jpaRepository
+				.findById(memberId)
+				.map(converter::from);
 	}
 
 	@Override
