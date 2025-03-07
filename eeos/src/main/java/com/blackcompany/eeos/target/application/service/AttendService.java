@@ -51,7 +51,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -238,24 +237,25 @@ public class AttendService
 
 		Sort.Order order;
 
-		if(sortType.equals("asc")){
+		if (sortType.equals("asc")) {
 			order = Sort.Order.asc("totalScore");
 		} else {
 			order = Sort.Order.desc("totalScore");
 		}
 
-
 		Pageable pageable = PageRequest.of(page - 1, size, Sort.by(order));
 
 		// TODO: startDate 와 endDate 시간 설정하기
 		Timestamp startDate =
-				Timestamp.valueOf(LocalDateTime.of(LocalDate.of(2024, 10, 1), LocalTime.of(0, 0)));
+				Timestamp.valueOf(LocalDateTime.of(LocalDate.of(2024, 3, 1), LocalTime.of(0, 0)));
 		Timestamp endDate =
 				Timestamp.valueOf(LocalDateTime.of(LocalDate.of(2025, 8, 1), LocalTime.of(0, 0)));
 		Long limit = 10L;
 
 		List<Long> topMemberIds =
-				attendRepository.findByPenaltyPointSum(startDate, endDate, pageable).stream().map(o -> (Long) o[0]).toList();
+				attendRepository.findByPenaltyPointSum(startDate, endDate, pageable).stream()
+						.map(o -> (Long) o[0])
+						.toList();
 
 		if (!topMemberIds.isEmpty()) {
 			Map<Long, Long> memberIdToPenaltyPoint =
@@ -267,19 +267,15 @@ public class AttendService
 													attendRepository.findTotalPenaltyScoreByMemberId(
 															startDate, endDate, id)));
 
+			List<MemberModel> members = memberRepository.findMembersByIdsInOrder(topMemberIds);
+
 			List<AttendPenaltyResponse> responses =
-					topMemberIds.stream()
+					members.stream()
 							.map(
-									id -> {
-										Optional<MemberModel> member = memberRepository.findByIdOptional(id);
-
-										return member.map(m -> {
-
-											Long penaltyPoint = memberIdToPenaltyPoint.get(id);
-											return attendPenaltyResponseConverter.from(m, penaltyPoint, Long.valueOf(topMemberIds.indexOf(id) + 1));
-
-										}).orElseGet(() -> new AttendPenaltyResponse(id, "삭제된 회원", memberIdToPenaltyPoint.get(id), Long.valueOf(topMemberIds.indexOf(id) + 1)));
-
+									member -> {
+										Long penaltyPoint = memberIdToPenaltyPoint.get(member.getId());
+										return attendPenaltyResponseConverter.from(
+												member, penaltyPoint, Long.valueOf(members.indexOf(member) + 1));
 									})
 							.toList();
 

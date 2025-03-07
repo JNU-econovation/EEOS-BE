@@ -4,7 +4,6 @@ import com.blackcompany.eeos.member.application.exception.NotFoundMemberExceptio
 import com.blackcompany.eeos.member.application.model.ActiveStatus;
 import com.blackcompany.eeos.member.application.model.MemberModel;
 import java.util.List;
-import java.util.Optional;
 
 public interface MemberRepository {
 	List<MemberModel> findMembersByProgramId(Long programId);
