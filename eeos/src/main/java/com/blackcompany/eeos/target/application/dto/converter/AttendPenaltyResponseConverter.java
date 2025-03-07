@@ -7,13 +7,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class AttendPenaltyResponseConverter {
 
-    public AttendPenaltyResponse from(MemberModel member, Long penaltyPoint, Long rank) {
-        return AttendPenaltyResponse.builder()
-                .memberId(member.getId())
-                .name(member.getName())
-                .penaltyPoint(penaltyPoint)
-                .rank(rank)
-                .build();
-    }
-
+	public AttendPenaltyResponse from(MemberModel member, Long penaltyPoint, Long rank) {
+		return AttendPenaltyResponse.builder()
+				.memberId(member.getId())
+				.name(member.getName())
+				.penaltyPoint(penaltyPoint)
+				.rank(rank)
+				.build();
+	}
 }

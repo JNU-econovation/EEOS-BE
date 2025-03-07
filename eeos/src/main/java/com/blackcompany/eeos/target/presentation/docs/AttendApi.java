@@ -3,12 +3,9 @@ package com.blackcompany.eeos.target.presentation.docs;
 import com.blackcompany.eeos.auth.presentation.support.Member;
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponse;
 import com.blackcompany.eeos.common.presentation.respnose.ApiResponseBody.SuccessBody;
-import com.blackcompany.eeos.common.presentation.respnose.ApiResponseGenerator;
-import com.blackcompany.eeos.common.presentation.respnose.MessageCode;
 import com.blackcompany.eeos.target.application.dto.AttendInfoResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfosSearchRequest;
 import com.blackcompany.eeos.target.application.dto.AttendInfosWithProgramResponses;
-import com.blackcompany.eeos.target.application.dto.AttendPenaltyResponse;
 import com.blackcompany.eeos.target.application.dto.AttendPenaltyResponses;
 import com.blackcompany.eeos.target.application.dto.AttendSummaryInfoResponse;
 import com.blackcompany.eeos.target.application.dto.ChangeAttendStatusResponse;
@@ -19,7 +16,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Tag(name = "행사 참여", description = "행사 참여 관련 API")
@@ -64,11 +60,7 @@ public interface AttendApi {
 	ApiResponse<SuccessBody<AttendInfosWithProgramResponses>> getMyAttendInfosWithProgram(
 			@Member Long memberId, @Valid AttendInfosSearchRequest request);
 
-
-	@Operation(
-			summary = "벌점 순위 Top 10 조회",
-			description = "전체 회원 중 벌점을 기준으로 Top 10을 조회합니다."
-	)
+	@Operation(summary = "벌점 순위 Top 10 조회", description = "전체 회원 중 벌점을 기준으로 Top 10을 조회합니다.")
 	ApiResponse<SuccessBody<AttendPenaltyResponses>> getPenaltyTop10Info();
 
 	@Operation(summary = "나의 출석 요약 정보 조회", description = "자신의 출석 요약 정보 (참석 , 지각, 불참, 벌점 통계)를 가져온다.")

@@ -9,9 +9,9 @@ import com.blackcompany.eeos.target.application.dto.AttendInfoResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfoWithProgramResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfosSearchRequest;
 import com.blackcompany.eeos.target.application.dto.AttendInfosWithProgramResponses;
-import com.blackcompany.eeos.target.application.dto.AttendSummaryInfoResponse;
 import com.blackcompany.eeos.target.application.dto.AttendPenaltyResponse;
 import com.blackcompany.eeos.target.application.dto.AttendPenaltyResponses;
+import com.blackcompany.eeos.target.application.dto.AttendSummaryInfoResponse;
 import com.blackcompany.eeos.target.application.dto.ChangeAttendStatusResponse;
 import com.blackcompany.eeos.target.application.dto.QueryAttendActiveStatusResponse;
 import com.blackcompany.eeos.target.application.dto.QueryAttendStatusResponse;
@@ -110,7 +110,8 @@ public class AttendController implements AttendApi {
 	public ApiResponse<SuccessBody<AttendPenaltyResponses>> getPenaltyTop10Info() {
 		List<AttendPenaltyResponse> responses = getAttendantInfoUsecase.getPenaltyTop10Info();
 
-		return ApiResponseGenerator.success(new AttendPenaltyResponses(responses), HttpStatus.OK, MessageCode.GET);
+		return ApiResponseGenerator.success(
+				new AttendPenaltyResponses(responses), HttpStatus.OK, MessageCode.GET);
 	}
 
 	@GetMapping("/attend/summary")

@@ -17,8 +17,8 @@ import com.blackcompany.eeos.target.application.dto.AttendInfoActiveStatusRespon
 import com.blackcompany.eeos.target.application.dto.AttendInfoResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfoWithProgramResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfosSearchRequest;
-import com.blackcompany.eeos.target.application.dto.AttendSummaryInfoResponse;
 import com.blackcompany.eeos.target.application.dto.AttendPenaltyResponse;
+import com.blackcompany.eeos.target.application.dto.AttendSummaryInfoResponse;
 import com.blackcompany.eeos.target.application.dto.ChangeAttendStatusResponse;
 import com.blackcompany.eeos.target.application.dto.QueryAttendActiveStatusResponse;
 import com.blackcompany.eeos.target.application.dto.QueryAttendStatusResponse;
@@ -231,27 +231,34 @@ public class AttendService
 
 	@Override
 	public List<AttendPenaltyResponse> getPenaltyTop10Info() {
-		Timestamp startDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.of(2025, 3, 1), LocalTime.of(0, 0)));
-		Timestamp endDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.of(2025, 8, 1), LocalTime.of(0, 0)));
+		Timestamp startDate =
+				Timestamp.valueOf(LocalDateTime.of(LocalDate.of(2025, 3, 1), LocalTime.of(0, 0)));
+		Timestamp endDate =
+				Timestamp.valueOf(LocalDateTime.of(LocalDate.of(2025, 8, 1), LocalTime.of(0, 0)));
 		Long limit = 10L;
 
 		List<Long> topMemberIds = attendRepository.findByPenaltyPointSum(startDate, endDate, limit);
 
-		if(!topMemberIds.isEmpty()) {
-			Map<Long, Long> memberIdToPenaltyPoint = topMemberIds.stream()
-					.collect(Collectors.toMap(
-							id -> id,
-							id -> attendRepository.findTotalPenaltyScoreByMemberId(startDate, endDate, id)
-					));
+		if (!topMemberIds.isEmpty()) {
+			Map<Long, Long> memberIdToPenaltyPoint =
+					topMemberIds.stream()
+							.collect(
+									Collectors.toMap(
+											id -> id,
+											id ->
+													attendRepository.findTotalPenaltyScoreByMemberId(
+															startDate, endDate, id)));
 
-			List<AttendPenaltyResponse> responses = topMemberIds.stream()
-					.map(id -> {
-						MemberModel member = memberRepository.findById(id);
-						Long penaltyPoint = memberIdToPenaltyPoint.get(id);
-						return attendPenaltyResponseConverter.from(member, penaltyPoint,
-								Long.valueOf(topMemberIds.indexOf(id) + 1));
-					})
-					.toList();
+			List<AttendPenaltyResponse> responses =
+					topMemberIds.stream()
+							.map(
+									id -> {
+										MemberModel member = memberRepository.findById(id);
+										Long penaltyPoint = memberIdToPenaltyPoint.get(id);
+										return attendPenaltyResponseConverter.from(
+												member, penaltyPoint, Long.valueOf(topMemberIds.indexOf(id) + 1));
+									})
+							.toList();
 
 			return responses;
 		}

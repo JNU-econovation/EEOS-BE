@@ -56,12 +56,18 @@ public interface AttendRepository extends JpaRepository<AttendEntity, Long> {
 	List<AttendEntity> findByProgramIdsAndMemberId(
 			@Param("programIds") List<Long> programIds, @Param("memberId") Long memberId);
 
-	@Query("SELECT a.memberId FROM AttendEntity a WHERE a.createdDate >= :startDate AND a.createdDate <= :endDate "
-			+ "GROUP BY a.memberId ORDER BY SUM(a.penaltyScore) DESC LIMIT :limit")
-	List<Long> findByPenaltyPointSum(@Param("startDate") Timestamp startDate,
-									 @Param("endDate") Timestamp endDate,
-									 @Param("limit") Long limit);
+	@Query(
+			"SELECT a.memberId FROM AttendEntity a WHERE a.createdDate >= :startDate AND a.createdDate <= :endDate "
+					+ "GROUP BY a.memberId ORDER BY SUM(a.penaltyScore) DESC LIMIT :limit")
+	List<Long> findByPenaltyPointSum(
+			@Param("startDate") Timestamp startDate,
+			@Param("endDate") Timestamp endDate,
+			@Param("limit") Long limit);
 
-	@Query("SELECT SUM(a.penaltyScore) FROM AttendEntity a WHERE a.createdDate >= :startDate AND a.createdDate <= :endDate AND a.memberId=:memberId")
-	Long findTotalPenaltyScoreByMemberId(@Param("startDate") Timestamp startDate, @Param("endDate") Timestamp endDate, @Param("memberId") Long memberId);
+	@Query(
+			"SELECT SUM(a.penaltyScore) FROM AttendEntity a WHERE a.createdDate >= :startDate AND a.createdDate <= :endDate AND a.memberId=:memberId")
+	Long findTotalPenaltyScoreByMemberId(
+			@Param("startDate") Timestamp startDate,
+			@Param("endDate") Timestamp endDate,
+			@Param("memberId") Long memberId);
 }
