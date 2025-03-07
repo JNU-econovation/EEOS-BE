@@ -108,6 +108,7 @@ public class AttendController implements AttendApi {
 	}
 
 	@Override
+	@GetMapping("/attend/rank/penalty")
 	public ApiResponse<SuccessBody<AttendPenaltyResponses>> getPenaltyInfo(
 			PenaltyInfoRequest request
 	) {
