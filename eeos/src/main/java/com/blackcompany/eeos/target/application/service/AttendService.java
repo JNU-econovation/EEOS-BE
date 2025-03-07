@@ -25,6 +25,7 @@ import com.blackcompany.eeos.target.application.dto.QueryAttendStatusResponse;
 import com.blackcompany.eeos.target.application.dto.converter.AttendInfoActiveStatusConverter;
 import com.blackcompany.eeos.target.application.dto.converter.AttendInfoConverter;
 import com.blackcompany.eeos.target.application.dto.converter.AttendInfoWithProgramConverter;
+import com.blackcompany.eeos.target.application.dto.converter.AttendPenaltyResponseConverter;
 import com.blackcompany.eeos.target.application.dto.converter.ChangeAttendStatusConverter;
 import com.blackcompany.eeos.target.application.dto.converter.QueryAttendActiveStatusConverter;
 import com.blackcompany.eeos.target.application.dto.converter.QueryAttendStatusResponseConverter;
@@ -42,9 +43,13 @@ import com.blackcompany.eeos.target.application.usecase.GetAttendStatusUsecase;
 import com.blackcompany.eeos.target.application.usecase.GetAttendantInfoUsecase;
 import com.blackcompany.eeos.target.persistence.AttendEntity;
 import com.blackcompany.eeos.target.persistence.AttendRepository;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -72,10 +77,12 @@ public class AttendService
 	private final AttendInfoActiveStatusConverter attendInfoActiveStatusConverter;
 	private final QueryAttendActiveStatusConverter queryAttendActiveStatusConverter;
 	private final AttendInfoWithProgramConverter attendInfoWithProgramConverter;
+	private final AttendPenaltyResponseConverter penaltyResponseConverter;
 	private final ProgramDateRangeService programDateRangeService;
 	private final ProgramRepository programRepository;
 	private final ProgramEntityConverter programEntityConverter;
 	private final AttendCountCalculate attendCountCalculate;
+	private final AttendPenaltyResponseConverter attendPenaltyResponseConverter;
 
 	@Override
 	public List<AttendInfoResponse> findAttendInfo(final Long programId) {
@@ -224,6 +231,31 @@ public class AttendService
 
 	@Override
 	public List<AttendPenaltyResponse> getPenaltyTop10Info() {
+		Timestamp startDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.of(2025, 3, 1), LocalTime.of(0, 0)));
+		Timestamp endDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.of(2025, 8, 1), LocalTime.of(0, 0)));
+		Long limit = 10L;
+
+		List<Long> topMemberIds = attendRepository.findByPenaltyPointSum(startDate, endDate, limit);
+
+		if(!topMemberIds.isEmpty()) {
+			Map<Long, Long> memberIdToPenaltyPoint = topMemberIds.stream()
+					.collect(Collectors.toMap(
+							id -> id,
+							id -> attendRepository.findTotalPenaltyScoreByMemberId(startDate, endDate, id)
+					));
+
+			List<AttendPenaltyResponse> responses = topMemberIds.stream()
+					.map(id -> {
+						MemberModel member = memberRepository.findById(id);
+						Long penaltyPoint = memberIdToPenaltyPoint.get(id);
+						return attendPenaltyResponseConverter.from(member, penaltyPoint,
+								Long.valueOf(topMemberIds.indexOf(id) + 1));
+					})
+					.toList();
+
+			return responses;
+		}
+
 		return List.of();
 	}
 
