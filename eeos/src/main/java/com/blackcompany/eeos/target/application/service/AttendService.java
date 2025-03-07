@@ -237,10 +237,10 @@ public class AttendService
 		Sort.Order order;
 
 		if(sortType.equals("asc")) {
-			order = Sort.Order.asc("penaltyPoint");
+			order = Sort.Order.asc("penaltyScore");
 		}
 		else {
-			order = Sort.Order.desc("penaltyPoint");
+			order = Sort.Order.desc("penaltyScore");
 		}
 
 		Pageable pageable = PageRequest.of(page - 1, size, Sort.by(order));
