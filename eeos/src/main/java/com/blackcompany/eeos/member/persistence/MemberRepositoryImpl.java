@@ -47,13 +47,6 @@ public class MemberRepositoryImpl implements MemberRepository {
 	}
 
 	@Override
-	public Optional<MemberModel> findByIdOptional(Long memberId) {
-		return jpaRepository
-				.findById(memberId)
-				.map(converter::from);
-	}
-
-	@Override
 	public Boolean existsById(Long memberId) {
 		return jpaRepository.existsById(memberId);
 	}

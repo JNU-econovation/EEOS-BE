@@ -20,8 +20,6 @@ public interface MemberRepository {
 	 */
 	MemberModel findById(Long memberId);
 
-	Optional<MemberModel> findByIdOptional(Long memberId);
-
 	Boolean existsById(Long memberId);
 
 	MemberModel save(MemberModel model);
