@@ -2,6 +2,7 @@ package com.blackcompany.eeos.program.persistence;
 
 import com.blackcompany.eeos.program.application.model.ProgramAttendMode;
 import java.sql.Timestamp;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -40,4 +41,9 @@ public interface ProgramRepository extends JpaRepository<ProgramEntity, Long> {
 	@Query("UPDATE ProgramEntity p SET p.attendMode=:attendMode WHERE p.id=:programId")
 	Integer changeAttendMode(
 			@Param("programId") Long programId, @Param("attendMode") ProgramAttendMode attendMode);
+
+	@Query(
+			"SELECT p FROM ProgramEntity p WHERE p.programDate >=:startDate AND p.programDate <=:endDate AND p.isDeleted=false ORDER BY p.programDate DESC, p.title ASC ")
+	List<ProgramEntity> findByDateRange(
+			@Param("startDate") Timestamp startDate, @Param("endDate") Timestamp endDate);
 }

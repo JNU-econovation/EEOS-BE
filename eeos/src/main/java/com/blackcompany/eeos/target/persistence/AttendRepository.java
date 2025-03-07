@@ -49,4 +49,9 @@ public interface AttendRepository extends JpaRepository<AttendEntity, Long> {
 
 	List<AttendEntity> findTop5ByProgramIdAndStatusOrderByUpdatedDateAscRankAsc(
 			Long programId, AttendStatus status);
+
+	@Query(
+			"SELECT a FROM AttendEntity a WHERE a.programId IN :programIds AND a.memberId=:memberId AND a.isDeleted=false")
+	List<AttendEntity> findByProgramIdsAndMemberId(
+			@Param("programIds") List<Long> programIds, @Param("memberId") Long memberId);
 }

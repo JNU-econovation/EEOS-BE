@@ -1,5 +1,7 @@
 package com.blackcompany.eeos.target.application.service;
 
+import com.blackcompany.eeos.common.utils.DateConverter;
+import com.blackcompany.eeos.common.utils.RequestScope;
 import com.blackcompany.eeos.member.application.model.ActiveStatus;
 import com.blackcompany.eeos.member.application.model.MemberModel;
 import com.blackcompany.eeos.member.application.model.converter.MemberEntityConverter;
@@ -15,6 +17,7 @@ import com.blackcompany.eeos.target.application.dto.AttendInfoActiveStatusRespon
 import com.blackcompany.eeos.target.application.dto.AttendInfoResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfoWithProgramResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfosSearchRequest;
+import com.blackcompany.eeos.target.application.dto.AttendSummaryInfoResponse;
 import com.blackcompany.eeos.target.application.dto.AttendPenaltyResponse;
 import com.blackcompany.eeos.target.application.dto.ChangeAttendStatusResponse;
 import com.blackcompany.eeos.target.application.dto.QueryAttendActiveStatusResponse;
@@ -32,12 +35,14 @@ import com.blackcompany.eeos.target.application.exception.NotStartAttendExceptio
 import com.blackcompany.eeos.target.application.model.AttendModel;
 import com.blackcompany.eeos.target.application.model.AttendStatus;
 import com.blackcompany.eeos.target.application.model.converter.AttendEntityConverter;
+import com.blackcompany.eeos.target.application.support.AttendCountCalculate;
 import com.blackcompany.eeos.target.application.usecase.ChangeAttendStatusUsecase;
 import com.blackcompany.eeos.target.application.usecase.GetAttendAllInfoSortActiveStatusUsecase;
 import com.blackcompany.eeos.target.application.usecase.GetAttendStatusUsecase;
 import com.blackcompany.eeos.target.application.usecase.GetAttendantInfoUsecase;
 import com.blackcompany.eeos.target.persistence.AttendEntity;
 import com.blackcompany.eeos.target.persistence.AttendRepository;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -70,6 +75,7 @@ public class AttendService
 	private final ProgramDateRangeService programDateRangeService;
 	private final ProgramRepository programRepository;
 	private final ProgramEntityConverter programEntityConverter;
+	private final AttendCountCalculate attendCountCalculate;
 
 	@Override
 	public List<AttendInfoResponse> findAttendInfo(final Long programId) {
@@ -198,6 +204,25 @@ public class AttendService
 	}
 
 	@Override
+	public AttendSummaryInfoResponse getMyAttendSummary() {
+		Long memberId = RequestScope.getMemberId();
+
+		Long startDate = (long) DateConverter.toEpochSecond(LocalDate.of(2025, 3, 1)).getNanos() / 1000;
+		Long endDate = (long) DateConverter.toEpochSecond(LocalDate.of(2025, 7, 25)).getNanos() / 1000;
+
+		List<ProgramModel> programs = programDateRangeService.getPrograms(startDate, endDate);
+
+		List<AttendModel> attends = findMyAttends(programs);
+
+		Long attendCount = attendCountCalculate.countByStatus(AttendStatus.ATTEND.getStatus(), attends);
+		Long absentCount = attendCountCalculate.countByStatus(AttendStatus.ABSENT.getStatus(), attends);
+		Long lateCount = attendCountCalculate.countByStatus(AttendStatus.LATE.getStatus(), attends);
+		Long penaltyPoint = attendCountCalculate.penaltyPoint(attends);
+
+		return new AttendSummaryInfoResponse(memberId, attendCount, absentCount, penaltyPoint);
+	}
+
+	@Override
 	public List<AttendPenaltyResponse> getPenaltyTop10Info() {
 		return List.of();
 	}
@@ -206,18 +231,16 @@ public class AttendService
 		if (startDate == null || endDate == null || size == null || page == null) {
 			throw new IllegalArgumentException();
 		}
+	}
 
-		if (startDate > endDate) {
-			throw new IllegalArgumentException();
-		}
-
-		if (size < 0 || page < 0) {
-			throw new IllegalArgumentException();
-		}
-
-		if (size == 0 || page == 0) {
-			throw new IllegalArgumentException();
-		}
+	private List<AttendModel> findMyAttends(List<ProgramModel> programs) {
+		Long memberId = RequestScope.getMemberId();
+		return attendRepository
+				.findByProgramIdsAndMemberId(
+						programs.stream().map(ProgramModel::getId).collect(Collectors.toList()), memberId)
+				.stream()
+				.map(attendEntityConverter::from)
+				.toList();
 	}
 
 	private void validateAttend(ProgramModel programModel, AttendModel attendModel) {

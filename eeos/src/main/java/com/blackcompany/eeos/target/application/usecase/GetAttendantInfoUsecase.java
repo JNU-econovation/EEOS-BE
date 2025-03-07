@@ -4,6 +4,7 @@ import com.blackcompany.eeos.target.application.dto.AttendInfoResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfoWithProgramResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfosSearchRequest;
 import com.blackcompany.eeos.target.application.dto.AttendPenaltyResponse;
+import com.blackcompany.eeos.target.application.dto.AttendSummaryInfoResponse;
 import com.blackcompany.eeos.target.application.dto.QueryAttendStatusResponse;
 import java.util.List;
 
@@ -25,4 +26,6 @@ public interface GetAttendantInfoUsecase {
 			final Long memberId, final AttendInfosSearchRequest request);
 
 	List<AttendPenaltyResponse> getPenaltyTop10Info();
+
+	AttendSummaryInfoResponse getMyAttendSummary();
 }
