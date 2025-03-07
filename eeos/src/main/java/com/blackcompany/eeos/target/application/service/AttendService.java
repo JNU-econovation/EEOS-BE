@@ -236,6 +236,7 @@ public class AttendService
 
 		Pageable pageable = PageRequest.of(page - 1, size);
 
+		// TODO: startDate 와 endDate 시간 설정하기
 		Timestamp startDate =
 				Timestamp.valueOf(LocalDateTime.of(LocalDate.of(2024, 3, 1), LocalTime.of(0, 0)));
 		Timestamp endDate =
