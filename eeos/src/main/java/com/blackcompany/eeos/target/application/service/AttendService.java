@@ -55,6 +55,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -234,17 +235,26 @@ public class AttendService
 	@Override
 	public List<AttendPenaltyResponse> getPenaltyInfos(int page, int size, String sortType) {
 
-		Pageable pageable = PageRequest.of(page - 1, size);
+		Sort.Order order;
+
+		if(sortType.equals("asc")){
+			order = Sort.Order.asc("totalScore");
+		} else {
+			order = Sort.Order.desc("totalScore");
+		}
+
+
+		Pageable pageable = PageRequest.of(page - 1, size, Sort.by(order));
 
 		// TODO: startDate 와 endDate 시간 설정하기
 		Timestamp startDate =
-				Timestamp.valueOf(LocalDateTime.of(LocalDate.of(2024, 3, 1), LocalTime.of(0, 0)));
+				Timestamp.valueOf(LocalDateTime.of(LocalDate.of(2024, 10, 1), LocalTime.of(0, 0)));
 		Timestamp endDate =
 				Timestamp.valueOf(LocalDateTime.of(LocalDate.of(2025, 8, 1), LocalTime.of(0, 0)));
 		Long limit = 10L;
 
 		List<Long> topMemberIds =
-				attendRepository.findByPenaltyPointSum(startDate, endDate, pageable).stream().toList();
+				attendRepository.findByPenaltyPointSum(startDate, endDate, pageable).stream().map(o -> (Long) o[0]).toList();
 		if (!topMemberIds.isEmpty()) {
 			Map<Long, Long> memberIdToPenaltyPoint =
 					topMemberIds.stream()
