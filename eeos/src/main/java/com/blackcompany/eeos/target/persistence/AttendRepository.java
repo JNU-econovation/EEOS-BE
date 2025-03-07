@@ -61,4 +61,7 @@ public interface AttendRepository extends JpaRepository<AttendEntity, Long> {
 	List<Long> findByPenaltyPointSum(@Param("startDate") Timestamp startDate,
 									 @Param("endDate") Timestamp endDate,
 									 @Param("limit") Long limit);
+
+	@Query("SELECT SUM(a.penaltyScore) FROM AttendEntity a WHERE a.createdDate >= :startDate AND a.createdDate <= :endDate AND a.memberId=:memberId")
+	Long findTotalPenaltyScoreByMemberId(@Param("startDate") Timestamp startDate, @Param("endDate") Timestamp endDate, @Param("memberId") Long memberId);
 }
