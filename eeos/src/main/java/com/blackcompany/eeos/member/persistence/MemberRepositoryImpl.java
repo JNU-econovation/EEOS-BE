@@ -13,7 +13,6 @@ import org.springframework.stereotype.Repository;
 @AllArgsConstructor
 public class MemberRepositoryImpl implements MemberRepository {
 	private final JpaMemberRepository jpaRepository;
-	private final JpaMemberCustomRepository jpaCustomRepository;
 	private final MemberEntityConverter converter;
 	private final JpaMemberCustomRepository jpaMemberCustomRepository;
 
