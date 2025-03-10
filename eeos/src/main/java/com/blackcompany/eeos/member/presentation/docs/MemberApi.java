@@ -1,8 +1,8 @@
 package com.blackcompany.eeos.member.presentation.docs;
 
 import com.blackcompany.eeos.auth.presentation.support.Member;
-import com.blackcompany.eeos.common.presentation.respnose.ApiResponse;
-import com.blackcompany.eeos.common.presentation.respnose.ApiResponseBody.SuccessBody;
+import com.blackcompany.eeos.common.presentation.response.ApiResponse;
+import com.blackcompany.eeos.common.presentation.response.ApiResponseBody.SuccessBody;
 import com.blackcompany.eeos.member.application.dto.ChangeActiveStatusRequest;
 import com.blackcompany.eeos.member.application.dto.CommandMemberResponse;
 import com.blackcompany.eeos.member.application.dto.QueryMemberResponse;

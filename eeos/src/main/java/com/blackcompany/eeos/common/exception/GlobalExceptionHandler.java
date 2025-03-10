@@ -1,9 +1,9 @@
 package com.blackcompany.eeos.common.exception;
 
 import com.blackcompany.eeos.auth.application.exception.RequiredSignupInfoException;
-import com.blackcompany.eeos.common.presentation.respnose.ApiResponse;
-import com.blackcompany.eeos.common.presentation.respnose.ApiResponseBody.FailureBody;
-import com.blackcompany.eeos.common.presentation.respnose.ApiResponseGenerator;
+import com.blackcompany.eeos.common.presentation.response.ApiResponse;
+import com.blackcompany.eeos.common.presentation.response.ApiResponseBody.FailureBody;
+import com.blackcompany.eeos.common.presentation.response.ApiResponseGenerator;
 import com.blackcompany.eeos.common.presentation.support.AuthorizationScheme;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
