@@ -44,7 +44,6 @@ import com.blackcompany.eeos.target.application.usecase.GetAttendantInfoUsecase;
 import com.blackcompany.eeos.target.persistence.AttendEntity;
 import com.blackcompany.eeos.target.persistence.AttendRepository;
 import java.sql.Timestamp;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -235,7 +234,8 @@ public class AttendService
 	}
 
 	@Override
-	public PageResponse<AttendPenaltyResponse> getPenaltyInfos(int page, int size, String sortType, Long startDate, Long endDate) {
+	public PageResponse<AttendPenaltyResponse> getPenaltyInfos(
+			int page, int size, String sortType, Long startDate, Long endDate) {
 
 		Sort.Order order;
 
@@ -251,7 +251,8 @@ public class AttendService
 		Timestamp startTimestamp = new Timestamp(startDate);
 		Timestamp endTimestamp = new Timestamp(endDate);
 
-		Page<Object[]> pages = attendRepository.findByPenaltyPointSum(startTimestamp, endTimestamp, pageable);
+		Page<Object[]> pages =
+				attendRepository.findByPenaltyPointSum(startTimestamp, endTimestamp, pageable);
 
 		List<Long> topMemberIds = pages.stream().map(o -> (Long) o[0]).toList();
 
@@ -296,11 +297,13 @@ public class AttendService
 		Page<Object[]> pages = attendRepository.findByPenaltyPointSum(pageable);
 
 		if (!pages.isEmpty()) {
-			Map<Long, Long> penaltyByMemberId = pages.stream()
-					.collect(Collectors.toMap(
-							o -> (Long) o[0], // memberId
-							o -> (Long) o[1] // penaltyPoint
-					));
+			Map<Long, Long> penaltyByMemberId =
+					pages.stream()
+							.collect(
+									Collectors.toMap(
+											o -> (Long) o[0], // memberId
+											o -> (Long) o[1] // penaltyPoint
+											));
 
 			Long myPenaltyPoint = penaltyByMemberId.get(memberId);
 			Long myPenaltyRank = pages.stream().filter(o -> (Long) o[1] > myPenaltyPoint).count() + 1;
@@ -311,8 +314,6 @@ public class AttendService
 
 		return AttendPenaltyRankingResponse.empty();
 	}
-
-
 
 	private List<AttendModel> findMyAttends(List<ProgramModel> programs) {
 		Long memberId = RequestScope.getMemberId();

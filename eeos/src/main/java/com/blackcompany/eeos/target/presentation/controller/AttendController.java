@@ -112,7 +112,12 @@ public class AttendController implements AttendApi {
 	public ApiResponse<SuccessBody<PageResponse<AttendPenaltyResponse>>> getPenaltyInfo(
 			PenaltyInfoRequest request) {
 		PageResponse<AttendPenaltyResponse> responses =
-				getAttendantInfoUsecase.getPenaltyInfos(request.page(), request.size(), request.sortType(), request.startDate(), request.endDate());
+				getAttendantInfoUsecase.getPenaltyInfos(
+						request.page(),
+						request.size(),
+						request.sortType(),
+						request.startDate(),
+						request.endDate());
 
 		return ApiResponseGenerator.success(responses, HttpStatus.OK, MessageCode.GET);
 	}

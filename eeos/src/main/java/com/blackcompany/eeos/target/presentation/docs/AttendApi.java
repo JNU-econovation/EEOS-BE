@@ -1,6 +1,5 @@
 package com.blackcompany.eeos.target.presentation.docs;
 
-import com.blackcompany.eeos.auth.presentation.support.Member;
 import com.blackcompany.eeos.common.presentation.response.ApiResponse;
 import com.blackcompany.eeos.common.presentation.response.ApiResponseBody.SuccessBody;
 import com.blackcompany.eeos.common.presentation.response.PageResponse;
@@ -61,7 +60,8 @@ public interface AttendApi {
 
 	@Operation(summary = "나의 출석 현황 정보들 조회", description = "나의 출석 현황 정보들을 가져온다.")
 	@GetMapping("/api/attend/programs")
-	ApiResponse<SuccessBody<PageResponse<AttendInfoWithProgramResponse>>> getMyAttendInfosWithProgram(@Valid AttendInfosSearchRequest request);
+	ApiResponse<SuccessBody<PageResponse<AttendInfoWithProgramResponse>>> getMyAttendInfosWithProgram(
+			@Valid AttendInfosSearchRequest request);
 
 	@Operation(summary = "벌점 순위 Top 10 조회", description = "전체 회원 중 벌점을 기준으로 Top 10을 조회합니다.")
 	ApiResponse<SuccessBody<PageResponse<AttendPenaltyResponse>>> getPenaltyInfo(
