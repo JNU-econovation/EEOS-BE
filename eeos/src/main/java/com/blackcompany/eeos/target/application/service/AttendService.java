@@ -47,6 +47,7 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -289,6 +290,27 @@ public class AttendService
 		if (startDate == null || endDate == null || size == null || page == null) {
 			throw new IllegalArgumentException();
 		}
+
+		List<ProgramModel> programs = programDateRangeService.getPrograms(startDate, endDate);
+
+		List<AttendModel> attends = findMyAttends(programs);
+
+		Long attendCount = attendCountCalculate.countByStatus(AttendStatus.ATTEND.getStatus(), attends);
+		Long absentCount = attendCountCalculate.countByStatus(AttendStatus.ABSENT.getStatus(), attends);
+		Long lateCount = attendCountCalculate.countByStatus(AttendStatus.LATE.getStatus(), attends);
+		Long penaltyPoint = attendCountCalculate.penaltyPoint(attends);
+
+		return new AttendSummaryInfoResponse(memberId, attendCount, absentCount, penaltyPoint);
+	}
+
+	private List<AttendModel> findMyAttends(List<ProgramModel> programs) {
+		Long memberId = RequestScope.getMemberId();
+		return attendRepository
+				.findByProgramIdsAndMemberId(
+						programs.stream().map(ProgramModel::getId).collect(Collectors.toList()), memberId)
+				.stream()
+				.map(attendEntityConverter::from)
+				.toList();
 	}
 
 	private List<AttendModel> findMyAttends(List<ProgramModel> programs) {
