@@ -221,11 +221,8 @@ public class AttendService
 	}
 
 	@Override
-	public AttendSummaryInfoResponse getMyAttendSummary() {
+	public AttendSummaryInfoResponse getMyAttendSummary(Long startDate, Long endDate) {
 		Long memberId = RequestScope.getMemberId();
-
-		Long startDate = (long) DateConverter.toEpochSecond(LocalDate.of(2025, 3, 1)).getNanos() / 1000;
-		Long endDate = (long) DateConverter.toEpochSecond(LocalDate.of(2025, 7, 25)).getNanos() / 1000;
 
 		List<ProgramModel> programs = programDateRangeService.getPrograms(startDate, endDate);
 

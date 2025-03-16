@@ -27,5 +27,5 @@ public interface GetAttendantInfoUsecase {
 
 	PageResponse<AttendPenaltyResponse> getPenaltyInfos(int page, int size, String sortType);
 
-	AttendSummaryInfoResponse getMyAttendSummary();
+	AttendSummaryInfoResponse getMyAttendSummary(Long startDate, Long endDate);
 }
