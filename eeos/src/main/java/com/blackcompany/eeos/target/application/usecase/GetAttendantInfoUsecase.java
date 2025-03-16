@@ -3,6 +3,7 @@ package com.blackcompany.eeos.target.application.usecase;
 import com.blackcompany.eeos.common.presentation.response.PageResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfoResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfoWithProgramResponse;
+import com.blackcompany.eeos.target.application.dto.AttendPenaltyRankingResponse;
 import com.blackcompany.eeos.target.application.dto.AttendPenaltyResponse;
 import com.blackcompany.eeos.target.application.dto.AttendSummaryInfoResponse;
 import com.blackcompany.eeos.target.application.dto.QueryAttendStatusResponse;
@@ -25,7 +26,10 @@ public interface GetAttendantInfoUsecase {
 	PageResponse<AttendInfoWithProgramResponse> findMyAttendInfo(
 			final int page, final int size, final long startDate, final long endDate);
 
-	PageResponse<AttendPenaltyResponse> getPenaltyInfos(int page, int size, String sortType);
+	PageResponse<AttendPenaltyResponse> getPenaltyInfos(
+			int page, int size, String sortType, Long startDate, Long endDate);
 
 	AttendSummaryInfoResponse getMyAttendSummary(Long startDate, Long endDate);
+
+	AttendPenaltyRankingResponse getMyPenaltyRanking(int rankOffset);
 }
