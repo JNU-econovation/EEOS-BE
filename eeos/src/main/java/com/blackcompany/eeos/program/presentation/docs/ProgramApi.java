@@ -2,9 +2,9 @@ package com.blackcompany.eeos.program.presentation.docs;
 
 import com.blackcompany.eeos.common.presentation.response.ApiResponse;
 import com.blackcompany.eeos.common.presentation.response.ApiResponseBody.SuccessBody;
+import com.blackcompany.eeos.common.presentation.response.PageResponse;
 import com.blackcompany.eeos.program.application.dto.CommandProgramResponse;
 import com.blackcompany.eeos.program.application.dto.CreateProgramRequest;
-import com.blackcompany.eeos.common.presentation.response.PageResponse;
 import com.blackcompany.eeos.program.application.dto.ProgramSlackNotificationRequest;
 import com.blackcompany.eeos.program.application.dto.QueryAccessRightResponse;
 import com.blackcompany.eeos.program.application.dto.QueryProgramResponse;

@@ -7,9 +7,7 @@ import com.blackcompany.eeos.common.presentation.response.PageResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfoResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfoWithProgramResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfosSearchRequest;
-import com.blackcompany.eeos.target.application.dto.AttendInfosWithProgramResponses;
 import com.blackcompany.eeos.target.application.dto.AttendPenaltyResponse;
-import com.blackcompany.eeos.target.application.dto.AttendPenaltyResponses;
 import com.blackcompany.eeos.target.application.dto.AttendSummaryInfoResponse;
 import com.blackcompany.eeos.target.application.dto.ChangeAttendStatusResponse;
 import com.blackcompany.eeos.target.application.dto.PenaltyInfoRequest;
@@ -68,7 +66,8 @@ public interface AttendApi {
 	@Operation(summary = "벌점 순위 Top 10 조회", description = "전체 회원 중 벌점을 기준으로 Top 10을 조회합니다.")
 	ApiResponse<SuccessBody<PageResponse<AttendPenaltyResponse>>> getPenaltyInfo(
 			@ParameterObject PenaltyInfoRequest request);
-  
+
 	@Operation(summary = "나의 출석 요약 정보 조회", description = "자신의 출석 요약 정보 (참석 , 지각, 불참, 벌점 통계)를 가져온다.")
-	ApiResponse<SuccessBody<AttendSummaryInfoResponse>> getMyAttendSummaryInfo(Long startDate, Long endDate);
+	ApiResponse<SuccessBody<AttendSummaryInfoResponse>> getMyAttendSummaryInfo(
+			Long startDate, Long endDate);
 }

@@ -3,12 +3,10 @@ package com.blackcompany.eeos.target.application.usecase;
 import com.blackcompany.eeos.common.presentation.response.PageResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfoResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfoWithProgramResponse;
-import com.blackcompany.eeos.target.application.dto.AttendInfosSearchRequest;
 import com.blackcompany.eeos.target.application.dto.AttendPenaltyResponse;
 import com.blackcompany.eeos.target.application.dto.AttendSummaryInfoResponse;
 import com.blackcompany.eeos.target.application.dto.QueryAttendStatusResponse;
 import java.util.List;
-import org.springframework.data.domain.Page;
 
 public interface GetAttendantInfoUsecase {
 	List<AttendInfoResponse> findAttendInfo(final Long programId);

@@ -9,9 +9,7 @@ import com.blackcompany.eeos.common.presentation.response.PageResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfoResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfoWithProgramResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfosSearchRequest;
-import com.blackcompany.eeos.target.application.dto.AttendInfosWithProgramResponses;
 import com.blackcompany.eeos.target.application.dto.AttendPenaltyResponse;
-import com.blackcompany.eeos.target.application.dto.AttendPenaltyResponses;
 import com.blackcompany.eeos.target.application.dto.AttendSummaryInfoResponse;
 import com.blackcompany.eeos.target.application.dto.ChangeAttendStatusResponse;
 import com.blackcompany.eeos.target.application.dto.PenaltyInfoRequest;
@@ -100,33 +98,28 @@ public class AttendController implements AttendApi {
 
 	@GetMapping("/attend/programs")
 	@Override
-	public ApiResponse<SuccessBody<PageResponse<AttendInfoWithProgramResponse>>> getMyAttendInfosWithProgram(
-			@Member Long memberId, @Valid AttendInfosSearchRequest request) {
+	public ApiResponse<SuccessBody<PageResponse<AttendInfoWithProgramResponse>>>
+			getMyAttendInfosWithProgram(@Member Long memberId, @Valid AttendInfosSearchRequest request) {
 		PageResponse<AttendInfoWithProgramResponse> responses =
 				getAttendantInfoUsecase.findMyAttendInfo(
-						request.getPage(),
-						request.getSize(),
-						request.getStartDate(),
-						request.getEndDate());
-		return ApiResponseGenerator.success(
-				responses, HttpStatus.OK, MessageCode.GET);
+						request.getPage(), request.getSize(), request.getStartDate(), request.getEndDate());
+		return ApiResponseGenerator.success(responses, HttpStatus.OK, MessageCode.GET);
 	}
 
 	@Override
 	@GetMapping("/attend/penalties")
-	public ApiResponse<SuccessBody<PageResponse<AttendPenaltyResponse>>> getPenaltyInfo(PenaltyInfoRequest request) {
+	public ApiResponse<SuccessBody<PageResponse<AttendPenaltyResponse>>> getPenaltyInfo(
+			PenaltyInfoRequest request) {
 		PageResponse<AttendPenaltyResponse> responses =
 				getAttendantInfoUsecase.getPenaltyInfos(request.page(), request.size(), request.sortType());
 
-		return ApiResponseGenerator.success(
-				responses, HttpStatus.OK, MessageCode.GET);
+		return ApiResponseGenerator.success(responses, HttpStatus.OK, MessageCode.GET);
 	}
 
 	@Override
 	@GetMapping("/attend/summary")
 	public ApiResponse<SuccessBody<AttendSummaryInfoResponse>> getMyAttendSummaryInfo(
-			@RequestParam ("startDate") Long startDate, @RequestParam ("endDate") Long endDate
-	) {
+			@RequestParam("startDate") Long startDate, @RequestParam("endDate") Long endDate) {
 		AttendSummaryInfoResponse response = getAttendantInfoUsecase.getMyAttendSummary();
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
 	}

@@ -17,7 +17,6 @@ import com.blackcompany.eeos.program.persistence.ProgramRepository;
 import com.blackcompany.eeos.target.application.dto.AttendInfoActiveStatusResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfoResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfoWithProgramResponse;
-import com.blackcompany.eeos.target.application.dto.AttendInfosSearchRequest;
 import com.blackcompany.eeos.target.application.dto.AttendPenaltyResponse;
 import com.blackcompany.eeos.target.application.dto.AttendSummaryInfoResponse;
 import com.blackcompany.eeos.target.application.dto.ChangeAttendStatusResponse;
@@ -48,8 +47,6 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -90,6 +87,7 @@ public class AttendService
 	private final ProgramEntityConverter programEntityConverter;
 	private final AttendCountCalculate attendCountCalculate;
 	private final AttendPenaltyResponseConverter attendPenaltyResponseConverter;
+
 	@Override
 	public List<AttendInfoResponse> findAttendInfo(final Long programId) {
 		validateExistsProgram(programId);
@@ -197,19 +195,24 @@ public class AttendService
 		Page<AttendInfoWithProgramResponse> responses;
 
 		if (!pages.isEmpty()) {
-			responses =  new PageImpl<>(pages
-					.map(
-							program -> {
-								AttendModel attendModel =
-										attendRepository
-												.findByProgramIdAndMemberId(program.getId(), memberId)
-												.map(attendEntityConverter::from)
-												.orElse(null);
-								if (attendModel == null) return null;
-								return attendInfoWithProgramConverter.from(attendModel, program);
-							})
-					.filter(Objects::nonNull)
-					.stream().toList(), pages.getPageable(), pages.getTotalElements());
+			responses =
+					new PageImpl<>(
+							pages
+									.map(
+											program -> {
+												AttendModel attendModel =
+														attendRepository
+																.findByProgramIdAndMemberId(program.getId(), memberId)
+																.map(attendEntityConverter::from)
+																.orElse(null);
+												if (attendModel == null) return null;
+												return attendInfoWithProgramConverter.from(attendModel, program);
+											})
+									.filter(Objects::nonNull)
+									.stream()
+									.toList(),
+							pages.getPageable(),
+							pages.getTotalElements());
 
 			return new PageResponse<>(responses);
 		}
@@ -256,13 +259,9 @@ public class AttendService
 				Timestamp.valueOf(LocalDateTime.of(LocalDate.of(2025, 8, 1), LocalTime.of(0, 0)));
 		Long limit = 10L;
 
-
 		Page<Object[]> pages = attendRepository.findByPenaltyPointSum(startDate, endDate, pageable);
 
-		List<Long> topMemberIds =
-				pages.stream()
-						.map(o -> (Long) o[0])
-						.toList();
+		List<Long> topMemberIds = pages.stream().map(o -> (Long) o[0]).toList();
 
 		if (!topMemberIds.isEmpty()) {
 			Map<Long, Long> memberIdToPenaltyPoint =
@@ -286,7 +285,8 @@ public class AttendService
 									})
 							.toList();
 
-			return new PageResponse<>(new PageImpl<AttendPenaltyResponse>(responses, pageable, pages.getTotalElements()));
+			return new PageResponse<>(
+					new PageImpl<AttendPenaltyResponse>(responses, pageable, pages.getTotalElements()));
 		}
 
 		return new PageResponse<>(Page.empty(PageRequest.of(page - 1, size)));
