@@ -5,7 +5,7 @@ import com.blackcompany.eeos.member.application.service.QueryMemberService;
 import com.blackcompany.eeos.program.application.dto.ChangeAllAttendStatusRequest;
 import com.blackcompany.eeos.program.application.dto.CommandProgramResponse;
 import com.blackcompany.eeos.program.application.dto.CreateProgramRequest;
-import com.blackcompany.eeos.program.application.dto.PageResponse;
+import com.blackcompany.eeos.common.presentation.response.PageResponse;
 import com.blackcompany.eeos.program.application.dto.ProgramSlackNotificationRequest;
 import com.blackcompany.eeos.program.application.dto.ProgramsResponse;
 import com.blackcompany.eeos.program.application.dto.QueryAccessRightResponse;

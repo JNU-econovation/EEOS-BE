@@ -1,6 +1,6 @@
 package com.blackcompany.eeos.program.application.dto.converter;
 
-import com.blackcompany.eeos.program.application.dto.PageResponse;
+import com.blackcompany.eeos.common.presentation.response.PageResponse;
 import com.blackcompany.eeos.program.application.dto.ProgramsResponse;
 import com.blackcompany.eeos.program.application.dto.QueryProgramsResponse;
 import com.blackcompany.eeos.program.application.model.ProgramModel;
@@ -25,7 +25,7 @@ public class ProgramPageResponseConverter {
 				.size(page.getSize())
 				.page(page.getNumber())
 				.totalPage(page.getTotalPages())
-				.programs(
+				.contents(
 						programs.stream()
 								.map(program -> programResponseConverter.from(program, programStatus))
 								.collect(Collectors.toList()))

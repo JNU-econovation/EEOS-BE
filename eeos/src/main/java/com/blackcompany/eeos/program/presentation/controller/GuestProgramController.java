@@ -4,7 +4,7 @@ import com.blackcompany.eeos.common.presentation.response.ApiResponse;
 import com.blackcompany.eeos.common.presentation.response.ApiResponseBody.SuccessBody;
 import com.blackcompany.eeos.common.presentation.response.ApiResponseGenerator;
 import com.blackcompany.eeos.common.presentation.response.MessageCode;
-import com.blackcompany.eeos.program.application.dto.PageResponse;
+import com.blackcompany.eeos.common.presentation.response.PageResponse;
 import com.blackcompany.eeos.program.application.dto.QueryProgramResponse;
 import com.blackcompany.eeos.program.application.dto.QueryProgramsResponse;
 import com.blackcompany.eeos.program.application.usecase.GetProgramUsecase;

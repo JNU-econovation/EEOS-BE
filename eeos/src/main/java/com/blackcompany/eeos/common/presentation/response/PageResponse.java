@@ -1,4 +1,4 @@
-package com.blackcompany.eeos.program.application.dto;
+package com.blackcompany.eeos.common.presentation.response;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -23,13 +23,13 @@ public class PageResponse<T> {
 	/** size 크기에 맞춰 페이징했을 때 나오는 총 페이지 개수 */
 	private int totalPage;
 
-	private List<T> programs;
+	private List<T> contents;
 
 	public PageResponse(final Page<T> source) {
 		final Pageable pageable = source.getPageable();
 		this.size = pageable.getPageSize();
 		this.page = pageable.getPageNumber();
 		this.totalPage = source.getTotalPages();
-		this.programs = source.getContent();
+		this.contents = source.getContent();
 	}
 }

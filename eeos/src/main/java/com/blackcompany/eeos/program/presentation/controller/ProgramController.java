@@ -7,7 +7,7 @@ import com.blackcompany.eeos.common.presentation.response.ApiResponseGenerator;
 import com.blackcompany.eeos.common.presentation.response.MessageCode;
 import com.blackcompany.eeos.program.application.dto.CommandProgramResponse;
 import com.blackcompany.eeos.program.application.dto.CreateProgramRequest;
-import com.blackcompany.eeos.program.application.dto.PageResponse;
+import com.blackcompany.eeos.common.presentation.response.PageResponse;
 import com.blackcompany.eeos.program.application.dto.ProgramSlackNotificationRequest;
 import com.blackcompany.eeos.program.application.dto.QueryAccessRightResponse;
 import com.blackcompany.eeos.program.application.dto.QueryProgramResponse;
