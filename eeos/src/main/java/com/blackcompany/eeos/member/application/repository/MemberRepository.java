@@ -14,6 +14,8 @@ public interface MemberRepository {
 
 	List<MemberModel> findMembersByIds(List<Long> ids);
 
+	List<MemberModel> findMembersByIdsInOrder(List<Long> ids);
+
 	/**
 	 * @throws NotFoundMemberException
 	 */

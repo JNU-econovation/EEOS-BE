@@ -1,16 +1,18 @@
 package com.blackcompany.eeos.target.presentation.controller;
 
 import com.blackcompany.eeos.auth.presentation.support.Member;
-import com.blackcompany.eeos.common.presentation.respnose.ApiResponse;
-import com.blackcompany.eeos.common.presentation.respnose.ApiResponseBody.SuccessBody;
-import com.blackcompany.eeos.common.presentation.respnose.ApiResponseGenerator;
-import com.blackcompany.eeos.common.presentation.respnose.MessageCode;
+import com.blackcompany.eeos.common.presentation.response.ApiResponse;
+import com.blackcompany.eeos.common.presentation.response.ApiResponseBody.SuccessBody;
+import com.blackcompany.eeos.common.presentation.response.ApiResponseGenerator;
+import com.blackcompany.eeos.common.presentation.response.MessageCode;
+import com.blackcompany.eeos.common.presentation.response.PageResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfoResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfoWithProgramResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfosSearchRequest;
-import com.blackcompany.eeos.target.application.dto.AttendInfosWithProgramResponses;
+import com.blackcompany.eeos.target.application.dto.AttendPenaltyResponse;
 import com.blackcompany.eeos.target.application.dto.AttendSummaryInfoResponse;
 import com.blackcompany.eeos.target.application.dto.ChangeAttendStatusResponse;
+import com.blackcompany.eeos.target.application.dto.PenaltyInfoRequest;
 import com.blackcompany.eeos.target.application.dto.QueryAttendActiveStatusResponse;
 import com.blackcompany.eeos.target.application.dto.QueryAttendStatusResponse;
 import com.blackcompany.eeos.target.application.usecase.ChangeAttendStatusUsecase;
@@ -96,18 +98,30 @@ public class AttendController implements AttendApi {
 
 	@GetMapping("/attend/programs")
 	@Override
-	public ApiResponse<SuccessBody<AttendInfosWithProgramResponses>> getMyAttendInfosWithProgram(
-			@Member Long memberId, @Valid AttendInfosSearchRequest request) {
-		List<AttendInfoWithProgramResponse> responses =
-				getAttendantInfoUsecase.findMyAttendInfo(memberId, request);
-		return ApiResponseGenerator.success(
-				new AttendInfosWithProgramResponses(responses), HttpStatus.OK, MessageCode.GET);
+	public ApiResponse<SuccessBody<PageResponse<AttendInfoWithProgramResponse>>>
+			getMyAttendInfosWithProgram(@Member Long memberId, @Valid AttendInfosSearchRequest request) {
+		PageResponse<AttendInfoWithProgramResponse> responses =
+				getAttendantInfoUsecase.findMyAttendInfo(
+						request.getPage(), request.getSize(), request.getStartDate(), request.getEndDate());
+		return ApiResponseGenerator.success(responses, HttpStatus.OK, MessageCode.GET);
 	}
 
-	@GetMapping("/attend/summary")
 	@Override
-	public ApiResponse<SuccessBody<AttendSummaryInfoResponse>> getMyAttendSummaryInfo() {
-		AttendSummaryInfoResponse response = getAttendantInfoUsecase.getMyAttendSummary();
+	@GetMapping("/attend/penalties")
+	public ApiResponse<SuccessBody<PageResponse<AttendPenaltyResponse>>> getPenaltyInfo(
+			PenaltyInfoRequest request) {
+		PageResponse<AttendPenaltyResponse> responses =
+				getAttendantInfoUsecase.getPenaltyInfos(request.page(), request.size(), request.sortType());
+
+		return ApiResponseGenerator.success(responses, HttpStatus.OK, MessageCode.GET);
+	}
+
+	@Override
+	@GetMapping("/attend/summary")
+	public ApiResponse<SuccessBody<AttendSummaryInfoResponse>> getMyAttendSummaryInfo(
+			@RequestParam("startDate") Long startDate, @RequestParam("endDate") Long endDate) {
+		AttendSummaryInfoResponse response =
+				getAttendantInfoUsecase.getMyAttendSummary(startDate, endDate);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
 	}
 }

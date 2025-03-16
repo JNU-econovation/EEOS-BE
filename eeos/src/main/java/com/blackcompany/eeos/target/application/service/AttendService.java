@@ -1,6 +1,6 @@
 package com.blackcompany.eeos.target.application.service;
 
-import com.blackcompany.eeos.common.utils.DateConverter;
+import com.blackcompany.eeos.common.presentation.response.PageResponse;
 import com.blackcompany.eeos.common.utils.RequestScope;
 import com.blackcompany.eeos.member.application.model.ActiveStatus;
 import com.blackcompany.eeos.member.application.model.MemberModel;
@@ -16,7 +16,7 @@ import com.blackcompany.eeos.program.persistence.ProgramRepository;
 import com.blackcompany.eeos.target.application.dto.AttendInfoActiveStatusResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfoResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfoWithProgramResponse;
-import com.blackcompany.eeos.target.application.dto.AttendInfosSearchRequest;
+import com.blackcompany.eeos.target.application.dto.AttendPenaltyResponse;
 import com.blackcompany.eeos.target.application.dto.AttendSummaryInfoResponse;
 import com.blackcompany.eeos.target.application.dto.ChangeAttendStatusResponse;
 import com.blackcompany.eeos.target.application.dto.QueryAttendActiveStatusResponse;
@@ -24,6 +24,7 @@ import com.blackcompany.eeos.target.application.dto.QueryAttendStatusResponse;
 import com.blackcompany.eeos.target.application.dto.converter.AttendInfoActiveStatusConverter;
 import com.blackcompany.eeos.target.application.dto.converter.AttendInfoConverter;
 import com.blackcompany.eeos.target.application.dto.converter.AttendInfoWithProgramConverter;
+import com.blackcompany.eeos.target.application.dto.converter.AttendPenaltyResponseConverter;
 import com.blackcompany.eeos.target.application.dto.converter.ChangeAttendStatusConverter;
 import com.blackcompany.eeos.target.application.dto.converter.QueryAttendActiveStatusConverter;
 import com.blackcompany.eeos.target.application.dto.converter.QueryAttendStatusResponseConverter;
@@ -41,12 +42,20 @@ import com.blackcompany.eeos.target.application.usecase.GetAttendStatusUsecase;
 import com.blackcompany.eeos.target.application.usecase.GetAttendantInfoUsecase;
 import com.blackcompany.eeos.target.persistence.AttendEntity;
 import com.blackcompany.eeos.target.persistence.AttendRepository;
+import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.util.Collections;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -71,10 +80,12 @@ public class AttendService
 	private final AttendInfoActiveStatusConverter attendInfoActiveStatusConverter;
 	private final QueryAttendActiveStatusConverter queryAttendActiveStatusConverter;
 	private final AttendInfoWithProgramConverter attendInfoWithProgramConverter;
+	private final AttendPenaltyResponseConverter penaltyResponseConverter;
 	private final ProgramDateRangeService programDateRangeService;
 	private final ProgramRepository programRepository;
 	private final ProgramEntityConverter programEntityConverter;
 	private final AttendCountCalculate attendCountCalculate;
+	private final AttendPenaltyResponseConverter attendPenaltyResponseConverter;
 
 	@Override
 	public List<AttendInfoResponse> findAttendInfo(final Long programId) {
@@ -171,43 +182,46 @@ public class AttendService
 				.collect(Collectors.toList());
 	}
 
-	public List<AttendInfoWithProgramResponse> findMyAttendInfo(
-			Long memberId, AttendInfosSearchRequest request) {
+	public PageResponse<AttendInfoWithProgramResponse> findMyAttendInfo(
+			final int page, final int size, final long startDate, final long endDate) {
 
-		Long startDate = request.getStartDate();
-		Long endDate = request.getEndDate();
-		int size = request.getSize();
-		int page = request.getPage();
+		Long memberId = RequestScope.getMemberId();
 
 		// 필요한 정보 : ProgramModel , AttendModel, MemberId
-		List<ProgramModel> programs =
+		Page<ProgramModel> pages =
 				programDateRangeService.getPrograms(startDate, endDate, size, page - 1);
 
-		if (!programs.isEmpty()) {
-			return programs.stream()
-					.map(
-							program -> {
-								AttendModel attendModel =
-										attendRepository
-												.findByProgramIdAndMemberId(program.getId(), memberId)
-												.map(attendEntityConverter::from)
-												.orElse(null);
-								if (attendModel == null) return null;
-								return attendInfoWithProgramConverter.from(attendModel, program);
-							})
-					.filter(Objects::nonNull)
-					.toList();
+		Page<AttendInfoWithProgramResponse> responses;
+
+		if (!pages.isEmpty()) {
+			responses =
+					new PageImpl<>(
+							pages
+									.map(
+											program -> {
+												AttendModel attendModel =
+														attendRepository
+																.findByProgramIdAndMemberId(program.getId(), memberId)
+																.map(attendEntityConverter::from)
+																.orElse(null);
+												if (attendModel == null) return null;
+												return attendInfoWithProgramConverter.from(attendModel, program);
+											})
+									.filter(Objects::nonNull)
+									.stream()
+									.toList(),
+							pages.getPageable(),
+							pages.getTotalElements());
+
+			return new PageResponse<>(responses);
 		}
 
-		return Collections.emptyList();
+		return new PageResponse<>(Page.empty(PageRequest.of(page - 1, size)));
 	}
 
 	@Override
-	public AttendSummaryInfoResponse getMyAttendSummary() {
+	public AttendSummaryInfoResponse getMyAttendSummary(Long startDate, Long endDate) {
 		Long memberId = RequestScope.getMemberId();
-
-		Long startDate = (long) DateConverter.toEpochSecond(LocalDate.of(2025, 3, 1)).getNanos() / 1000;
-		Long endDate = (long) DateConverter.toEpochSecond(LocalDate.of(2025, 7, 25)).getNanos() / 1000;
 
 		List<ProgramModel> programs = programDateRangeService.getPrograms(startDate, endDate);
 
@@ -219,6 +233,59 @@ public class AttendService
 		Long penaltyPoint = attendCountCalculate.penaltyPoint(attends);
 
 		return new AttendSummaryInfoResponse(memberId, attendCount, absentCount, penaltyPoint);
+	}
+
+	@Override
+	public PageResponse<AttendPenaltyResponse> getPenaltyInfos(int page, int size, String sortType) {
+
+		Sort.Order order;
+
+		if (sortType.equals("asc")) {
+			order = Sort.Order.asc("totalScore");
+		} else {
+			order = Sort.Order.desc("totalScore");
+		}
+
+		Pageable pageable = PageRequest.of(page - 1, size, Sort.by(order));
+
+		// TODO: startDate 와 endDate 시간 설정하기
+		Timestamp startDate =
+				Timestamp.valueOf(LocalDateTime.of(LocalDate.of(2024, 3, 1), LocalTime.of(0, 0)));
+		Timestamp endDate =
+				Timestamp.valueOf(LocalDateTime.of(LocalDate.of(2025, 8, 1), LocalTime.of(0, 0)));
+		Long limit = 10L;
+
+		Page<Object[]> pages = attendRepository.findByPenaltyPointSum(startDate, endDate, pageable);
+
+		List<Long> topMemberIds = pages.stream().map(o -> (Long) o[0]).toList();
+
+		if (!topMemberIds.isEmpty()) {
+			Map<Long, Long> memberIdToPenaltyPoint =
+					topMemberIds.stream()
+							.collect(
+									Collectors.toMap(
+											id -> id,
+											id ->
+													attendRepository.findTotalPenaltyScoreByMemberId(
+															startDate, endDate, id)));
+
+			List<MemberModel> members = memberRepository.findMembersByIdsInOrder(topMemberIds);
+
+			List<AttendPenaltyResponse> responses =
+					members.stream()
+							.map(
+									member -> {
+										Long penaltyPoint = memberIdToPenaltyPoint.get(member.getId());
+										return attendPenaltyResponseConverter.from(
+												member, penaltyPoint, Long.valueOf(members.indexOf(member) + 1));
+									})
+							.toList();
+
+			return new PageResponse<>(
+					new PageImpl<AttendPenaltyResponse>(responses, pageable, pages.getTotalElements()));
+		}
+
+		return new PageResponse<>(Page.empty(PageRequest.of(page - 1, size)));
 	}
 
 	private List<AttendModel> findMyAttends(List<ProgramModel> programs) {

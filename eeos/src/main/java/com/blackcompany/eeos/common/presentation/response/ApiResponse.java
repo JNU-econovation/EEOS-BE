@@ -1,4 +1,4 @@
-package com.blackcompany.eeos.common.presentation.respnose;
+package com.blackcompany.eeos.common.presentation.response;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

@@ -1,7 +1,7 @@
 package com.blackcompany.eeos.team.presetation.docs;
 
-import com.blackcompany.eeos.common.presentation.respnose.ApiResponse;
-import com.blackcompany.eeos.common.presentation.respnose.ApiResponseBody.SuccessBody;
+import com.blackcompany.eeos.common.presentation.response.ApiResponse;
+import com.blackcompany.eeos.common.presentation.response.ApiResponseBody.SuccessBody;
 import com.blackcompany.eeos.team.application.dto.CreateTeamRequest;
 import com.blackcompany.eeos.team.application.dto.CreateTeamResponse;
 import com.blackcompany.eeos.team.application.dto.QueryTeamsResponse;

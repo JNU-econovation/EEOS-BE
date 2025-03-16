@@ -1,7 +1,7 @@
 package com.blackcompany.eeos.target.presentation.docs;
 
-import com.blackcompany.eeos.common.presentation.respnose.ApiResponse;
-import com.blackcompany.eeos.common.presentation.respnose.ApiResponseBody.SuccessBody;
+import com.blackcompany.eeos.common.presentation.response.ApiResponse;
+import com.blackcompany.eeos.common.presentation.response.ApiResponseBody.SuccessBody;
 import com.blackcompany.eeos.target.application.dto.AttendTeamBuildingRequest;
 import com.blackcompany.eeos.target.application.dto.QueryTargetInfoResponse;
 import io.swagger.v3.oas.annotations.Operation;
