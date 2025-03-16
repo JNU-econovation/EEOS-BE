@@ -2,8 +2,6 @@ package com.blackcompany.eeos.target.presentation.docs;
 
 import com.blackcompany.eeos.common.presentation.response.ApiResponse;
 import com.blackcompany.eeos.common.presentation.response.ApiResponseBody;
-import com.blackcompany.eeos.common.presentation.respnose.ApiResponse;
-import com.blackcompany.eeos.common.presentation.respnose.ApiResponseBody;
 import com.blackcompany.eeos.target.presentation.dto.AttendWeightPolicyWebDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
