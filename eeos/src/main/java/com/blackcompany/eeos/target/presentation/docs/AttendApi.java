@@ -3,9 +3,12 @@ package com.blackcompany.eeos.target.presentation.docs;
 import com.blackcompany.eeos.auth.presentation.support.Member;
 import com.blackcompany.eeos.common.presentation.response.ApiResponse;
 import com.blackcompany.eeos.common.presentation.response.ApiResponseBody.SuccessBody;
+import com.blackcompany.eeos.common.presentation.response.PageResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfoResponse;
+import com.blackcompany.eeos.target.application.dto.AttendInfoWithProgramResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfosSearchRequest;
 import com.blackcompany.eeos.target.application.dto.AttendInfosWithProgramResponses;
+import com.blackcompany.eeos.target.application.dto.AttendPenaltyResponse;
 import com.blackcompany.eeos.target.application.dto.AttendPenaltyResponses;
 import com.blackcompany.eeos.target.application.dto.AttendSummaryInfoResponse;
 import com.blackcompany.eeos.target.application.dto.ChangeAttendStatusResponse;
@@ -59,14 +62,13 @@ public interface AttendApi {
 
 	@Operation(summary = "나의 출석 현황 정보들 조회", description = "나의 출석 현황 정보들을 가져온다.")
 	@GetMapping("/api/attend/programs")
-	ApiResponse<SuccessBody<AttendInfosWithProgramResponses>> getMyAttendInfosWithProgram(
+	ApiResponse<SuccessBody<PageResponse<AttendInfoWithProgramResponse>>> getMyAttendInfosWithProgram(
 			@Member Long memberId, @Valid AttendInfosSearchRequest request);
 
 	@Operation(summary = "벌점 순위 Top 10 조회", description = "전체 회원 중 벌점을 기준으로 Top 10을 조회합니다.")
-	ApiResponse<SuccessBody<AttendPenaltyResponses>> getPenaltyInfo(
+	ApiResponse<SuccessBody<PageResponse<AttendPenaltyResponse>>> getPenaltyInfo(
 			@ParameterObject PenaltyInfoRequest request);
   
 	@Operation(summary = "나의 출석 요약 정보 조회", description = "자신의 출석 요약 정보 (참석 , 지각, 불참, 벌점 통계)를 가져온다.")
-	@GetMapping("/api/attend/summary")
-	ApiResponse<SuccessBody<AttendSummaryInfoResponse>> getMyAttendSummaryInfo();
+	ApiResponse<SuccessBody<AttendSummaryInfoResponse>> getMyAttendSummaryInfo(Long startDate, Long endDate);
 }

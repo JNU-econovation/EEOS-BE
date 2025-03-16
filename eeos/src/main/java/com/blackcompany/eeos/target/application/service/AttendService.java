@@ -1,5 +1,6 @@
 package com.blackcompany.eeos.target.application.service;
 
+import com.blackcompany.eeos.common.presentation.response.PageResponse;
 import com.blackcompany.eeos.common.utils.DateConverter;
 import com.blackcompany.eeos.common.utils.RequestScope;
 import com.blackcompany.eeos.member.application.model.ActiveStatus;
@@ -54,6 +55,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -87,7 +90,6 @@ public class AttendService
 	private final ProgramEntityConverter programEntityConverter;
 	private final AttendCountCalculate attendCountCalculate;
 	private final AttendPenaltyResponseConverter attendPenaltyResponseConverter;
-
 	@Override
 	public List<AttendInfoResponse> findAttendInfo(final Long programId) {
 		validateExistsProgram(programId);
@@ -183,20 +185,19 @@ public class AttendService
 				.collect(Collectors.toList());
 	}
 
-	public List<AttendInfoWithProgramResponse> findMyAttendInfo(
-			Long memberId, AttendInfosSearchRequest request) {
+	public PageResponse<AttendInfoWithProgramResponse> findMyAttendInfo(
+			final int page, final int size, final long startDate, final long endDate) {
 
-		Long startDate = request.getStartDate();
-		Long endDate = request.getEndDate();
-		int size = request.getSize();
-		int page = request.getPage();
+		Long memberId = RequestScope.getMemberId();
 
 		// 필요한 정보 : ProgramModel , AttendModel, MemberId
-		List<ProgramModel> programs =
+		Page<ProgramModel> pages =
 				programDateRangeService.getPrograms(startDate, endDate, size, page - 1);
 
-		if (!programs.isEmpty()) {
-			return programs.stream()
+		Page<AttendInfoWithProgramResponse> responses;
+
+		if (!pages.isEmpty()) {
+			responses =  new PageImpl<>(pages
 					.map(
 							program -> {
 								AttendModel attendModel =
@@ -208,10 +209,12 @@ public class AttendService
 								return attendInfoWithProgramConverter.from(attendModel, program);
 							})
 					.filter(Objects::nonNull)
-					.toList();
+					.stream().toList(), pages.getPageable(), pages.getTotalElements());
+
+			return new PageResponse<>(responses);
 		}
 
-		return Collections.emptyList();
+		return new PageResponse<>(Page.empty(PageRequest.of(page - 1, size)));
 	}
 
 	@Override
@@ -234,7 +237,7 @@ public class AttendService
 	}
 
 	@Override
-	public List<AttendPenaltyResponse> getPenaltyInfos(int page, int size, String sortType) {
+	public PageResponse<AttendPenaltyResponse> getPenaltyInfos(int page, int size, String sortType) {
 
 		Sort.Order order;
 
@@ -253,8 +256,11 @@ public class AttendService
 				Timestamp.valueOf(LocalDateTime.of(LocalDate.of(2025, 8, 1), LocalTime.of(0, 0)));
 		Long limit = 10L;
 
+
+		Page<Object[]> pages = attendRepository.findByPenaltyPointSum(startDate, endDate, pageable);
+
 		List<Long> topMemberIds =
-				attendRepository.findByPenaltyPointSum(startDate, endDate, pageable).stream()
+				pages.stream()
 						.map(o -> (Long) o[0])
 						.toList();
 
@@ -280,10 +286,10 @@ public class AttendService
 									})
 							.toList();
 
-			return responses;
+			return new PageResponse<>(new PageImpl<AttendPenaltyResponse>(responses, pageable, pages.getTotalElements()));
 		}
 
-		return List.of();
+		return new PageResponse<>(Page.empty(PageRequest.of(page - 1, size)));
 	}
 
 	private List<AttendModel> findMyAttends(List<ProgramModel> programs) {

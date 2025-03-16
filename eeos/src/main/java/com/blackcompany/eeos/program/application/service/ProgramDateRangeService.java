@@ -20,7 +20,7 @@ public class ProgramDateRangeService {
 	private final ProgramRepository programRepository;
 	private final ProgramEntityConverter programEntityConverter;
 
-	public List<ProgramModel> getPrograms(Long startDate, Long endDate, int size, int page) {
+	public Page<ProgramModel> getPrograms(Long startDate, Long endDate, int size, int page) {
 		Pageable pageable = PageRequest.of(page, size);
 
 		Timestamp startDateTimestamp =
@@ -30,7 +30,7 @@ public class ProgramDateRangeService {
 		Page<ProgramEntity> pages =
 				programRepository.findByDateRange(startDateTimestamp, endDateTimestamp, pageable);
 
-		return pages.get().map(programEntityConverter::from).toList();
+		return pages.map(programEntityConverter::from);
 	}
 
 	public List<ProgramModel> getPrograms(Long startDate, Long endDate) {
