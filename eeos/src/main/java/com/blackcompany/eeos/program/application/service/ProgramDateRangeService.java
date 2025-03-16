@@ -32,4 +32,14 @@ public class ProgramDateRangeService {
 
 		return pages.get().map(programEntityConverter::from).toList();
 	}
+
+	public List<ProgramModel> getPrograms(Long startDate, Long endDate) {
+		Timestamp startDateTimestamp =
+				DateConverter.toEpochSecond(DateConverter.toLocalDate(startDate));
+		Timestamp endDateTimestamp = DateConverter.toEpochSecond(DateConverter.toLocalDate(endDate));
+
+		return programRepository.findByDateRange(startDateTimestamp, endDateTimestamp).stream()
+				.map(programEntityConverter::from)
+				.toList();
+	}
 }

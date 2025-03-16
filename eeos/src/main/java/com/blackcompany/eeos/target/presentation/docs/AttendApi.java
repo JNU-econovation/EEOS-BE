@@ -6,6 +6,7 @@ import com.blackcompany.eeos.common.presentation.respnose.ApiResponseBody.Succes
 import com.blackcompany.eeos.target.application.dto.AttendInfoResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfosSearchRequest;
 import com.blackcompany.eeos.target.application.dto.AttendInfosWithProgramResponses;
+import com.blackcompany.eeos.target.application.dto.AttendSummaryInfoResponse;
 import com.blackcompany.eeos.target.application.dto.ChangeAttendStatusResponse;
 import com.blackcompany.eeos.target.application.dto.QueryAttendActiveStatusResponse;
 import com.blackcompany.eeos.target.application.dto.QueryAttendStatusResponse;
@@ -53,8 +54,12 @@ public interface AttendApi {
 			description = "PathVariable에 담긴 프로그램를 이용해 특정 프로그램에서 출석을 빠르게 한 사용자의 정보를 가져온다.")
 	ApiResponse<SuccessBody<QueryAttendStatusResponse>> getAttendInfoByTop10(Long programId);
 
-	@Operation(summary = "나의 출석 현황 정보들 조회", description = "MemberId를 사용하여 나의 출석 현황 정보들을 가져온다.")
+	@Operation(summary = "나의 출석 현황 정보들 조회", description = "나의 출석 현황 정보들을 가져온다.")
 	@GetMapping("/api/attend/programs")
 	ApiResponse<SuccessBody<AttendInfosWithProgramResponses>> getMyAttendInfosWithProgram(
 			@Member Long memberId, @Valid AttendInfosSearchRequest request);
+
+	@Operation(summary = "나의 출석 요약 정보 조회", description = "자신의 출석 요약 정보 (참석 , 지각, 불참, 벌점 통계)를 가져온다.")
+	@GetMapping("/api/attend/summary")
+	ApiResponse<SuccessBody<AttendSummaryInfoResponse>> getMyAttendSummaryInfo();
 }
