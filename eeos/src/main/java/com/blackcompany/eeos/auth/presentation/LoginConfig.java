@@ -29,7 +29,7 @@ public class LoginConfig implements WebMvcConfigurer {
 				.addInterceptor(memberAuthInterceptor())
 				.addPathPatterns("/api/**")
 				.excludePathPatterns(
-						"/api/guest/**", "/api/auth/**", "/api/health-check", "/api/programs/**");
+						"/api/guest/**", "/api/auth/**", "/api/health-check", "/api/programs/**", "/api/docs.html", "/api/docs/**", "/api/swagger-ui/**");
 		registry.addInterceptor(reissueAuthInterceptor()).addPathPatterns("/api/auth/reissue");
 	}
 
