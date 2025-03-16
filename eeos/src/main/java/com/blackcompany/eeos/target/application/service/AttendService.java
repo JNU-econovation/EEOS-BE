@@ -1,7 +1,6 @@
 package com.blackcompany.eeos.target.application.service;
 
 import com.blackcompany.eeos.common.presentation.response.PageResponse;
-import com.blackcompany.eeos.common.utils.DateConverter;
 import com.blackcompany.eeos.common.utils.RequestScope;
 import com.blackcompany.eeos.member.application.model.ActiveStatus;
 import com.blackcompany.eeos.member.application.model.MemberModel;

@@ -120,7 +120,8 @@ public class AttendController implements AttendApi {
 	@GetMapping("/attend/summary")
 	public ApiResponse<SuccessBody<AttendSummaryInfoResponse>> getMyAttendSummaryInfo(
 			@RequestParam("startDate") Long startDate, @RequestParam("endDate") Long endDate) {
-		AttendSummaryInfoResponse response = getAttendantInfoUsecase.getMyAttendSummary(startDate, endDate);
+		AttendSummaryInfoResponse response =
+				getAttendantInfoUsecase.getMyAttendSummary(startDate, endDate);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
 	}
 }
