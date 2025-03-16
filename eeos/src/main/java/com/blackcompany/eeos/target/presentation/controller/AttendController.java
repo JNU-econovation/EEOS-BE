@@ -9,6 +9,7 @@ import com.blackcompany.eeos.common.presentation.response.PageResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfoResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfoWithProgramResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfosSearchRequest;
+import com.blackcompany.eeos.target.application.dto.AttendPenaltyRankingResponse;
 import com.blackcompany.eeos.target.application.dto.AttendPenaltyResponse;
 import com.blackcompany.eeos.target.application.dto.AttendSummaryInfoResponse;
 import com.blackcompany.eeos.target.application.dto.ChangeAttendStatusResponse;
@@ -99,7 +100,7 @@ public class AttendController implements AttendApi {
 	@GetMapping("/attend/programs")
 	@Override
 	public ApiResponse<SuccessBody<PageResponse<AttendInfoWithProgramResponse>>>
-			getMyAttendInfosWithProgram(@Member Long memberId, @Valid AttendInfosSearchRequest request) {
+			getMyAttendInfosWithProgram(@Valid AttendInfosSearchRequest request) {
 		PageResponse<AttendInfoWithProgramResponse> responses =
 				getAttendantInfoUsecase.findMyAttendInfo(
 						request.getPage(), request.getSize(), request.getStartDate(), request.getEndDate());
@@ -111,7 +112,7 @@ public class AttendController implements AttendApi {
 	public ApiResponse<SuccessBody<PageResponse<AttendPenaltyResponse>>> getPenaltyInfo(
 			PenaltyInfoRequest request) {
 		PageResponse<AttendPenaltyResponse> responses =
-				getAttendantInfoUsecase.getPenaltyInfos(request.page(), request.size(), request.sortType());
+				getAttendantInfoUsecase.getPenaltyInfos(request.page(), request.size(), request.sortType(), request.startDate(), request.endDate());
 
 		return ApiResponseGenerator.success(responses, HttpStatus.OK, MessageCode.GET);
 	}
@@ -122,6 +123,14 @@ public class AttendController implements AttendApi {
 			@RequestParam("startDate") Long startDate, @RequestParam("endDate") Long endDate) {
 		AttendSummaryInfoResponse response =
 				getAttendantInfoUsecase.getMyAttendSummary(startDate, endDate);
+		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
+	}
+
+	@Override
+	@GetMapping("/attend/penalty")
+	public ApiResponse<SuccessBody<AttendPenaltyRankingResponse>> getMyPenaltyRankingInfo(
+			@RequestParam("offset") int rankOffset) {
+		AttendPenaltyRankingResponse response = getAttendantInfoUsecase.getMyPenaltyRanking(rankOffset);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
 	}
 }

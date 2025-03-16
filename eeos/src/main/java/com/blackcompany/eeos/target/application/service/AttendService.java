@@ -16,6 +16,7 @@ import com.blackcompany.eeos.program.persistence.ProgramRepository;
 import com.blackcompany.eeos.target.application.dto.AttendInfoActiveStatusResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfoResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfoWithProgramResponse;
+import com.blackcompany.eeos.target.application.dto.AttendPenaltyRankingResponse;
 import com.blackcompany.eeos.target.application.dto.AttendPenaltyResponse;
 import com.blackcompany.eeos.target.application.dto.AttendSummaryInfoResponse;
 import com.blackcompany.eeos.target.application.dto.ChangeAttendStatusResponse;
@@ -43,9 +44,7 @@ import com.blackcompany.eeos.target.application.usecase.GetAttendantInfoUsecase;
 import com.blackcompany.eeos.target.persistence.AttendEntity;
 import com.blackcompany.eeos.target.persistence.AttendRepository;
 import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -236,7 +235,7 @@ public class AttendService
 	}
 
 	@Override
-	public PageResponse<AttendPenaltyResponse> getPenaltyInfos(int page, int size, String sortType) {
+	public PageResponse<AttendPenaltyResponse> getPenaltyInfos(int page, int size, String sortType, Long startDate, Long endDate) {
 
 		Sort.Order order;
 
@@ -248,14 +247,11 @@ public class AttendService
 
 		Pageable pageable = PageRequest.of(page - 1, size, Sort.by(order));
 
-		// TODO: startDate 와 endDate 시간 설정하기
-		Timestamp startDate =
-				Timestamp.valueOf(LocalDateTime.of(LocalDate.of(2024, 3, 1), LocalTime.of(0, 0)));
-		Timestamp endDate =
-				Timestamp.valueOf(LocalDateTime.of(LocalDate.of(2025, 8, 1), LocalTime.of(0, 0)));
-		Long limit = 10L;
+		// TODO: null일 경우 startDate 와 endDate 시간 설정하기
+		Timestamp startTimestamp = new Timestamp(startDate);
+		Timestamp endTimestamp = new Timestamp(endDate);
 
-		Page<Object[]> pages = attendRepository.findByPenaltyPointSum(startDate, endDate, pageable);
+		Page<Object[]> pages = attendRepository.findByPenaltyPointSum(startTimestamp, endTimestamp, pageable);
 
 		List<Long> topMemberIds = pages.stream().map(o -> (Long) o[0]).toList();
 
@@ -267,7 +263,7 @@ public class AttendService
 											id -> id,
 											id ->
 													attendRepository.findTotalPenaltyScoreByMemberId(
-															startDate, endDate, id)));
+															startTimestamp, endTimestamp, id)));
 
 			List<MemberModel> members = memberRepository.findMembersByIdsInOrder(topMemberIds);
 
@@ -287,6 +283,36 @@ public class AttendService
 
 		return new PageResponse<>(Page.empty(PageRequest.of(page - 1, size)));
 	}
+
+	@Override
+	public AttendPenaltyRankingResponse getMyPenaltyRanking(int rankOffset) {
+
+		Long memberId = RequestScope.getMemberId();
+
+		Sort.Order order = Sort.Order.desc("totalScore");
+
+		Pageable pageable = PageRequest.of(0, rankOffset, Sort.by(order));
+
+		Page<Object[]> pages = attendRepository.findByPenaltyPointSum(pageable);
+
+		if (!pages.isEmpty()) {
+			Map<Long, Long> penaltyByMemberId = pages.stream()
+					.collect(Collectors.toMap(
+							o -> (Long) o[0], // memberId
+							o -> (Long) o[1] // penaltyPoint
+					));
+
+			Long myPenaltyPoint = penaltyByMemberId.get(memberId);
+			Long myPenaltyRank = pages.stream().filter(o -> (Long) o[1] > myPenaltyPoint).count() + 1;
+			boolean isRanked = myPenaltyRank < rankOffset;
+
+			return new AttendPenaltyRankingResponse(isRanked, myPenaltyRank.intValue());
+		}
+
+		return AttendPenaltyRankingResponse.empty();
+	}
+
+
 
 	private List<AttendModel> findMyAttends(List<ProgramModel> programs) {
 		Long memberId = RequestScope.getMemberId();
