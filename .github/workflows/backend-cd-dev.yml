@@ -1,0 +1,94 @@
+name: CD Deploy
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [ "develop" ]
+
+jobs:
+  deploy:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH 접속 및 배포 실행
+        id: deploy
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.DEV_HOST }}             # 예: 000.000.000.000
+          username: ${{ secrets.DEV_USERNAME }}       # SSH 로그인 사용자
+          password: ${{ secrets.DEV_PASSWORD }}       # SSH 비밀번호
+          port: ${{ secrets.DEV_SSH_PORT }}
+          script: |
+            set -ex
+            cd EEOS-BE/eeos
+            BRANCH="${{ github.event.pull_request.base.ref }}"
+            echo "Deploying for branch: ${BRANCH}"
+            if [ "${BRANCH}" = "develop" ]; then
+              sudo chmod +x ./scripts/deploy-develop.sh
+              ./scripts/deploy-develop.sh
+            else
+              echo "No deployment script available for branch ${BRANCH}"
+              exit 1
+            fi
+      - name: Slack 알림 전송
+        if: always()
+        env:
+          SLACK_CD_WEBHOOK_URL: ${{ secrets.SLACK_CD_WEBHOOK_URL }}
+          COMMIT_MESSAGE: ${{ github.event.pull_request.title }}
+          BRANCH_NAME: ${{ github.event.pull_request.base.ref }}
+          WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          MERGED_AT: ${{ github.event.pull_request.merged_at }}
+          STATUS: ${{ job.status }}
+          ERROR_MESSAGE: ${{ steps.deploy.outputs.error_message }}
+        run: |
+          if [ "${STATUS}" = "success" ]; then
+            COLOR="#36a64f"
+          else
+            COLOR="#FF0000"
+          fi
+
+          if [ "${BRANCH_NAME}" = "develop" ]; then
+            DEPLOY_TYPE="개발용"
+          else
+            DEPLOY_TYPE="${BRANCH_NAME}"
+          fi
+          
+          LOCAL_TIME=$(TZ="Asia/Seoul" date -d "${MERGED_AT}" +'%Y-%m-%d %H:%M:%S')
+
+          PAYLOAD=$(cat <<EOF
+          {
+            "username": "배포 알림",
+            "attachments": [
+              {
+                "color": "${COLOR}",
+                "title": "${DEPLOY_TYPE} 배포 결과: ${STATUS}",
+                "fields": [
+                  {
+                    "title": "Commit Message",
+                    "value": "\`${COMMIT_MESSAGE}\`",
+                    "short": false
+                  },
+                  {
+                    "title": "브랜치",
+                    "value": "\`${BRANCH_NAME}\`",
+                    "short": false
+                  },
+                  {
+                    "title": "Workflow URL",
+                    "value": "<${WORKFLOW_URL}|자세히 보기>",
+                    "short": false
+                  },
+                  {
+                    "title": "Merged At",
+                    "value": "\`${LOCAL_TIME}\`",
+                    "short": false
+                  }
+                ]
+              }
+            ]
+          }
+          EOF
+          )
+          
+          echo "$PAYLOAD"
+          curl -X POST -H "Content-Type: application/json" -d "$PAYLOAD" "$SLACK_CD_WEBHOOK_URL"
