@@ -232,7 +232,8 @@ public class AttendService
 		Long lateCount = attendCountCalculate.countByStatus(AttendStatus.LATE.getStatus(), attends);
 		Long penaltyPoint = attendCountCalculate.penaltyPoint(attends);
 
-		return new AttendSummaryInfoResponse(memberId, attendCount, lateCount, absentCount, penaltyPoint);
+		return new AttendSummaryInfoResponse(
+				memberId, attendCount, lateCount, absentCount, penaltyPoint);
 	}
 
 	@Override
