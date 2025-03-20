@@ -30,6 +30,23 @@ jobs:
               echo "No deployment script available for branch ${BRANCH}"
               exit 1
             fi
+
+      - name: API Health Check
+        id: health_check
+        run: |
+          echo "Waiting for container to start..."
+          sleep 10  
+
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" https://dev.eeos.co.kr/api/health-check)
+
+          echo "Health Check returned code: $HTTP_CODE"
+
+          if [ "$HTTP_CODE" = "200" ]; then
+            echo "status=success" >> $GITHUB_OUTPUT
+          else
+            echo "status=failure" >> $GITHUB_OUTPUT
+          fi
+
       - name: Slack 알림 전송
         if: always()
         env:
@@ -40,11 +57,25 @@ jobs:
           MERGED_AT: ${{ github.event.pull_request.merged_at }}
           STATUS: ${{ job.status }}
           ERROR_MESSAGE: ${{ steps.deploy.outputs.error_message }}
+          HEALTH_STATUS: ${{ steps.health_check.outputs.status }}
+
         run: |
           if [ "${STATUS}" = "success" ]; then
-            COLOR="#36a64f"
+            BASE_COLOR="#36a64f"
+            DEPLOY_RESULT="성공"
           else
-            COLOR="#FF0000"
+            BASE_COLOR="#FF0000"
+            DEPLOY_RESULT="실패"
+          fi
+          
+          # 헬스 체크 결과
+          if [ "${HEALTH_STATUS}" = "success" ]; then
+            HEALTH_RESULT="성공"
+          elif [ "${HEALTH_STATUS}" = "failure" ]; then
+            HEALTH_RESULT="실패"
+            BASE_COLOR="#FF0000"  # 헬스 체크 실패면 강제로 색상 빨강
+          else
+            HEALTH_RESULT="Health Check 미실시"
           fi
 
           if [ "${BRANCH_NAME}" = "develop" ]; then
@@ -60,9 +91,14 @@ jobs:
             "username": "배포 알림",
             "attachments": [
               {
-                "color": "${COLOR}",
-                "title": "${DEPLOY_TYPE} 배포 결과: ${STATUS}",
+                "color": "${BASE_COLOR}",
+                "title": "${DEPLOY_TYPE} 배포 : ${DEPLOY_RESULT}",
                 "fields": [
+                  {
+                    "title": "Health Check",
+                    "value": "\`${HEALTH_RESULT}\`",
+                    "short": false
+                  },
                   {
                     "title": "Commit Message",
                     "value": "\`${COMMIT_MESSAGE}\`",
