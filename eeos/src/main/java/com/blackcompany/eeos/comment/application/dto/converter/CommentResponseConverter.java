@@ -7,10 +7,13 @@ import com.blackcompany.eeos.comment.application.dto.QueryCommentsResponse;
 import com.blackcompany.eeos.comment.application.exception.NotConvertedCommentException;
 import com.blackcompany.eeos.comment.application.model.CommentModel;
 import com.blackcompany.eeos.comment.application.model.CommentType;
+import com.blackcompany.eeos.common.utils.DateConverter;
 import com.blackcompany.eeos.member.application.repository.MemberRepository;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.xml.stream.events.Comment;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -36,7 +39,7 @@ public class CommentResponseConverter {
 				answers.stream().map(e -> from(e, memberId)).collect(Collectors.toList());
 
 		return QueryCommentResponse.builder()
-				.time(getCreateTimeString(source))
+				.time(getCreateTimeLong(source))
 				.content(source.getContent())
 				.teamId(source.getPresentingTeam())
 				.writer(findMemberName(source.getWriter(), source))
@@ -53,7 +56,7 @@ public class CommentResponseConverter {
 						.commentId(source.getId())
 						.content(source.getContent())
 						.writer(findMemberName(source.getWriter(), source))
-						.time(getCreateTimeString(source))
+						.time(getCreateTimeLong(source))
 						.accessRight(source.getAccessRight(memberId))
 						.build();
 		return response;
@@ -71,5 +74,11 @@ public class CommentResponseConverter {
 				.getCreatedDate()
 				.toLocalDateTime()
 				.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH시 mm분 ss초"));
+	}
+
+	private Long getCreateTimeLong(CommentModel model){
+		return model
+				.getCreatedDate()
+				.getTime();
 	}
 }
