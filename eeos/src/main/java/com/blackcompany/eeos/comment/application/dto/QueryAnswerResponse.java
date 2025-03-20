@@ -15,6 +15,6 @@ public class QueryAnswerResponse implements AbstractResponseDto {
 	private Long commentId;
 	private String writer;
 	private String accessRight;
-	private String time;
+	private Long time;
 	private String content;
 }
