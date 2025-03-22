@@ -42,6 +42,8 @@ import com.blackcompany.eeos.target.application.usecase.GetAttendStatusUsecase;
 import com.blackcompany.eeos.target.application.usecase.GetAttendantInfoUsecase;
 import com.blackcompany.eeos.target.persistence.AttendEntity;
 import com.blackcompany.eeos.target.persistence.AttendRepository;
+import com.blackcompany.eeos.target.persistence.ProgramRankCounterEntity;
+import com.blackcompany.eeos.target.persistence.ProgramRankCounterRepository;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -86,6 +88,7 @@ public class AttendService
 	private final ProgramEntityConverter programEntityConverter;
 	private final AttendCountCalculate attendCountCalculate;
 	private final AttendPenaltyResponseConverter attendPenaltyResponseConverter;
+	private final ProgramRankCounterRepository programRankCounterRepository;
 
 	@Override
 	public List<AttendInfoResponse> findAttendInfo(final Long programId) {
@@ -112,6 +115,26 @@ public class AttendService
 	}
 
 	@Transactional
+	public Long getNextRank(Long programId) {
+		ProgramRankCounterEntity counter = programRankCounterRepository.findByProgramIdForUpdate(programId)
+				.orElseGet(() -> createNewCounter(programId));
+
+		Long currentRank = counter.getNextRank();
+		counter.incrementNextRank();
+		return currentRank;
+
+	}
+
+	private ProgramRankCounterEntity createNewCounter(Long programId) {
+		ProgramRankCounterEntity newCounter = ProgramRankCounterEntity.builder()
+				.programId(programId)
+				.nextRank(1L) // 초기값 1로 설정
+				.build();
+		return programRankCounterRepository.save(newCounter);
+	}
+
+
+	@Transactional
 	@Override
 	public ChangeAttendStatusResponse changeStatus(final Long memberId, final Long programId) {
 		AttendModel model = getAttend(memberId, programId);
@@ -123,7 +146,7 @@ public class AttendService
 		AttendModel changedModel = model.changeStatus(program.getAttendMode().getMode());
 
 		if (changedModel.getStatus().equals("attend")) {
-			Long rank = calculateRank(programId);
+			Long rank = getNextRank(programId);
 			changedModel.setRank(rank);
 		}
 
