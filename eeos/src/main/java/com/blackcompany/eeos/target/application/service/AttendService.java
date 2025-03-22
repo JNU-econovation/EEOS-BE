@@ -126,6 +126,7 @@ public class AttendService
 		return currentRank;
 	}
 
+	@Transactional
 	private ProgramRankCounterEntity createNewCounter(Long programId) {
 		ProgramRankCounterEntity newCounter =
 				ProgramRankCounterEntity.builder()
@@ -408,10 +409,5 @@ public class AttendService
 		if (!programRepository.existsById(programId)) {
 			throw new NotFoundProgramException(programId);
 		}
-	}
-
-	private Long calculateRank(Long programId) {
-		return attendRepository.countAttendStatusByProgramIdAndStatus(programId, AttendStatus.ATTEND)
-				+ 1;
 	}
 }
