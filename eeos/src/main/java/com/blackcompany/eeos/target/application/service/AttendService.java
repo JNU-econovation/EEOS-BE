@@ -116,23 +116,24 @@ public class AttendService
 
 	@Transactional
 	public Long getNextRank(Long programId) {
-		ProgramRankCounterEntity counter = programRankCounterRepository.findByProgramIdForUpdate(programId)
-				.orElseGet(() -> createNewCounter(programId));
+		ProgramRankCounterEntity counter =
+				programRankCounterRepository
+						.findByProgramIdForUpdate(programId)
+						.orElseGet(() -> createNewCounter(programId));
 
 		Long currentRank = counter.getNextRank();
 		counter.incrementNextRank();
 		return currentRank;
-
 	}
 
 	private ProgramRankCounterEntity createNewCounter(Long programId) {
-		ProgramRankCounterEntity newCounter = ProgramRankCounterEntity.builder()
-				.programId(programId)
-				.nextRank(1L) // 초기값 1로 설정
-				.build();
+		ProgramRankCounterEntity newCounter =
+				ProgramRankCounterEntity.builder()
+						.programId(programId)
+						.nextRank(1L) // 초기값 1로 설정
+						.build();
 		return programRankCounterRepository.save(newCounter);
 	}
-
 
 	@Transactional
 	@Override
