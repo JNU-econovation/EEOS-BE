@@ -189,7 +189,7 @@ public class AttendService
 		validateExistsProgram(programId);
 
 		List<AttendModel> attendModels = findTop5Attendants(programId);
-		List<MemberModel> members = findMembers(attendModels);
+		List<MemberModel> members = findMembersInOrder(attendModels);
 
 		List<AttendInfoResponse> response =
 				members.stream()
@@ -381,8 +381,17 @@ public class AttendService
 		List<Long> memberIds =
 				attends.stream().map(AttendModel::getMemberId).collect(Collectors.toList());
 
+		return memberRepository.findMembersByIds(memberIds);
+	}
+
+	private List<MemberModel> findMembersInOrder(List<AttendModel> attends) {
+		List<Long> memberIds =
+				attends.stream().map(AttendModel::getMemberId).collect(Collectors.toList());
+
 		return memberRepository.findMembersByIdsInOrder(memberIds);
 	}
+
+
 
 	private List<AttendModel> findAttendByAttendStatus(final Long programId, final String status) {
 		AttendStatus attendStatus = AttendStatus.find(status);
