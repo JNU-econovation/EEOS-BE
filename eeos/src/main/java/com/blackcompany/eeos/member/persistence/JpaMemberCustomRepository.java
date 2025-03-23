@@ -13,7 +13,7 @@ public class JpaMemberCustomRepository {
 	@PersistenceContext private final EntityManager em;
 
 	public List<MemberEntity> findMembersByIdsInOrder(List<Long> idList) {
-		if(!idList.isEmpty()) {
+		if (!idList.isEmpty()) {
 
 			String ids = String.join(",", idList.stream().map(String::valueOf).toList());
 
