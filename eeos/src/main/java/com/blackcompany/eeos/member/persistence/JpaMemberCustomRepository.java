@@ -13,16 +13,20 @@ public class JpaMemberCustomRepository {
 	@PersistenceContext private final EntityManager em;
 
 	public List<MemberEntity> findMembersByIdsInOrder(List<Long> idList) {
+		if(!idList.isEmpty()) {
 
-		String ids = String.join(",", idList.stream().map(String::valueOf).toList());
+			String ids = String.join(",", idList.stream().map(String::valueOf).toList());
 
-		String jpql =
-				"SELECT m FROM MemberEntity m WHERE m.id IN :ids AND m.isDeleted=false ORDER BY FUNCTION('FIELD', m.id, '%Ids%') "
-						.replace("'%Ids%'", ids);
+			String jpql =
+					"SELECT m FROM MemberEntity m WHERE m.id IN :ids AND m.isDeleted=false ORDER BY FUNCTION('FIELD', m.id, '%Ids%') "
+							.replace("'%Ids%'", ids);
 
-		List<MemberEntity> result =
-				em.createQuery(jpql, MemberEntity.class).setParameter("ids", idList).getResultList();
+			List<MemberEntity> result =
+					em.createQuery(jpql, MemberEntity.class).setParameter("ids", idList).getResultList();
 
-		return result;
+			return result;
+		}
+
+		return List.of();
 	}
 }
