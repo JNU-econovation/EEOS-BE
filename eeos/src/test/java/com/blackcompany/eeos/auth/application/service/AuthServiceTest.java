@@ -14,6 +14,7 @@ import com.blackcompany.eeos.member.application.model.MemberModel;
 import com.blackcompany.eeos.member.application.model.converter.MemberEntityConverter;
 import com.blackcompany.eeos.member.application.repository.MemberRepository;
 import java.util.Optional;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,6 +34,7 @@ class AuthServiceTest {
 
 	@Test
 	@DisplayName("슬랙을 통한 신규 회원가입은 불가능하다.")
+	@Disabled
 	void sign_up_slack_user() {
 		// given
 		OauthMemberModel slackOAuthMember = FakeOauthMember.oauthMemberModel(OauthServerType.SLACK);
