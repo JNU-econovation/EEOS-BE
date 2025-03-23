@@ -50,7 +50,7 @@ public interface AttendRepository extends JpaRepository<AttendEntity, Long> {
 	long countAttendStatusByProgramIdAndStatus(
 			@Param("programId") Long programId, @Param("status") AttendStatus status);
 
-	List<AttendEntity> findTop5ByProgramIdAndStatusOrderByUpdatedDateAscRankAsc(
+	List<AttendEntity> findTop5ByProgramIdAndStatusOrderByRankAsc(
 			Long programId, AttendStatus status);
 
 	@Query(
