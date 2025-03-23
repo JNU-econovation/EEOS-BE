@@ -35,9 +35,4 @@ public class CalendarModel {
 			endDate = Timestamp.valueOf(LocalDate.of(now.getYear(), Month.AUGUST, 31).atTime(23, 59, 59));
 		}
 	}
-
-	public void change(Timestamp startDate, Timestamp endDate) {
-		this.startDate = startDate;
-		this.endDate = endDate;
-	}
 }
