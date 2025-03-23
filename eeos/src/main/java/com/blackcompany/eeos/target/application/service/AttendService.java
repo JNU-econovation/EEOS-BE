@@ -391,8 +391,6 @@ public class AttendService
 		return memberRepository.findMembersByIdsInOrder(memberIds);
 	}
 
-
-
 	private List<AttendModel> findAttendByAttendStatus(final Long programId, final String status) {
 		AttendStatus attendStatus = AttendStatus.find(status);
 		return attendRepository.findAllByProgramIdAndStatus(programId, attendStatus).stream()
