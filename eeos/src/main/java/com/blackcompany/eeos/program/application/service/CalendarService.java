@@ -29,7 +29,7 @@ public class CalendarService implements GetCalendarUsecase, UpdateCalendarUsecas
 	public CalendarPeriodApplicationQuery updateCalendar(CalendarApplicationCommand command) {
 		CalendarModel model =
 				calendarRepository.updateCalendar(
-						new CalendarModel(command.getStartDate(), command.getEndDate()));
+						new CalendarModel(command.startDate(), command.endDate()));
 		return new CalendarPeriodApplicationQuery(model.getStartDate(), model.getEndDate());
 	}
 }
