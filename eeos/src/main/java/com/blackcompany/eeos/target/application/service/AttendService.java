@@ -201,7 +201,7 @@ public class AttendService
 
 	private List<AttendModel> findTop5Attendants(Long programId) {
 		return attendRepository
-				.findTop5ByProgramIdAndStatusOrderByUpdatedDateAscRankAsc(programId, AttendStatus.ATTEND)
+				.findTop5ByProgramIdAndStatusOrderByRankAsc(programId, AttendStatus.ATTEND)
 				.stream()
 				.map(attendEntityConverter::from)
 				.collect(Collectors.toList());
@@ -381,7 +381,7 @@ public class AttendService
 		List<Long> memberIds =
 				attends.stream().map(AttendModel::getMemberId).collect(Collectors.toList());
 
-		return memberRepository.findMembersByIds(memberIds);
+		return memberRepository.findMembersByIdsInOrder(memberIds);
 	}
 
 	private List<AttendModel> findAttendByAttendStatus(final Long programId, final String status) {
