@@ -1,9 +1,7 @@
 package com.blackcompany.eeos.auth.application.service;
 
 import com.blackcompany.eeos.auth.application.domain.OauthMemberModel;
-import com.blackcompany.eeos.auth.application.domain.OauthServerType;
 import com.blackcompany.eeos.auth.application.exception.NotFoundAccountException;
-import com.blackcompany.eeos.auth.application.exception.OAuthSignupRestrictedException;
 import com.blackcompany.eeos.auth.application.repository.OAuthMemberRepository;
 import com.blackcompany.eeos.auth.application.support.EncryptHelper;
 import com.blackcompany.eeos.auth.persistence.AccountRepository;
@@ -43,9 +41,9 @@ public class AuthService {
 
 	private OauthMemberModel signUpMember(final OauthMemberModel model) {
 		// Slack 신규 유저는 막기
-		if (model.getOauthServerType() == OauthServerType.SLACK) {
-			throw new OAuthSignupRestrictedException(OauthServerType.SLACK.getOauthServer());
-		}
+		//		if (model.getOauthServerType() == OauthServerType.SLACK) {
+		//			throw new OAuthSignupRestrictedException(OauthServerType.SLACK.getOauthServer());
+		//		}
 
 		MemberModel member =
 				MemberModel.builder()
