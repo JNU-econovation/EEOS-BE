@@ -249,6 +249,9 @@ public class AttendService
 	public AttendSummaryInfoResponse getMyAttendSummary(Long startDate, Long endDate) {
 		Long memberId = RequestScope.getMemberId();
 
+		if (startDate == null) startDate = calendarProvider.getCalendar().getStartDate().getTime();
+		if (endDate == null) endDate = calendarProvider.getCalendar().getEndDate().getTime();
+
 		List<ProgramModel> programs = programDateRangeService.getPrograms(startDate, endDate);
 
 		List<AttendModel> attends = findMyAttends(programs);
@@ -329,6 +332,7 @@ public class AttendService
 
 		Long myPenaltyPoint =
 				penaltyPointRepository.findTotalPenaltyScoreByMemberId(startDate, endDate, memberId);
+		if (myPenaltyPoint == null) myPenaltyPoint = 0L;
 		long myPenaltyRank =
 				penaltyPointRepository.countByPenaltyPointGreaterThan(startDate, endDate, myPenaltyPoint)
 						+ 1;
