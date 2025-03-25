@@ -92,7 +92,6 @@ public class AttendService
 	private final CalendarProvider calendarProvider;
 	private final PenaltyPointRepository penaltyPointRepository;
 
-
 	@Override
 	public List<AttendInfoResponse> findAttendInfo(final Long programId) {
 		validateExistsProgram(programId);
@@ -280,14 +279,12 @@ public class AttendService
 
 		Pageable pageable = PageRequest.of(page - 1, size, Sort.by(order));
 
-
 		Timestamp startTimestamp =
 				startDate == null
 						? calendarProvider.getCalendar().getStartDate()
 						: new Timestamp(startDate);
 		Timestamp endTimestamp =
 				endDate == null ? calendarProvider.getCalendar().getEndDate() : new Timestamp(endDate);
-
 
 		Page<Object[]> pages =
 				penaltyPointRepository.findByPenaltyPointSum(startTimestamp, endTimestamp, pageable);
@@ -335,7 +332,7 @@ public class AttendService
 
 		Long myPenaltyPoint =
 				penaltyPointRepository.findTotalPenaltyScoreByMemberId(startDate, endDate, memberId);
-		if(myPenaltyPoint == null) myPenaltyPoint=0L;
+		if (myPenaltyPoint == null) myPenaltyPoint = 0L;
 		long myPenaltyRank =
 				penaltyPointRepository.countByPenaltyPointGreaterThan(startDate, endDate, myPenaltyPoint)
 						+ 1;
