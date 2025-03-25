@@ -276,8 +276,12 @@ public class AttendService
 
 		Pageable pageable = PageRequest.of(page - 1, size, Sort.by(order));
 
-		Timestamp startTimestamp = startDate==null ? calendarProvider.getCalendar().getStartDate() : new Timestamp(startDate);
-		Timestamp endTimestamp = endDate==null ? calendarProvider.getCalendar().getEndDate() : new Timestamp(endDate);
+		Timestamp startTimestamp =
+				startDate == null
+						? calendarProvider.getCalendar().getStartDate()
+						: new Timestamp(startDate);
+		Timestamp endTimestamp =
+				endDate == null ? calendarProvider.getCalendar().getEndDate() : new Timestamp(endDate);
 
 		Page<Object[]> pages =
 				penaltyPointRepository.findByPenaltyPointSum(startTimestamp, endTimestamp, pageable);
@@ -301,9 +305,10 @@ public class AttendService
 							.map(
 									member -> {
 										Long penaltyPoint = memberIdToPenaltyPoint.get(member.getId());
-										Long ranking = penaltyPointRepository.countByPenaltyPointGreaterThan(startTimestamp, endTimestamp, penaltyPoint);
-										return attendPenaltyResponseConverter.from(
-												member, penaltyPoint, ranking+1);
+										Long ranking =
+												penaltyPointRepository.countByPenaltyPointGreaterThan(
+														startTimestamp, endTimestamp, penaltyPoint);
+										return attendPenaltyResponseConverter.from(member, penaltyPoint, ranking + 1);
 									})
 							.toList();
 
@@ -322,8 +327,11 @@ public class AttendService
 		Timestamp startDate = calendarProvider.getCalendar().getStartDate();
 		Timestamp endDate = calendarProvider.getCalendar().getEndDate();
 
-		Long myPenaltyPoint = penaltyPointRepository.findTotalPenaltyScoreByMemberId(startDate, endDate, memberId);
-		long myPenaltyRank = penaltyPointRepository.countByPenaltyPointGreaterThan(startDate, endDate, myPenaltyPoint) + 1;
+		Long myPenaltyPoint =
+				penaltyPointRepository.findTotalPenaltyScoreByMemberId(startDate, endDate, memberId);
+		long myPenaltyRank =
+				penaltyPointRepository.countByPenaltyPointGreaterThan(startDate, endDate, myPenaltyPoint)
+						+ 1;
 
 		return new AttendPenaltyRankingResponse(myPenaltyRank < rankOffset, (int) myPenaltyRank);
 	}
