@@ -125,7 +125,6 @@ public class AttendService
 		return currentRank;
 	}
 
-	@Transactional
 	private ProgramRankCounterEntity createNewCounter(Long programId) {
 		ProgramRankCounterEntity newCounter =
 				ProgramRankCounterEntity.builder()
