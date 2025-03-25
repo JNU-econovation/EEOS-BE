@@ -12,6 +12,7 @@ import com.blackcompany.eeos.program.application.model.ProgramAttendMode;
 import com.blackcompany.eeos.program.application.model.ProgramModel;
 import com.blackcompany.eeos.program.application.model.converter.ProgramEntityConverter;
 import com.blackcompany.eeos.program.application.service.ProgramDateRangeService;
+import com.blackcompany.eeos.program.application.support.CalendarProvider;
 import com.blackcompany.eeos.program.persistence.ProgramRepository;
 import com.blackcompany.eeos.target.application.dto.AttendInfoActiveStatusResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfoResponse;
@@ -89,6 +90,7 @@ public class AttendService
 	private final AttendCountCalculate attendCountCalculate;
 	private final AttendPenaltyResponseConverter attendPenaltyResponseConverter;
 	private final ProgramRankCounterRepository programRankCounterRepository;
+	private final CalendarProvider calendarProvider;
 
 	@Override
 	public List<AttendInfoResponse> findAttendInfo(final Long programId) {
@@ -248,6 +250,9 @@ public class AttendService
 	public AttendSummaryInfoResponse getMyAttendSummary(Long startDate, Long endDate) {
 		Long memberId = RequestScope.getMemberId();
 
+		if(startDate==null ) startDate = calendarProvider.getCalendar().getStartDate().getTime();
+		if(endDate==null) endDate = calendarProvider.getCalendar().getEndDate().getTime();
+
 		List<ProgramModel> programs = programDateRangeService.getPrograms(startDate, endDate);
 
 		List<AttendModel> attends = findMyAttends(programs);
@@ -276,9 +281,9 @@ public class AttendService
 
 		// TODO: startDate 와 endDate 시간 설정하기
 		Timestamp startDate =
-				Timestamp.valueOf(LocalDateTime.of(LocalDate.of(2024, 3, 1), LocalTime.of(0, 0)));
+				calendarProvider.getCalendar().getStartDate();
 		Timestamp endDate =
-				Timestamp.valueOf(LocalDateTime.of(LocalDate.of(2025, 8, 1), LocalTime.of(0, 0)));
+				calendarProvider.getCalendar().getEndDate();
 		Long limit = 10L;
 
 		Page<Object[]> pages = attendRepository.findByPenaltyPointSum(startDate, endDate, pageable);
