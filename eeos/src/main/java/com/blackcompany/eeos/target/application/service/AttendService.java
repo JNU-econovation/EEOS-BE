@@ -46,9 +46,6 @@ import com.blackcompany.eeos.target.persistence.AttendRepository;
 import com.blackcompany.eeos.target.persistence.ProgramRankCounterEntity;
 import com.blackcompany.eeos.target.persistence.ProgramRankCounterRepository;
 import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -250,8 +247,8 @@ public class AttendService
 	public AttendSummaryInfoResponse getMyAttendSummary(Long startDate, Long endDate) {
 		Long memberId = RequestScope.getMemberId();
 
-		if(startDate==null ) startDate = calendarProvider.getCalendar().getStartDate().getTime();
-		if(endDate==null) endDate = calendarProvider.getCalendar().getEndDate().getTime();
+		if (startDate == null) startDate = calendarProvider.getCalendar().getStartDate().getTime();
+		if (endDate == null) endDate = calendarProvider.getCalendar().getEndDate().getTime();
 
 		List<ProgramModel> programs = programDateRangeService.getPrograms(startDate, endDate);
 
@@ -280,10 +277,8 @@ public class AttendService
 		Pageable pageable = PageRequest.of(page - 1, size, Sort.by(order));
 
 		// TODO: startDate 와 endDate 시간 설정하기
-		Timestamp startDate =
-				calendarProvider.getCalendar().getStartDate();
-		Timestamp endDate =
-				calendarProvider.getCalendar().getEndDate();
+		Timestamp startDate = calendarProvider.getCalendar().getStartDate();
+		Timestamp endDate = calendarProvider.getCalendar().getEndDate();
 		Long limit = 10L;
 
 		Page<Object[]> pages = attendRepository.findByPenaltyPointSum(startDate, endDate, pageable);
