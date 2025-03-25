@@ -335,6 +335,7 @@ public class AttendService
 
 		Long myPenaltyPoint =
 				penaltyPointRepository.findTotalPenaltyScoreByMemberId(startDate, endDate, memberId);
+		if(myPenaltyPoint == null) myPenaltyPoint=0L;
 		long myPenaltyRank =
 				penaltyPointRepository.countByPenaltyPointGreaterThan(startDate, endDate, myPenaltyPoint)
 						+ 1;
