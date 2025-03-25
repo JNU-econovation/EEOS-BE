@@ -2,11 +2,8 @@ package com.blackcompany.eeos.target.persistence;
 
 import com.blackcompany.eeos.target.application.model.AttendStatus;
 import jakarta.persistence.LockModeType;
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Modifying;
@@ -57,18 +54,4 @@ public interface AttendRepository extends JpaRepository<AttendEntity, Long> {
 			"SELECT a FROM AttendEntity a WHERE a.programId IN :programIds AND a.memberId=:memberId AND a.isDeleted=false")
 	List<AttendEntity> findByProgramIdsAndMemberId(
 			@Param("programIds") List<Long> programIds, @Param("memberId") Long memberId);
-
-	@Query(
-			"SELECT temp.memberId, temp.totalScore FROM (SELECT a.memberId as memberId, SUM(a.penaltyScore) as totalScore FROM AttendEntity a WHERE a.createdDate >= :startDate AND a.createdDate <= :endDate  GROUP BY a.memberId) AS temp")
-	Page<Object[]> findByPenaltyPointSum(
-			@Param("startDate") Timestamp startDate,
-			@Param("endDate") Timestamp endDate,
-			Pageable pageable);
-
-	@Query(
-			"SELECT SUM(a.penaltyScore) FROM AttendEntity a WHERE a.createdDate >= :startDate AND a.createdDate <= :endDate AND a.memberId=:memberId")
-	Long findTotalPenaltyScoreByMemberId(
-			@Param("startDate") Timestamp startDate,
-			@Param("endDate") Timestamp endDate,
-			@Param("memberId") Long memberId);
 }
