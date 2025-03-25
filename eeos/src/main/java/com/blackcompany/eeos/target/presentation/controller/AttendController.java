@@ -91,7 +91,7 @@ public class AttendController implements AttendApi {
 
 	@Override
 	@GetMapping("/attend/programs/fire-finger/{programId}")
-	public ApiResponse<SuccessBody<QueryAttendStatusResponse>> getAttendInfoByTop10(
+	public ApiResponse<SuccessBody<QueryAttendStatusResponse>> getAttendInfoByTop5(
 			@PathVariable("programId") Long programId) {
 		QueryAttendStatusResponse response = getAttendantInfoUsecase.findFireFingerMembers(programId);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
@@ -125,7 +125,8 @@ public class AttendController implements AttendApi {
 	@Override
 	@GetMapping("/attend/summary")
 	public ApiResponse<SuccessBody<AttendSummaryInfoResponse>> getMyAttendSummaryInfo(
-			@RequestParam("startDate") Long startDate, @RequestParam("endDate") Long endDate) {
+			@RequestParam(value = "startDate", required = false) Long startDate,
+			@RequestParam(value = "endDate", required = false) Long endDate) {
 		AttendSummaryInfoResponse response =
 				getAttendantInfoUsecase.getMyAttendSummary(startDate, endDate);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);

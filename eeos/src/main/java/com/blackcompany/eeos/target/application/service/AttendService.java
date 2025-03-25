@@ -43,6 +43,8 @@ import com.blackcompany.eeos.target.application.usecase.GetAttendStatusUsecase;
 import com.blackcompany.eeos.target.application.usecase.GetAttendantInfoUsecase;
 import com.blackcompany.eeos.target.persistence.AttendEntity;
 import com.blackcompany.eeos.target.persistence.AttendRepository;
+import com.blackcompany.eeos.target.persistence.ProgramRankCounterEntity;
+import com.blackcompany.eeos.target.persistence.ProgramRankCounterRepository;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
@@ -84,6 +86,7 @@ public class AttendService
 	private final ProgramEntityConverter programEntityConverter;
 	private final AttendCountCalculate attendCountCalculate;
 	private final AttendPenaltyResponseConverter attendPenaltyResponseConverter;
+	private final ProgramRankCounterRepository programRankCounterRepository;
 
 	@Override
 	public List<AttendInfoResponse> findAttendInfo(final Long programId) {
@@ -110,6 +113,28 @@ public class AttendService
 	}
 
 	@Transactional
+	public Long getNextRank(Long programId) {
+		ProgramRankCounterEntity counter =
+				programRankCounterRepository
+						.findByProgramIdForUpdate(programId)
+						.orElseGet(() -> createNewCounter(programId));
+
+		Long currentRank = counter.getNextRank();
+		counter.incrementNextRank();
+		return currentRank;
+	}
+
+	@Transactional
+	private ProgramRankCounterEntity createNewCounter(Long programId) {
+		ProgramRankCounterEntity newCounter =
+				ProgramRankCounterEntity.builder()
+						.programId(programId)
+						.nextRank(1L) // 초기값 1로 설정
+						.build();
+		return programRankCounterRepository.save(newCounter);
+	}
+
+	@Transactional
 	@Override
 	public ChangeAttendStatusResponse changeStatus(final Long memberId, final Long programId) {
 		AttendModel model = getAttend(memberId, programId);
@@ -121,7 +146,7 @@ public class AttendService
 		AttendModel changedModel = model.changeStatus(program.getAttendMode().getMode());
 
 		if (changedModel.getStatus().equals("attend")) {
-			Long rank = calculateRank(programId);
+			Long rank = getNextRank(programId);
 			changedModel.setRank(rank);
 		}
 
@@ -162,7 +187,7 @@ public class AttendService
 		validateExistsProgram(programId);
 
 		List<AttendModel> attendModels = findTop5Attendants(programId);
-		List<MemberModel> members = findMembers(attendModels);
+		List<MemberModel> members = findMembersInOrder(attendModels);
 
 		List<AttendInfoResponse> response =
 				members.stream()
@@ -174,7 +199,7 @@ public class AttendService
 
 	private List<AttendModel> findTop5Attendants(Long programId) {
 		return attendRepository
-				.findTop5ByProgramIdAndStatusOrderByUpdatedDateAscRankAsc(programId, AttendStatus.ATTEND)
+				.findTop5ByProgramIdAndStatusOrderByRankAsc(programId, AttendStatus.ATTEND)
 				.stream()
 				.map(attendEntityConverter::from)
 				.collect(Collectors.toList());
@@ -230,7 +255,8 @@ public class AttendService
 		Long lateCount = attendCountCalculate.countByStatus(AttendStatus.LATE.getStatus(), attends);
 		Long penaltyPoint = attendCountCalculate.penaltyPoint(attends);
 
-		return new AttendSummaryInfoResponse(memberId, attendCount, absentCount, penaltyPoint);
+		return new AttendSummaryInfoResponse(
+				memberId, attendCount, lateCount, absentCount, penaltyPoint);
 	}
 
 	@Override
@@ -385,6 +411,13 @@ public class AttendService
 		return memberRepository.findMembersByIds(memberIds);
 	}
 
+	private List<MemberModel> findMembersInOrder(List<AttendModel> attends) {
+		List<Long> memberIds =
+				attends.stream().map(AttendModel::getMemberId).collect(Collectors.toList());
+
+		return memberRepository.findMembersByIdsInOrder(memberIds);
+	}
+
 	private List<AttendModel> findAttendByAttendStatus(final Long programId, final String status) {
 		AttendStatus attendStatus = AttendStatus.find(status);
 		return attendRepository.findAllByProgramIdAndStatus(programId, attendStatus).stream()
@@ -410,10 +443,5 @@ public class AttendService
 		if (!programRepository.existsById(programId)) {
 			throw new NotFoundProgramException(programId);
 		}
-	}
-
-	private Long calculateRank(Long programId) {
-		return attendRepository.countAttendStatusByProgramIdAndStatus(programId, AttendStatus.ATTEND)
-				+ 1;
 	}
 }

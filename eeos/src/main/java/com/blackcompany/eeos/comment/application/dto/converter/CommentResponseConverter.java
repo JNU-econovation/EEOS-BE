@@ -36,7 +36,7 @@ public class CommentResponseConverter {
 				answers.stream().map(e -> from(e, memberId)).collect(Collectors.toList());
 
 		return QueryCommentResponse.builder()
-				.time(getCreateTimeString(source))
+				.time(getCreateTimeLong(source))
 				.content(source.getContent())
 				.teamId(source.getPresentingTeam())
 				.writer(findMemberName(source.getWriter(), source))
@@ -53,7 +53,7 @@ public class CommentResponseConverter {
 						.commentId(source.getId())
 						.content(source.getContent())
 						.writer(findMemberName(source.getWriter(), source))
-						.time(getCreateTimeString(source))
+						.time(getCreateTimeLong(source))
 						.accessRight(source.getAccessRight(memberId))
 						.build();
 		return response;
@@ -71,5 +71,9 @@ public class CommentResponseConverter {
 				.getCreatedDate()
 				.toLocalDateTime()
 				.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH시 mm분 ss초"));
+	}
+
+	private Long getCreateTimeLong(CommentModel model) {
+		return model.getCreatedDate().getTime();
 	}
 }
