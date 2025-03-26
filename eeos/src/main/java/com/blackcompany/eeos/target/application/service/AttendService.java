@@ -213,10 +213,11 @@ public class AttendService
 
 		Long memberId = RequestScope.getMemberId();
 
-		List<AttendEntity> myAttend = attendRepository.findAllByMemberIdAndDateBetween(
-				memberId, new Timestamp(startDate), new Timestamp(endDate));
+		List<AttendEntity> myAttend =
+				attendRepository.findAllByMemberIdAndDateBetween(
+						memberId, new Timestamp(startDate), new Timestamp(endDate));
 
-		if(!myAttend.isEmpty()) {
+		if (!myAttend.isEmpty()) {
 			// start, end
 			int start = (page - 1) * size;
 			// 시작 페이지가 조회한 데이터 범위 밖에 있는 경우
@@ -232,23 +233,23 @@ public class AttendService
 
 			Page<AttendInfoWithProgramResponse> responses;
 			responses =
-				new PageImpl<>(
-						myAttend.stream()
-								.map(attendEntityConverter::from)
-								.map(
-										attendModel -> {
-											ProgramModel program =
-													programRepository
-															.findById(attendModel.getProgramId())
-															.map(programEntityConverter::from)
-															.orElse(null);
-											if (program == null) return null;
-											return attendInfoWithProgramConverter.from(attendModel, program);
-										})
-								.filter(Objects::nonNull)
-								.toList(),
-						PageRequest.of(page - 1, size),
-						myAttend.size());
+					new PageImpl<>(
+							myAttend.stream()
+									.map(attendEntityConverter::from)
+									.map(
+											attendModel -> {
+												ProgramModel program =
+														programRepository
+																.findById(attendModel.getProgramId())
+																.map(programEntityConverter::from)
+																.orElse(null);
+												if (program == null) return null;
+												return attendInfoWithProgramConverter.from(attendModel, program);
+											})
+									.filter(Objects::nonNull)
+									.toList(),
+							PageRequest.of(page - 1, size),
+							myAttend.size());
 
 			return new PageResponse<>(responses);
 		}
