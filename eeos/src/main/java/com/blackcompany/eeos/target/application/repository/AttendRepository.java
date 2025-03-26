@@ -1,5 +1,6 @@
 package com.blackcompany.eeos.target.application.repository;
 
+import com.blackcompany.eeos.target.application.model.AttendModel;
 import com.blackcompany.eeos.target.application.model.AttendStatus;
 import com.blackcompany.eeos.target.persistence.AttendEntity;
 import java.time.LocalDateTime;
@@ -28,4 +29,6 @@ public interface AttendRepository {
 	List<AttendEntity> findByProgramIdsAndMemberId(List<Long> programIds, Long memberId);
 
 	List<Long> findByPenaltyPointSum(LocalDateTime startDate, LocalDateTime endDate, Long limit);
+
+	List<AttendModel> findMyAttendList(Long memberId, LocalDateTime startDate, LocalDateTime endDate);
 }

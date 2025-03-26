@@ -213,31 +213,35 @@ public class AttendService
 
 		Long memberId = RequestScope.getMemberId();
 
+		Sort.Order order = Sort.Order.desc("createdDate");
+		Pageable pageable = PageRequest.of(page - 1, size, Sort.by(order));
+
 		// 필요한 정보 : ProgramModel , AttendModel, MemberId
-		Page<ProgramModel> pages =
-				programDateRangeService.getPrograms(startDate, endDate, size, page - 1);
+		Page<AttendEntity> myAttend =
+				attendRepository.findAllByMemberIdAndCreatedDateGreaterThan(
+						memberId, new Timestamp(startDate), new Timestamp(endDate), pageable);
 
 		Page<AttendInfoWithProgramResponse> responses;
 
-		if (!pages.isEmpty()) {
+		if (!myAttend.isEmpty()) {
 			responses =
 					new PageImpl<>(
-							pages
+							myAttend.stream()
+									.map(attendEntityConverter::from)
 									.map(
-											program -> {
-												AttendModel attendModel =
-														attendRepository
-																.findByProgramIdAndMemberId(program.getId(), memberId)
-																.map(attendEntityConverter::from)
+											attendModel -> {
+												ProgramModel program =
+														programRepository
+																.findById(attendModel.getProgramId())
+																.map(programEntityConverter::from)
 																.orElse(null);
-												if (attendModel == null) return null;
+												if (program == null) return null;
 												return attendInfoWithProgramConverter.from(attendModel, program);
 											})
 									.filter(Objects::nonNull)
-									.stream()
 									.toList(),
-							pages.getPageable(),
-							pages.getTotalElements());
+							myAttend.getPageable(),
+							myAttend.getTotalElements());
 
 			return new PageResponse<>(responses);
 		}
