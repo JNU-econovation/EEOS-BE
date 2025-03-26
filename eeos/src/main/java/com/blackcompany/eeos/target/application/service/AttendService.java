@@ -48,7 +48,6 @@ import com.blackcompany.eeos.target.persistence.PenaltyPointRepository;
 import com.blackcompany.eeos.target.persistence.ProgramRankCounterEntity;
 import com.blackcompany.eeos.target.persistence.ProgramRankCounterRepository;
 import java.sql.Timestamp;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -219,8 +218,8 @@ public class AttendService
 
 		// 필요한 정보 : ProgramModel , AttendModel, MemberId
 		Page<AttendEntity> myAttend =
-				attendRepository.findAllByMemberIdAndCreatedDateGreaterThan(memberId, new Timestamp(startDate), new Timestamp(endDate), pageable);
-
+				attendRepository.findAllByMemberIdAndCreatedDateGreaterThan(
+						memberId, new Timestamp(startDate), new Timestamp(endDate), pageable);
 
 		Page<AttendInfoWithProgramResponse> responses;
 
@@ -232,9 +231,10 @@ public class AttendService
 									.map(
 											attendModel -> {
 												ProgramModel program =
-																programRepository.findById(attendModel.getProgramId())
-																		.map(programEntityConverter::from)
-																		.orElse(null);
+														programRepository
+																.findById(attendModel.getProgramId())
+																.map(programEntityConverter::from)
+																.orElse(null);
 												if (program == null) return null;
 												return attendInfoWithProgramConverter.from(attendModel, program);
 											})
