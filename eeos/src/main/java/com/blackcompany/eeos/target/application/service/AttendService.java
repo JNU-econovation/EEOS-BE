@@ -213,35 +213,42 @@ public class AttendService
 
 		Long memberId = RequestScope.getMemberId();
 
-		Sort.Order order = Sort.Order.desc("createdDate");
-		Pageable pageable = PageRequest.of(page - 1, size, Sort.by(order));
+		List<AttendEntity> myAttend = attendRepository.findAllByMemberIdAndDateBetween(
+				memberId, new Timestamp(startDate), new Timestamp(endDate));
 
-		// 필요한 정보 : ProgramModel , AttendModel, MemberId
-		Page<AttendEntity> myAttend =
-				attendRepository.findAllByMemberIdAndCreatedDateGreaterThan(
-						memberId, new Timestamp(startDate), new Timestamp(endDate), pageable);
+		if(!myAttend.isEmpty()) {
+			// start, end
+			int start = (page - 1) * size;
+			// 시작 페이지가 조회한 데이터 범위 밖에 있는 경우
+			if (start >= myAttend.size()) {
+				return new PageResponse<>(Page.empty(PageRequest.of(page - 1, size)));
+			}
+			int end = start + size;
+			// 마지막 인덱스가, 실제 데이터 크기보다 클 경우
+			if (end > myAttend.size()) {
+				end = myAttend.size();
+			}
+			myAttend = myAttend.subList(start, end);
 
-		Page<AttendInfoWithProgramResponse> responses;
-
-		if (!myAttend.isEmpty()) {
+			Page<AttendInfoWithProgramResponse> responses;
 			responses =
-					new PageImpl<>(
-							myAttend.stream()
-									.map(attendEntityConverter::from)
-									.map(
-											attendModel -> {
-												ProgramModel program =
-														programRepository
-																.findById(attendModel.getProgramId())
-																.map(programEntityConverter::from)
-																.orElse(null);
-												if (program == null) return null;
-												return attendInfoWithProgramConverter.from(attendModel, program);
-											})
-									.filter(Objects::nonNull)
-									.toList(),
-							myAttend.getPageable(),
-							myAttend.getTotalElements());
+				new PageImpl<>(
+						myAttend.stream()
+								.map(attendEntityConverter::from)
+								.map(
+										attendModel -> {
+											ProgramModel program =
+													programRepository
+															.findById(attendModel.getProgramId())
+															.map(programEntityConverter::from)
+															.orElse(null);
+											if (program == null) return null;
+											return attendInfoWithProgramConverter.from(attendModel, program);
+										})
+								.filter(Objects::nonNull)
+								.toList(),
+						PageRequest.of(page - 1, size),
+						myAttend.size());
 
 			return new PageResponse<>(responses);
 		}

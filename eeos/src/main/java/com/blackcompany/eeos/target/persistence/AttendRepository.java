@@ -65,4 +65,8 @@ public interface AttendRepository extends JpaRepository<AttendEntity, Long> {
 			@Param("startDate") Timestamp startDate,
 			@Param("endDate") Timestamp endDate,
 			Pageable pageable);
+
+	@Query("SELECT a FROM AttendEntity a WHERE a.memberId = :memberId AND a.isDeleted = false AND a.createdDate >= :startDate AND a.createdDate <= :endDate")
+	List<AttendEntity> findAllByMemberIdAndDateBetween(
+			@Param("memberId") Long memberId, @Param("startDate") Timestamp startDate, @Param("endDate") Timestamp endDate);
 }
