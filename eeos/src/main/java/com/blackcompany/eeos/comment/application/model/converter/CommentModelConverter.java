@@ -16,8 +16,18 @@ public class CommentModelConverter
 				.superCommentId(request.getParentsCommentId())
 				.content(request.getContent())
 				.presentingTeam(request.getTeamId())
+				.commentType(request.getCommentType())
 				.build();
 	}
+
+	/*public CommentModel from(Long memberId,CreateCommentRequest request){
+		CommentModel model = from(request);
+		if(Boolean.TRUE.equals(model.getIsChecked())){
+			return model.toBuilder().writer(-1L).build();
+		}else{
+			return model.toBuilder().writer(memberId).build();
+		}
+	}*/
 
 	public CommentModel from(Long memberId, CreateCommentRequest request) {
 		return from(request).toBuilder().writer(memberId).build();

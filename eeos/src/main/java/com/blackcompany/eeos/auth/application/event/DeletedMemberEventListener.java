@@ -1,7 +1,7 @@
 package com.blackcompany.eeos.auth.application.event;
 
 import com.blackcompany.eeos.auth.application.domain.token.TokenResolver;
-import com.blackcompany.eeos.auth.persistence.BlackAuthenticationRepository;
+import com.blackcompany.eeos.auth.persistence.InvalidTokenRepository;
 import com.blackcompany.eeos.target.persistence.AttendRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +17,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @Slf4j
 public class DeletedMemberEventListener {
 	private final AttendRepository attendRepository;
-	private final BlackAuthenticationRepository blackAuthenticationRepository;
+	private final InvalidTokenRepository invalidTokenRepository;
 	private final TokenResolver tokenResolver;
 
 	@Async
@@ -33,7 +33,7 @@ public class DeletedMemberEventListener {
 	}
 
 	private void saveUsedToken(String token, Long memberId) {
-		blackAuthenticationRepository.save(token, memberId, getExpiredDate(token));
+		invalidTokenRepository.save(token, memberId, getExpiredDate(token));
 	}
 
 	private Long getExpiredDate(String token) {

@@ -1,10 +1,10 @@
 package com.blackcompany.eeos.teamBuilding.presentation.controller;
 
 import com.blackcompany.eeos.auth.presentation.support.Member;
-import com.blackcompany.eeos.common.presentation.respnose.ApiResponse;
-import com.blackcompany.eeos.common.presentation.respnose.ApiResponseBody.SuccessBody;
-import com.blackcompany.eeos.common.presentation.respnose.ApiResponseGenerator;
-import com.blackcompany.eeos.common.presentation.respnose.MessageCode;
+import com.blackcompany.eeos.common.presentation.response.ApiResponse;
+import com.blackcompany.eeos.common.presentation.response.ApiResponseBody.SuccessBody;
+import com.blackcompany.eeos.common.presentation.response.ApiResponseGenerator;
+import com.blackcompany.eeos.common.presentation.response.MessageCode;
 import com.blackcompany.eeos.teamBuilding.application.dto.CreateTeamBuildingRequest;
 import com.blackcompany.eeos.teamBuilding.application.dto.ResultTeamBuildingResponse;
 import com.blackcompany.eeos.teamBuilding.application.dto.ValidateTeamBuildingResponse;
@@ -17,7 +17,7 @@ import com.blackcompany.eeos.teamBuilding.application.usecase.GetTeamBuildingUse
 import com.blackcompany.eeos.teamBuilding.application.usecase.QueryTeamBuildingResponse;
 import com.blackcompany.eeos.teamBuilding.application.usecase.ValidateTeamBuildingUsecase;
 import com.blackcompany.eeos.teamBuilding.presentation.docs.TeamBuildingApi;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;

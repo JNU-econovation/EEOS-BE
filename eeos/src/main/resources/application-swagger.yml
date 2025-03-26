@@ -1,11 +1,11 @@
 springdoc:
   swagger-ui:
-    path: /api-docs.html
+    path: /api/docs.html # 사용자 친화형 문서
     disable-swagger-default-url: true
     display-request-duration: true
     operations-sorter: alpha
   api-docs:
-    path: /api-docs
+    path: /api/docs # xml 또는 json 반환
   show-actuator: true
   default-produces-media-type: application/json
   packages-to-scan: com.blackcompany.eeos

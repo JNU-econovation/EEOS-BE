@@ -1,7 +1,11 @@
 package com.blackcompany.eeos.comment.presentation.controller;
 
 import com.blackcompany.eeos.auth.presentation.support.Member;
-import com.blackcompany.eeos.comment.application.dto.*;
+import com.blackcompany.eeos.comment.application.dto.CommandCommentResponse;
+import com.blackcompany.eeos.comment.application.dto.CreateCommentRequest;
+import com.blackcompany.eeos.comment.application.dto.QueryCommentResponse;
+import com.blackcompany.eeos.comment.application.dto.QueryCommentsResponse;
+import com.blackcompany.eeos.comment.application.dto.UpdateCommentRequest;
 import com.blackcompany.eeos.comment.application.dto.converter.CommentResponseConverter;
 import com.blackcompany.eeos.comment.application.model.CommentModel;
 import com.blackcompany.eeos.comment.application.usecase.CreateCommentUsecase;
@@ -9,15 +13,23 @@ import com.blackcompany.eeos.comment.application.usecase.DeleteCommentUsecase;
 import com.blackcompany.eeos.comment.application.usecase.GetCommentUsecase;
 import com.blackcompany.eeos.comment.application.usecase.UpdateCommentUsecase;
 import com.blackcompany.eeos.comment.presentation.docs.CommentApi;
-import com.blackcompany.eeos.common.presentation.respnose.ApiResponse;
-import com.blackcompany.eeos.common.presentation.respnose.ApiResponseBody.*;
-import com.blackcompany.eeos.common.presentation.respnose.ApiResponseGenerator;
-import com.blackcompany.eeos.common.presentation.respnose.MessageCode;
+import com.blackcompany.eeos.common.presentation.response.ApiResponse;
+import com.blackcompany.eeos.common.presentation.response.ApiResponseBody.SuccessBody;
+import com.blackcompany.eeos.common.presentation.response.ApiResponseGenerator;
+import com.blackcompany.eeos.common.presentation.response.MessageCode;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("api/comments")

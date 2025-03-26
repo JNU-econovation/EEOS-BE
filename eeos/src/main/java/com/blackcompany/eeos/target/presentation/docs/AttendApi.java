@@ -1,15 +1,25 @@
 package com.blackcompany.eeos.target.presentation.docs;
 
-import com.blackcompany.eeos.common.presentation.respnose.ApiResponse;
-import com.blackcompany.eeos.common.presentation.respnose.ApiResponseBody.SuccessBody;
+import com.blackcompany.eeos.common.presentation.response.ApiResponse;
+import com.blackcompany.eeos.common.presentation.response.ApiResponseBody.SuccessBody;
+import com.blackcompany.eeos.common.presentation.response.PageResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfoResponse;
+import com.blackcompany.eeos.target.application.dto.AttendInfoWithProgramResponse;
+import com.blackcompany.eeos.target.application.dto.AttendInfosSearchRequest;
+import com.blackcompany.eeos.target.application.dto.AttendPenaltyRankingResponse;
+import com.blackcompany.eeos.target.application.dto.AttendPenaltyResponse;
+import com.blackcompany.eeos.target.application.dto.AttendSummaryInfoResponse;
 import com.blackcompany.eeos.target.application.dto.ChangeAttendStatusResponse;
+import com.blackcompany.eeos.target.application.dto.PenaltyInfoRequest;
 import com.blackcompany.eeos.target.application.dto.QueryAttendActiveStatusResponse;
 import com.blackcompany.eeos.target.application.dto.QueryAttendStatusResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.util.List;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @Tag(name = "행사 참여", description = "행사 참여 관련 API")
 public interface AttendApi {
@@ -42,4 +52,25 @@ public interface AttendApi {
 					"PathVariable에 담긴 프로그램 정보와 RequestParam에 담긴 activeStatus를 이용해 프로그램의 참석정보를 회원상태 기준으로 불러온다.")
 	ApiResponse<SuccessBody<QueryAttendActiveStatusResponse>>
 			getAttendAllInfoByProgramSortActiveStatus(Long programId, String activeStatus);
+
+	@Operation(
+			summary = "파이어핑거 top10 회원 조회",
+			description = "PathVariable에 담긴 프로그램를 이용해 특정 프로그램에서 출석을 빠르게 한 사용자의 정보를 가져온다.")
+	ApiResponse<SuccessBody<QueryAttendStatusResponse>> getAttendInfoByTop5(Long programId);
+
+	@Operation(summary = "나의 출석 현황 정보들 조회", description = "나의 출석 현황 정보들을 가져온다.")
+	@GetMapping("/api/attend/programs")
+	ApiResponse<SuccessBody<PageResponse<AttendInfoWithProgramResponse>>> getMyAttendInfosWithProgram(
+			@Valid AttendInfosSearchRequest request);
+
+	@Operation(summary = "벌점 순위 Top 10 조회", description = "전체 회원 중 벌점을 기준으로 Top 10을 조회합니다.")
+	ApiResponse<SuccessBody<PageResponse<AttendPenaltyResponse>>> getPenaltyInfo(
+			@ParameterObject PenaltyInfoRequest request);
+
+	@Operation(summary = "나의 출석 요약 정보 조회", description = "자신의 출석 요약 정보 (참석 , 지각, 불참, 벌점 통계)를 가져온다.")
+	ApiResponse<SuccessBody<AttendSummaryInfoResponse>> getMyAttendSummaryInfo(
+			Long startDate, Long endDate);
+
+	@Operation(summary = "나의 벌점 순위 조회", description = "나의 벌점 순위를 조회합니다.")
+	ApiResponse<SuccessBody<AttendPenaltyRankingResponse>> getMyPenaltyRankingInfo(int rankOffset);
 }

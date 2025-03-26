@@ -2,8 +2,9 @@ package com.blackcompany.eeos.auth.presentation.interceptor;
 
 import com.blackcompany.eeos.auth.application.domain.token.TokenResolver;
 import com.blackcompany.eeos.auth.presentation.support.TokenExtractor;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.blackcompany.eeos.common.utils.RequestScope;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -30,8 +31,17 @@ public class AuthInterceptor implements HandlerInterceptor {
 		}
 
 		String token = tokenExtractor.extract(request);
-		tokenResolver.getUserDataByAccessToken(token);
+		Long memberId = tokenResolver.getUserDataByAccessToken(token);
+		RequestScope.setMemberId(memberId);
+
 		return true;
+	}
+
+	@Override
+	public void afterCompletion(
+			HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
+			throws Exception {
+		RequestScope.clear();
 	}
 
 	public static class AuthInterceptorBuilder {

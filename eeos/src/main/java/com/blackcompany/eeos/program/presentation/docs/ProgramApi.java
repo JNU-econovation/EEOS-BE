@@ -1,12 +1,19 @@
 package com.blackcompany.eeos.program.presentation.docs;
 
-import com.blackcompany.eeos.common.presentation.respnose.ApiResponse;
-import com.blackcompany.eeos.common.presentation.respnose.ApiResponseBody.SuccessBody;
-import com.blackcompany.eeos.program.application.dto.*;
+import com.blackcompany.eeos.common.presentation.response.ApiResponse;
+import com.blackcompany.eeos.common.presentation.response.ApiResponseBody.SuccessBody;
+import com.blackcompany.eeos.common.presentation.response.PageResponse;
+import com.blackcompany.eeos.program.application.dto.CommandProgramResponse;
+import com.blackcompany.eeos.program.application.dto.CreateProgramRequest;
+import com.blackcompany.eeos.program.application.dto.ProgramSlackNotificationRequest;
+import com.blackcompany.eeos.program.application.dto.QueryAccessRightResponse;
+import com.blackcompany.eeos.program.application.dto.QueryProgramResponse;
+import com.blackcompany.eeos.program.application.dto.QueryProgramsResponse;
+import com.blackcompany.eeos.program.application.dto.UpdateProgramRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 @Tag(name = "행사", description = "행사에 관한 API")
 public interface ProgramApi {

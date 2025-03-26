@@ -3,15 +3,15 @@ package com.blackcompany.eeos.member.persistence;
 import com.blackcompany.eeos.auth.application.domain.OauthServerType;
 import com.blackcompany.eeos.common.persistence.BaseEntity;
 import com.blackcompany.eeos.member.application.model.ActiveStatus;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Index;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -55,5 +55,5 @@ public class MemberEntity extends BaseEntity {
 
 	@Column(name = ENTITY_PREFIX + "_is_admin", nullable = false)
 	@Builder.Default
-	private boolean isAdmin = false;
+	private boolean isAdmin = false; // TODO : 여러 ROEL 커버 가능하도록
 }

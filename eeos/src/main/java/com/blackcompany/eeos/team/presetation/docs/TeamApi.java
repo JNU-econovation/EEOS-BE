@@ -1,14 +1,14 @@
 package com.blackcompany.eeos.team.presetation.docs;
 
-import com.blackcompany.eeos.common.presentation.respnose.ApiResponse;
-import com.blackcompany.eeos.common.presentation.respnose.ApiResponseBody.SuccessBody;
+import com.blackcompany.eeos.common.presentation.response.ApiResponse;
+import com.blackcompany.eeos.common.presentation.response.ApiResponseBody.SuccessBody;
 import com.blackcompany.eeos.team.application.dto.CreateTeamRequest;
 import com.blackcompany.eeos.team.application.dto.CreateTeamResponse;
 import com.blackcompany.eeos.team.application.dto.QueryTeamsResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 @Tag(name = "팀", description = "팀 관한 API")
 public interface TeamApi {

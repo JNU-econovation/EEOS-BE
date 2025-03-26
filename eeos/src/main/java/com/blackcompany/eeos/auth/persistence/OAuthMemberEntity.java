@@ -1,13 +1,18 @@
 package com.blackcompany.eeos.auth.persistence;
 
 import com.blackcompany.eeos.common.persistence.BaseEntity;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 @Getter
@@ -30,5 +35,5 @@ public class OAuthMemberEntity extends BaseEntity {
 	private String oauthId = "NONE";
 
 	@Column(name = ENTITY_PREFIX + "_member_id", nullable = false)
-	private Long memberId;
+	private Long memberId; // TODO : 인덱스 추가
 }

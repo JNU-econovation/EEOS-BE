@@ -1,39 +1,63 @@
 package com.blackcompany.eeos.target.application.service;
 
+import com.blackcompany.eeos.common.presentation.response.PageResponse;
+import com.blackcompany.eeos.common.utils.RequestScope;
 import com.blackcompany.eeos.member.application.model.ActiveStatus;
 import com.blackcompany.eeos.member.application.model.MemberModel;
 import com.blackcompany.eeos.member.application.model.converter.MemberEntityConverter;
+import com.blackcompany.eeos.member.application.repository.MemberRepository;
 import com.blackcompany.eeos.member.application.service.QueryMemberService;
-import com.blackcompany.eeos.member.persistence.MemberRepository;
 import com.blackcompany.eeos.program.application.exception.NotFoundProgramException;
 import com.blackcompany.eeos.program.application.model.ProgramAttendMode;
 import com.blackcompany.eeos.program.application.model.ProgramModel;
 import com.blackcompany.eeos.program.application.model.converter.ProgramEntityConverter;
+import com.blackcompany.eeos.program.application.service.ProgramDateRangeService;
+import com.blackcompany.eeos.program.application.support.CalendarProvider;
 import com.blackcompany.eeos.program.persistence.ProgramRepository;
 import com.blackcompany.eeos.target.application.dto.AttendInfoActiveStatusResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfoResponse;
+import com.blackcompany.eeos.target.application.dto.AttendInfoWithProgramResponse;
+import com.blackcompany.eeos.target.application.dto.AttendPenaltyRankingResponse;
+import com.blackcompany.eeos.target.application.dto.AttendPenaltyResponse;
+import com.blackcompany.eeos.target.application.dto.AttendSummaryInfoResponse;
 import com.blackcompany.eeos.target.application.dto.ChangeAttendStatusResponse;
 import com.blackcompany.eeos.target.application.dto.QueryAttendActiveStatusResponse;
 import com.blackcompany.eeos.target.application.dto.QueryAttendStatusResponse;
 import com.blackcompany.eeos.target.application.dto.converter.AttendInfoActiveStatusConverter;
 import com.blackcompany.eeos.target.application.dto.converter.AttendInfoConverter;
+import com.blackcompany.eeos.target.application.dto.converter.AttendInfoWithProgramConverter;
+import com.blackcompany.eeos.target.application.dto.converter.AttendPenaltyResponseConverter;
 import com.blackcompany.eeos.target.application.dto.converter.ChangeAttendStatusConverter;
 import com.blackcompany.eeos.target.application.dto.converter.QueryAttendActiveStatusConverter;
 import com.blackcompany.eeos.target.application.dto.converter.QueryAttendStatusResponseConverter;
+import com.blackcompany.eeos.target.application.exception.DeniedChangeAttendException;
+import com.blackcompany.eeos.target.application.exception.DeniedSaveAttendException;
 import com.blackcompany.eeos.target.application.exception.NotFoundAttendException;
 import com.blackcompany.eeos.target.application.exception.NotStartAttendException;
 import com.blackcompany.eeos.target.application.model.AttendModel;
 import com.blackcompany.eeos.target.application.model.AttendStatus;
 import com.blackcompany.eeos.target.application.model.converter.AttendEntityConverter;
+import com.blackcompany.eeos.target.application.support.AttendCountCalculate;
 import com.blackcompany.eeos.target.application.usecase.ChangeAttendStatusUsecase;
 import com.blackcompany.eeos.target.application.usecase.GetAttendAllInfoSortActiveStatusUsecase;
 import com.blackcompany.eeos.target.application.usecase.GetAttendStatusUsecase;
 import com.blackcompany.eeos.target.application.usecase.GetAttendantInfoUsecase;
 import com.blackcompany.eeos.target.persistence.AttendEntity;
 import com.blackcompany.eeos.target.persistence.AttendRepository;
+import com.blackcompany.eeos.target.persistence.PenaltyPointRepository;
+import com.blackcompany.eeos.target.persistence.ProgramRankCounterEntity;
+import com.blackcompany.eeos.target.persistence.ProgramRankCounterRepository;
+import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,8 +81,16 @@ public class AttendService
 	private final QueryAttendStatusResponseConverter attendStatusResponseConverter;
 	private final AttendInfoActiveStatusConverter attendInfoActiveStatusConverter;
 	private final QueryAttendActiveStatusConverter queryAttendActiveStatusConverter;
+	private final AttendInfoWithProgramConverter attendInfoWithProgramConverter;
+	private final AttendPenaltyResponseConverter penaltyResponseConverter;
+	private final ProgramDateRangeService programDateRangeService;
 	private final ProgramRepository programRepository;
 	private final ProgramEntityConverter programEntityConverter;
+	private final AttendCountCalculate attendCountCalculate;
+	private final AttendPenaltyResponseConverter attendPenaltyResponseConverter;
+	private final ProgramRankCounterRepository programRankCounterRepository;
+	private final CalendarProvider calendarProvider;
+	private final PenaltyPointRepository penaltyPointRepository;
 
 	@Override
 	public List<AttendInfoResponse> findAttendInfo(final Long programId) {
@@ -85,12 +117,41 @@ public class AttendService
 	}
 
 	@Transactional
+	public Long getNextRank(Long programId) {
+		ProgramRankCounterEntity counter =
+				programRankCounterRepository
+						.findByProgramIdForUpdate(programId)
+						.orElseGet(() -> createNewCounter(programId));
+
+		Long currentRank = counter.getNextRank();
+		counter.incrementNextRank();
+		return currentRank;
+	}
+
+	private ProgramRankCounterEntity createNewCounter(Long programId) {
+		ProgramRankCounterEntity newCounter =
+				ProgramRankCounterEntity.builder()
+						.programId(programId)
+						.nextRank(1L) // 초기값 1로 설정
+						.build();
+		return programRankCounterRepository.save(newCounter);
+	}
+
+	@Transactional
 	@Override
 	public ChangeAttendStatusResponse changeStatus(final Long memberId, final Long programId) {
 		AttendModel model = getAttend(memberId, programId);
+
 		ProgramModel program = findProgram(programId);
 
+		validateAttend(program, model);
+
 		AttendModel changedModel = model.changeStatus(program.getAttendMode().getMode());
+
+		if (changedModel.getStatus().equals("attend")) {
+			Long rank = getNextRank(programId);
+			changedModel.setRank(rank);
+		}
 
 		AttendEntity updated = attendRepository.save(attendEntityConverter.toEntity(changedModel));
 
@@ -124,8 +185,176 @@ public class AttendService
 		return queryAttendActiveStatusConverter.of(response);
 	}
 
-	private void validateAttend(ProgramModel model) {
-		if (model.getAttendMode().equals(ProgramAttendMode.END)) throw new NotStartAttendException();
+	@Override
+	public QueryAttendStatusResponse findFireFingerMembers(final Long programId) {
+		validateExistsProgram(programId);
+
+		List<AttendModel> attendModels = findTop5Attendants(programId);
+		List<MemberModel> members = findMembersInOrder(attendModels);
+
+		List<AttendInfoResponse> response =
+				members.stream()
+						.map(member -> combine(member, attendModels, programId))
+						.collect(Collectors.toList());
+
+		return attendStatusResponseConverter.of(response);
+	}
+
+	private List<AttendModel> findTop5Attendants(Long programId) {
+		return attendRepository
+				.findTop5ByProgramIdAndStatusOrderByRankAsc(programId, AttendStatus.ATTEND)
+				.stream()
+				.map(attendEntityConverter::from)
+				.collect(Collectors.toList());
+	}
+
+	public PageResponse<AttendInfoWithProgramResponse> findMyAttendInfo(
+			final int page, final int size, final long startDate, final long endDate) {
+
+		Long memberId = RequestScope.getMemberId();
+
+		// 필요한 정보 : ProgramModel , AttendModel, MemberId
+		Page<ProgramModel> pages =
+				programDateRangeService.getPrograms(startDate, endDate, size, page - 1);
+
+		Page<AttendInfoWithProgramResponse> responses;
+
+		if (!pages.isEmpty()) {
+			responses =
+					new PageImpl<>(
+							pages
+									.map(
+											program -> {
+												AttendModel attendModel =
+														attendRepository
+																.findByProgramIdAndMemberId(program.getId(), memberId)
+																.map(attendEntityConverter::from)
+																.orElse(null);
+												if (attendModel == null) return null;
+												return attendInfoWithProgramConverter.from(attendModel, program);
+											})
+									.filter(Objects::nonNull)
+									.stream()
+									.toList(),
+							pages.getPageable(),
+							pages.getTotalElements());
+
+			return new PageResponse<>(responses);
+		}
+
+		return new PageResponse<>(Page.empty(PageRequest.of(page - 1, size)));
+	}
+
+	@Override
+	public AttendSummaryInfoResponse getMyAttendSummary(Long startDate, Long endDate) {
+		Long memberId = RequestScope.getMemberId();
+
+		if (startDate == null) startDate = calendarProvider.getCalendar().getStartDate().getTime();
+		if (endDate == null) endDate = calendarProvider.getCalendar().getEndDate().getTime();
+
+		List<ProgramModel> programs = programDateRangeService.getPrograms(startDate, endDate);
+
+		List<AttendModel> attends = findMyAttends(programs);
+
+		Long attendCount = attendCountCalculate.countByStatus(AttendStatus.ATTEND.getStatus(), attends);
+		Long absentCount = attendCountCalculate.countByStatus(AttendStatus.ABSENT.getStatus(), attends);
+		Long lateCount = attendCountCalculate.countByStatus(AttendStatus.LATE.getStatus(), attends);
+		Long penaltyPoint = attendCountCalculate.penaltyPoint(attends);
+
+		return new AttendSummaryInfoResponse(
+				memberId, attendCount, lateCount, absentCount, penaltyPoint);
+	}
+
+	@Override
+	public PageResponse<AttendPenaltyResponse> getPenaltyInfos(
+			int page, int size, String sortType, Long startDate, Long endDate) {
+
+		Sort.Order order;
+
+		if (sortType.equals("asc")) {
+			order = Sort.Order.asc("totalScore");
+		} else {
+			order = Sort.Order.desc("totalScore");
+		}
+
+		Pageable pageable = PageRequest.of(page - 1, size, Sort.by(order));
+
+		Timestamp startTimestamp =
+				startDate == null
+						? calendarProvider.getCalendar().getStartDate()
+						: new Timestamp(startDate);
+		Timestamp endTimestamp =
+				endDate == null ? calendarProvider.getCalendar().getEndDate() : new Timestamp(endDate);
+
+		Page<Object[]> pages =
+				penaltyPointRepository.findByPenaltyPointSum(startTimestamp, endTimestamp, pageable);
+
+		List<Long> topMemberIds = pages.stream().map(o -> (Long) o[0]).toList();
+
+		if (!topMemberIds.isEmpty()) {
+			Map<Long, Long> memberIdToPenaltyPoint =
+					topMemberIds.stream()
+							.collect(
+									Collectors.toMap(
+											id -> id,
+											id ->
+													penaltyPointRepository.findTotalPenaltyScoreByMemberId(
+															startTimestamp, endTimestamp, id)));
+
+			List<MemberModel> members = memberRepository.findMembersByIdsInOrder(topMemberIds);
+
+			List<AttendPenaltyResponse> responses =
+					members.stream()
+							.map(
+									member -> {
+										Long penaltyPoint = memberIdToPenaltyPoint.get(member.getId());
+										Long ranking =
+												penaltyPointRepository.countByPenaltyPointGreaterThan(
+														startTimestamp, endTimestamp, penaltyPoint);
+										return attendPenaltyResponseConverter.from(member, penaltyPoint, ranking + 1);
+									})
+							.toList();
+
+			return new PageResponse<>(
+					new PageImpl<AttendPenaltyResponse>(responses, pageable, pages.getTotalElements()));
+		}
+
+		return new PageResponse<>(Page.empty(PageRequest.of(page - 1, size)));
+	}
+
+	@Override
+	public AttendPenaltyRankingResponse getMyPenaltyRanking(int rankOffset) {
+
+		Long memberId = RequestScope.getMemberId();
+
+		Timestamp startDate = calendarProvider.getCalendar().getStartDate();
+		Timestamp endDate = calendarProvider.getCalendar().getEndDate();
+
+		Long myPenaltyPoint =
+				penaltyPointRepository.findTotalPenaltyScoreByMemberId(startDate, endDate, memberId);
+		if (myPenaltyPoint == null) myPenaltyPoint = 0L;
+		long myPenaltyRank =
+				penaltyPointRepository.countByPenaltyPointGreaterThan(startDate, endDate, myPenaltyPoint)
+						+ 1;
+
+		return new AttendPenaltyRankingResponse(myPenaltyRank < rankOffset, (int) myPenaltyRank);
+	}
+
+	private List<AttendModel> findMyAttends(List<ProgramModel> programs) {
+		Long memberId = RequestScope.getMemberId();
+		return attendRepository
+				.findByProgramIdsAndMemberId(
+						programs.stream().map(ProgramModel::getId).collect(Collectors.toList()), memberId)
+				.stream()
+				.map(attendEntityConverter::from)
+				.toList();
+	}
+
+	private void validateAttend(ProgramModel programModel, AttendModel attendModel) {
+		if (programModel.getAttendMode().equals(ProgramAttendMode.END))
+			throw new NotStartAttendException();
+		if (attendModel.isAttended()) throw new DeniedChangeAttendException();
+		if (!attendModel.isRelated()) throw new DeniedSaveAttendException();
 	}
 
 	private ProgramModel findProgram(final Long programId) {
@@ -178,9 +407,14 @@ public class AttendService
 		List<Long> memberIds =
 				attends.stream().map(AttendModel::getMemberId).collect(Collectors.toList());
 
-		return memberRepository.findMembersByIds(memberIds).stream()
-				.map(memberEntityConverter::from)
-				.collect(Collectors.toList());
+		return memberRepository.findMembersByIds(memberIds);
+	}
+
+	private List<MemberModel> findMembersInOrder(List<AttendModel> attends) {
+		List<Long> memberIds =
+				attends.stream().map(AttendModel::getMemberId).collect(Collectors.toList());
+
+		return memberRepository.findMembersByIdsInOrder(memberIds);
 	}
 
 	private List<AttendModel> findAttendByAttendStatus(final Long programId, final String status) {
@@ -198,14 +432,10 @@ public class AttendService
 
 	private List<MemberModel> findMembersByActiveStatus(final String activeStatus) {
 		if (ActiveStatus.isSame(activeStatus, ActiveStatus.ALL)) {
-			return memberRepository.findMembers().stream()
-					.map(memberEntityConverter::from)
-					.collect(Collectors.toList());
+			return memberRepository.findMembers();
 		}
 
-		return memberRepository.findMembersByActiveStatus(ActiveStatus.find(activeStatus)).stream()
-				.map(memberEntityConverter::from)
-				.collect(Collectors.toList());
+		return memberRepository.findMembersByActiveStatus(ActiveStatus.find(activeStatus));
 	}
 
 	private void validateExistsProgram(Long programId) {

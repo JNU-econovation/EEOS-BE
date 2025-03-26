@@ -3,19 +3,16 @@ package com.blackcompany.eeos.member.application.service;
 import com.blackcompany.eeos.auth.application.domain.converter.OauthMemberEntityConverter;
 import com.blackcompany.eeos.auth.application.model.AccountEntityConverter;
 import com.blackcompany.eeos.auth.application.model.AccountModel;
+import com.blackcompany.eeos.auth.application.repository.OAuthMemberRepository;
 import com.blackcompany.eeos.auth.persistence.AccountEntity;
 import com.blackcompany.eeos.auth.persistence.AccountRepository;
-import com.blackcompany.eeos.auth.persistence.OAuthMemberEntity;
-import com.blackcompany.eeos.auth.persistence.OAuthMemberRepository;
 import com.blackcompany.eeos.member.application.model.AdminInfo;
 import com.blackcompany.eeos.member.application.model.MemberModel;
 import com.blackcompany.eeos.member.application.model.converter.MemberEntityConverter;
+import com.blackcompany.eeos.member.application.repository.MemberRepository;
 import com.blackcompany.eeos.member.application.usecase.CreateAdminMemberUsecase;
-import com.blackcompany.eeos.member.persistence.MemberEntity;
-import com.blackcompany.eeos.member.persistence.MemberRepository;
+import jakarta.annotation.PostConstruct;
 import java.util.List;
-import java.util.stream.Collectors;
-import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -45,36 +42,23 @@ public class CreateAdminMemberService implements CreateAdminMemberUsecase {
 	@Transactional
 	@Override
 	public Long create() {
-		MemberEntity savedMember = saveMember(memberEntityConverter.toEntity(createMember()));
-		AccountEntity savedAccount =
-				saveAccount(accountEntityConverter.toEntity(createAccount(savedMember.getId())));
-		OAuthMemberEntity savedOauthMember =
-				saveOauthMember(oauthMemberEntityConverter.toEntity(savedMember.getId()));
+		MemberModel savedMember = memberRepository.save(createMember());
+
+		saveAccount(accountEntityConverter.toEntity(createAccount(savedMember.getId())));
+
 		return savedMember.getId();
 	}
 
 	@Override
 	public boolean isExist() {
-		List<MemberEntity> members =
-				memberRepository.findMembers().stream()
-						.filter(MemberEntity::isAdmin)
-						.collect(Collectors.toList());
+		List<MemberModel> members =
+				memberRepository.findMembers().stream().filter(MemberModel::isAdmin).toList();
 
-		if (!findAdminAccount() || !members.isEmpty() || !findAdminOauthMember()) return true;
-
-		return false;
-	}
-
-	private MemberEntity saveMember(MemberEntity entity) {
-		return memberRepository.save(entity);
+		return !members.isEmpty() || !findAdminAccount() || !findAdminOauthMember();
 	}
 
 	private AccountEntity saveAccount(AccountEntity entity) {
 		return accountRepository.save(entity);
-	}
-
-	private OAuthMemberEntity saveOauthMember(OAuthMemberEntity entity) {
-		return oAuthMemberRepository.save(entity);
 	}
 
 	private MemberModel createMember() {

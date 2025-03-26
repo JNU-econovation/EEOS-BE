@@ -1,7 +1,7 @@
 package com.blackcompany.eeos.teamBuilding.application.service;
 
-import com.blackcompany.eeos.member.persistence.MemberEntity;
-import com.blackcompany.eeos.member.persistence.MemberRepository;
+import com.blackcompany.eeos.member.application.model.MemberModel;
+import com.blackcompany.eeos.member.application.repository.MemberRepository;
 import com.blackcompany.eeos.target.application.model.TeamBuildingTargetModel;
 import com.blackcompany.eeos.target.application.service.QueryTeamBuildingTargetService;
 import com.blackcompany.eeos.teamBuilding.application.dto.CreateTeamBuildingRequest;
@@ -115,7 +115,7 @@ public class TeamBuildingService
 						.map(TeamBuildingResultEntity::getMemberIds)
 						.collect(Collectors.toList());
 
-		List<List<MemberEntity>> members = getMembers(memberIds);
+		List<List<MemberModel>> members = getMembers(memberIds);
 
 		return responseConverter.from(
 				model.getAccessRight(memberId).getAccessRight(), combines(members, memberIds));
@@ -158,13 +158,13 @@ public class TeamBuildingService
 	}
 
 	private List<List<EachMemberResponse>> combines(
-			List<List<MemberEntity>> members, List<List<Long>> memberIds) {
+			List<List<MemberModel>> members, List<List<Long>> memberIds) {
 		return members.stream()
 				.map(memberGroup -> combine(memberGroup, memberIds.get(members.indexOf(memberGroup))))
 				.collect(Collectors.toList());
 	}
 
-	private List<EachMemberResponse> combine(List<MemberEntity> members, List<Long> memberIds) {
+	private List<EachMemberResponse> combine(List<MemberModel> members, List<Long> memberIds) {
 		return members.stream()
 				.filter(member -> memberIds.contains(member.getId()))
 				.map(member -> combine(member.getName(), member.getId()))
@@ -201,7 +201,7 @@ public class TeamBuildingService
 		teamBuildingRepository.save(entityConverter.toEntity(updateStatus));
 	}
 
-	private List<List<MemberEntity>> getMembers(List<List<Long>> memberIds) {
+	private List<List<MemberModel>> getMembers(List<List<Long>> memberIds) {
 		return memberIds.stream().map(memberRepository::findMembersByIds).collect(Collectors.toList());
 	}
 

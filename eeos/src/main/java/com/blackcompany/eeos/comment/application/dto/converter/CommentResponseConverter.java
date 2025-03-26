@@ -6,8 +6,8 @@ import com.blackcompany.eeos.comment.application.dto.QueryCommentResponse;
 import com.blackcompany.eeos.comment.application.dto.QueryCommentsResponse;
 import com.blackcompany.eeos.comment.application.exception.NotConvertedCommentException;
 import com.blackcompany.eeos.comment.application.model.CommentModel;
-import com.blackcompany.eeos.member.application.exception.NotFoundMemberException;
-import com.blackcompany.eeos.member.persistence.MemberRepository;
+import com.blackcompany.eeos.comment.application.model.CommentType;
+import com.blackcompany.eeos.member.application.repository.MemberRepository;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 public class CommentResponseConverter {
 
 	private final MemberRepository memberRepository;
+	private final String ANONYMOUS_USER_NAME = "익명";
 
 	public CommandCommentResponse from(CommentModel source) {
 		return CommandCommentResponse.builder().commentId(source.getId()).build();
@@ -35,10 +36,10 @@ public class CommentResponseConverter {
 				answers.stream().map(e -> from(e, memberId)).collect(Collectors.toList());
 
 		return QueryCommentResponse.builder()
-				.time(getCreateTimeString(source))
+				.time(getCreateTimeLong(source))
 				.content(source.getContent())
 				.teamId(source.getPresentingTeam())
-				.writer(findMemberName(source.getWriter()))
+				.writer(findMemberName(source.getWriter(), source))
 				.commentId(source.getId())
 				.accessRight(source.getAccessRight(memberId))
 				.answers(answersResponse)
@@ -51,15 +52,18 @@ public class CommentResponseConverter {
 				QueryAnswerResponse.builder()
 						.commentId(source.getId())
 						.content(source.getContent())
-						.writer(findMemberName(source.getWriter()))
-						.time(getCreateTimeString(source))
+						.writer(findMemberName(source.getWriter(), source))
+						.time(getCreateTimeLong(source))
 						.accessRight(source.getAccessRight(memberId))
 						.build();
 		return response;
 	}
 
-	private String findMemberName(Long memberId) {
-		return memberRepository.findById(memberId).orElseThrow(NotFoundMemberException::new).getName();
+	private String findMemberName(Long memberId, CommentModel source) {
+		if (source.getCommentType().equals(CommentType.ANONYMOUS)) {
+			return ANONYMOUS_USER_NAME;
+		}
+		return memberRepository.findById(memberId).getName();
 	}
 
 	private String getCreateTimeString(CommentModel model) {
@@ -67,5 +71,9 @@ public class CommentResponseConverter {
 				.getCreatedDate()
 				.toLocalDateTime()
 				.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH시 mm분 ss초"));
+	}
+
+	private Long getCreateTimeLong(CommentModel model) {
+		return model.getCreatedDate().getTime();
 	}
 }

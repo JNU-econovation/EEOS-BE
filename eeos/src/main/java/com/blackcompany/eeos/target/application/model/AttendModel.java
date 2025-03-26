@@ -2,8 +2,6 @@ package com.blackcompany.eeos.target.application.model;
 
 import com.blackcompany.eeos.common.application.model.MemberIdModel;
 import com.blackcompany.eeos.common.support.AbstractModel;
-import com.blackcompany.eeos.target.application.exception.DeniedChangeAttendException;
-import com.blackcompany.eeos.target.application.exception.DeniedSaveAttendException;
 import com.blackcompany.eeos.target.application.exception.NotSameBeforeAttendStatusException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,6 +22,10 @@ public class AttendModel implements AbstractModel, MemberIdModel {
 	private Long programId;
 	private AttendStatus status;
 
+	private Long rank;
+
+	private Integer penaltyScore;
+
 	public AttendModel changeStatus(String afterStatus) {
 		validateChange(afterStatus);
 		this.status = AttendStatus.find(afterStatus);
@@ -33,6 +35,15 @@ public class AttendModel implements AbstractModel, MemberIdModel {
 
 	public String getStatus() {
 		return status.getStatus();
+	}
+
+	public boolean isAttended() {
+		return (!this.status.equals(AttendStatus.NONRESPONSE)
+				&& !this.status.equals(AttendStatus.NONRELATED));
+	}
+
+	public boolean isRelated() {
+		return !this.status.equals(AttendStatus.NONRELATED);
 	}
 
 	public static AttendModel of() {
@@ -52,7 +63,6 @@ public class AttendModel implements AbstractModel, MemberIdModel {
 	}
 
 	private void validateChange(String afterStatus) {
-		canChange();
 		isSameBeforeStatus(afterStatus);
 	}
 
@@ -60,20 +70,14 @@ public class AttendModel implements AbstractModel, MemberIdModel {
 		isSameBeforeStatus(beforeStatus);
 	}
 
-	private void canChange() {
-		if (AttendStatus.isSame(status.getStatus(), AttendStatus.NONRELATED)) {
-			throw new DeniedSaveAttendException();
-		}
-
-		if (!AttendStatus.isSame(status.getStatus(), AttendStatus.NONRESPONSE)) {
-			throw new DeniedChangeAttendException();
-		}
-	}
-
 	private void isSameBeforeStatus(String status) {
 		if (!AttendStatus.isSame(status, this.status)) {
 			return;
 		}
 		throw new NotSameBeforeAttendStatusException(memberId);
+	}
+
+	public void setRank(Long rank) {
+		this.rank = rank;
 	}
 }

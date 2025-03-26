@@ -1,7 +1,11 @@
 package com.blackcompany.eeos.team.application.model;
 
 import com.blackcompany.eeos.common.support.AbstractModel;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter

@@ -1,11 +1,13 @@
 package com.blackcompany.eeos.program.infra.api.slack.chat.model.converter;
 
-import com.blackcompany.eeos.member.application.exception.NotFoundMemberException;
-import com.blackcompany.eeos.member.persistence.MemberRepository;
+import com.blackcompany.eeos.member.application.repository.MemberRepository;
 import com.blackcompany.eeos.program.application.model.ProgramNotificationModel;
-import com.blackcompany.eeos.program.infra.api.slack.chat.model.*;
+import com.blackcompany.eeos.program.infra.api.slack.chat.model.BlockTypes;
+import com.blackcompany.eeos.program.infra.api.slack.chat.model.ChatPostModel;
 import com.blackcompany.eeos.program.infra.api.slack.chat.model.ChatPostModel.Block;
 import com.blackcompany.eeos.program.infra.api.slack.chat.model.ChatPostModel.Text;
+import com.blackcompany.eeos.program.infra.api.slack.chat.model.ProgramMessageAnnouncements;
+import com.blackcompany.eeos.program.infra.api.slack.chat.model.TextTypes;
 import java.time.format.DateTimeFormatter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -67,9 +69,6 @@ public class ChatPostModelConverter {
 	}
 
 	private String getUsername(ProgramNotificationModel model) {
-		return memberRepository
-				.findById(model.getWriter())
-				.map(m -> m.getName())
-				.orElseThrow(() -> new NotFoundMemberException());
+		return memberRepository.findById(model.getWriter()).getName();
 	}
 }

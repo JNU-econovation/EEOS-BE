@@ -94,7 +94,7 @@ public class TeamService implements CreateTeamUsecase, DeleteTeamUsecase, GetTea
 	}
 
 	private List<TeamModel> findTeams() {
-		return teamRepository.findAllTeamsByStatus().stream()
+		return teamRepository.findAllActiveTeams().stream()
 				.map(entityConverter::from)
 				.collect(Collectors.toList());
 	}

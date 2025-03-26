@@ -1,9 +1,9 @@
 package com.blackcompany.eeos.common.persistence;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.MappedSuperclass;
 import java.sql.Timestamp;
-import javax.persistence.Column;
-import javax.persistence.EntityListeners;
-import javax.persistence.MappedSuperclass;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,13 +1,18 @@
 package com.blackcompany.eeos.member.presentation.docs;
 
 import com.blackcompany.eeos.auth.presentation.support.Member;
-import com.blackcompany.eeos.common.presentation.respnose.ApiResponse;
-import com.blackcompany.eeos.common.presentation.respnose.ApiResponseBody.SuccessBody;
-import com.blackcompany.eeos.member.application.dto.*;
+import com.blackcompany.eeos.common.presentation.response.ApiResponse;
+import com.blackcompany.eeos.common.presentation.response.ApiResponseBody.SuccessBody;
+import com.blackcompany.eeos.member.application.dto.ChangeActiveStatusRequest;
+import com.blackcompany.eeos.member.application.dto.CommandMemberResponse;
+import com.blackcompany.eeos.member.application.dto.QueryMemberResponse;
+import com.blackcompany.eeos.member.application.dto.QueryMembersResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "멤버", description = "멤버에 관한 API")
 public interface MemberApi {

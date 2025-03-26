@@ -59,7 +59,7 @@ public class TokenResolver {
 
 	private Claims parseClaims(final String token, final SecretKey secretKey) {
 		try {
-			return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody();
+			return Jwts.parser().setSigningKey(secretKey).build().parseClaimsJws(token).getBody();
 		} catch (ExpiredJwtException e) {
 			throw new TokenExpiredException();
 		} catch (SignatureException e) {

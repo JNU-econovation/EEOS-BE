@@ -6,7 +6,10 @@ import com.blackcompany.eeos.comment.application.exception.UnExpectedNPException
 import com.blackcompany.eeos.common.support.AbstractModel;
 import com.blackcompany.eeos.program.application.model.AccessRights;
 import java.sql.Timestamp;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.ToString;
 
 @AllArgsConstructor
 @ToString
@@ -24,6 +27,7 @@ public class CommentModel implements AbstractModel {
 	private Timestamp updatedDate;
 	private String content;
 	private Long writer;
+	private CommentType commentType;
 
 	public String getAccessRight(Long memberId) {
 		if (isEdit(memberId)) return AccessRights.EDIT.getAccessRight();
@@ -56,7 +60,7 @@ public class CommentModel implements AbstractModel {
 	}
 
 	private boolean isExceedLengthLimit() {
-		return getContentLength() > contentLimitLength;
+		return false; // 코멘트 길이 수는 제한이 없다
 	}
 
 	private long getContentLength() {

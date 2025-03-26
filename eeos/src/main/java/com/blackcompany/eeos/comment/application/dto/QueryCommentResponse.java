@@ -17,7 +17,7 @@ public class QueryCommentResponse implements AbstractResponseDto {
 	private Long teamId;
 	private String writer;
 	private String accessRight;
-	private String time;
+	private Long time;
 	private String content;
 	private List<QueryAnswerResponse> answers;
 }

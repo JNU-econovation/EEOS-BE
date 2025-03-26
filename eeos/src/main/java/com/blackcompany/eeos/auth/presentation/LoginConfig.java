@@ -5,6 +5,7 @@ import com.blackcompany.eeos.auth.presentation.interceptor.AuthInterceptor;
 import com.blackcompany.eeos.auth.presentation.support.CookieTokenExtractor;
 import com.blackcompany.eeos.auth.presentation.support.HeaderTokenExtractor;
 import com.blackcompany.eeos.auth.presentation.support.MemberArgumentResolver;
+import com.blackcompany.eeos.auth.presentation.support.VerificationAuthorizationResolver;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +18,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @RequiredArgsConstructor
 public class LoginConfig implements WebMvcConfigurer {
 	private final MemberArgumentResolver memberArgumentResolver;
+	private final VerificationAuthorizationResolver verificationAuthorizationResolver;
 	private final TokenResolver tokenResolver;
+	private final HeaderTokenExtractor headerTokenExtractor;
+	private final CookieTokenExtractor cookieTokenExtractor;
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
@@ -25,22 +29,25 @@ public class LoginConfig implements WebMvcConfigurer {
 				.addInterceptor(memberAuthInterceptor())
 				.addPathPatterns("/api/**")
 				.excludePathPatterns(
-						"/api/guest/**", "/api/auth/**", "/api/health-check", "/api/programs/**");
-		registry
-				.addInterceptor(reissueAuthInterceptor())
-				.addPathPatterns("/auth/reissue")
-				.excludePathPatterns("/api/guest/**", "/api/auth/**", "/api/health-check");
+						"/api/guest/**",
+						"/api/auth/**",
+						"/api/health-check",
+						"/api/programs/**",
+						"/api/docs.html",
+						"/api/docs/**",
+						"/api/swagger-ui/**");
+		registry.addInterceptor(reissueAuthInterceptor()).addPathPatterns("/api/auth/reissue");
 	}
 
 	@Override
 	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-		resolvers.add(memberArgumentResolver);
+		resolvers.addAll(List.of(memberArgumentResolver, verificationAuthorizationResolver));
 	}
 
 	@Bean
 	public AuthInterceptor memberAuthInterceptor() {
 		return AuthInterceptor.builder()
-				.tokenExtractor(new HeaderTokenExtractor())
+				.tokenExtractor(headerTokenExtractor)
 				.tokenResolver(tokenResolver)
 				.build();
 	}
@@ -48,7 +55,7 @@ public class LoginConfig implements WebMvcConfigurer {
 	@Bean
 	public AuthInterceptor reissueAuthInterceptor() {
 		return AuthInterceptor.builder()
-				.tokenExtractor(new CookieTokenExtractor())
+				.tokenExtractor(cookieTokenExtractor)
 				.tokenResolver(tokenResolver)
 				.build();
 	}

@@ -1,20 +1,23 @@
 package com.blackcompany.eeos.auth.presentation.support;
 
 import com.blackcompany.eeos.auth.application.exception.NotFoundCookieException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Objects;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component("cookie")
+@RequiredArgsConstructor
 public class CookieTokenExtractor implements TokenExtractor {
+	private final CookieNameFormatter cookieNameFormatter;
 
 	@Override
 	public String extract(HttpServletRequest request) {
 		Cookie[] cookies = getCookies(request);
 
 		for (Cookie cookie : cookies) {
-			if (Objects.equals(AuthConstants.TOKEN_KEY, cookie.getName())) {
+			if (Objects.equals(cookieNameFormatter.format(AuthConstants.TOKEN_KEY), cookie.getName())) {
 				return getValue(cookie.getValue());
 			}
 		}
