@@ -2,7 +2,9 @@ package com.blackcompany.eeos.target.persistence;
 
 import com.blackcompany.eeos.target.application.model.AttendStatus;
 import jakarta.persistence.LockModeType;
+
 import java.sql.Timestamp;
+
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
@@ -65,4 +67,5 @@ public interface AttendRepository extends JpaRepository<AttendEntity, Long> {
 			@Param("startDate") Timestamp startDate,
 			@Param("endDate") Timestamp endDate,
 			Pageable pageable);
+
 }
