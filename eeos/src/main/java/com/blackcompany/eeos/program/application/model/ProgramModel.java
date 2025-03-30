@@ -40,7 +40,7 @@ public class ProgramModel implements AbstractModel {
 	private Long id;
 	private String title;
 	private String content;
-	private Timestamp programDate;
+	private Timestamp programDate; // programDate 는 행사 종료 시간
 	private String eventStatus;
 	private ProgramCategory programCategory;
 	private String githubUrl;
