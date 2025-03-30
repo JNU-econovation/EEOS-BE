@@ -2,14 +2,10 @@ package com.blackcompany.eeos.program.application.service;
 
 import com.blackcompany.eeos.common.utils.DateConverter;
 import com.blackcompany.eeos.program.application.model.ProgramModel;
-import com.blackcompany.eeos.program.application.usecase.ProgramQuitUsecase;
-import com.blackcompany.eeos.program.persistence.ProgramRepository;
 import com.blackcompany.eeos.program.application.support.DelayedQueue;
+import com.blackcompany.eeos.program.application.usecase.ProgramQuitUsecase;
 import com.blackcompany.eeos.target.application.event.EndAttendModeEvent;
-import java.time.Duration;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -48,13 +44,13 @@ public class ProgramQuitService implements ProgramQuitUsecase {
 		}
 	}
 
-	private Set<Long> getReadyTasks(){
+	private Set<Long> getReadyTasks() {
 		long programDate = DateConverter.toEpochSecond(LocalDate.now()).getTime();
 
-		Set<Long> jobs = delayedQueue.getReadyTasks(KEY, (double) programDate)
-				.stream()
-				.map(id -> (Long) id)
-				.collect(Collectors.toSet());
+		Set<Long> jobs =
+				delayedQueue.getReadyTasks(KEY, (double) programDate).stream()
+						.map(id -> (Long) id)
+						.collect(Collectors.toSet());
 		return jobs;
 	}
 }
