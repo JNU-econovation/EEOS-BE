@@ -10,8 +10,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.event.TransactionPhase;
-import org.springframework.transaction.event.TransactionalEventListener;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 @Component
@@ -23,14 +21,11 @@ public class EndAttendModeEventListener {
 	private final ProgramRepository programRepository;
 
 	@Async
-	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public void handleDeletedProgram(EndAttendModeEvent event) {
-		log.info(
-				"출석 체크 종료 Transaction committed: {}",
-				TransactionSynchronizationManager.isActualTransactionActive());
-
+	public void handle(EndAttendModeEvent event) {
+		log.info("출석 체크 자동 종료 시작");
 		for (Long id : event.getProgramIds()) {
+			log.info("출석 체크 자동 종료 (programId : {})", id);
 			programRepository.changeAttendMode(id, ProgramAttendMode.END);
 			attendRepository.updateAttendStatusByProgramId(
 					id, AttendStatus.NONRESPONSE, AttendStatus.ABSENT);
