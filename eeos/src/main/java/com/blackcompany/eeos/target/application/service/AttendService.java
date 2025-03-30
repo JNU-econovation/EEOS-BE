@@ -217,6 +217,8 @@ public class AttendService
 				attendRepository.findAllByMemberIdAndDateBetween(
 						memberId, new Timestamp(startDate), new Timestamp(endDate));
 
+		int totalSize = myAttend.size();
+
 		if (!myAttend.isEmpty()) {
 			// start, end
 			int start = (page - 1) * size;
@@ -249,7 +251,7 @@ public class AttendService
 									.filter(Objects::nonNull)
 									.toList(),
 							PageRequest.of(page - 1, size),
-							myAttend.size());
+							totalSize);
 
 			return new PageResponse<>(responses);
 		}
