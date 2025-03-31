@@ -49,7 +49,7 @@ public class ProgramQuitService implements ProgramQuitUsecase {
 
 		Set<Long> jobs =
 				delayedQueue.getReadyTasks(KEY, (double) programDate).stream()
-						.map(id -> (Long) id)
+						.map(id -> Long.parseLong(id.toString()))
 						.collect(Collectors.toSet());
 		return jobs;
 	}
