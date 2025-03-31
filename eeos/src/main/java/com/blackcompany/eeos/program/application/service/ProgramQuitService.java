@@ -56,7 +56,7 @@ public class ProgramQuitService implements ProgramQuitUsecase {
 	}
 
 	private Set<Long> doQuit(Set<Long> programIds) {
-		if(!programIds.isEmpty()) {
+		if (!programIds.isEmpty()) {
 			Set<Long> completedIds = new HashSet<>();
 
 			for (Long id : programIds) {
