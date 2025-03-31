@@ -56,17 +56,24 @@ public class ProgramQuitService implements ProgramQuitUsecase {
 	}
 
 	private Set<Long> doQuit(Set<Long> programIds) {
-		Set<Long> completedIds = new HashSet<>();
-		for (Long id : programIds) {
-			log.info("출석 체크 자동 종료 (programId : {})", id);
+		if(!programIds.isEmpty()) {
+			Set<Long> completedIds = new HashSet<>();
 
-			programRepository.changeAttendMode(id, ProgramAttendMode.END);
-			attendRepository.updateAttendStatusByProgramId(
-					id, AttendStatus.NONRESPONSE, AttendStatus.ABSENT);
+			for (Long id : programIds) {
+				log.info("출석 체크 자동 종료 (programId : {})", id);
 
-			completedIds.add(id);
+				programRepository.changeAttendMode(id, ProgramAttendMode.END);
+				attendRepository.updateAttendStatusByProgramId(
+						id, AttendStatus.NONRESPONSE, AttendStatus.ABSENT);
+
+				completedIds.add(id);
+			}
+
+			return completedIds;
 		}
-		return completedIds;
+
+		log.info("종료할 행사가 존재하지 않습니다.");
+		return new HashSet<>();
 	}
 
 	private Set<Long> getReadyTasks(long programDate) {
