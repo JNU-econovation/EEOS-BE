@@ -6,6 +6,7 @@ import com.blackcompany.eeos.target.application.model.AttendStatus;
 import com.blackcompany.eeos.target.persistence.AttendRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -21,17 +22,20 @@ public class EndAttendModeEventListener {
 
 	@Async
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	@EventListener(EndAttendModeEvent.class)
 	public void handle(EndAttendModeEvent event) {
 		log.info("출석 체크 자동 종료 시작");
-		for (Long id : event.getProgramIds()) {
-			log.info("출석 체크 자동 종료 (programId : {})", id);
-			programRepository.changeAttendMode(id, ProgramAttendMode.END);
-			attendRepository.updateAttendStatusByProgramId(
-					id, AttendStatus.NONRESPONSE, AttendStatus.ABSENT);
+
+		if (!event.getProgramIds().isEmpty()) {
+			for (Long id : event.getProgramIds()) {
+				log.info("출석 체크 자동 종료 (programId : {})", id);
+				programRepository.changeAttendMode(id, ProgramAttendMode.END);
+				attendRepository.updateAttendStatusByProgramId(
+						id, AttendStatus.NONRESPONSE, AttendStatus.ABSENT);
+			}
+			return;
 		}
 
-		if (event.getProgramIds().isEmpty()) {
-			log.info("종료할 프로그램이 없습니다.");
-		}
+		log.info("종료할 프로그램이 없습니다.");
 	}
 }
