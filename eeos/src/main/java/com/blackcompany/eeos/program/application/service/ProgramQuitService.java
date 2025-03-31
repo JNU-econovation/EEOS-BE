@@ -6,19 +6,14 @@ import com.blackcompany.eeos.program.application.model.ProgramModel;
 import com.blackcompany.eeos.program.application.support.DelayedQueue;
 import com.blackcompany.eeos.program.application.usecase.ProgramQuitUsecase;
 import com.blackcompany.eeos.program.persistence.ProgramRepository;
-import com.blackcompany.eeos.target.application.event.EndAttendModeEvent;
 import com.blackcompany.eeos.target.application.model.AttendStatus;
 import com.blackcompany.eeos.target.persistence.AttendRepository;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,7 +61,8 @@ public class ProgramQuitService implements ProgramQuitUsecase {
 			log.info("출석 체크 자동 종료 (programId : {})", id);
 
 			programRepository.changeAttendMode(id, ProgramAttendMode.END);
-			attendRepository.updateAttendStatusByProgramId(id, AttendStatus.NONRESPONSE, AttendStatus.ABSENT);
+			attendRepository.updateAttendStatusByProgramId(
+					id, AttendStatus.NONRESPONSE, AttendStatus.ABSENT);
 
 			completedIds.add(id);
 		}
