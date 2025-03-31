@@ -31,7 +31,7 @@ public class ProgramQuitService implements ProgramQuitUsecase {
 	@Override
 	public void reserveQuitProgram(ProgramModel model) {
 		// programDate 를 score 로 사용
-		long programDate = model.getProgramDate().getTime() / 1000;
+		long programDate = model.getProgramDate().getTime();
 
 		delayedQueue.addTask(KEY, model.getId(), programDate);
 	}
