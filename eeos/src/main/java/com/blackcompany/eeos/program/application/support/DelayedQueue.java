@@ -1,5 +1,6 @@
 package com.blackcompany.eeos.program.application.support;
 
+import java.util.Collection;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -18,10 +19,15 @@ public class DelayedQueue {
 	public Set<Object> getReadyTasks(String key, double score) {
 		Set<Object> tasks = redisTemplate.opsForZSet().rangeByScore(key, 0, score);
 
-		if (tasks != null && !tasks.isEmpty()) {
-			redisTemplate.opsForZSet().removeRangeByScore(key, 0, score);
-		}
-
 		return tasks;
 	}
+
+	public void removeByScore(String key, double score){
+		redisTemplate.opsForZSet().removeRangeByScore(key, 0, score);
+	}
+
+	public void removeByValue(String key, Object... value){
+		redisTemplate.opsForZSet().remove(key, value);
+	}
+
 }
