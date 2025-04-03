@@ -90,7 +90,7 @@ public class ProgramService
 
 		attendTargetService.save(saveId, request.getMembers());
 		presentTeamUsecase.save(saveId, request.getTeamIds());
-		quitUsecase.pushQuitAttendJob(model.toBuilder().id(saveId).build());
+		quitUsecase.reserveQuitProgram(model.toBuilder().id(saveId).build());
 
 		return responseConverter.from(saveId);
 	}
