@@ -42,7 +42,7 @@ jobs:
         run: |
           echo "Waiting for container to start..."
           sleep 20
-          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 https://dev.eeos.co.kr/api/health-check)
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 https://dev.eeos.econovation.kr/api/healthcheck)
           if [ $? -ne 0 ]; then
             echo "Health Check timed out."
             echo "status=timeout" >> $GITHUB_OUTPUT
