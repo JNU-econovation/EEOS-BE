@@ -1,0 +1,140 @@
+name: CD Deploy
+
+on:
+  pull_request:
+    types: [closed]
+    branches: ["release"]
+
+jobs:
+  deploy:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH 접속 및 운영용 배포 실행
+        id: deploy
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.PROD_HOST }}
+          username: ${{ secrets.PROD_USERNAME }}
+          password: ${{ secrets.PROD_PASSWORD }}
+          port: ${{ secrets.PROD_SSH_PORT }}
+          script: |
+            set -ex
+            cd EEOS-BE/eeos
+            BRANCH="${{ github.event.pull_request.base.ref }}"
+            echo "Deploying for branch: ${BRANCH}"
+            if [ "${BRANCH}" = "release" ]; then
+              sudo chmod +x ./scripts/deploy-product.sh
+              ./scripts/deploy-product.sh
+            else
+              echo "No deployment script available for branch ${BRANCH}"
+              exit 1
+            fi
+
+  health_check:
+    needs: deploy
+    runs-on: ubuntu-latest
+    outputs:
+      status: ${{ steps.check.outputs.status }}
+    steps:
+      - name: API Health Check
+        id: check
+        run: |
+          echo "Waiting for container to start..."
+          sleep 20
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 https://be.eeos.econovation.kr/api/health-check)
+          if [ $? -ne 0 ]; then
+            echo "Health Check timed out."
+            echo "status=timeout" >> $GITHUB_OUTPUT
+          elif [ "$HTTP_CODE" = "200" ]; then
+            echo "status=success" >> $GITHUB_OUTPUT
+          else
+            echo "status=failure" >> $GITHUB_OUTPUT
+          fi
+
+  slack_notify:
+    needs: [deploy, health_check]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Slack 알림 전송
+        env:
+          SLACK_CD_WEBHOOK_URL: ${{ secrets.SLACK_CD_WEBHOOK_URL }}
+          COMMIT_MESSAGE: ${{ github.event.pull_request.title }}
+          BRANCH_NAME: ${{ github.event.pull_request.base.ref }}
+          WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          MERGED_AT: ${{ github.event.pull_request.merged_at }}
+          HEALTH_STATUS: ${{ needs.health_check.outputs.status }}
+          DEPLOY_STATUS: ${{ needs.deploy.result }}
+        run: |
+          # Determine deployment result based on the deploy job outcome
+          if [ "${DEPLOY_STATUS}" = "success" ]; then
+            DEPLOY_TEXT="성공"
+            BASE_COLOR="#36a64f"
+            if [ "${HEALTH_STATUS}" = "success" ]; then
+              HEALTH_TEXT="성공"
+            elif [ "${HEALTH_STATUS}" = "failure" ]; then
+              HEALTH_TEXT="실패"
+              BASE_COLOR="#FF0000"
+            elif [ "${HEALTH_STATUS}" = "timeout" ]; then
+              HEALTH_TEXT="Timeout"
+              BASE_COLOR="#FFA500"
+            else
+              HEALTH_TEXT="미실시"
+            fi
+          else
+            DEPLOY_TEXT="실패"
+            BASE_COLOR="#FF0000"
+            HEALTH_TEXT="미실시"
+          fi
+
+          if [ "${BRANCH_NAME}" = "release" ]; then
+            DEPLOY_TYPE="운영용"
+          else
+            DEPLOY_TYPE="${BRANCH_NAME}"
+          fi
+
+          LOCAL_TIME=$(TZ="Asia/Seoul" date -d "${MERGED_AT}" +'%Y-%m-%d %H:%M:%S')
+
+          PAYLOAD=$(cat <<EOF
+          {
+            "username": "배포 알림",
+            "attachments": [
+              {
+                "color": "${BASE_COLOR}",
+                "title": "${DEPLOY_TYPE} 배포 : ${DEPLOY_TEXT}",
+                "fields": [
+                  {
+                    "title": "Health Check",
+                    "value": "\`${HEALTH_TEXT}\`",
+                    "short": false
+                  },
+                  {
+                    "title": "Commit Message",
+                    "value": "\`${COMMIT_MESSAGE}\`",
+                    "short": false
+                  },
+                  {
+                    "title": "브랜치",
+                    "value": "\`${BRANCH_NAME}\`",
+                    "short": false
+                  },
+                  {
+                    "title": "Workflow URL",
+                    "value": "<${WORKFLOW_URL}|자세히 보기>",
+                    "short": false
+                  },
+                  {
+                    "title": "Merged At",
+                    "value": "\`${LOCAL_TIME}\`",
+                    "short": false
+                  }
+                ]
+              }
+            ]
+          }
+          EOF
+          )
+          
+          echo "$PAYLOAD"
+          curl -X POST -H "Content-Type: application/json" -d "$PAYLOAD" "$SLACK_CD_WEBHOOK_URL"
