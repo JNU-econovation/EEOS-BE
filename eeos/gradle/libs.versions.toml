@@ -14,6 +14,7 @@ swagger = "5.10.3"
 # Security
 jwt = "0.12.3"
 jbcrypt = "0.4"
+spring-security = "3.5.0"
 
 # Database
 flyway = "10.7.1"
@@ -26,6 +27,7 @@ spring-boot-starter-actuator = { group = "org.springframework.boot", name = "spr
 spring-boot-starter-data-jpa = { group = "org.springframework.boot", name = "spring-boot-starter-data-jpa" }
 spring-boot-starter-data-redis = { group = "org.springframework.boot", name = "spring-boot-starter-data-redis" }
 spring-boot-starter-test = { group = "org.springframework.boot", name = "spring-boot-starter-test" }
+spring-boot-starter-security = { group = "org.springframework.boot", name = "spring-boot-starter-security" }
 
 # Spring Cloud
 spring-cloud-starter-openfeign = { group = "org.springframework.cloud", name = "spring-cloud-starter-openfeign" }
@@ -54,6 +56,7 @@ lombok = { group = "org.projectlombok", name = "lombok" }
 
 [plugins]
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
+spring-security = { id = "org.springframework.boot", version.ref = "spring-security" }
 spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 asciidoctor = { id = "org.asciidoctor.jvm.convert", version.ref = "asciidoctor" }
