@@ -12,5 +12,5 @@ public class AuthorityModel implements AbstractModel {
 
 	private final Long id;
 	private final Long memberId;
-	private final String name;
+	private final String name; // TODO: ROLE enum 으로 변경
 }
