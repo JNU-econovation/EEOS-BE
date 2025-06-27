@@ -59,8 +59,8 @@ public class AuthService {
 						.build();
 		MemberModel savedMember = memberRepository.save(member);
 
-		AuthorityModel authorityModel = AuthorityModel
-				.builder().memberId(savedMember.getMemberId()).name(Role.USER.name()).build();
+		AuthorityModel authorityModel =
+				AuthorityModel.builder().memberId(savedMember.getMemberId()).name(Role.USER.name()).build();
 
 		authorityRepository.save(authorityModel);
 

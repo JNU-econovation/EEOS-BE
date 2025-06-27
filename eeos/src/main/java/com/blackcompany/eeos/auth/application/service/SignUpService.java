@@ -38,10 +38,8 @@ public class SignUpService implements OAuthSignUpUseCase {
 						.build();
 		MemberModel savedMember = memberRepository.save(memberModel);
 
-		AuthorityModel authorityModel = AuthorityModel.builder()
-				.memberId(savedMember.getMemberId())
-				.name("USER")
-				.build();
+		AuthorityModel authorityModel =
+				AuthorityModel.builder().memberId(savedMember.getMemberId()).name("USER").build();
 
 		OauthMemberModel oauthMemberModel =
 				OauthMemberModel.builder()
