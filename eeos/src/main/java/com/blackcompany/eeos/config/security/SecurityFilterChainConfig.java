@@ -47,7 +47,8 @@ public class SecurityFilterChainConfig {
                     .requestMatchers("/api/auth/login/additional-info")
                     .requestMatchers(HttpMethod.POST,"/api/auth/login/**")
                     .requestMatchers(HttpMethod.POST,"/api/auth/login")
-                    .requestMatchers("/api/guest/**");
+                    .requestMatchers("/api/guest/**")
+                    .requestMatchers("/api/health-check");
         });
 
         commonConfiguration(httpSecurity);
@@ -78,6 +79,19 @@ public class SecurityFilterChainConfig {
                     .requestMatchers("/api/calendars/**");
         }
         );
+
+        httpSecurity.authorizeHttpRequests((requests) -> {
+            requests.requestMatchers("/api/admin/**").hasAnyRole("ADMIN"); // enum 으로 권한 관리하기
+            requests.requestMatchers(HttpMethod.POST,"/api/programs").hasAnyRole("ADMIN");
+            requests.requestMatchers(HttpMethod.PATCH,"/api/programs").hasAnyRole("ADMIN");
+            requests.requestMatchers(HttpMethod.DELETE,"/api/programs").hasAnyRole("ADMIN");
+            requests.requestMatchers(HttpMethod.POST,"/api/programs/{programId}/slack/notification").hasAnyRole("ADMIN");
+            requests.requestMatchers(HttpMethod.POST,"/api/teams").hasAnyRole("ADMIN");
+            requests.requestMatchers(HttpMethod.DELETE,"/api/teams").hasAnyRole("ADMIN");
+            requests.requestMatchers(HttpMethod.DELETE,"/api/members/{memberId}").hasAnyRole("ADMIN");
+            requests.requestMatchers(HttpMethod.PUT,"/api/members/activeStatus/{memberId}").hasAnyRole("ADMIN");
+            requests.anyRequest().authenticated();
+        });
 
         commonConfiguration(httpSecurity);
 
