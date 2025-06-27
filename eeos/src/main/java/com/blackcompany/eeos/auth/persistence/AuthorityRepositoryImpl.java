@@ -14,7 +14,7 @@ public class AuthorityRepositoryImpl implements AuthorityRepository {
     private final AuthorityJpaRepository repository;
 
     @Override
-    public Set<AuthorityModel> findByAuthority(Long memberId) {
+    public Set<AuthorityModel> findByMemberId(Long memberId) {
         return repository.findByMemberId(memberId)
                 .stream()
                 .map(this::toModel)

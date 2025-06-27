@@ -20,7 +20,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @SuperBuilder(toBuilder = true)
-@Table(name = Authority.NAME, indexes = {@Index(name = "idx_member_id", columnList = "member_id")})
+@Table(name = Authority.NAME, indexes = {@Index(name = "idx_member_id", columnList = Authority.NAME + "_member_id")})
 @Getter
 public class Authority extends BaseEntity {
 
