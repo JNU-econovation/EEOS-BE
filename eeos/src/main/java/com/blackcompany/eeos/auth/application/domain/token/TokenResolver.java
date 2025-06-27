@@ -8,7 +8,11 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import javax.crypto.SecretKey;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +23,7 @@ import org.springframework.stereotype.Component;
 public class TokenResolver {
 
 	private static final String MEMBER_ID_CLAIM_KEY = "memberId";
+	private static final String ROLE_CLAIM_KEY = "role";
 	private final SecretKey accessSecretKey;
 	private final SecretKey refreshSecretKey;
 
@@ -27,6 +32,12 @@ public class TokenResolver {
 			@Value("${security.jwt.refresh.secretKey}") String refreshSecretKey) {
 		this.accessSecretKey = generateSecretKey(accessSecretKey);
 		this.refreshSecretKey = generateSecretKey(refreshSecretKey);
+	}
+
+	public List<String> getRoles(final String tokens){
+		Claims claims = getAccessClaims(tokens);
+
+		return (ArrayList<String>) claims.get(ROLE_CLAIM_KEY, ArrayList.class);
 	}
 
 	public Long getExpiredDateByAccessToken(final String token) {
