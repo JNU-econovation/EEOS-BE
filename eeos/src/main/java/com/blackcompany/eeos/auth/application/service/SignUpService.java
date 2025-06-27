@@ -3,6 +3,7 @@ package com.blackcompany.eeos.auth.application.service;
 import com.blackcompany.eeos.auth.application.domain.OauthMemberModel;
 import com.blackcompany.eeos.auth.application.domain.TokenModel;
 import com.blackcompany.eeos.auth.application.dto.request.AdditionalInfoApplicationCommand;
+import com.blackcompany.eeos.auth.application.model.AuthorityModel;
 import com.blackcompany.eeos.auth.application.repository.OAuthMemberRepository;
 import com.blackcompany.eeos.auth.application.repository.OauthVerificationStorage;
 import com.blackcompany.eeos.auth.application.support.AuthenticationTokenGenerator;
@@ -36,6 +37,11 @@ public class SignUpService implements OAuthSignUpUseCase {
 						.oauthServerType(oAuthInfo.getOauthServerType())
 						.build();
 		MemberModel savedMember = memberRepository.save(memberModel);
+
+		AuthorityModel authorityModel = AuthorityModel.builder()
+				.memberId(savedMember.getMemberId())
+				.name("USER")
+				.build();
 
 		OauthMemberModel oauthMemberModel =
 				OauthMemberModel.builder()

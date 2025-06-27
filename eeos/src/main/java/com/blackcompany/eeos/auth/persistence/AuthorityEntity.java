@@ -21,10 +21,10 @@ import lombok.experimental.SuperBuilder;
 @ToString
 @SuperBuilder(toBuilder = true)
 @Table(
-		name = Authority.NAME,
-		indexes = {@Index(name = "idx_member_id", columnList = Authority.NAME + "_member_id")})
+		name = AuthorityEntity.NAME,
+		indexes = {@Index(name = "idx_member_id", columnList = AuthorityEntity.NAME + "_member_id")})
 @Getter
-public class Authority extends BaseEntity {
+public class AuthorityEntity extends BaseEntity {
 
 	public static final String NAME = "authority";
 

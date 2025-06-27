@@ -3,7 +3,10 @@ package com.blackcompany.eeos.auth.application.service;
 import com.blackcompany.eeos.auth.application.domain.OauthMemberModel;
 import com.blackcompany.eeos.auth.application.exception.NotFoundAccountException;
 import com.blackcompany.eeos.auth.application.model.AccountModel;
+import com.blackcompany.eeos.auth.application.model.AuthorityModel;
+import com.blackcompany.eeos.auth.application.model.Role;
 import com.blackcompany.eeos.auth.application.repository.AccountRepository;
+import com.blackcompany.eeos.auth.application.repository.AuthorityRepository;
 import com.blackcompany.eeos.auth.application.repository.OAuthMemberRepository;
 import com.blackcompany.eeos.auth.application.support.EncryptHelper;
 import com.blackcompany.eeos.member.application.model.MemberModel;
@@ -22,6 +25,7 @@ public class AuthService {
 	private final OAuthMemberRepository oAuthMemberRepository;
 	private final EncryptHelper encryptHelper;
 	private final AccountRepository accountRepository;
+	private final AuthorityRepository authorityRepository;
 
 	@Transactional
 	public Long authenticate(final OauthMemberModel model) {
@@ -54,6 +58,11 @@ public class AuthService {
 						.oauthServerType(model.getOauthServerType())
 						.build();
 		MemberModel savedMember = memberRepository.save(member);
+
+		AuthorityModel authorityModel = AuthorityModel
+				.builder().memberId(savedMember.getMemberId()).name(Role.USER.name()).build();
+
+		authorityRepository.save(authorityModel);
 
 		OauthMemberModel updatedModel = model.toBuilder().memberId(savedMember.getId()).build();
 		return oAuthMemberRepository.save(updatedModel);

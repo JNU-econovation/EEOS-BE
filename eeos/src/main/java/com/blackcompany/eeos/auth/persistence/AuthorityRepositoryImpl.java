@@ -20,7 +20,19 @@ public class AuthorityRepositoryImpl implements AuthorityRepository {
 				.collect(Collectors.toSet());
 	}
 
-	private AuthorityModel toModel(Authority entity) {
+    @Override
+    public Long save(AuthorityModel authorityModel) {
+        return repository.save(toEntity(authorityModel)).getId();
+    }
+
+    private AuthorityEntity toEntity(AuthorityModel model) {
+        return AuthorityEntity.builder()
+                .memberId(model.getMemberId())
+                .role(model.getName())
+                .build();
+    }
+
+    private AuthorityModel toModel(AuthorityEntity entity) {
 		return AuthorityModel.builder()
 				.id(entity.getId())
 				.memberId(entity.getMemberId())
