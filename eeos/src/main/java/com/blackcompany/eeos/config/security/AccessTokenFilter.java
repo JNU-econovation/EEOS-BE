@@ -7,8 +7,9 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -47,7 +48,11 @@ public class AccessTokenFilter extends OncePerRequestFilter {
         return memberId.map(
                 id ->
                         new JwtAuthentication(
-                                id, Collections.singletonList(new SimpleGrantedAuthority("user"))));
+                                id, parseRole(token).stream().map(SimpleGrantedAuthority::new).toList()));
+    }
+
+    private List<String> parseRole(String token){
+        return tokenResolver.getRoles(token);
     }
 
     private Optional<Long> parseToken(String token) {
