@@ -15,7 +15,6 @@ public class SecurityConfig {
         return registrationBean;
     }
 
-    // 위와 동일한 이유로 추가
     @Bean
     public FilterRegistrationBean<OptionsFilter> optionsFilterRegistrationBean(
             OptionsFilter optionsFilter) {
@@ -25,7 +24,6 @@ public class SecurityConfig {
         return registrationBean;
     }
 
-    // 위와 동일한 이유로 추가
     @Bean
     public FilterRegistrationBean<UnknownEndpointFilter> unknownEndpointFilterRegistrationBean(
             UnknownEndpointFilter unknownEndpointFilter) {
