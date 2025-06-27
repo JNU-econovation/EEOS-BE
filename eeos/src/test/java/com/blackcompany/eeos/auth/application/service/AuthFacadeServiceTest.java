@@ -38,7 +38,8 @@ class AuthFacadeServiceTest {
 		Long memberId = 1L;
 		String uri = "uri";
 		Set<AuthorityModel> authorities = Set.of(FakeAuthority.authorityModel(1L, memberId, "role"));
-		Set<String> roles = authorities.stream().map(AuthorityModel::getName).collect(Collectors.toSet());
+		Set<String> roles =
+				authorities.stream().map(AuthorityModel::getName).collect(Collectors.toSet());
 
 		OauthMemberModel oauthMemberModel =
 				FakeOauthMember.oauthMemberModel(OauthServerType.SLACK, memberId);
@@ -49,8 +50,6 @@ class AuthFacadeServiceTest {
 
 		// when
 		authFacadeService.login(new OAuthLoginRequestCommand(type, authCode, uri));
-
-
 
 		// then
 		Mockito.verify(authenticationTokenGenerator).execute(memberId, roles);
