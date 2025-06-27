@@ -10,8 +10,7 @@ import lombok.RequiredArgsConstructor;
 @Builder
 public class AuthorityModel implements AbstractModel {
 
-    private final Long id;
-    private final Long memberId;
-    private final String name;
-
+	private final Long id;
+	private final Long memberId;
+	private final String name;
 }

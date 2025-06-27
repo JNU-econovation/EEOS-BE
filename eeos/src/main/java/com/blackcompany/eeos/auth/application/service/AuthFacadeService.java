@@ -7,7 +7,6 @@ import com.blackcompany.eeos.auth.application.model.AuthorityModel;
 import com.blackcompany.eeos.auth.application.repository.AuthorityRepository;
 import com.blackcompany.eeos.auth.application.support.AuthenticationTokenGenerator;
 import com.blackcompany.eeos.auth.application.usecase.LoginUsecase;
-import com.blackcompany.eeos.auth.persistence.OAuthMemberEntity;
 import com.blackcompany.eeos.member.application.model.MemberModel;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -28,10 +27,10 @@ public class AuthFacadeService implements LoginUsecase {
 				oauthClientService.getOauthMember(command.oauthServerType(), command.code(), command.uri());
 		Long memberId = authService.authenticate(model);
 
-		Set<String> authorities = authorityRepository.findByMemberId(memberId)
-				.stream()
-				.map(AuthorityModel::getName)
-				.collect(Collectors.toSet());
+		Set<String> authorities =
+				authorityRepository.findByMemberId(memberId).stream()
+						.map(AuthorityModel::getName)
+						.collect(Collectors.toSet());
 
 		return authenticationTokenGenerator.execute(memberId, authorities);
 	}
@@ -41,10 +40,10 @@ public class AuthFacadeService implements LoginUsecase {
 		MemberModel model = authService.authenticate(loginId, password);
 		Long memberId = model.getMemberId();
 
-		Set<String> authorities = authorityRepository.findByMemberId(memberId)
-				.stream()
-				.map(AuthorityModel::getName)
-				.collect(Collectors.toSet());
+		Set<String> authorities =
+				authorityRepository.findByMemberId(memberId).stream()
+						.map(AuthorityModel::getName)
+						.collect(Collectors.toSet());
 
 		return authenticationTokenGenerator.execute(memberId, authorities);
 	}

@@ -16,114 +16,124 @@ import org.springframework.web.filter.CorsFilter;
 @RequiredArgsConstructor
 public class SecurityFilterChainConfig {
 
-    private final AccessTokenFilter authFilter;
-    private final OptionsFilter optionsFilter;
-    private final DynamicCorsConfigurationSource corsConfigurationSource;
-    private final AccessTokenEntryPoint accessTokenEntryPoint;
-    private final UnknownEndpointFilter unknownEndpointFilter;
+	private final AccessTokenFilter authFilter;
+	private final OptionsFilter optionsFilter;
+	private final DynamicCorsConfigurationSource corsConfigurationSource;
+	private final AccessTokenEntryPoint accessTokenEntryPoint;
+	private final UnknownEndpointFilter unknownEndpointFilter;
 
-    @Bean
-    @Order(0)
-    // swagger
-    SecurityFilterChain swagger(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.securityMatchers((matcher) -> {
-            matcher.requestMatchers("/api/docs/**", "/api/swagger-ui/**");
-        });
+	@Bean
+	@Order(0)
+	// swagger
+	SecurityFilterChain swagger(HttpSecurity httpSecurity) throws Exception {
+		httpSecurity.securityMatchers(
+				(matcher) -> {
+					matcher.requestMatchers("/api/docs/**", "/api/swagger-ui/**");
+				});
 
-        commonConfiguration(httpSecurity);
+		commonConfiguration(httpSecurity);
 
-        httpSecurity.logout(AbstractHttpConfigurer::disable);
-        httpSecurity.securityContext(AbstractHttpConfigurer::disable);
+		httpSecurity.logout(AbstractHttpConfigurer::disable);
+		httpSecurity.securityContext(AbstractHttpConfigurer::disable);
 
-        return httpSecurity.build();
-    }
+		return httpSecurity.build();
+	}
 
-    @Bean
-    @Order(1)
-    // 인증 필요 없는 엔드포인트
-    SecurityFilterChain nonAuthenticated(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.securityMatchers((matcher) -> {
-            matcher.requestMatchers("/api/auth/logout")
-                    .requestMatchers("/api/auth/login/additional-info")
-                    .requestMatchers(HttpMethod.POST,"/api/auth/login/**")
-                    .requestMatchers(HttpMethod.POST,"/api/auth/login")
-                    .requestMatchers("/api/guest/**")
-                    .requestMatchers("/api/health-check");
-        });
+	@Bean
+	@Order(1)
+	// 인증 필요 없는 엔드포인트
+	SecurityFilterChain nonAuthenticated(HttpSecurity httpSecurity) throws Exception {
+		httpSecurity.securityMatchers(
+				(matcher) -> {
+					matcher
+							.requestMatchers("/api/auth/logout")
+							.requestMatchers("/api/auth/login/additional-info")
+							.requestMatchers(HttpMethod.POST, "/api/auth/login/**")
+							.requestMatchers(HttpMethod.POST, "/api/auth/login")
+							.requestMatchers("/api/guest/**")
+							.requestMatchers("/api/health-check");
+				});
 
-        commonConfiguration(httpSecurity);
+		commonConfiguration(httpSecurity);
 
-        httpSecurity.logout(AbstractHttpConfigurer::disable);
-        httpSecurity.securityContext(AbstractHttpConfigurer::disable);
+		httpSecurity.logout(AbstractHttpConfigurer::disable);
+		httpSecurity.securityContext(AbstractHttpConfigurer::disable);
 
-        httpSecurity.cors(
-                httpSecurityCorsConfigurer ->
-                        httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource));
+		httpSecurity.cors(
+				httpSecurityCorsConfigurer ->
+						httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource));
 
-        httpSecurity.addFilterAfter(optionsFilter, CorsFilter.class);
+		httpSecurity.addFilterAfter(optionsFilter, CorsFilter.class);
 
-        return httpSecurity.build();
-    }
+		return httpSecurity.build();
+	}
 
-    @Bean
-    @Order(2)
-    // 인증이 필요한 엔드포인트
-    SecurityFilterChain authenticated(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.securityMatchers((matcher) -> {
-            matcher.requestMatchers("/api/comments/**")
-                    .requestMatchers("/api/attend/**")
-                    .requestMatchers("/api/target/**")
-                    .requestMatchers("/api/members/**")
-                    .requestMatchers("/api/teams/**")
-                    .requestMatchers("/api/team-building/**")
-                    .requestMatchers("/api/calendars/**");
-        }
-        );
+	@Bean
+	@Order(2)
+	// 인증이 필요한 엔드포인트
+	SecurityFilterChain authenticated(HttpSecurity httpSecurity) throws Exception {
+		httpSecurity.securityMatchers(
+				(matcher) -> {
+					matcher
+							.requestMatchers("/api/comments/**")
+							.requestMatchers("/api/attend/**")
+							.requestMatchers("/api/target/**")
+							.requestMatchers("/api/members/**")
+							.requestMatchers("/api/teams/**")
+							.requestMatchers("/api/team-building/**")
+							.requestMatchers("/api/calendars/**");
+				});
 
-        httpSecurity.authorizeHttpRequests((requests) -> {
-            requests.requestMatchers("/api/admin/**").hasAnyRole("ADMIN"); // enum 으로 권한 관리하기
-            requests.requestMatchers(HttpMethod.POST,"/api/programs").hasAnyRole("ADMIN");
-            requests.requestMatchers(HttpMethod.PATCH,"/api/programs").hasAnyRole("ADMIN");
-            requests.requestMatchers(HttpMethod.DELETE,"/api/programs").hasAnyRole("ADMIN");
-            requests.requestMatchers(HttpMethod.POST,"/api/programs/{programId}/slack/notification").hasAnyRole("ADMIN");
-            requests.requestMatchers(HttpMethod.POST,"/api/teams").hasAnyRole("ADMIN");
-            requests.requestMatchers(HttpMethod.DELETE,"/api/teams").hasAnyRole("ADMIN");
-            requests.requestMatchers(HttpMethod.DELETE,"/api/members/{memberId}").hasAnyRole("ADMIN");
-            requests.requestMatchers(HttpMethod.PUT,"/api/members/activeStatus/{memberId}").hasAnyRole("ADMIN");
-            requests.anyRequest().authenticated();
-        });
+		httpSecurity.authorizeHttpRequests(
+				(requests) -> {
+					requests.requestMatchers("/api/admin/**").hasAnyRole("ADMIN"); // enum 으로 권한 관리하기
+					requests.requestMatchers(HttpMethod.POST, "/api/programs").hasAnyRole("ADMIN");
+					requests.requestMatchers(HttpMethod.PATCH, "/api/programs").hasAnyRole("ADMIN");
+					requests.requestMatchers(HttpMethod.DELETE, "/api/programs").hasAnyRole("ADMIN");
+					requests
+							.requestMatchers(HttpMethod.POST, "/api/programs/{programId}/slack/notification")
+							.hasAnyRole("ADMIN");
+					requests.requestMatchers(HttpMethod.POST, "/api/teams").hasAnyRole("ADMIN");
+					requests.requestMatchers(HttpMethod.DELETE, "/api/teams").hasAnyRole("ADMIN");
+					requests
+							.requestMatchers(HttpMethod.DELETE, "/api/members/{memberId}")
+							.hasAnyRole("ADMIN");
+					requests
+							.requestMatchers(HttpMethod.PUT, "/api/members/activeStatus/{memberId}")
+							.hasAnyRole("ADMIN");
+					requests.anyRequest().authenticated();
+				});
 
-        commonConfiguration(httpSecurity);
+		commonConfiguration(httpSecurity);
 
-        httpSecurity.cors(
-                httpSecurityCorsConfigurer ->
-                        httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource));
+		httpSecurity.cors(
+				httpSecurityCorsConfigurer ->
+						httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource));
 
-        httpSecurity.addFilterAt(authFilter, LogoutFilter.class);
-        httpSecurity.exceptionHandling(ex -> ex.authenticationEntryPoint(accessTokenEntryPoint));
-        httpSecurity.addFilterAfter(optionsFilter, CorsFilter.class);
+		httpSecurity.addFilterAt(authFilter, LogoutFilter.class);
+		httpSecurity.exceptionHandling(ex -> ex.authenticationEntryPoint(accessTokenEntryPoint));
+		httpSecurity.addFilterAfter(optionsFilter, CorsFilter.class);
 
-        return httpSecurity.build();
-    }
+		return httpSecurity.build();
+	}
 
-    @Bean
-    @Order(3)
-    SecurityFilterChain unknownEndpoint(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.securityMatcher("/**");
+	@Bean
+	@Order(3)
+	SecurityFilterChain unknownEndpoint(HttpSecurity httpSecurity) throws Exception {
+		httpSecurity.securityMatcher("/**");
 
-        commonConfiguration(httpSecurity);
-        httpSecurity.logout(AbstractHttpConfigurer::disable);
-        // 서버가 처리할 수 있는 엔드포인트인지 확인하는 필터
-        httpSecurity.addFilterBefore(unknownEndpointFilter, DisableEncodeUrlFilter.class);
+		commonConfiguration(httpSecurity);
+		httpSecurity.logout(AbstractHttpConfigurer::disable);
+		// 서버가 처리할 수 있는 엔드포인트인지 확인하는 필터
+		httpSecurity.addFilterBefore(unknownEndpointFilter, DisableEncodeUrlFilter.class);
 
-        return httpSecurity.build();
-    }
+		return httpSecurity.build();
+	}
 
-    private void commonConfiguration(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.formLogin(AbstractHttpConfigurer::disable);
-        httpSecurity.httpBasic(AbstractHttpConfigurer::disable);
-        httpSecurity.csrf(AbstractHttpConfigurer::disable);
-        httpSecurity.sessionManagement(AbstractHttpConfigurer::disable);
-    }
-
+	private void commonConfiguration(HttpSecurity httpSecurity) throws Exception {
+		httpSecurity.formLogin(AbstractHttpConfigurer::disable);
+		httpSecurity.httpBasic(AbstractHttpConfigurer::disable);
+		httpSecurity.csrf(AbstractHttpConfigurer::disable);
+		httpSecurity.sessionManagement(AbstractHttpConfigurer::disable);
+	}
 }

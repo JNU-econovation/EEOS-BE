@@ -5,6 +5,5 @@ import java.util.Set;
 
 public interface AuthorityRepository {
 
-    Set<AuthorityModel> findByMemberId(Long memberId);
-
+	Set<AuthorityModel> findByMemberId(Long memberId);
 }

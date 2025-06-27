@@ -11,21 +11,20 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class AuthorityRepositoryImpl implements AuthorityRepository {
 
-    private final AuthorityJpaRepository repository;
+	private final AuthorityJpaRepository repository;
 
-    @Override
-    public Set<AuthorityModel> findByMemberId(Long memberId) {
-        return repository.findByMemberId(memberId)
-                .stream()
-                .map(this::toModel)
-                .collect(Collectors.toSet());
-    }
+	@Override
+	public Set<AuthorityModel> findByMemberId(Long memberId) {
+		return repository.findByMemberId(memberId).stream()
+				.map(this::toModel)
+				.collect(Collectors.toSet());
+	}
 
-    private AuthorityModel toModel(Authority entity) {
-        return AuthorityModel.builder()
-                .id(entity.getId())
-                .memberId(entity.getMemberId())
-                .name(entity.getRole())
-                .build();
-    }
+	private AuthorityModel toModel(Authority entity) {
+		return AuthorityModel.builder()
+				.id(entity.getId())
+				.memberId(entity.getMemberId())
+				.name(entity.getRole())
+				.build();
+	}
 }

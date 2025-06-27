@@ -10,9 +10,7 @@ import io.jsonwebtoken.security.SignatureException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import javax.crypto.SecretKey;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,7 +32,7 @@ public class TokenResolver {
 		this.refreshSecretKey = generateSecretKey(refreshSecretKey);
 	}
 
-	public List<String> getRoles(final String tokens){
+	public List<String> getRoles(final String tokens) {
 		Claims claims = getAccessClaims(tokens);
 
 		return (ArrayList<String>) claims.get(ROLE_CLAIM_KEY, ArrayList.class);

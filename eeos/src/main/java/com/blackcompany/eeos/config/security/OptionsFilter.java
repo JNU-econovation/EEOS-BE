@@ -15,18 +15,18 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Component
 @RequiredArgsConstructor
 public class OptionsFilter extends OncePerRequestFilter {
-    @Override
-    protected void doFilterInternal(
-            HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws IOException, ServletException {
+	@Override
+	protected void doFilterInternal(
+			HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+			throws IOException, ServletException {
 
-        if (request.getMethod().equals("OPTIONS")) {
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.getWriter().flush();
-            response.getWriter().close();
-            return;
-        }
+		if (request.getMethod().equals("OPTIONS")) {
+			response.setStatus(HttpServletResponse.SC_OK);
+			response.getWriter().flush();
+			response.getWriter().close();
+			return;
+		}
 
-        filterChain.doFilter(request, response);
-    }
+		filterChain.doFilter(request, response);
+	}
 }

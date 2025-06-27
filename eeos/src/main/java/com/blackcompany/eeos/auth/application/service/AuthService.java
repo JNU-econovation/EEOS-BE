@@ -6,8 +6,6 @@ import com.blackcompany.eeos.auth.application.model.AccountModel;
 import com.blackcompany.eeos.auth.application.repository.AccountRepository;
 import com.blackcompany.eeos.auth.application.repository.OAuthMemberRepository;
 import com.blackcompany.eeos.auth.application.support.EncryptHelper;
-import com.blackcompany.eeos.auth.persistence.AccountJpaRepository;
-import com.blackcompany.eeos.auth.persistence.OAuthMemberEntity;
 import com.blackcompany.eeos.member.application.model.MemberModel;
 import com.blackcompany.eeos.member.application.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;

@@ -20,20 +20,21 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @SuperBuilder(toBuilder = true)
-@Table(name = Authority.NAME, indexes = {@Index(name = "idx_member_id", columnList = Authority.NAME + "_member_id")})
+@Table(
+		name = Authority.NAME,
+		indexes = {@Index(name = "idx_member_id", columnList = Authority.NAME + "_member_id")})
 @Getter
 public class Authority extends BaseEntity {
 
-    public static final String NAME = "authority";
+	public static final String NAME = "authority";
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @Column(nullable = false, name = NAME+"_member_id")
-    private Long memberId;
+	@Column(nullable = false, name = NAME + "_member_id")
+	private Long memberId;
 
-    @Column(nullable = false, name = NAME+"_role")
-    private String role;
-
+	@Column(nullable = false, name = NAME + "_role")
+	private String role;
 }

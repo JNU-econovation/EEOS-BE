@@ -7,7 +7,6 @@ import org.springframework.data.repository.query.Param;
 
 public interface AuthorityJpaRepository extends JpaRepository<Authority, Long> {
 
-    @Query("SELECT DISTINCT a FROM Authority a WHERE a.memberId = :memberId")
-    Set<Authority> findByMemberId(@Param("memberId")Long memberId);
-
+	@Query("SELECT DISTINCT a FROM Authority a WHERE a.memberId = :memberId")
+	Set<Authority> findByMemberId(@Param("memberId") Long memberId);
 }

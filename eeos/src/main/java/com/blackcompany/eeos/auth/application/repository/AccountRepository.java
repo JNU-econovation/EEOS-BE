@@ -4,6 +4,5 @@ import com.blackcompany.eeos.auth.application.model.AccountModel;
 
 public interface AccountRepository {
 
-    AccountModel findByLoginId(String loginId);
-
+	AccountModel findByLoginId(String loginId);
 }
