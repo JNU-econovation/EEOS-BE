@@ -5,7 +5,7 @@ import com.blackcompany.eeos.auth.application.model.AccountEntityConverter;
 import com.blackcompany.eeos.auth.application.model.AccountModel;
 import com.blackcompany.eeos.auth.application.repository.OAuthMemberRepository;
 import com.blackcompany.eeos.auth.persistence.AccountEntity;
-import com.blackcompany.eeos.auth.persistence.AccountRepository;
+import com.blackcompany.eeos.auth.persistence.AccountJpaRepository;
 import com.blackcompany.eeos.member.application.model.AdminInfo;
 import com.blackcompany.eeos.member.application.model.MemberModel;
 import com.blackcompany.eeos.member.application.model.converter.MemberEntityConverter;
@@ -25,7 +25,7 @@ public class CreateAdminMemberService implements CreateAdminMemberUsecase {
 
 	private final AdminInfo adminInfo;
 	private final MemberRepository memberRepository;
-	private final AccountRepository accountRepository;
+	private final AccountJpaRepository accountRepository;
 	private final OAuthMemberRepository oAuthMemberRepository;
 	private final MemberEntityConverter memberEntityConverter;
 	private final AccountEntityConverter accountEntityConverter;
@@ -79,7 +79,7 @@ public class CreateAdminMemberService implements CreateAdminMemberUsecase {
 	}
 
 	private boolean findAdminAccount() {
-		return accountRepository.findByLoginId(adminInfo.getLoginId()).isEmpty();
+		return accountRepository.findPasswdByLoginId(adminInfo.getLoginId()).isEmpty();
 	}
 
 	private boolean findAdminOauthMember() {
