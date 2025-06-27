@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
@@ -22,12 +23,14 @@ public class SecurityFilterChainConfig {
     private final UnknownEndpointFilter unknownEndpointFilter;
 
     @Bean
-    @Order(1)
+    @Order(0)
     // swagger
     SecurityFilterChain swagger(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.authorizeHttpRequests((requests) -> {
-            requests.requestMatchers("/api/docs/**", "/api/swagger-ui/**").permitAll();
+        httpSecurity.securityMatchers((matcher) -> {
+            matcher.requestMatchers("/api/docs/**", "/api/swagger-ui/**");
         });
+
+        commonConfiguration(httpSecurity);
 
         httpSecurity.logout(AbstractHttpConfigurer::disable);
         httpSecurity.securityContext(AbstractHttpConfigurer::disable);
@@ -36,15 +39,18 @@ public class SecurityFilterChainConfig {
     }
 
     @Bean
-    @Order(2)
+    @Order(1)
     // 인증 필요 없는 엔드포인트
     SecurityFilterChain nonAuthenticated(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.authorizeHttpRequests((requests) -> {
-            requests.requestMatchers("/api/auth/logout").permitAll()
-                    .requestMatchers("/api/auth/login/additional-info").permitAll()
-                    .requestMatchers("/api/auth/login/**").permitAll()
-                    .requestMatchers("/api/guest/**").permitAll();
+        httpSecurity.securityMatchers((matcher) -> {
+            matcher.requestMatchers("/api/auth/logout")
+                    .requestMatchers("/api/auth/login/additional-info")
+                    .requestMatchers(HttpMethod.POST,"/api/auth/login/**")
+                    .requestMatchers(HttpMethod.POST,"/api/auth/login")
+                    .requestMatchers("/api/guest/**");
         });
+
+        commonConfiguration(httpSecurity);
 
         httpSecurity.logout(AbstractHttpConfigurer::disable);
         httpSecurity.securityContext(AbstractHttpConfigurer::disable);
@@ -59,17 +65,17 @@ public class SecurityFilterChainConfig {
     }
 
     @Bean
-    @Order(3)
+    @Order(2)
     // 인증이 필요한 엔드포인트
     SecurityFilterChain authenticated(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.authorizeHttpRequests((requests) -> {
-            requests.requestMatchers("/api/comments/**").authenticated()
-                    .requestMatchers("/api/attend/**").authenticated()
-                    .requestMatchers("/api/target/**").authenticated()
-                    .requestMatchers("/api/members/**").authenticated()
-                    .requestMatchers("/api/teams/**").authenticated()
-                    .requestMatchers("/api/team-building/**").authenticated()
-                    .requestMatchers("/api/calendars/**").authenticated();
+        httpSecurity.securityMatchers((matcher) -> {
+            matcher.requestMatchers("/api/comments/**")
+                    .requestMatchers("/api/attend/**")
+                    .requestMatchers("/api/target/**")
+                    .requestMatchers("/api/members/**")
+                    .requestMatchers("/api/teams/**")
+                    .requestMatchers("/api/team-building/**")
+                    .requestMatchers("/api/calendars/**");
         }
         );
 
@@ -87,7 +93,7 @@ public class SecurityFilterChainConfig {
     }
 
     @Bean
-    @Order(4)
+    @Order(3)
     SecurityFilterChain unknownEndpoint(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.securityMatcher("/**");
 
@@ -103,6 +109,7 @@ public class SecurityFilterChainConfig {
         httpSecurity.formLogin(AbstractHttpConfigurer::disable);
         httpSecurity.httpBasic(AbstractHttpConfigurer::disable);
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
+        httpSecurity.sessionManagement(AbstractHttpConfigurer::disable);
     }
 
 }
