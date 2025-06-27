@@ -20,6 +20,7 @@ public class AccountRepositoryImpl implements AccountRepository {
                 .id(entity.getId())
                 .loginId(entity.getLoginId())
                 .password(entity.getPassWd())
+                .memberId(entity.getMemberId())
                 .build();
     }
 }
