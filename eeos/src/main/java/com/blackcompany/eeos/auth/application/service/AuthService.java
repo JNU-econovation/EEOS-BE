@@ -2,9 +2,11 @@ package com.blackcompany.eeos.auth.application.service;
 
 import com.blackcompany.eeos.auth.application.domain.OauthMemberModel;
 import com.blackcompany.eeos.auth.application.exception.NotFoundAccountException;
+import com.blackcompany.eeos.auth.application.model.AccountModel;
+import com.blackcompany.eeos.auth.application.repository.AccountRepository;
 import com.blackcompany.eeos.auth.application.repository.OAuthMemberRepository;
 import com.blackcompany.eeos.auth.application.support.EncryptHelper;
-import com.blackcompany.eeos.auth.persistence.AccountRepository;
+import com.blackcompany.eeos.auth.persistence.AccountJpaRepository;
 import com.blackcompany.eeos.auth.persistence.OAuthMemberEntity;
 import com.blackcompany.eeos.member.application.model.MemberModel;
 import com.blackcompany.eeos.member.application.repository.MemberRepository;
@@ -32,11 +34,14 @@ public class AuthService {
 	}
 
 	@Transactional
-	public OAuthMemberEntity authenticate(final String loginId, final String password) {
-		String encryptedPassword =
-				accountRepository.findByLoginId(loginId).orElseThrow(NotFoundAccountException::new);
+	public MemberModel authenticate(final String loginId, final String password) {
+		AccountModel accountModel = accountRepository.findByLoginId(loginId);
+
+		String encryptedPassword = accountModel.getPassword();
+
 		checkPassword(password, encryptedPassword);
-		return oAuthMemberRepository.findByAccount(loginId).orElseThrow(NotFoundAccountException::new);
+
+		return memberRepository.findById(accountModel.getMemberId());
 	}
 
 	private OauthMemberModel signUpMember(final OauthMemberModel model) {
