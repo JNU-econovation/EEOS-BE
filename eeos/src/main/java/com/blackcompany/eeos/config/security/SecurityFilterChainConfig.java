@@ -1,5 +1,6 @@
 package com.blackcompany.eeos.config.security;
 
+import com.blackcompany.eeos.auth.application.model.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,7 @@ import org.springframework.web.filter.CorsFilter;
 @RequiredArgsConstructor
 public class SecurityFilterChainConfig {
 
+	private static final String ADMIN = Role.ADMIN.name();
 	private final AccessTokenFilter authFilter;
 	private final OptionsFilter optionsFilter;
 	private final DynamicCorsConfigurationSource corsConfigurationSource;
@@ -86,21 +88,21 @@ public class SecurityFilterChainConfig {
 
 		httpSecurity.authorizeHttpRequests(
 				(requests) -> {
-					requests.requestMatchers("/api/admin/**").hasAnyRole("ADMIN"); // enum 으로 권한 관리하기
-					requests.requestMatchers(HttpMethod.POST, "/api/programs").hasAnyRole("ADMIN");
-					requests.requestMatchers(HttpMethod.PATCH, "/api/programs").hasAnyRole("ADMIN");
-					requests.requestMatchers(HttpMethod.DELETE, "/api/programs").hasAnyRole("ADMIN");
+					requests.requestMatchers("/api/admin/**").hasAnyRole(ADMIN);
+					requests.requestMatchers(HttpMethod.POST, "/api/programs").hasAnyRole(ADMIN);
+					requests.requestMatchers(HttpMethod.PATCH, "/api/programs").hasAnyRole(ADMIN);
+					requests.requestMatchers(HttpMethod.DELETE, "/api/programs").hasAnyRole(ADMIN);
 					requests
 							.requestMatchers(HttpMethod.POST, "/api/programs/{programId}/slack/notification")
-							.hasAnyRole("ADMIN");
-					requests.requestMatchers(HttpMethod.POST, "/api/teams").hasAnyRole("ADMIN");
-					requests.requestMatchers(HttpMethod.DELETE, "/api/teams").hasAnyRole("ADMIN");
+							.hasAnyRole(ADMIN);
+					requests.requestMatchers(HttpMethod.POST, "/api/teams").hasAnyRole(ADMIN);
+					requests.requestMatchers(HttpMethod.DELETE, "/api/teams").hasAnyRole(ADMIN);
 					requests
 							.requestMatchers(HttpMethod.DELETE, "/api/members/{memberId}")
-							.hasAnyRole("ADMIN");
+							.hasAnyRole(ADMIN);
 					requests
 							.requestMatchers(HttpMethod.PUT, "/api/members/activeStatus/{memberId}")
-							.hasAnyRole("ADMIN");
+							.hasAnyRole(ADMIN);
 					requests.anyRequest().authenticated();
 				});
 
