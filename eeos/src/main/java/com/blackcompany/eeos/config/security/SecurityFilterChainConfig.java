@@ -30,7 +30,7 @@ public class SecurityFilterChainConfig {
 	SecurityFilterChain swagger(HttpSecurity httpSecurity) throws Exception {
 		httpSecurity.securityMatchers(
 				(matcher) -> {
-					matcher.requestMatchers("/api/docs/**", "/api/swagger-ui/**");
+					matcher.requestMatchers("/api/docs/**", "/api/swagger-ui/**", "/api/docs.html");
 				});
 
 		commonConfiguration(httpSecurity);
