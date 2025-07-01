@@ -43,7 +43,6 @@ public class AccessTokenFilter extends OncePerRequestFilter {
 	private Optional<JwtAuthentication> createAuthentication(String token) {
 		Optional<Long> memberId = parseToken(token);
 
-		// TODO: ROLE
 		return memberId.map(
 				id ->
 						new JwtAuthentication(
