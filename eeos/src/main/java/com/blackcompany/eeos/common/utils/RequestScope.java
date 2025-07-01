@@ -1,12 +1,8 @@
 package com.blackcompany.eeos.common.utils;
 
-import com.blackcompany.eeos.config.security.JwtAuthentication;
-import java.security.Security;
 import java.util.Objects;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -19,11 +15,10 @@ public class RequestScope {
 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-		if(Objects.nonNull(authentication)) {
+		if (Objects.nonNull(authentication)) {
 			return (Long) authentication.getPrincipal();
 		}
 
 		return null;
 	}
-
 }

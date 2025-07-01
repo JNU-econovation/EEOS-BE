@@ -2,14 +2,12 @@ package com.blackcompany.eeos.common.util;
 
 import com.blackcompany.eeos.common.utils.RequestScope;
 import com.blackcompany.eeos.config.security.JwtAuthentication;
-import java.security.Security;
 import java.util.Collections;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.parameters.P;
 
 public class RequestScopeTest {
 
@@ -53,9 +51,10 @@ public class RequestScopeTest {
 		Assertions.assertNull(RequestScope.getMemberId());
 	}
 
-	private void setSecurityContext(Long memberId){
-		SecurityContextHolder.getContext().setAuthentication(
-				new JwtAuthentication(memberId, Collections.singletonList(new SimpleGrantedAuthority("USER")))
-		);
+	private void setSecurityContext(Long memberId) {
+		SecurityContextHolder.getContext()
+				.setAuthentication(
+						new JwtAuthentication(
+								memberId, Collections.singletonList(new SimpleGrantedAuthority("USER"))));
 	}
 }

@@ -18,6 +18,4 @@ public class LoginConfig implements WebMvcConfigurer {
 	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
 		resolvers.addAll(List.of(memberArgumentResolver, verificationAuthorizationResolver));
 	}
-
-
 }
