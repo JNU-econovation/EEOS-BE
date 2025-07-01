@@ -1,19 +1,29 @@
 package com.blackcompany.eeos.common.utils;
 
+import com.blackcompany.eeos.config.security.JwtAuthentication;
+import java.security.Security;
+import java.util.Objects;
+import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
+
 // HTTP Request 를 보낸 사용자의 정보를 저장하는 클래스
+@Component
+@RequiredArgsConstructor
 public class RequestScope {
 
-	public static final ThreadLocal<Long> requesterInfo = new ThreadLocal<>();
-
 	public static Long getMemberId() {
-		return requesterInfo.get();
+
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+		if(Objects.nonNull(authentication)) {
+			return (Long) authentication.getPrincipal();
+		}
+
+		return null;
 	}
 
-	public static void setMemberId(Long memberId) {
-		requesterInfo.set(memberId);
-	}
-
-	public static void clear() {
-		requesterInfo.remove();
-	}
 }
