@@ -46,6 +46,6 @@ public class DynamicCorsConfigurationSource implements CorsConfigurationSource {
 	}
 
 	public void removeAllowedOrigin(String origin) {
-		if (allowedOrigins.remove(origin)) log.warn("{}는 origin 목록에 존재하지 않습니다.", origin);
+		if (!allowedOrigins.remove(origin)) log.warn("{}는 origin 목록에 존재하지 않습니다.", origin);
 	}
 }
