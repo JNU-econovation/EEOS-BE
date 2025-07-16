@@ -56,7 +56,6 @@ lombok = { group = "org.projectlombok", name = "lombok" }
 
 [plugins]
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
-spring-security = { id = "org.springframework.boot", version.ref = "spring-security" }
 spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 asciidoctor = { id = "org.asciidoctor.jvm.convert", version.ref = "asciidoctor" }
