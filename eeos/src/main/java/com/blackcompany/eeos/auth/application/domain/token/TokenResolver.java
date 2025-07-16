@@ -9,8 +9,10 @@ import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.crypto.SecretKey;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,8 +36,17 @@ public class TokenResolver {
 
 	public List<String> getRoles(final String tokens) {
 		Claims claims = getAccessClaims(tokens);
+		Object roles = claims.get(ROLE_CLAIM_KEY);
 
-		return (ArrayList<String>) claims.get(ROLE_CLAIM_KEY, ArrayList.class);
+		if(roles instanceof List<?>){
+			return ((List<?>) roles).stream()
+					.filter(String.class::isInstance)
+					.map(String.class::cast)
+					.collect(Collectors.toList());
+		}
+//		return (ArrayList<String>) claims.get(ROLE_CLAIM_KEY, ArrayList.class);
+
+		return Collections.emptyList();
 	}
 
 	public Long getExpiredDateByAccessToken(final String token) {
