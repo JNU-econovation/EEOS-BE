@@ -4,6 +4,7 @@ import com.blackcompany.eeos.auth.application.domain.OauthMemberModel;
 import com.blackcompany.eeos.auth.application.domain.TokenModel;
 import com.blackcompany.eeos.auth.application.dto.request.AdditionalInfoApplicationCommand;
 import com.blackcompany.eeos.auth.application.model.AuthorityModel;
+import com.blackcompany.eeos.auth.application.repository.AuthorityRepository;
 import com.blackcompany.eeos.auth.application.repository.OAuthMemberRepository;
 import com.blackcompany.eeos.auth.application.repository.OauthVerificationStorage;
 import com.blackcompany.eeos.auth.application.support.AuthenticationTokenGenerator;
@@ -24,6 +25,7 @@ public class SignUpService implements OAuthSignUpUseCase {
 	private final MemberRepository memberRepository;
 	private final OAuthMemberRepository oAuthMemberRepository;
 	private final AuthenticationTokenGenerator tokenGenerator;
+	private final AuthorityRepository authorityRepository;
 
 	@Override
 	@Transactional
@@ -38,16 +40,28 @@ public class SignUpService implements OAuthSignUpUseCase {
 						.build();
 		MemberModel savedMember = memberRepository.save(memberModel);
 
-		AuthorityModel authorityModel =
-				AuthorityModel.builder().memberId(savedMember.getMemberId()).name("USER").build();
+		saveOAuth(oAuthInfo.getOauthId(), savedMember.getMemberId());
+		saveAuthority(savedMember.getMemberId(), "USER");
 
-		OauthMemberModel oauthMemberModel =
-				OauthMemberModel.builder()
-						.oauthId(oAuthInfo.getOauthId())
-						.memberId(savedMember.getId())
-						.build();
-		oAuthMemberRepository.save(oauthMemberModel);
+		// TODO: 일반 USER 권한인지 아닌지 계산해주는 도구 추가
 
 		return tokenGenerator.execute(savedMember.getId());
+	}
+
+	private void saveOAuth(String oAuthId, Long memberId){
+		OauthMemberModel oauthMemberModel =
+				OauthMemberModel.builder()
+						.oauthId(oAuthId)
+						.memberId(memberId)
+						.build();
+
+		oAuthMemberRepository.save(oauthMemberModel);
+	}
+
+	private void saveAuthority(Long memberId, String role){
+		AuthorityModel authorityModel =
+				AuthorityModel.builder().memberId(memberId).name(role).build();
+
+		authorityRepository.save(authorityModel);
 	}
 }
