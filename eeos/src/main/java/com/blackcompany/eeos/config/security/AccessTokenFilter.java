@@ -1,15 +1,21 @@
 package com.blackcompany.eeos.config.security;
 
 import com.blackcompany.eeos.auth.application.domain.token.TokenResolver;
+import com.blackcompany.eeos.auth.application.exception.NotFoundHeaderTokenException;
 import com.blackcompany.eeos.auth.presentation.support.TokenExtractor;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.security.Security;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -31,13 +37,17 @@ public class AccessTokenFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(
 			HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
+		try {
+			String token = tokenExtractor.extract(request); // tokenExtractor 에서 Auth 헤더가 있는지 검사함
 
-		String token = tokenExtractor.extract(request); // tokenExtractor 에서 Auth 헤더가 있는지 검사함
+			createAuthentication(token)
+					.ifPresentOrElse(this::setAuthentication, SecurityContextHolder::clearContext);
 
-		createAuthentication(token)
-				.ifPresentOrElse(this::setAuthentication, SecurityContextHolder::clearContext);
-
-		filterChain.doFilter(request, response);
+			filterChain.doFilter(request, response);
+		} catch (NotFoundHeaderTokenException |JwtException e){
+			SecurityContextHolder.clearContext();
+			filterChain.doFilter(request, response);
+		}
 	}
 
 	private Optional<JwtAuthentication> createAuthentication(String token) {
