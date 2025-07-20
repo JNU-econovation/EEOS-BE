@@ -55,6 +55,7 @@ dependencies {
     // Test
     testImplementation(libs.spring.boot.starter.test)
     testImplementation(libs.spring.cloud.starter.contract.stub.runner)
+    testImplementation(libs.spring.security.test)
 
     // Lombok
     compileOnly(libs.lombok)
