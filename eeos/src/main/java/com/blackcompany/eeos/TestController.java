@@ -15,129 +15,135 @@ import org.springframework.web.bind.annotation.RestController;
 
 public class TestController {
 
-    @Profile("local")
-    @RequestMapping("/api/members/test")
-    @RestController
-    public static class Members {
-        @GetMapping
-        public ApiResponse<SuccessBody<Void>> membersGetTest(){ return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.GET); }
+	@Profile("local")
+	@RequestMapping("/api/members/test")
+	@RestController
+	public static class Members {
+		@GetMapping
+		public ApiResponse<SuccessBody<Void>> membersGetTest() {
+			return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.GET);
+		}
 
-        @PostMapping
-        public ApiResponse<SuccessBody<Void>> membersPostTest(){ return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.CREATE); }
+		@PostMapping
+		public ApiResponse<SuccessBody<Void>> membersPostTest() {
+			return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.CREATE);
+		}
 
-        @DeleteMapping
-        public ApiResponse<SuccessBody<Void>> membersDeleteTest(){ return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.DELETE); }
+		@DeleteMapping
+		public ApiResponse<SuccessBody<Void>> membersDeleteTest() {
+			return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.DELETE);
+		}
+	}
 
-    }
+	@Profile("local")
+	@RequestMapping("/api/programs/test")
+	@RestController
+	public static class Programs {
 
-    @Profile("local")
-    @RequestMapping("/api/programs/test")
-    @RestController
-    public static class Programs {
+		@PostMapping
+		public ApiResponse<SuccessBody<Void>> programsPostTest() {
+			return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.CREATE);
+		}
 
-        @PostMapping
-        public ApiResponse<SuccessBody<Void>> programsPostTest(){
-            return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.CREATE);
-        }
+		@PutMapping
+		public ApiResponse<SuccessBody<Void>> programsPutTest() {
+			return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.UPDATE);
+		}
 
-        @PutMapping
-        public ApiResponse<SuccessBody<Void>> programsPutTest(){
-            return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.UPDATE);
-        }
+		@GetMapping
+		public ApiResponse<SuccessBody<Void>> programsGetTest() {
+			return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.GET);
+		}
+	}
 
-        @GetMapping
-        public ApiResponse<SuccessBody<Void>> programsGetTest(){
-            return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.GET);
-        }
-    }
+	@Profile("local")
+	@RequestMapping("/api/teams/test")
+	@RestController
+	public static class Teams {
 
-    @Profile("local")
-    @RequestMapping("/api/teams/test")
-    @RestController
-    public static class Teams {
+		@GetMapping
+		public ApiResponse<SuccessBody<Void>> teamsGetTest() {
+			return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.GET);
+		}
 
-        @GetMapping
-        public ApiResponse<SuccessBody<Void>> teamsGetTest(){
-            return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.GET);
-        }
+		@PostMapping
+		public ApiResponse<SuccessBody<Void>> teamsPostTest() {
+			return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.CREATE);
+		}
 
-        @PostMapping
-        public ApiResponse<SuccessBody<Void>> teamsPostTest(){
-            return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.CREATE);
-        }
+		@PutMapping
+		public ApiResponse<SuccessBody<Void>> teamsPutTest() {
+			return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.UPDATE);
+		}
+	}
 
-        @PutMapping
-        public ApiResponse<SuccessBody<Void>> teamsPutTest(){
-            return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.UPDATE);
-        }
+	@Profile("local")
+	@RequestMapping("/api/comments/test")
+	@RestController
+	public static class Comments {
+		@GetMapping
+		public ApiResponse<SuccessBody<Void>> commentsGetTest() {
+			return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.GET);
+		}
 
-    }
+		@PostMapping
+		public ApiResponse<SuccessBody<Void>> commentsPostTest() {
+			return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.CREATE);
+		}
 
-    @Profile("local")
-    @RequestMapping("/api/comments/test")
-    @RestController
-    public static class Comments {
-        @GetMapping
-        public ApiResponse<SuccessBody<Void>> commentsGetTest(){
-            return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.GET);
-        }
+		@PutMapping
+		public ApiResponse<SuccessBody<Void>> commentsPutTest() {
+			return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.UPDATE);
+		}
+	}
 
-        @PostMapping
-        public ApiResponse<SuccessBody<Void>> commentsPostTest(){
-            return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.CREATE);
-        }
+	@Profile("local")
+	@RequestMapping("/api/attend/test")
+	@RestController
+	public static class Attend {
+		@GetMapping
+		public ApiResponse<SuccessBody<Void>> getTest() {
+			return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.GET);
+		}
 
-        @PutMapping
-        public ApiResponse<SuccessBody<Void>> commentsPutTest(){
-            return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.UPDATE);
-        }
+		@PostMapping
+		public ApiResponse<SuccessBody<Void>> postTest() {
+			return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.CREATE);
+		}
 
-    }
+		@PutMapping
+		public ApiResponse<SuccessBody<Void>> putTest() {
+			return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.UPDATE);
+		}
 
-    @Profile("local")
-    @RequestMapping("/api/attend/test")
-    @RestController
-    public static class Attend {
-        @GetMapping
-        public ApiResponse<SuccessBody<Void>> getTest(){
-            return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.GET);
-        }
+		@DeleteMapping
+		public ApiResponse<SuccessBody<Void>> deleteTest() {
+			return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.DELETE);
+		}
+	}
 
-        @PostMapping
-        public ApiResponse<SuccessBody<Void>> postTest(){
-            return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.CREATE);
-        }
+	@Profile("local")
+	@RequestMapping("/api/admin/test")
+	@RestController
+	public static class Admin {
+		@GetMapping
+		public ApiResponse<SuccessBody<Void>> getTest() {
+			return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.GET);
+		}
 
-        @PutMapping
-        public ApiResponse<SuccessBody<Void>> putTest(){
-            return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.UPDATE);
-        }
+		@PostMapping
+		public ApiResponse<SuccessBody<Void>> postTest() {
+			return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.CREATE);
+		}
 
-        @DeleteMapping
-        public ApiResponse<SuccessBody<Void>> deleteTest(){ return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.DELETE); }
-    }
+		@PutMapping
+		public ApiResponse<SuccessBody<Void>> putTest() {
+			return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.UPDATE);
+		}
 
-    @Profile("local")
-    @RequestMapping("/api/admin/test")
-    @RestController
-    public static class Admin {
-        @GetMapping
-        public ApiResponse<SuccessBody<Void>> getTest(){
-            return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.GET);
-        }
-
-        @PostMapping
-        public ApiResponse<SuccessBody<Void>> postTest(){
-            return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.CREATE);
-        }
-
-        @PutMapping
-        public ApiResponse<SuccessBody<Void>> putTest(){
-            return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.UPDATE);
-        }
-
-        @DeleteMapping
-        public ApiResponse<SuccessBody<Void>> deleteTest(){ return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.DELETE); }
-    }
-
+		@DeleteMapping
+		public ApiResponse<SuccessBody<Void>> deleteTest() {
+			return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.DELETE);
+		}
+	}
 }

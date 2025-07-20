@@ -9,13 +9,9 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.security.Security;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
-import org.springframework.security.authentication.InsufficientAuthenticationException;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -44,7 +40,7 @@ public class AccessTokenFilter extends OncePerRequestFilter {
 					.ifPresentOrElse(this::setAuthentication, SecurityContextHolder::clearContext);
 
 			filterChain.doFilter(request, response);
-		} catch (NotFoundHeaderTokenException |JwtException e){
+		} catch (NotFoundHeaderTokenException | JwtException e) {
 			SecurityContextHolder.clearContext();
 			filterChain.doFilter(request, response);
 		}

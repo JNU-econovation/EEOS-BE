@@ -79,9 +79,8 @@ public class CreateAdminMemberService implements CreateAdminMemberUsecase {
 				.build();
 	}
 
-	private void saveAuthority(Long memberId, String role){
-		AuthorityModel authorityModel =
-				AuthorityModel.builder().memberId(memberId).name(role).build();
+	private void saveAuthority(Long memberId, String role) {
+		AuthorityModel authorityModel = AuthorityModel.builder().memberId(memberId).name(role).build();
 
 		authorityRepository.save(authorityModel);
 	}

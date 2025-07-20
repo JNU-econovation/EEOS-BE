@@ -42,26 +42,22 @@ public class SignUpService implements OAuthSignUpUseCase {
 		MemberModel savedMember = memberRepository.save(memberModel);
 
 		saveOAuth(oAuthInfo.getOauthId(), savedMember.getMemberId());
-		saveAuthority(savedMember.getMemberId(), "ROLE_"+ Role.USER.getRole());
+		saveAuthority(savedMember.getMemberId(), "ROLE_" + Role.USER.getRole());
 
 		// TODO: 일반 USER 권한인지 아닌지 계산해주는 도구 추가
 
 		return tokenGenerator.execute(savedMember.getId());
 	}
 
-	private void saveOAuth(String oAuthId, Long memberId){
+	private void saveOAuth(String oAuthId, Long memberId) {
 		OauthMemberModel oauthMemberModel =
-				OauthMemberModel.builder()
-						.oauthId(oAuthId)
-						.memberId(memberId)
-						.build();
+				OauthMemberModel.builder().oauthId(oAuthId).memberId(memberId).build();
 
 		oAuthMemberRepository.save(oauthMemberModel);
 	}
 
-	private void saveAuthority(Long memberId, String role){
-		AuthorityModel authorityModel =
-				AuthorityModel.builder().memberId(memberId).name(role).build();
+	private void saveAuthority(Long memberId, String role) {
+		AuthorityModel authorityModel = AuthorityModel.builder().memberId(memberId).name(role).build();
 
 		authorityRepository.save(authorityModel);
 	}

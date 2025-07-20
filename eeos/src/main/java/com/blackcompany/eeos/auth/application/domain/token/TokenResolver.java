@@ -8,7 +8,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -38,13 +37,14 @@ public class TokenResolver {
 		Claims claims = getAccessClaims(tokens);
 		Object roles = claims.get(ROLE_CLAIM_KEY);
 
-		if(roles instanceof List<?>){
-			return ((List<?>) roles).stream()
-					.filter(String.class::isInstance)
-					.map(String.class::cast)
-					.collect(Collectors.toList());
+		if (roles instanceof List<?>) {
+			return ((List<?>) roles)
+					.stream()
+							.filter(String.class::isInstance)
+							.map(String.class::cast)
+							.collect(Collectors.toList());
 		}
-//		return (ArrayList<String>) claims.get(ROLE_CLAIM_KEY, ArrayList.class);
+		//		return (ArrayList<String>) claims.get(ROLE_CLAIM_KEY, ArrayList.class);
 
 		return Collections.emptyList();
 	}
