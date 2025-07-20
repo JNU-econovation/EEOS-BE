@@ -4,6 +4,7 @@ import com.blackcompany.eeos.auth.application.domain.OauthMemberModel;
 import com.blackcompany.eeos.auth.application.domain.TokenModel;
 import com.blackcompany.eeos.auth.application.dto.request.AdditionalInfoApplicationCommand;
 import com.blackcompany.eeos.auth.application.model.AuthorityModel;
+import com.blackcompany.eeos.auth.application.model.Role;
 import com.blackcompany.eeos.auth.application.repository.AuthorityRepository;
 import com.blackcompany.eeos.auth.application.repository.OAuthMemberRepository;
 import com.blackcompany.eeos.auth.application.repository.OauthVerificationStorage;
@@ -41,7 +42,7 @@ public class SignUpService implements OAuthSignUpUseCase {
 		MemberModel savedMember = memberRepository.save(memberModel);
 
 		saveOAuth(oAuthInfo.getOauthId(), savedMember.getMemberId());
-		saveAuthority(savedMember.getMemberId(), "USER");
+		saveAuthority(savedMember.getMemberId(), "ROLE_"+ Role.USER.getRole());
 
 		// TODO: 일반 USER 권한인지 아닌지 계산해주는 도구 추가
 
