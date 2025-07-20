@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-@Profile("local")
 public class TestController {
 
+    @Profile("local")
     @RequestMapping("/api/members/test")
+    @RestController
     public static class Members {
         @GetMapping
         public ApiResponse<SuccessBody<Void>> membersGetTest(){ return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.GET); }
@@ -30,7 +30,9 @@ public class TestController {
 
     }
 
+    @Profile("local")
     @RequestMapping("/api/programs/test")
+    @RestController
     public static class Programs {
 
         @PostMapping
@@ -49,7 +51,9 @@ public class TestController {
         }
     }
 
+    @Profile("local")
     @RequestMapping("/api/teams/test")
+    @RestController
     public static class Teams {
 
         @GetMapping
@@ -69,7 +73,9 @@ public class TestController {
 
     }
 
+    @Profile("local")
     @RequestMapping("/api/comments/test")
+    @RestController
     public static class Comments {
         @GetMapping
         public ApiResponse<SuccessBody<Void>> commentsGetTest(){
@@ -88,7 +94,9 @@ public class TestController {
 
     }
 
+    @Profile("local")
     @RequestMapping("/api/attend/test")
+    @RestController
     public static class Attend {
         @GetMapping
         public ApiResponse<SuccessBody<Void>> getTest(){
@@ -109,7 +117,9 @@ public class TestController {
         public ApiResponse<SuccessBody<Void>> deleteTest(){ return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.DELETE); }
     }
 
+    @Profile("local")
     @RequestMapping("/api/admin/test")
+    @RestController
     public static class Admin {
         @GetMapping
         public ApiResponse<SuccessBody<Void>> getTest(){
