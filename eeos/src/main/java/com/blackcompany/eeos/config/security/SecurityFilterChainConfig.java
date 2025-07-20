@@ -98,7 +98,7 @@ public class SecurityFilterChainConfig {
 							.requestMatchers(HttpMethod.POST, "/api/programs/{programId}/slack/notification")
 							.hasAnyRole(ADMIN);
 					requests.requestMatchers(HttpMethod.POST, "/api/teams").hasAnyRole(ADMIN);
-					requests.requestMatchers(HttpMethod.DELETE, "/api/teams").hasAnyRole(ADMIN);
+					requests.requestMatchers(HttpMethod.DELETE, "/api/teams/{teamId}").hasAnyRole(ADMIN);
 					requests.requestMatchers(HttpMethod.DELETE, "/api/members/{memberId}").hasAnyRole(ADMIN);
 					requests
 							.requestMatchers(HttpMethod.PUT, "/api/members/activeStatus/{memberId}")
