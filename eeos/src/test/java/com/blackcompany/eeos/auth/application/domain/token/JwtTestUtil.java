@@ -10,7 +10,7 @@ import java.util.Date;
 
 public class JwtTestUtil {
 
-	public static String createToken(Long memberId, String role){
+	public static String createToken(Long memberId, String role) {
 		final Date now = Date.from(Instant.now());
 		final long accessValidTime = 3600 * 1000;
 
@@ -23,14 +23,15 @@ public class JwtTestUtil {
 					.setExpiration(new Date(now.getTime() + accessValidTime))
 					.signWith(createRandomKey())
 					.compact();
-		} catch (Exception e){
+		} catch (Exception e) {
 			throw new RuntimeException("[테스트] JWT 토큰 생성 중 예상치 못한 에러");
 		}
 	}
 
 	private static Key createRandomKey() throws Exception {
-		String stringKey = java.util.Base64.getEncoder().encodeToString(
-				java.security.SecureRandom.getInstanceStrong().generateSeed(32));
+		String stringKey =
+				java.util.Base64.getEncoder()
+						.encodeToString(java.security.SecureRandom.getInstanceStrong().generateSeed(32));
 
 		return Keys.hmacShaKeyFor(stringKey.getBytes(StandardCharsets.UTF_8));
 	}
