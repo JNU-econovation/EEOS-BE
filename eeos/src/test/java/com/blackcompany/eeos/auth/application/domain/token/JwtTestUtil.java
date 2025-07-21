@@ -11,13 +11,13 @@ import java.util.stream.IntStream;
 
 public class JwtTestUtil {
 
-	private static final Date now = Date.from(Instant.now());
 	private static final long accessValidTime = 3600 * 1000;
 	private static final String stringKey = IntStream.generate(() -> 1).limit(120).toString();
 	private static final Key accessSecretKey =
 			Keys.hmacShaKeyFor(stringKey.getBytes(StandardCharsets.UTF_8));
 
 	public static String createToken(Long memberId, String role) {
+		final Date now = Date.from(Instant.now());
 
 		return Jwts.builder()
 				.setHeaderParam(Header.TYPE, Header.JWT_TYPE)
