@@ -1,0 +1,11 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "timezone": "Asia/Seoul",
+  "reviewers": ["rlajm1203", "Daae-Kim", "kssumin"],
+  "schedule": "before 6am every weekday",
+  "labels": ["dependencies"],
+  "prHourlyLimit": 5,
+  "automerge": false,
+  "prTitle": "[DEPS] {{depName}} {{currentVersion}} → {{newVersion}}"
+}
