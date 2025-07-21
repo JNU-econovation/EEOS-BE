@@ -7,25 +7,31 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.time.Instant;
 import java.util.Date;
-import java.util.stream.IntStream;
 
 public class JwtTestUtil {
 
-	private static final long accessValidTime = 3600 * 1000;
-	private static final String stringKey = IntStream.generate(() -> 1).limit(120).toString();
-	private static final Key accessSecretKey =
-			Keys.hmacShaKeyFor(stringKey.getBytes(StandardCharsets.UTF_8));
-
-	public static String createToken(Long memberId, String role) {
+	public static String createToken(Long memberId, String role){
 		final Date now = Date.from(Instant.now());
+		final long accessValidTime = 3600 * 1000;
 
-		return Jwts.builder()
-				.setHeaderParam(Header.TYPE, Header.JWT_TYPE)
-				.claim("memberId", memberId)
-				.claim("role", role)
-				.setIssuedAt(now)
-				.setExpiration(new Date(now.getTime() + accessValidTime))
-				.signWith(accessSecretKey)
-				.compact();
+		try {
+			return Jwts.builder()
+					.setHeaderParam(Header.TYPE, Header.JWT_TYPE)
+					.claim("memberId", memberId)
+					.claim("role", role)
+					.setIssuedAt(now)
+					.setExpiration(new Date(now.getTime() + accessValidTime))
+					.signWith(createRandomKey())
+					.compact();
+		} catch (Exception e){
+			throw new RuntimeException("[테스트] JWT 토큰 생성 중 예상치 못한 에러");
+		}
+	}
+
+	private static Key createRandomKey() throws Exception {
+		String stringKey = java.util.Base64.getEncoder().encodeToString(
+				java.security.SecureRandom.getInstanceStrong().generateSeed(32));
+
+		return Keys.hmacShaKeyFor(stringKey.getBytes(StandardCharsets.UTF_8));
 	}
 }
