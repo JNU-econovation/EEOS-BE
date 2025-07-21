@@ -106,7 +106,7 @@ class SecurityFilterChainTest {
 
 		@Test
 		@DisplayName("[일반유저] 일반 유저 권한은 관리자 API에 접근 불가능_1")
-		void 일반유저_토큰으로_행사_생성_API_접근시_401응답_1() throws Exception {
+		void 일반유저_토큰으로_관리자_API_접근시_403응답_1() throws Exception {
 			mockMvc
 					.perform(post("/api/programs").header(HttpHeaders.AUTHORIZATION, bearerToken()))
 					.andExpect(status().isForbidden());
@@ -114,7 +114,7 @@ class SecurityFilterChainTest {
 
 		@Test
 		@DisplayName("[일반유저] 일반 유저 권한은 관리자 API에 접근 불가능_2")
-		void 일반유저_토큰으로_행사_생성_API_접근시_401응답_2() throws Exception {
+		void 일반유저_토큰으로_관리자_API_접근시_403응답_2() throws Exception {
 			mockMvc
 					.perform(delete("/api/programs").header(HttpHeaders.AUTHORIZATION, bearerToken()))
 					.andExpect(status().isForbidden());
@@ -122,7 +122,7 @@ class SecurityFilterChainTest {
 
 		@Test
 		@DisplayName("[일반유저] 일반 유저 권한은 관리자 API에 접근 불가능_3")
-		void 일반유저_토큰으로_행사_생성_API_접근시_401응답_3() throws Exception {
+		void 일반유저_토큰으로_관리자_API_접근시_403응답_1_3() throws Exception {
 			mockMvc
 					.perform(delete("/api/members/1").header(HttpHeaders.AUTHORIZATION, bearerToken()))
 					.andExpect(status().isForbidden());
@@ -130,7 +130,7 @@ class SecurityFilterChainTest {
 
 		@Test
 		@DisplayName("[일반유저] 일반 유저 권한은 관리자 API에 접근 불가능_4")
-		void 일반유저_토큰으로_행사_생성_API_접근시_401응답_4() throws Exception {
+		void 일반유저_토큰으로_관리자_API_접근시_403응답_1_4() throws Exception {
 			mockMvc
 					.perform(
 							put("/api/members/activeStatus/1").header(HttpHeaders.AUTHORIZATION, bearerToken()))
@@ -139,7 +139,7 @@ class SecurityFilterChainTest {
 
 		@Test
 		@DisplayName("[일반유저] 일반 유저 권한은 관리자 API에 접근 불가능_5")
-		void 일반유저_토큰으로_행사_생성_API_접근시_401응답_5() throws Exception {
+		void 일반유저_토큰으로_관리자_API_접근시_403응답_1_5() throws Exception {
 			mockMvc
 					.perform(post("/api/teams").header(HttpHeaders.AUTHORIZATION, bearerToken()))
 					.andExpect(status().isForbidden());
@@ -147,7 +147,7 @@ class SecurityFilterChainTest {
 
 		@Test
 		@DisplayName("[일반유저] 일반 유저 권한은 관리자 API에 접근 불가능_6")
-		void 일반유저_토큰으로_행사_생성_API_접근시_401응답_6() throws Exception {
+		void 일반유저_토큰으로_관리자_API_접근시_403응답_1_6() throws Exception {
 			mockMvc
 					.perform(post("/api/teams").header(HttpHeaders.AUTHORIZATION, bearerToken()))
 					.andExpect(status().isForbidden());
@@ -155,7 +155,7 @@ class SecurityFilterChainTest {
 
 		@Test
 		@DisplayName("[일반유저] 일반 유저 권한은 관리자 API에 접근 불가능_7")
-		void 일반유저_토큰으로_행사_생성_API_접근시_401응답_7() throws Exception {
+		void 일반유저_토큰으로_관리자_API_접근시_403응답_1_7() throws Exception {
 			mockMvc
 					.perform(delete("/api/teams/1").header(HttpHeaders.AUTHORIZATION, bearerToken()))
 					.andExpect(status().isForbidden());
@@ -163,7 +163,7 @@ class SecurityFilterChainTest {
 
 		@Test
 		@DisplayName("[일반유저] 일반 유저 권한은 관리자 API에 접근 불가능_8")
-		void 일반유저_토큰으로_행사_생성_API_접근시_401응답_8() throws Exception {
+		void 일반유저_토큰으로_관리자_API_접근시_403응답_1_8() throws Exception {
 			mockMvc
 					.perform(get("/api/admin/test").header(HttpHeaders.AUTHORIZATION, bearerToken()))
 					.andExpect(status().isForbidden());
