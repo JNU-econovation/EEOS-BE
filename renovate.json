@@ -7,5 +7,24 @@
   "labels": ["dependencies"],
   "prHourlyLimit": 5,
   "automerge": false,
-  "prTitle": "[DEPS] {{depName}} {{currentVersion}} → {{newVersion}}"
+  
+  "prBodyTemplate": "{{#if releases}}### 📋 Release Notes\n{{#each releases}}#### {{title}}\n{{body}}\n\n{{/each}}{{/if}}{{#if hasReleaseNotes}}---\n{{/if}}**Package**: {{depName}}\n**Update Type**: {{updateType}}\n**Age**: {{#if newVersionAge}}{{newVersionAge}}{{else}}Unknown{{/if}}\n**Confidence**: {{#if newVersionConfidence}}{{newVersionConfidence}}{{else}}Unknown{{/if}}",
+  
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "labels": ["security", "dependencies"],  
+    "prPriority": 10
+  },
+  "major": {
+    "prTitle": "[MAJOR] {{depName}} {{currentVersion}} → {{newVersion}}",
+    "labels": ["dependencies", "major-update"]
+  },
+  "minor": {
+    "prTitle": "[MINOR] {{depName}} {{currentVersion}} → {{newVersion}}",
+    "labels": ["dependencies", "minor-update"]
+  },
+  "patch": {
+    "prTitle": "[PATCH] {{depName}} {{currentVersion}} → {{newVersion}}",
+    "labels": ["dependencies", "patch-update"]
+  }
 }
