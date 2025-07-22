@@ -2,7 +2,7 @@ version: '3.1'
 services:
   eeos-local-mysql:
     container_name: eeos-mysql8
-    image: mysql/mysql-server:8.0.27
+    image: mysql/mysql-server:8.0.32
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_ROOT_HOST=%
