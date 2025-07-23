@@ -14,10 +14,7 @@ public class AuthorityModel implements AbstractModel {
 	private final Long memberId;
 	private final Role role;
 
-	public static AuthorityModel create(Long memberId, Role role){
-		return AuthorityModel.builder()
-				.role(role)
-				.memberId(memberId)
-				.build();
+	public static AuthorityModel create(Long memberId, Role role) {
+		return AuthorityModel.builder().role(role).memberId(memberId).build();
 	}
 }

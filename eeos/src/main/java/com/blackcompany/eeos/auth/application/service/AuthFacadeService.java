@@ -43,10 +43,10 @@ public class AuthFacadeService implements LoginUsecase {
 		return authenticationTokenGenerator.execute(memberId, authorities);
 	}
 
-	private Set<String> getRoles(Long memberId){
+	private Set<String> getRoles(Long memberId) {
 		return authorityRepository.findByMemberId(memberId).stream()
-						.map(AuthorityModel::getRole)
-						.map(Role::getRole)
-						.collect(Collectors.toSet());
+				.map(AuthorityModel::getRole)
+				.map(Role::getRole)
+				.collect(Collectors.toSet());
 	}
 }
