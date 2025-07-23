@@ -26,14 +26,14 @@ public class AuthorityRepositoryImpl implements AuthorityRepository {
 	}
 
 	private AuthorityEntity toEntity(AuthorityModel model) {
-		return AuthorityEntity.builder().memberId(model.getMemberId()).role(model.getName()).build();
+		return AuthorityEntity.builder().memberId(model.getMemberId()).role(model.getRole()).build();
 	}
 
 	private AuthorityModel toModel(AuthorityEntity entity) {
 		return AuthorityModel.builder()
 				.id(entity.getId())
 				.memberId(entity.getMemberId())
-				.name(entity.getRole())
+				.role(entity.getRole())
 				.build();
 	}
 }

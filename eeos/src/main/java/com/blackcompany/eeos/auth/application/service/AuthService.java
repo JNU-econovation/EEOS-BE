@@ -59,10 +59,7 @@ public class AuthService {
 						.build();
 		MemberModel savedMember = memberRepository.save(member);
 
-		AuthorityModel authorityModel =
-				AuthorityModel.builder().memberId(savedMember.getMemberId()).name(Role.USER.name()).build();
-
-		authorityRepository.save(authorityModel);
+		authorityRepository.save(AuthorityModel.create(savedMember.getMemberId(), Role.USER));
 
 		OauthMemberModel updatedModel = model.toBuilder().memberId(savedMember.getId()).build();
 		return oAuthMemberRepository.save(updatedModel);

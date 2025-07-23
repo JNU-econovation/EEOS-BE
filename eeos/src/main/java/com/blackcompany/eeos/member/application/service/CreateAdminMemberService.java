@@ -45,7 +45,7 @@ public class CreateAdminMemberService implements CreateAdminMemberUsecase {
 		MemberModel savedMember = memberRepository.save(createMember());
 
 		saveAccount(accountEntityConverter.toEntity(createAccount(savedMember.getId())));
-		saveAuthority(savedMember.getMemberId(), "ROLE_" + Role.ADMIN.getRole());
+		saveAuthority(savedMember.getMemberId(), Role.ADMIN);
 
 		return savedMember.getId();
 	}
@@ -79,10 +79,8 @@ public class CreateAdminMemberService implements CreateAdminMemberUsecase {
 				.build();
 	}
 
-	private void saveAuthority(Long memberId, String role) {
-		AuthorityModel authorityModel = AuthorityModel.builder().memberId(memberId).name(role).build();
-
-		authorityRepository.save(authorityModel);
+	private void saveAuthority(Long memberId, Role role) {
+		authorityRepository.save(AuthorityModel.create(memberId, role));
 	}
 
 	private boolean findAdminAccount() {

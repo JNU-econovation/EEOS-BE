@@ -1,8 +1,11 @@
 package com.blackcompany.eeos.auth.persistence.authority;
 
+import com.blackcompany.eeos.auth.application.model.Role;
 import com.blackcompany.eeos.common.persistence.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -35,6 +38,7 @@ public class AuthorityEntity extends BaseEntity {
 	@Column(nullable = false, name = NAME + "_member_id")
 	private Long memberId;
 
+	@Enumerated(EnumType.STRING)
 	@Column(nullable = false, name = NAME + "_role")
-	private String role;
+	private Role role;
 }
