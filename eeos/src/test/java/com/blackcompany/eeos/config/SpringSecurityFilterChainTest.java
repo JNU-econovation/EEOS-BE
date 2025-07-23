@@ -187,6 +187,7 @@ class SecurityFilterChainTest {
 					.perform(get("/api/admin/test").header(HttpHeaders.AUTHORIZATION, bearerToken()))
 					.andExpect(status().isOk());
 		}
+
 		private String bearerToken() {
 			return String.format("Bearer %s", VALID_JWT);
 		}
