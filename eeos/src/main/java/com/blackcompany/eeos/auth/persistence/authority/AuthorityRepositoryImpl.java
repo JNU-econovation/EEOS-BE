@@ -1,4 +1,4 @@
-package com.blackcompany.eeos.auth.persistence;
+package com.blackcompany.eeos.auth.persistence.authority;
 
 import com.blackcompany.eeos.auth.application.model.AuthorityModel;
 import com.blackcompany.eeos.auth.application.repository.AuthorityRepository;
@@ -26,14 +26,14 @@ public class AuthorityRepositoryImpl implements AuthorityRepository {
 	}
 
 	private AuthorityEntity toEntity(AuthorityModel model) {
-		return AuthorityEntity.builder().memberId(model.getMemberId()).role(model.getName()).build();
+		return AuthorityEntity.builder().memberId(model.getMemberId()).role(model.getRole()).build();
 	}
 
 	private AuthorityModel toModel(AuthorityEntity entity) {
 		return AuthorityModel.builder()
 				.id(entity.getId())
 				.memberId(entity.getMemberId())
-				.name(entity.getRole())
+				.role(entity.getRole())
 				.build();
 	}
 }

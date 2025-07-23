@@ -10,7 +10,7 @@ import com.blackcompany.eeos.auth.application.repository.OAuthMemberRepository;
 import com.blackcompany.eeos.auth.application.repository.OauthVerificationStorage;
 import com.blackcompany.eeos.auth.application.support.AuthenticationTokenGenerator;
 import com.blackcompany.eeos.auth.application.usecase.OAuthSignUpUseCase;
-import com.blackcompany.eeos.auth.persistence.OAuthInfo;
+import com.blackcompany.eeos.auth.persistence.oauth.OAuthInfo;
 import com.blackcompany.eeos.member.application.model.ActiveStatus;
 import com.blackcompany.eeos.member.application.model.MemberModel;
 import com.blackcompany.eeos.member.application.repository.MemberRepository;
@@ -42,7 +42,7 @@ public class SignUpService implements OAuthSignUpUseCase {
 		MemberModel savedMember = memberRepository.save(memberModel);
 
 		saveOAuth(oAuthInfo.getOauthId(), savedMember.getMemberId());
-		saveAuthority(savedMember.getMemberId(), "ROLE_" + Role.USER.getRole());
+		saveAuthority(savedMember.getMemberId(), Role.ROLE_USER);
 
 		// TODO: 일반 USER 권한인지 아닌지 계산해주는 도구 추가
 
@@ -56,8 +56,8 @@ public class SignUpService implements OAuthSignUpUseCase {
 		oAuthMemberRepository.save(oauthMemberModel);
 	}
 
-	private void saveAuthority(Long memberId, String role) {
-		AuthorityModel authorityModel = AuthorityModel.builder().memberId(memberId).name(role).build();
+	private void saveAuthority(Long memberId, Role role) {
+		AuthorityModel authorityModel = AuthorityModel.builder().memberId(memberId).role(role).build();
 
 		authorityRepository.save(authorityModel);
 	}

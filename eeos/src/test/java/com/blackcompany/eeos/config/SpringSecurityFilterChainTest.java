@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.blackcompany.eeos.auth.application.domain.token.JwtTestUtil;
 import com.blackcompany.eeos.auth.application.domain.token.TokenProvider;
 import com.blackcompany.eeos.auth.application.domain.token.TokenResolver;
+import com.blackcompany.eeos.auth.application.model.Role;
 import com.blackcompany.eeos.auth.application.service.AuthService;
 import com.blackcompany.eeos.member.application.model.ActiveStatus;
 import com.blackcompany.eeos.member.application.model.MemberModel;
@@ -74,7 +75,7 @@ class SecurityFilterChainTest {
 	@DisplayName("2-1. 인증이 필요한 엔드포인트 - 일반 유저")
 	class UserEndpoints {
 
-		private final String VALID_JWT = JwtTestUtil.createToken(1L, "ROLE_USER");
+		private final String VALID_JWT = JwtTestUtil.createToken(1L, Role.ROLE_USER);
 
 		@BeforeEach
 		void setAccessToken() {
@@ -84,7 +85,7 @@ class SecurityFilterChainTest {
 
 			given(tokenResolver.getExpiredDateByAccessToken(VALID_JWT))
 					.willReturn(Date.from(Instant.now()).getTime());
-			given(tokenResolver.getRoles(VALID_JWT)).willReturn(List.of("ROLE_USER"));
+			given(tokenResolver.getRoles(VALID_JWT)).willReturn(List.of(Role.ROLE_USER.getRole()));
 		}
 
 		@Test
@@ -167,7 +168,7 @@ class SecurityFilterChainTest {
 	@Nested
 	@DisplayName("2-2. 인증이 필요한 엔드포인트 - 관리자")
 	class AdminEndPoint {
-		private final String VALID_JWT = JwtTestUtil.createToken(1L, "ROLE_ADMIN");
+		private final String VALID_JWT = JwtTestUtil.createToken(1L, Role.ROLE_ADMIN);
 
 		@BeforeEach
 		void setAccessToken() {
@@ -177,7 +178,7 @@ class SecurityFilterChainTest {
 
 			given(tokenResolver.getExpiredDateByAccessToken(VALID_JWT))
 					.willReturn(Date.from(Instant.now()).getTime());
-			given(tokenResolver.getRoles(VALID_JWT)).willReturn(List.of("ROLE_ADMIN"));
+			given(tokenResolver.getRoles(VALID_JWT)).willReturn(List.of(Role.ROLE_ADMIN.name()));
 		}
 
 		@Test

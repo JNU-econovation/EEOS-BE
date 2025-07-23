@@ -1,7 +1,7 @@
 package com.blackcompany.eeos.auth.application.domain.converter;
 
 import com.blackcompany.eeos.auth.application.domain.OauthMemberModel;
-import com.blackcompany.eeos.auth.persistence.OAuthMemberEntity;
+import com.blackcompany.eeos.auth.persistence.oauth.OAuthMemberEntity;
 import com.blackcompany.eeos.common.support.converter.AbstractEntityConverter;
 import org.springframework.stereotype.Component;
 

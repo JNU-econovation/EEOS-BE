@@ -1,4 +1,4 @@
-package com.blackcompany.eeos.auth.persistence;
+package com.blackcompany.eeos.auth.persistence.oauth;
 
 import com.blackcompany.eeos.auth.application.domain.OauthMemberModel;
 import com.blackcompany.eeos.auth.application.domain.converter.OauthMemberEntityConverter;

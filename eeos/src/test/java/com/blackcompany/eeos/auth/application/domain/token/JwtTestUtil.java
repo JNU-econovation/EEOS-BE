@@ -1,5 +1,6 @@
 package com.blackcompany.eeos.auth.application.domain.token;
 
+import com.blackcompany.eeos.auth.application.model.Role;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -10,7 +11,7 @@ import java.util.Date;
 
 public class JwtTestUtil {
 
-	public static String createToken(Long memberId, String role) {
+	public static String createToken(Long memberId, Role role) {
 		final Date now = Date.from(Instant.now());
 		final long accessValidTime = 3600 * 1000;
 
@@ -18,7 +19,7 @@ public class JwtTestUtil {
 			return Jwts.builder()
 					.setHeaderParam(Header.TYPE, Header.JWT_TYPE)
 					.claim("memberId", memberId)
-					.claim("role", role)
+					.claim("role", role.name())
 					.setIssuedAt(now)
 					.setExpiration(new Date(now.getTime() + accessValidTime))
 					.signWith(createRandomKey())

@@ -6,6 +6,7 @@ import com.blackcompany.eeos.auth.application.domain.OauthMemberModel;
 import com.blackcompany.eeos.auth.application.domain.OauthServerType;
 import com.blackcompany.eeos.auth.application.dto.request.OAuthLoginRequestCommand;
 import com.blackcompany.eeos.auth.application.model.AuthorityModel;
+import com.blackcompany.eeos.auth.application.model.Role;
 import com.blackcompany.eeos.auth.application.repository.AuthorityRepository;
 import com.blackcompany.eeos.auth.application.support.AuthenticationTokenGenerator;
 import com.blackcompany.eeos.auth.fixture.FakeAuthority;
@@ -37,9 +38,13 @@ class AuthFacadeServiceTest {
 		String authCode = "code";
 		Long memberId = 1L;
 		String uri = "uri";
-		Set<AuthorityModel> authorities = Set.of(FakeAuthority.authorityModel(1L, memberId, "role"));
+		Set<AuthorityModel> authorities =
+				Set.of(FakeAuthority.authorityModel(1L, memberId, Role.ROLE_USER));
 		Set<String> roles =
-				authorities.stream().map(AuthorityModel::getName).collect(Collectors.toSet());
+				authorities.stream()
+						.map(AuthorityModel::getRole)
+						.map(Role::name)
+						.collect(Collectors.toSet());
 
 		OauthMemberModel oauthMemberModel =
 				FakeOauthMember.oauthMemberModel(OauthServerType.SLACK, memberId);

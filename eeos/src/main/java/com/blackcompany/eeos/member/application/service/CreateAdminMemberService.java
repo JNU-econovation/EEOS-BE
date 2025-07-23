@@ -6,8 +6,8 @@ import com.blackcompany.eeos.auth.application.model.AuthorityModel;
 import com.blackcompany.eeos.auth.application.model.Role;
 import com.blackcompany.eeos.auth.application.repository.AuthorityRepository;
 import com.blackcompany.eeos.auth.application.repository.OAuthMemberRepository;
-import com.blackcompany.eeos.auth.persistence.AccountEntity;
-import com.blackcompany.eeos.auth.persistence.AccountJpaRepository;
+import com.blackcompany.eeos.auth.persistence.account.AccountEntity;
+import com.blackcompany.eeos.auth.persistence.account.AccountJpaRepository;
 import com.blackcompany.eeos.member.application.model.AdminInfo;
 import com.blackcompany.eeos.member.application.model.MemberModel;
 import com.blackcompany.eeos.member.application.repository.MemberRepository;
@@ -45,7 +45,7 @@ public class CreateAdminMemberService implements CreateAdminMemberUsecase {
 		MemberModel savedMember = memberRepository.save(createMember());
 
 		saveAccount(accountEntityConverter.toEntity(createAccount(savedMember.getId())));
-		saveAuthority(savedMember.getMemberId(), "ROLE_" + Role.ADMIN.getRole());
+		saveAuthority(savedMember.getMemberId(), Role.ROLE_ADMIN);
 
 		return savedMember.getId();
 	}
@@ -79,10 +79,8 @@ public class CreateAdminMemberService implements CreateAdminMemberUsecase {
 				.build();
 	}
 
-	private void saveAuthority(Long memberId, String role) {
-		AuthorityModel authorityModel = AuthorityModel.builder().memberId(memberId).name(role).build();
-
-		authorityRepository.save(authorityModel);
+	private void saveAuthority(Long memberId, Role role) {
+		authorityRepository.save(AuthorityModel.create(memberId, role));
 	}
 
 	private boolean findAdminAccount() {

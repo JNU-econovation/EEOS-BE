@@ -1,4 +1,4 @@
-package com.blackcompany.eeos.auth.persistence;
+package com.blackcompany.eeos.auth.persistence.authority;
 
 import java.util.Set;
 import org.springframework.data.jpa.repository.JpaRepository;
