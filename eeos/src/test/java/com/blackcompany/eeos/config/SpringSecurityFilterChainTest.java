@@ -137,7 +137,7 @@ class SecurityFilterChainTest {
 		@DisplayName("[일반유저] 일반 유저 권한은 관리자 API에 접근 불가능_5")
 		void 일반유저_토큰으로_관리자_API_접근시_403응답_1_5() throws Exception {
 			mockMvc
-					.perform(put("/api/teams").header(HttpHeaders.AUTHORIZATION, bearerToken()))
+					.perform(post("/api/teams").header(HttpHeaders.AUTHORIZATION, bearerToken()))
 					.andExpect(status().isForbidden());
 		}
 
