@@ -46,7 +46,7 @@ public class AuthFacadeService implements LoginUsecase {
 	private Set<String> getRoles(Long memberId) {
 		return authorityRepository.findByMemberId(memberId).stream()
 				.map(AuthorityModel::getRole)
-				.map(Role::getRole)
+				.map(Role::name)
 				.collect(Collectors.toSet());
 	}
 }

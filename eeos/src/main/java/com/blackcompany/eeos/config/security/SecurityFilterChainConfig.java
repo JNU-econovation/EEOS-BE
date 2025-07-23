@@ -17,7 +17,7 @@ import org.springframework.web.filter.CorsFilter;
 @RequiredArgsConstructor
 public class SecurityFilterChainConfig {
 
-	private static final String ADMIN = Role.ADMIN.name();
+	private static final String ADMIN = Role.ROLE_ADMIN.getRole();
 	private final AccessTokenFilter authFilter;
 	private final OptionsFilter optionsFilter;
 	private final DynamicCorsConfigurationSource corsConfigurationSource;

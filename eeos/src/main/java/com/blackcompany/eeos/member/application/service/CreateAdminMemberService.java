@@ -45,7 +45,7 @@ public class CreateAdminMemberService implements CreateAdminMemberUsecase {
 		MemberModel savedMember = memberRepository.save(createMember());
 
 		saveAccount(accountEntityConverter.toEntity(createAccount(savedMember.getId())));
-		saveAuthority(savedMember.getMemberId(), Role.ADMIN);
+		saveAuthority(savedMember.getMemberId(), Role.ROLE_ADMIN);
 
 		return savedMember.getId();
 	}
