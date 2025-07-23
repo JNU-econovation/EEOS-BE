@@ -38,9 +38,13 @@ class AuthFacadeServiceTest {
 		String authCode = "code";
 		Long memberId = 1L;
 		String uri = "uri";
-		Set<AuthorityModel> authorities = Set.of(FakeAuthority.authorityModel(1L, memberId, Role.ROLE_USER));
+		Set<AuthorityModel> authorities =
+				Set.of(FakeAuthority.authorityModel(1L, memberId, Role.ROLE_USER));
 		Set<String> roles =
-				authorities.stream().map(AuthorityModel::getRole).map(Role::getRole).collect(Collectors.toSet());
+				authorities.stream()
+						.map(AuthorityModel::getRole)
+						.map(Role::getRole)
+						.collect(Collectors.toSet());
 
 		OauthMemberModel oauthMemberModel =
 				FakeOauthMember.oauthMemberModel(OauthServerType.SLACK, memberId);
