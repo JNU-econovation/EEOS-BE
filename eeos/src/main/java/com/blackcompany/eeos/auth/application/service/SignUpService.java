@@ -10,7 +10,7 @@ import com.blackcompany.eeos.auth.application.repository.OAuthMemberRepository;
 import com.blackcompany.eeos.auth.application.repository.OauthVerificationStorage;
 import com.blackcompany.eeos.auth.application.support.AuthenticationTokenGenerator;
 import com.blackcompany.eeos.auth.application.usecase.OAuthSignUpUseCase;
-import com.blackcompany.eeos.auth.persistence.OAuthInfo;
+import com.blackcompany.eeos.auth.persistence.oauth.OAuthInfo;
 import com.blackcompany.eeos.member.application.model.ActiveStatus;
 import com.blackcompany.eeos.member.application.model.MemberModel;
 import com.blackcompany.eeos.member.application.repository.MemberRepository;

@@ -1,4 +1,4 @@
-package com.blackcompany.eeos.auth.persistence;
+package com.blackcompany.eeos.auth.persistence.oauth;
 
 import com.blackcompany.eeos.common.persistence.BaseEntity;
 import jakarta.persistence.Column;

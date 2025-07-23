@@ -1,4 +1,4 @@
-package com.blackcompany.eeos.auth.persistence;
+package com.blackcompany.eeos.auth.persistence.authority;
 
 import com.blackcompany.eeos.common.persistence.BaseEntity;
 import jakarta.persistence.Column;
@@ -15,30 +15,26 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
-@Getter
+@Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @SuperBuilder(toBuilder = true)
-@Entity
 @Table(
-		name = AccountEntity.ENTITY_PREFIX,
-		indexes = {@Index(name = "idx_member_id", columnList = "account_member_id")})
-public class AccountEntity extends BaseEntity {
+		name = AuthorityEntity.NAME,
+		indexes = {@Index(name = "idx_member_id", columnList = AuthorityEntity.NAME + "_member_id")})
+@Getter
+public class AuthorityEntity extends BaseEntity {
 
-	public static final String ENTITY_PREFIX = "account";
+	public static final String NAME = "authority";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = ENTITY_PREFIX + "_id", nullable = false)
 	private Long id;
 
-	@Column(name = ENTITY_PREFIX + "_member_id", nullable = false, unique = true)
+	@Column(nullable = false, name = NAME + "_member_id")
 	private Long memberId;
 
-	@Column(name = ENTITY_PREFIX + "_login_id", nullable = false, unique = true)
-	private String loginId;
-
-	@Column(name = ENTITY_PREFIX + "_login_passwd", nullable = false)
-	private String passWd;
+	@Column(nullable = false, name = NAME + "_role")
+	private String role;
 }

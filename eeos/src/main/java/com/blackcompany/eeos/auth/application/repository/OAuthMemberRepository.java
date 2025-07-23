@@ -1,7 +1,7 @@
 package com.blackcompany.eeos.auth.application.repository;
 
 import com.blackcompany.eeos.auth.application.domain.OauthMemberModel;
-import com.blackcompany.eeos.auth.persistence.OAuthMemberEntity;
+import com.blackcompany.eeos.auth.persistence.oauth.OAuthMemberEntity;
 import java.util.Optional;
 
 public interface OAuthMemberRepository {

@@ -1,4 +1,4 @@
-package com.blackcompany.eeos.auth.persistence;
+package com.blackcompany.eeos.auth.persistence.authority;
 
 import com.blackcompany.eeos.auth.application.model.AuthorityModel;
 import com.blackcompany.eeos.auth.application.repository.AuthorityRepository;

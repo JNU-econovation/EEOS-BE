@@ -1,4 +1,4 @@
-package com.blackcompany.eeos.auth.persistence;
+package com.blackcompany.eeos.auth.persistence.account;
 
 import com.blackcompany.eeos.auth.application.exception.NotFoundAccountException;
 import com.blackcompany.eeos.auth.application.model.AccountModel;
