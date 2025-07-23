@@ -29,9 +29,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-// build.gradle 의존성 예시
-// testImplementation 'org.springframework.boot:spring-boot-starter-test'
-// testImplementation 'org.springframework.security:spring-security-test'
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -141,7 +138,7 @@ class SecurityFilterChainTest {
 		@DisplayName("[일반유저] 일반 유저 권한은 관리자 API에 접근 불가능_5")
 		void 일반유저_토큰으로_관리자_API_접근시_403응답_1_5() throws Exception {
 			mockMvc
-					.perform(post("/api/teams").header(HttpHeaders.AUTHORIZATION, bearerToken()))
+					.perform(put("/api/teams").header(HttpHeaders.AUTHORIZATION, bearerToken()))
 					.andExpect(status().isForbidden());
 		}
 
@@ -149,21 +146,13 @@ class SecurityFilterChainTest {
 		@DisplayName("[일반유저] 일반 유저 권한은 관리자 API에 접근 불가능_6")
 		void 일반유저_토큰으로_관리자_API_접근시_403응답_1_6() throws Exception {
 			mockMvc
-					.perform(post("/api/teams").header(HttpHeaders.AUTHORIZATION, bearerToken()))
+					.perform(delete("/api/teams/1").header(HttpHeaders.AUTHORIZATION, bearerToken()))
 					.andExpect(status().isForbidden());
 		}
 
 		@Test
 		@DisplayName("[일반유저] 일반 유저 권한은 관리자 API에 접근 불가능_7")
 		void 일반유저_토큰으로_관리자_API_접근시_403응답_1_7() throws Exception {
-			mockMvc
-					.perform(delete("/api/teams/1").header(HttpHeaders.AUTHORIZATION, bearerToken()))
-					.andExpect(status().isForbidden());
-		}
-
-		@Test
-		@DisplayName("[일반유저] 일반 유저 권한은 관리자 API에 접근 불가능_8")
-		void 일반유저_토큰으로_관리자_API_접근시_403응답_1_8() throws Exception {
 			mockMvc
 					.perform(get("/api/admin/test").header(HttpHeaders.AUTHORIZATION, bearerToken()))
 					.andExpect(status().isForbidden());
