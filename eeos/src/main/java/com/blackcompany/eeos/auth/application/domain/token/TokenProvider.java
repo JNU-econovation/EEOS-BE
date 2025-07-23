@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.Set;
 import javax.crypto.SecretKey;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 public class TokenProvider {
 
 	private static final String MEMBER_ID_CLAIM_KEY = "memberId";
+	private static final String ROLE_CLAIM_KEY = "role";
 	private final SecretKey accessSecretKey;
 	private final SecretKey refreshSecretKey;
 	private final long accessValidTime;
@@ -31,6 +33,19 @@ public class TokenProvider {
 		this.refreshValidTime = refreshValidTime;
 	}
 
+	public String createAccessToken(final Long memberId, final Set<String> roles) {
+		final Date now = new Date();
+
+		return Jwts.builder()
+				.setHeaderParam(Header.TYPE, Header.JWT_TYPE)
+				.claim(MEMBER_ID_CLAIM_KEY, memberId)
+				.claim(ROLE_CLAIM_KEY, roles)
+				.setIssuedAt(now)
+				.setExpiration(new Date(now.getTime() + accessValidTime))
+				.signWith(accessSecretKey)
+				.compact();
+	}
+
 	public String createAccessToken(final Long memberId) {
 		final Date now = new Date();
 
@@ -40,6 +55,19 @@ public class TokenProvider {
 				.setIssuedAt(now)
 				.setExpiration(new Date(now.getTime() + accessValidTime))
 				.signWith(accessSecretKey)
+				.compact();
+	}
+
+	public String createRefreshToken(final Long memberId, final Set<String> roles) {
+		final Date now = new Date();
+
+		return Jwts.builder()
+				.setHeaderParam(Header.TYPE, Header.JWT_TYPE)
+				.claim(MEMBER_ID_CLAIM_KEY, memberId)
+				.claim(ROLE_CLAIM_KEY, roles)
+				.setIssuedAt(now)
+				.setExpiration(new Date(now.getTime() + refreshValidTime))
+				.signWith(refreshSecretKey)
 				.compact();
 	}
 

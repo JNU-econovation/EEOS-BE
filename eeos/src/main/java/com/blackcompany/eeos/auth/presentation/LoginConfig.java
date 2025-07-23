@@ -1,17 +1,11 @@
 package com.blackcompany.eeos.auth.presentation;
 
-import com.blackcompany.eeos.auth.application.domain.token.TokenResolver;
-import com.blackcompany.eeos.auth.presentation.interceptor.AuthInterceptor;
-import com.blackcompany.eeos.auth.presentation.support.CookieTokenExtractor;
-import com.blackcompany.eeos.auth.presentation.support.HeaderTokenExtractor;
 import com.blackcompany.eeos.auth.presentation.support.MemberArgumentResolver;
 import com.blackcompany.eeos.auth.presentation.support.VerificationAuthorizationResolver;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
@@ -19,44 +13,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class LoginConfig implements WebMvcConfigurer {
 	private final MemberArgumentResolver memberArgumentResolver;
 	private final VerificationAuthorizationResolver verificationAuthorizationResolver;
-	private final TokenResolver tokenResolver;
-	private final HeaderTokenExtractor headerTokenExtractor;
-	private final CookieTokenExtractor cookieTokenExtractor;
-
-	@Override
-	public void addInterceptors(InterceptorRegistry registry) {
-		registry
-				.addInterceptor(memberAuthInterceptor())
-				.addPathPatterns("/api/**")
-				.excludePathPatterns(
-						"/api/guest/**",
-						"/api/auth/**",
-						"/api/health-check",
-						"/api/programs/**",
-						"/api/docs.html",
-						"/api/docs/**",
-						"/api/swagger-ui/**");
-		registry.addInterceptor(reissueAuthInterceptor()).addPathPatterns("/api/auth/reissue");
-	}
 
 	@Override
 	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
 		resolvers.addAll(List.of(memberArgumentResolver, verificationAuthorizationResolver));
-	}
-
-	@Bean
-	public AuthInterceptor memberAuthInterceptor() {
-		return AuthInterceptor.builder()
-				.tokenExtractor(headerTokenExtractor)
-				.tokenResolver(tokenResolver)
-				.build();
-	}
-
-	@Bean
-	public AuthInterceptor reissueAuthInterceptor() {
-		return AuthInterceptor.builder()
-				.tokenExtractor(cookieTokenExtractor)
-				.tokenResolver(tokenResolver)
-				.build();
 	}
 }

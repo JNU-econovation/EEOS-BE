@@ -8,6 +8,7 @@ import com.blackcompany.eeos.auth.application.domain.OauthMemberModel;
 import com.blackcompany.eeos.auth.application.domain.OauthServerType;
 import com.blackcompany.eeos.auth.application.domain.converter.OauthMemberEntityConverter;
 import com.blackcompany.eeos.auth.application.exception.OAuthSignupRestrictedException;
+import com.blackcompany.eeos.auth.application.repository.AuthorityRepository;
 import com.blackcompany.eeos.auth.application.repository.OAuthMemberRepository;
 import com.blackcompany.eeos.auth.fixture.FakeOauthMember;
 import com.blackcompany.eeos.member.application.model.MemberModel;
@@ -28,6 +29,7 @@ class AuthServiceTest {
 
 	@Mock MemberRepository memberRepository;
 	@Mock OAuthMemberRepository oAuthMemberRepository;
+	@Mock AuthorityRepository authorityRepository;
 	@Spy MemberEntityConverter memberEntityConverter;
 	@Spy OauthMemberEntityConverter oauthMemberEntityConverter;
 	@InjectMocks AuthService authService;
