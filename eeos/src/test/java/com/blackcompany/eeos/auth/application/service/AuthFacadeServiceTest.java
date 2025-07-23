@@ -43,7 +43,7 @@ class AuthFacadeServiceTest {
 		Set<String> roles =
 				authorities.stream()
 						.map(AuthorityModel::getRole)
-						.map(Role::getRole)
+						.map(Role::name)
 						.collect(Collectors.toSet());
 
 		OauthMemberModel oauthMemberModel =
