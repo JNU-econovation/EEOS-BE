@@ -48,6 +48,7 @@ public class SecurityFilterChainConfig {
 		httpSecurity.securityMatchers(
 				(matcher) -> {
 					matcher
+							.requestMatchers(HttpMethod.OPTIONS, "/**") // CORS Preflight 매칭
 							.requestMatchers("/api/auth/logout")
 							.requestMatchers("/api/auth/login/additional-info")
 							.requestMatchers(HttpMethod.POST, "/api/auth/login/**")
