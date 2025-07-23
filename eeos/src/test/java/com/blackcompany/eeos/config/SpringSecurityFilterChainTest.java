@@ -16,6 +16,7 @@ import com.blackcompany.eeos.member.application.model.MemberModel;
 import com.blackcompany.eeos.member.fixture.MemberFixture;
 import java.sql.Date;
 import java.time.Instant;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -73,7 +74,7 @@ class SecurityFilterChainTest {
 	@DisplayName("2-1. 인증이 필요한 엔드포인트 - 일반 유저")
 	class UserEndpoints {
 
-		private final String VALID_JWT = JwtTestUtil.createToken(1L, "USER");
+		private final String VALID_JWT = JwtTestUtil.createToken(1L, "ROLE_USER");
 
 		@BeforeEach
 		void setAccessToken() {
@@ -83,6 +84,7 @@ class SecurityFilterChainTest {
 
 			given(tokenResolver.getExpiredDateByAccessToken(VALID_JWT))
 					.willReturn(Date.from(Instant.now()).getTime());
+			given(tokenResolver.getRoles(VALID_JWT)).willReturn(List.of("ROLE_USER"));
 		}
 
 		@Test
@@ -164,7 +166,31 @@ class SecurityFilterChainTest {
 
 	@Nested
 	@DisplayName("2-2. 인증이 필요한 엔드포인트 - 관리자")
-	class AdminEndPoint {}
+	class AdminEndPoint {
+		private final String VALID_JWT = JwtTestUtil.createToken(1L, "ROLE_ADMIN");
+
+		@BeforeEach
+		void setAccessToken() {
+			given(tokenProvider.createAccessToken(any(), any())).willReturn(VALID_JWT);
+
+			given(tokenResolver.getUserDataByAccessToken(VALID_JWT)).willReturn(1L);
+
+			given(tokenResolver.getExpiredDateByAccessToken(VALID_JWT))
+					.willReturn(Date.from(Instant.now()).getTime());
+			given(tokenResolver.getRoles(VALID_JWT)).willReturn(List.of("ROLE_ADMIN"));
+		}
+
+		@Test
+		@DisplayName("[관리자] 관리자 권한은 관리자 API에 접근 가능_1")
+		void 관리자_토큰으로_관리자_API_접근시_200응답_1() throws Exception {
+			mockMvc
+					.perform(get("/api/admin/test").header(HttpHeaders.AUTHORIZATION, bearerToken()))
+					.andExpect(status().isOk());
+		}
+		private String bearerToken() {
+			return String.format("Bearer %s", VALID_JWT);
+		}
+	}
 
 	@Nested
 	@DisplayName("3. 존재하지 않는 엔드포인트(UnknownEndpointFilter)")
