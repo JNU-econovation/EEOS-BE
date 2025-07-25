@@ -12,7 +12,7 @@ epages-restdocs = "0.18.2"
 swagger = "5.10.3"
 
 # Security
-jwt = "0.12.3"
+jwt = "0.12.6"
 jbcrypt = "0.4"
 spring-boot-starter-security = "3.5.0"
 spring-security-test="6.5.1"
