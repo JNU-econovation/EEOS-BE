@@ -15,7 +15,7 @@ swagger = "5.10.3"
 jwt = "0.12.6"
 jbcrypt = "0.4"
 spring-boot-starter-security = "3.5.0"
-spring-security-test="6.5.1"
+spring-security-test="6.5.2"
 #testImplementation("org.springframework.security:spring-security-test:6.5.1")
 
 # Database
