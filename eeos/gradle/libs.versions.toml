@@ -6,7 +6,7 @@ spring-cloud = "2023.0.0"
 spring-doc-openapi = "2.3.0"
 
 # Plugins
-spotless = "6.25.0"
+spotless = "7.2.1"
 asciidoctor = "4.0.2"
 epages-restdocs = "0.18.2"
 swagger = "5.10.3"
