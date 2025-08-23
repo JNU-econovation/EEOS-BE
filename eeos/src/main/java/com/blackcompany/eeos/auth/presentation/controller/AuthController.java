@@ -28,6 +28,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -44,6 +45,7 @@ public class AuthController implements AuthApi {
 	private final LogOutUsecase logOutUsecase;
 	private final WithDrawUsecase withDrawUsecase;
 	private final OAuthSignUpUseCase oAuthSignUpUseCase;
+	private final AuthorityUsecase authorityUsecase;
 
 	public AuthController(
 			LoginUsecase loginUsecase,
@@ -53,7 +55,8 @@ public class AuthController implements AuthApi {
 			CookieManager cookieManager,
 			LogOutUsecase logOutUsecase,
 			WithDrawUsecase withDrawUsecase,
-			OAuthSignUpUseCase oAuthSignUpUseCase) {
+			OAuthSignUpUseCase oAuthSignUpUseCase,
+			AuthorityUsecase authorityUsecase) {
 		this.loginUsecase = loginUsecase;
 		this.reissueUsecase = reissueUsecase;
 		this.tokenExtractor = tokenExtractor;
@@ -62,6 +65,7 @@ public class AuthController implements AuthApi {
 		this.logOutUsecase = logOutUsecase;
 		this.withDrawUsecase = withDrawUsecase;
 		this.oAuthSignUpUseCase = oAuthSignUpUseCase;
+		this.authorityUsecase = authorityUsecase;
 	}
 
 	@Override
@@ -145,6 +149,12 @@ public class AuthController implements AuthApi {
 		TokenResponse response = generateTokenResponse(tokenModel, httpResponse);
 
 		return ApiResponseGenerator.success(response, HttpStatus.CREATED, MessageCode.CREATE);
+	}
+
+	@PutMapping("/authority")
+	public ApiResponse<SuccessBody<Void>> updateAuthority(@RequestParam("memberId") Long memberId, @RequestParam("role") String role){
+		authorityUsecase.changeRole(memberId, role);
+		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.UPDATE);
 	}
 
 	private TokenResponse generateTokenResponse(
