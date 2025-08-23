@@ -3,9 +3,7 @@ package com.blackcompany.eeos.auth.application.model;
 import com.blackcompany.eeos.common.support.AbstractModel;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 @Getter
 @Builder
 public class AuthorityModel implements AbstractModel {
@@ -13,6 +11,12 @@ public class AuthorityModel implements AbstractModel {
 	private final Long id;
 	private final Long memberId;
 	private Role role;
+
+	public AuthorityModel(Long id, Long memberId, Role role) {
+		this.id = id;
+		this.memberId = memberId;
+		this.role = role;
+	}
 
 	public void updateRole(Role role){
 		this.role = role;
