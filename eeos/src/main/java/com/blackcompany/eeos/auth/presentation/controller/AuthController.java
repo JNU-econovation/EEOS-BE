@@ -6,7 +6,9 @@ import com.blackcompany.eeos.auth.application.dto.request.AdditionalInfoApplicat
 import com.blackcompany.eeos.auth.application.dto.request.AuthorityUpdateRequest;
 import com.blackcompany.eeos.auth.application.dto.request.EEOSLoginRequest;
 import com.blackcompany.eeos.auth.application.dto.request.OAuthLoginRequestCommand;
+import com.blackcompany.eeos.auth.application.dto.response.RoleResponse;
 import com.blackcompany.eeos.auth.application.dto.response.TokenResponse;
+import com.blackcompany.eeos.auth.application.model.Role;
 import com.blackcompany.eeos.auth.application.usecase.*;
 import com.blackcompany.eeos.auth.presentation.docs.AuthApi;
 import com.blackcompany.eeos.auth.presentation.dto.AdditionalInfoRequest;
@@ -22,11 +24,14 @@ import com.blackcompany.eeos.common.presentation.support.CookieManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -157,6 +162,13 @@ public class AuthController implements AuthApi {
 			@RequestBody @Valid AuthorityUpdateRequest request){
 		authorityUsecase.changeRole(request.memberId(), request.from(), request.to());
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.UPDATE);
+	}
+
+	@GetMapping("/authority")
+	public ApiResponse<SuccessBody<List<RoleResponse>>> getAuthorities(){
+		List<Role> roles = authorityUsecase.getOrganizationRoles();
+		List<RoleResponse> responses = roles.stream().map(RoleResponse::from).toList();
+		return ApiResponseGenerator.success(responses, HttpStatus.OK, MessageCode.UPDATE);
 	}
 
 	private TokenResponse generateTokenResponse(
