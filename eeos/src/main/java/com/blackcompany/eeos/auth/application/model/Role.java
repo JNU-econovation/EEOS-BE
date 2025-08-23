@@ -18,6 +18,11 @@ public enum Role {
 		this.role = role;
 	}
 
+	public static boolean isExist(String role){
+		return Arrays.stream(Role.values())
+				.anyMatch(obj -> obj.getRole().equals(role));
+	}
+
 	public static Role findRole(String role){
 		return Arrays.stream(Role.values())
 				.filter(obj -> obj.getRole().equals(role))
