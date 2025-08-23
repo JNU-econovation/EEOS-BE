@@ -1,6 +1,8 @@
 package com.blackcompany.eeos.auth.persistence.authority;
 
+import com.blackcompany.eeos.auth.application.exception.NotFoundAuthorityException;
 import com.blackcompany.eeos.auth.application.model.AuthorityModel;
+import com.blackcompany.eeos.auth.application.model.Role;
 import com.blackcompany.eeos.auth.application.repository.AuthorityRepository;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -18,6 +20,12 @@ public class AuthorityRepositoryImpl implements AuthorityRepository {
 		return repository.findByMemberId(memberId).stream()
 				.map(this::toModel)
 				.collect(Collectors.toSet());
+	}
+
+	@Override
+	public AuthorityModel findByIdAndRole(Long memberId, Role role) {
+		return repository.findByIdAndRole(memberId, role)
+				.orElseThrow(NotFoundAuthorityException::new);
 	}
 
 	@Override
