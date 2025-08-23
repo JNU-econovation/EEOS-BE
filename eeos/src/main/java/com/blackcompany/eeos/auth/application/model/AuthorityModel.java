@@ -12,7 +12,11 @@ public class AuthorityModel implements AbstractModel {
 
 	private final Long id;
 	private final Long memberId;
-	private final Role role;
+	private Role role;
+
+	public void updateRole(Role role){
+		this.role = role;
+	}
 
 	public static AuthorityModel create(Long memberId, Role role) {
 		return AuthorityModel.builder().role(role).memberId(memberId).build();
