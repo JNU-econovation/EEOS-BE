@@ -3,12 +3,9 @@ package com.blackcompany.eeos.auth.presentation.controller;
 import com.blackcompany.eeos.auth.application.domain.TokenModel;
 import com.blackcompany.eeos.auth.application.dto.converter.TokenResponseConverter;
 import com.blackcompany.eeos.auth.application.dto.request.AdditionalInfoApplicationCommand;
-import com.blackcompany.eeos.auth.application.dto.request.AuthorityUpdateRequest;
 import com.blackcompany.eeos.auth.application.dto.request.EEOSLoginRequest;
 import com.blackcompany.eeos.auth.application.dto.request.OAuthLoginRequestCommand;
-import com.blackcompany.eeos.auth.application.dto.response.RoleResponse;
 import com.blackcompany.eeos.auth.application.dto.response.TokenResponse;
-import com.blackcompany.eeos.auth.application.model.Role;
 import com.blackcompany.eeos.auth.application.usecase.*;
 import com.blackcompany.eeos.auth.presentation.docs.AuthApi;
 import com.blackcompany.eeos.auth.presentation.dto.AdditionalInfoRequest;
@@ -24,17 +21,13 @@ import com.blackcompany.eeos.common.presentation.support.CookieManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import java.util.List;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -51,7 +44,6 @@ public class AuthController implements AuthApi {
 	private final LogOutUsecase logOutUsecase;
 	private final WithDrawUsecase withDrawUsecase;
 	private final OAuthSignUpUseCase oAuthSignUpUseCase;
-	private final AuthorityUsecase authorityUsecase;
 
 	public AuthController(
 			LoginUsecase loginUsecase,
@@ -61,8 +53,7 @@ public class AuthController implements AuthApi {
 			CookieManager cookieManager,
 			LogOutUsecase logOutUsecase,
 			WithDrawUsecase withDrawUsecase,
-			OAuthSignUpUseCase oAuthSignUpUseCase,
-			AuthorityUsecase authorityUsecase) {
+			OAuthSignUpUseCase oAuthSignUpUseCase) {
 		this.loginUsecase = loginUsecase;
 		this.reissueUsecase = reissueUsecase;
 		this.tokenExtractor = tokenExtractor;
@@ -71,7 +62,6 @@ public class AuthController implements AuthApi {
 		this.logOutUsecase = logOutUsecase;
 		this.withDrawUsecase = withDrawUsecase;
 		this.oAuthSignUpUseCase = oAuthSignUpUseCase;
-		this.authorityUsecase = authorityUsecase;
 	}
 
 	@Override
@@ -155,20 +145,6 @@ public class AuthController implements AuthApi {
 		TokenResponse response = generateTokenResponse(tokenModel, httpResponse);
 
 		return ApiResponseGenerator.success(response, HttpStatus.CREATED, MessageCode.CREATE);
-	}
-
-	@PutMapping("/authority")
-	public ApiResponse<SuccessBody<Void>> updateAuthority(
-			@RequestBody @Valid AuthorityUpdateRequest request){
-		authorityUsecase.changeRole(request.memberId(), request.from(), request.to());
-		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.UPDATE);
-	}
-
-	@GetMapping("/authority")
-	public ApiResponse<SuccessBody<List<RoleResponse>>> getAuthorities(){
-		List<Role> roles = authorityUsecase.getOrganizationRoles();
-		List<RoleResponse> responses = roles.stream().map(RoleResponse::from).toList();
-		return ApiResponseGenerator.success(responses, HttpStatus.OK, MessageCode.UPDATE);
 	}
 
 	private TokenResponse generateTokenResponse(
