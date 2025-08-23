@@ -3,6 +3,7 @@ package com.blackcompany.eeos.auth.presentation.controller;
 import com.blackcompany.eeos.auth.application.domain.TokenModel;
 import com.blackcompany.eeos.auth.application.dto.converter.TokenResponseConverter;
 import com.blackcompany.eeos.auth.application.dto.request.AdditionalInfoApplicationCommand;
+import com.blackcompany.eeos.auth.application.dto.request.AuthorityUpdateRequest;
 import com.blackcompany.eeos.auth.application.dto.request.EEOSLoginRequest;
 import com.blackcompany.eeos.auth.application.dto.request.OAuthLoginRequestCommand;
 import com.blackcompany.eeos.auth.application.dto.response.TokenResponse;
@@ -152,8 +153,9 @@ public class AuthController implements AuthApi {
 	}
 
 	@PutMapping("/authority")
-	public ApiResponse<SuccessBody<Void>> updateAuthority(@RequestParam("memberId") Long memberId, @RequestParam("role") String role){
-		authorityUsecase.changeRole(memberId, role);
+	public ApiResponse<SuccessBody<Void>> updateAuthority(
+			@RequestBody @Valid AuthorityUpdateRequest request){
+		authorityUsecase.changeRole(request.memberId(), request.from(), request.to());
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.UPDATE);
 	}
 
