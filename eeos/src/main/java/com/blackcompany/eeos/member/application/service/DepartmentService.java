@@ -7,6 +7,7 @@ import com.blackcompany.eeos.member.application.usecase.DepartmentUsecase;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -15,6 +16,7 @@ public class DepartmentService implements DepartmentUsecase {
 	private final MemberRepository memberRepository;
 
 	@Override
+	@Transactional
 	public void changeDepartment(Long memberId, String to) {
 		MemberModel member = memberRepository.findById(memberId);
 		Department depart = Department.findDepartmentByEnName(to);
