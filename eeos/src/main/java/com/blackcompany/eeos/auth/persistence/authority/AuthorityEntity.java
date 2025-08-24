@@ -11,12 +11,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -25,7 +27,15 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder(toBuilder = true)
 @Table(
 		name = AuthorityEntity.NAME,
-		indexes = {@Index(name = "idx_member_id", columnList = AuthorityEntity.NAME + "_member_id")})
+		indexes = {@Index(name = "idx_member_id", columnList = AuthorityEntity.NAME + "_member_id")},
+		uniqueConstraints = @UniqueConstraint(
+				name = "uk_authority_member_role",
+				columnNames = {
+						AuthorityEntity.NAME + "_member_id",
+						AuthorityEntity.NAME + "_role"
+				})
+)
+
 @Getter
 public class AuthorityEntity extends BaseEntity {
 
