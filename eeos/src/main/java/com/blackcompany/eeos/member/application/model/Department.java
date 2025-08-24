@@ -1,5 +1,6 @@
 package com.blackcompany.eeos.member.application.model;
 
+import com.blackcompany.eeos.member.application.exception.NotFoundDepartmentException;
 import java.util.Arrays;
 import java.util.List;
 import lombok.Getter;
@@ -36,14 +37,14 @@ public enum Department {
 		return Arrays.stream(Department.values())
 				.filter(obj -> obj.getEnName().equals(enName))
 				.findFirst()
-				.orElseThrow(IllegalArgumentException::new);
+				.orElseThrow(NotFoundDepartmentException::new);
 	}
 
 	public static Department findById(Long id){
 		return Arrays.stream(Department.values())
 				.filter(obj -> obj.getId().equals(id))
 				.findFirst()
-				.orElseThrow(IllegalArgumentException::new);
+				.orElseThrow(NotFoundDepartmentException::new);
 	}
 
 	public static List<Department> getAllDepartments() {
