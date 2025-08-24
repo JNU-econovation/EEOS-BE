@@ -18,12 +18,12 @@ public enum Role {
 	}
 
 	public static boolean isExist(String role) {
-		return Arrays.stream(Role.values()).anyMatch(obj -> obj.getRole().equals(role));
+		return Arrays.stream(Role.values()).anyMatch(obj -> obj.getRole().equals(role.toUpperCase()));
 	}
 
 	public static Role findRole(String role) {
 		return Arrays.stream(Role.values())
-				.filter(obj -> obj.getRole().equals(role))
+				.filter(obj -> obj.getRole().equals(role.toUpperCase()))
 				.findFirst()
 				.orElseThrow(IllegalArgumentException::new);
 	}
