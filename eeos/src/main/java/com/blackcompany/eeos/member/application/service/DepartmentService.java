@@ -19,6 +19,7 @@ public class DepartmentService implements DepartmentUsecase {
         MemberModel member = memberRepository.findById(memberId);
         Department depart = Department.findDepartmentByEnName(to);
         member.updateDepartment(depart);
+        memberRepository.save(member);
     }
 
     public List<Department> getAllDepartments() {
