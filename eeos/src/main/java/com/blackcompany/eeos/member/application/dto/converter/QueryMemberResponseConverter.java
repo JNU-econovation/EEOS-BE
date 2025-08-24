@@ -14,6 +14,7 @@ public class QueryMemberResponseConverter {
 				.memberId(source.getId())
 				.name(source.getName())
 				.activeStatus(source.getActiveStatus())
+				.department(source.getDepartment().getKoName())
 				.build();
 	}
 
