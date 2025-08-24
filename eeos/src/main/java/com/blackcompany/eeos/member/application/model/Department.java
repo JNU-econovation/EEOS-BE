@@ -3,7 +3,6 @@ package com.blackcompany.eeos.member.application.model;
 import com.blackcompany.eeos.member.application.exception.NotFoundDepartmentException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import lombok.Getter;
 
 @Getter
