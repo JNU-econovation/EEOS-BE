@@ -3,6 +3,7 @@ package com.blackcompany.eeos.member.application.model;
 import com.blackcompany.eeos.member.application.exception.NotFoundDepartmentException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import lombok.Getter;
 
 @Getter
@@ -28,13 +29,20 @@ public enum Department {
 	}
 
 	public static boolean isExistByEnName(String enName) {
+		if (enName == null) {
+			return false;
+		}
 		return Arrays.stream(Department.values())
 				.anyMatch(obj -> obj.getEnName().equals(enName.toUpperCase()));
 	}
 
 	public static Department findDepartmentByEnName(String enName) {
+		if (enName == null || enName.trim().isEmpty()) {
+			throw new NotFoundDepartmentException();
+		}
+		final String key = enName.trim().toUpperCase(Locale.ROOT);
 		return Arrays.stream(Department.values())
-				.filter(obj -> obj.getEnName().equals(enName.toUpperCase()))
+				.filter(obj -> obj.getEnName().equals(key))
 				.findFirst()
 				.orElseThrow(NotFoundDepartmentException::new);
 	}

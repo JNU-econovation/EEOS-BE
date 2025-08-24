@@ -18,10 +18,14 @@ public enum Role {
 	}
 
 	public static boolean isExist(String role) {
+		if(role == null || role.trim().isEmpty()) return false;
 		return Arrays.stream(Role.values()).anyMatch(obj -> obj.getRole().equals(role.toUpperCase()));
 	}
 
 	public static Role findRole(String role) {
+		if(role==null || role.trim().isEmpty()){
+			throw new IllegalArgumentException("해당 role 을 찾을 수 없습니다.");
+		}
 		return Arrays.stream(Role.values())
 				.filter(obj -> obj.getRole().equals(role.toUpperCase()))
 				.findFirst()
