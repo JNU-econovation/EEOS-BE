@@ -6,18 +6,20 @@ import lombok.Getter;
 
 @Getter
 public enum Department {
-	PRESIDENT(101L, "PRESIDENT"),
-	MARKETING(102L, "MARKETING"),
-	MANAGEMENT(103L, "MANAGEMENT"),
-	EVENT(104L, "EVENT"),
-	NONE(105L, "NONE");
+	PRESIDENT(101L, "PRESIDENT", "회장단"),
+	MARKETING(102L, "MARKETING", "홍보부"),
+	MANAGEMENT(103L, "MANAGEMENT", "관리부"),
+	EVENT(104L, "EVENT", "행사부"),
+	NONE(105L, "NONE", "해당없음");
 
 	private final Long id;
 	private final String name;
+	private final String koName;
 
-	Department(Long id, String name) {
+	Department(Long id, String name, String koName) {
 		this.id = id;
 		this.name = name;
+		this.koName = koName;
 	}
 
 	public static boolean isExist(String name){
