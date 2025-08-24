@@ -4,7 +4,6 @@ import com.blackcompany.eeos.auth.presentation.support.Member;
 import com.blackcompany.eeos.common.presentation.response.ApiResponse;
 import com.blackcompany.eeos.common.presentation.response.ApiResponseBody.SuccessBody;
 import com.blackcompany.eeos.member.application.dto.ChangeActiveStatusRequest;
-import com.blackcompany.eeos.member.application.dto.ChangeDepartmentRequest;
 import com.blackcompany.eeos.member.application.dto.CommandMemberResponse;
 import com.blackcompany.eeos.member.application.dto.DepartmentResponse;
 import com.blackcompany.eeos.member.application.dto.QueryMemberResponse;
@@ -12,7 +11,6 @@ import com.blackcompany.eeos.member.application.dto.QueryMembersResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,9 +42,8 @@ public interface MemberApi {
 	ApiResponse<SuccessBody<QueryMemberResponse>> findMemberByActiveStatus(
 			@Parameter(hidden = true) @Member Long memberId);
 
-
 	@Operation(summary = "관리자_회원 부서 변경", description = "회원의 부서를 변경합니다.")
-	ApiResponse<SuccessBody<Void>> changeDepartment(@RequestBody @Valid ChangeDepartmentRequest request);
+	ApiResponse<SuccessBody<Void>> changeDepartment( @PathVariable("memberId") Long memberId, @RequestParam("to") String to);
 
 	@Operation(summary = "관리자_부서 리스트 조회", description = "동아리 내의 부서 리스트를 반환합니다.")
 	ApiResponse<SuccessBody<List<DepartmentResponse>>> getDepartments();

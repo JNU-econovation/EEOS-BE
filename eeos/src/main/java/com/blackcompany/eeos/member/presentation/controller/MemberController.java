@@ -6,7 +6,6 @@ import com.blackcompany.eeos.common.presentation.response.ApiResponseBody.Succes
 import com.blackcompany.eeos.common.presentation.response.ApiResponseGenerator;
 import com.blackcompany.eeos.common.presentation.response.MessageCode;
 import com.blackcompany.eeos.member.application.dto.ChangeActiveStatusRequest;
-import com.blackcompany.eeos.member.application.dto.ChangeDepartmentRequest;
 import com.blackcompany.eeos.member.application.dto.CommandMemberResponse;
 import com.blackcompany.eeos.member.application.dto.DepartmentResponse;
 import com.blackcompany.eeos.member.application.dto.QueryMemberResponse;
@@ -74,10 +73,10 @@ public class MemberController implements MemberApi {
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
 	}
 
-	@PutMapping("/department")
+	@PutMapping("/{memberId}/department")
 	public ApiResponse<SuccessBody<Void>> changeDepartment(
-			@RequestBody @Valid ChangeDepartmentRequest request) {
-		departmentUsecase.changeDepartment(request.memberId(), request.to());
+			@PathVariable("memberId") Long memberId, @RequestParam("to") String to) {
+		departmentUsecase.changeDepartment(memberId, to);
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.UPDATE);
 	}
 
