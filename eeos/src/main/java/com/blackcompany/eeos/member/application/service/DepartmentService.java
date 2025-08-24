@@ -17,7 +17,7 @@ public class DepartmentService implements DepartmentUsecase {
     @Override
     public void changeDepartment(Long memberId, String to) {
         MemberModel member = memberRepository.findById(memberId);
-        Department depart = Department.findDepartment(to);
+        Department depart = Department.findDepartmentByEnName(to);
         member.updateDepartment(depart);
     }
 
@@ -26,7 +26,7 @@ public class DepartmentService implements DepartmentUsecase {
     }
 
     public Department getDepartment(String name) {
-        return Department.findDepartment(name);
+        return Department.findDepartmentByEnName(name);
     }
 
     public Department getDepartmentById(Long id) {
