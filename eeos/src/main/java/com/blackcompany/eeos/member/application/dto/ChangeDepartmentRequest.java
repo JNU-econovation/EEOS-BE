@@ -11,7 +11,7 @@ public record ChangeDepartmentRequest(
 
     @AssertTrue(message = "전달받은 department 가 존재하지 않습니다.")
     public boolean existsDepartment(){
-        return Department.isExist(to);
+        return Department.isExistByEnName(to);
     }
 
 }

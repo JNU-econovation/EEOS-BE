@@ -13,23 +13,28 @@ public enum Department {
 	NONE(105L, "NONE", "해당없음");
 
 	private final Long id;
-	private final String name;
+	private final String enName;
 	private final String koName;
 
-	Department(Long id, String name, String koName) {
+	Department(Long id, String enName, String koName) {
 		this.id = id;
-		this.name = name;
+		this.enName = enName;
 		this.koName = koName;
 	}
 
-	public static boolean isExist(String name){
+	public static boolean isExistById(Long id){
 		return Arrays.stream(Department.values())
-				.anyMatch(obj -> obj.getName().equals(name));
+				.anyMatch(obj -> obj.getId().equals(id));
 	}
 
-	public static Department findDepartment(String name){
+	public static boolean isExistByEnName(String enName){
 		return Arrays.stream(Department.values())
-				.filter(obj -> obj.getName().equals(name))
+				.anyMatch(obj -> obj.getEnName().equals(enName));
+	}
+
+	public static Department findDepartmentByEnName(String enName){
+		return Arrays.stream(Department.values())
+				.filter(obj -> obj.getEnName().equals(enName))
 				.findFirst()
 				.orElseThrow(IllegalArgumentException::new);
 	}
