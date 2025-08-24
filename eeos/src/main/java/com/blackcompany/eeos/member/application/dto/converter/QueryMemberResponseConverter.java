@@ -4,6 +4,7 @@ import com.blackcompany.eeos.member.application.dto.QueryMemberResponse;
 import com.blackcompany.eeos.member.application.dto.QueryMembersResponse;
 import com.blackcompany.eeos.member.application.model.MemberModel;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +15,7 @@ public class QueryMemberResponseConverter {
 				.memberId(source.getId())
 				.name(source.getName())
 				.activeStatus(source.getActiveStatus())
-				.department(source.getDepartment().getKoName())
+				.department(source.getDepartment().getEnName().toLowerCase(Locale.ROOT))
 				.build();
 	}
 
