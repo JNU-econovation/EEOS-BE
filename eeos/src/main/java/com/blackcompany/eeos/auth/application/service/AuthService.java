@@ -71,6 +71,5 @@ public class AuthService {
 
 	private void createDefaultRole(Long memberId){
 		authorityRepository.save(AuthorityModel.create(memberId, Role.ROLE_USER));
-		authorityRepository.save(AuthorityModel.create(memberId, Role.ROLE_DPT_NONE));
 	}
 }
