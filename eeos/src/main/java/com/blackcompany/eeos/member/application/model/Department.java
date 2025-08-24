@@ -33,16 +33,15 @@ public enum Department {
 			return false;
 		}
 		return Arrays.stream(Department.values())
-				.anyMatch(obj -> obj.getEnName().equals(enName.toUpperCase()));
+				.anyMatch(obj -> obj.getEnName().equalsIgnoreCase(enName));
 	}
 
 	public static Department findDepartmentByEnName(String enName) {
 		if (enName == null || enName.trim().isEmpty()) {
 			throw new NotFoundDepartmentException();
 		}
-		final String key = enName.trim().toUpperCase(Locale.ROOT);
 		return Arrays.stream(Department.values())
-				.filter(obj -> obj.getEnName().equals(key))
+				.filter(obj -> obj.getEnName().equalsIgnoreCase(enName))
 				.findFirst()
 				.orElseThrow(NotFoundDepartmentException::new);
 	}
