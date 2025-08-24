@@ -19,7 +19,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
-
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -28,14 +27,10 @@ import lombok.experimental.SuperBuilder;
 @Table(
 		name = AuthorityEntity.NAME,
 		indexes = {@Index(name = "idx_member_id", columnList = AuthorityEntity.NAME + "_member_id")},
-		uniqueConstraints = @UniqueConstraint(
-				name = "uk_authority_member_role",
-				columnNames = {
-						AuthorityEntity.NAME + "_member_id",
-						AuthorityEntity.NAME + "_role"
-				})
-)
-
+		uniqueConstraints =
+				@UniqueConstraint(
+						name = "uk_authority_member_role",
+						columnNames = {AuthorityEntity.NAME + "_member_id", AuthorityEntity.NAME + "_role"}))
 @Getter
 public class AuthorityEntity extends BaseEntity {
 
