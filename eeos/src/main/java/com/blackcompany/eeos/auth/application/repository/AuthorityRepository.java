@@ -8,7 +8,7 @@ public interface AuthorityRepository {
 
 	Set<AuthorityModel> findByMemberId(Long memberId);
 
-	AuthorityModel findByIdAndRole(Long memberId, Role role);
+	AuthorityModel findByMemberIdAndRole(Long memberId, Role role);
 
 	Long save(AuthorityModel authorityModel);
 }

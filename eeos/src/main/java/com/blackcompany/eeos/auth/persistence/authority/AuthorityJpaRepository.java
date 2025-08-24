@@ -13,6 +13,6 @@ public interface AuthorityJpaRepository extends JpaRepository<AuthorityEntity, L
 	Set<AuthorityEntity> findByMemberId(@Param("memberId") Long memberId);
 
 	@Query("SELECT a FROM AuthorityEntity a WHERE a.memberId=:memberId AND a.role=:role")
-	Optional<AuthorityEntity> findByIdAndRole(
+	Optional<AuthorityEntity> findByMemberIdAndRole(
 			@Param("memberId") Long memberId, @Param("role") Role role);
 }
