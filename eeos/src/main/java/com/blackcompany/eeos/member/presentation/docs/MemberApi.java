@@ -43,7 +43,8 @@ public interface MemberApi {
 			@Parameter(hidden = true) @Member Long memberId);
 
 	@Operation(summary = "관리자_회원 부서 변경", description = "회원의 부서를 변경합니다.")
-	ApiResponse<SuccessBody<Void>> changeDepartment( @PathVariable("memberId") Long memberId, @RequestParam("to") String to);
+	ApiResponse<SuccessBody<Void>> changeDepartment(
+			@PathVariable("memberId") Long memberId, @RequestParam("to") String to);
 
 	@Operation(summary = "관리자_부서 리스트 조회", description = "동아리 내의 부서 리스트를 반환합니다.")
 	ApiResponse<SuccessBody<List<DepartmentResponse>>> getDepartments();
