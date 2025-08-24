@@ -5,15 +5,14 @@ import org.springframework.http.HttpStatus;
 
 public class NotFoundDepartmentException extends BusinessException {
 
-    private static final String FAIL_CODE = "3003";
+	private static final String FAIL_CODE = "3003";
 
-    public NotFoundDepartmentException(){
-        super(FAIL_CODE, HttpStatus.NOT_FOUND);
-    }
+	public NotFoundDepartmentException() {
+		super(FAIL_CODE, HttpStatus.NOT_FOUND);
+	}
 
-    @Override
-    public String getMessage() {
-        return "해당 부서를 찾을 수 없습니다.";
-    }
-
+	@Override
+	public String getMessage() {
+		return "해당 부서를 찾을 수 없습니다.";
+	}
 }

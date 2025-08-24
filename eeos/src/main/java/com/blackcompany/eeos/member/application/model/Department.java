@@ -23,24 +23,22 @@ public enum Department {
 		this.koName = koName;
 	}
 
-	public static boolean isExistById(Long id){
-		return Arrays.stream(Department.values())
-				.anyMatch(obj -> obj.getId().equals(id));
+	public static boolean isExistById(Long id) {
+		return Arrays.stream(Department.values()).anyMatch(obj -> obj.getId().equals(id));
 	}
 
-	public static boolean isExistByEnName(String enName){
-		return Arrays.stream(Department.values())
-				.anyMatch(obj -> obj.getEnName().equals(enName));
+	public static boolean isExistByEnName(String enName) {
+		return Arrays.stream(Department.values()).anyMatch(obj -> obj.getEnName().equals(enName));
 	}
 
-	public static Department findDepartmentByEnName(String enName){
+	public static Department findDepartmentByEnName(String enName) {
 		return Arrays.stream(Department.values())
 				.filter(obj -> obj.getEnName().equals(enName))
 				.findFirst()
 				.orElseThrow(NotFoundDepartmentException::new);
 	}
 
-	public static Department findById(Long id){
+	public static Department findById(Long id) {
 		return Arrays.stream(Department.values())
 				.filter(obj -> obj.getId().equals(id))
 				.findFirst()

@@ -69,7 +69,7 @@ public class AuthService {
 		if (!encryptHelper.isMatch(password, encryptedPassword)) throw new NotFoundAccountException();
 	}
 
-	private void createDefaultRole(Long memberId){
+	private void createDefaultRole(Long memberId) {
 		authorityRepository.save(AuthorityModel.create(memberId, Role.ROLE_USER));
 	}
 }

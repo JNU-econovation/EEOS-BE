@@ -18,7 +18,7 @@ public class AuthorityModel implements AbstractModel {
 		this.role = role;
 	}
 
-	public void updateRole(Role role){
+	public void updateRole(Role role) {
 		this.role = role;
 	}
 

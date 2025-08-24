@@ -2,8 +2,8 @@ package com.blackcompany.eeos.member.persistence;
 
 import com.blackcompany.eeos.auth.application.domain.OauthServerType;
 import com.blackcompany.eeos.common.persistence.BaseEntity;
-import com.blackcompany.eeos.member.application.model.Department;
 import com.blackcompany.eeos.member.application.model.ActiveStatus;
+import com.blackcompany.eeos.member.application.model.Department;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

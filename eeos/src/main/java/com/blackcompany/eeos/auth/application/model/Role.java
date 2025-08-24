@@ -17,19 +17,18 @@ public enum Role {
 		this.role = role;
 	}
 
-	public static boolean isExist(String role){
-		return Arrays.stream(Role.values())
-				.anyMatch(obj -> obj.getRole().equals(role));
+	public static boolean isExist(String role) {
+		return Arrays.stream(Role.values()).anyMatch(obj -> obj.getRole().equals(role));
 	}
 
-	public static Role findRole(String role){
+	public static Role findRole(String role) {
 		return Arrays.stream(Role.values())
 				.filter(obj -> obj.getRole().equals(role))
 				.findFirst()
 				.orElseThrow(IllegalArgumentException::new);
 	}
 
-	public static Role findById(Long id){
+	public static Role findById(Long id) {
 		return Arrays.stream(Role.values())
 				.filter(obj -> obj.getId().equals(id))
 				.findFirst()

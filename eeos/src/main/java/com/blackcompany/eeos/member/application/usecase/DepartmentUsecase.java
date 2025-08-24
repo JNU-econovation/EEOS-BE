@@ -5,8 +5,7 @@ import java.util.List;
 
 public interface DepartmentUsecase {
 
-    void changeDepartment(Long memberId, String to);
+	void changeDepartment(Long memberId, String to);
 
-    List<Department> getAllDepartments();
-
+	List<Department> getAllDepartments();
 }

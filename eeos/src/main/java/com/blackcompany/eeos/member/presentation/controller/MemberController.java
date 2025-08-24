@@ -1,12 +1,12 @@
 package com.blackcompany.eeos.member.presentation.controller;
 
-import com.blackcompany.eeos.member.application.dto.ChangeDepartmentRequest;
 import com.blackcompany.eeos.auth.presentation.support.Member;
 import com.blackcompany.eeos.common.presentation.response.ApiResponse;
 import com.blackcompany.eeos.common.presentation.response.ApiResponseBody.SuccessBody;
 import com.blackcompany.eeos.common.presentation.response.ApiResponseGenerator;
 import com.blackcompany.eeos.common.presentation.response.MessageCode;
 import com.blackcompany.eeos.member.application.dto.ChangeActiveStatusRequest;
+import com.blackcompany.eeos.member.application.dto.ChangeDepartmentRequest;
 import com.blackcompany.eeos.member.application.dto.CommandMemberResponse;
 import com.blackcompany.eeos.member.application.dto.DepartmentResponse;
 import com.blackcompany.eeos.member.application.dto.QueryMemberResponse;
@@ -76,15 +76,16 @@ public class MemberController implements MemberApi {
 
 	@PutMapping("/department")
 	public ApiResponse<SuccessBody<Void>> changeDepartment(
-			@RequestBody @Valid ChangeDepartmentRequest request){
+			@RequestBody @Valid ChangeDepartmentRequest request) {
 		departmentUsecase.changeDepartment(request.memberId(), request.to());
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.UPDATE);
 	}
 
 	@GetMapping("/departments")
-	public ApiResponse<SuccessBody<List<DepartmentResponse>>> getDepartments(){
+	public ApiResponse<SuccessBody<List<DepartmentResponse>>> getDepartments() {
 		List<Department> departments = departmentUsecase.getAllDepartments();
-		List<DepartmentResponse> responses = departments.stream().map(DepartmentResponse::from).toList();
+		List<DepartmentResponse> responses =
+				departments.stream().map(DepartmentResponse::from).toList();
 		return ApiResponseGenerator.success(responses, HttpStatus.OK, MessageCode.GET);
 	}
 }

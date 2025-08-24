@@ -1,6 +1,5 @@
 package com.blackcompany.eeos.auth.persistence.authority;
 
-import com.blackcompany.eeos.auth.application.model.AuthorityModel;
 import com.blackcompany.eeos.auth.application.model.Role;
 import java.util.Optional;
 import java.util.Set;
@@ -14,5 +13,6 @@ public interface AuthorityJpaRepository extends JpaRepository<AuthorityEntity, L
 	Set<AuthorityEntity> findByMemberId(@Param("memberId") Long memberId);
 
 	@Query("SELECT a FROM AuthorityEntity a WHERE a.memberId=:memberId AND a.role=:role")
-	Optional<AuthorityEntity> findByIdAndRole(@Param("memberId") Long memberId, @Param("role") Role role);
+	Optional<AuthorityEntity> findByIdAndRole(
+			@Param("memberId") Long memberId, @Param("role") Role role);
 }

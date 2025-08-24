@@ -24,7 +24,8 @@ public class AuthorityRepositoryImpl implements AuthorityRepository {
 
 	@Override
 	public AuthorityModel findByIdAndRole(Long memberId, Role role) {
-		return repository.findByIdAndRole(memberId, role)
+		return repository
+				.findByIdAndRole(memberId, role)
 				.map(this::toModel)
 				.orElseThrow(NotFoundAuthorityException::new);
 	}
