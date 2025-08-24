@@ -5,11 +5,12 @@ import com.blackcompany.eeos.common.support.dto.AbstractResponseDto;
 
 public record DepartmentResponse(
         Long departmentId,
-        String name
+        String enName,
+        String koName
 ) implements AbstractResponseDto {
 
     public static DepartmentResponse from(Department department){
-        return new DepartmentResponse(department.getId(), department.getName());
+        return new DepartmentResponse(department.getId(), department.getEnName(), department.getKoName());
     }
 
 }
