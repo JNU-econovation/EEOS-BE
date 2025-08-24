@@ -1,5 +1,6 @@
 package com.blackcompany.eeos.member.presentation.controller;
 
+import com.blackcompany.eeos.member.application.dto.ChangeDepartmentRequest;
 import com.blackcompany.eeos.auth.presentation.support.Member;
 import com.blackcompany.eeos.common.presentation.response.ApiResponse;
 import com.blackcompany.eeos.common.presentation.response.ApiResponseBody.SuccessBody;
@@ -7,13 +8,17 @@ import com.blackcompany.eeos.common.presentation.response.ApiResponseGenerator;
 import com.blackcompany.eeos.common.presentation.response.MessageCode;
 import com.blackcompany.eeos.member.application.dto.ChangeActiveStatusRequest;
 import com.blackcompany.eeos.member.application.dto.CommandMemberResponse;
+import com.blackcompany.eeos.member.application.dto.DepartmentResponse;
 import com.blackcompany.eeos.member.application.dto.QueryMemberResponse;
 import com.blackcompany.eeos.member.application.dto.QueryMembersResponse;
+import com.blackcompany.eeos.member.application.model.Department;
 import com.blackcompany.eeos.member.application.usecase.ChangeActiveStatusUsecase;
+import com.blackcompany.eeos.member.application.usecase.DepartmentUsecase;
 import com.blackcompany.eeos.member.application.usecase.GetMemberByActiveStatus;
 import com.blackcompany.eeos.member.application.usecase.GetMembersByActiveStatus;
 import com.blackcompany.eeos.member.presentation.docs.MemberApi;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,6 +37,7 @@ public class MemberController implements MemberApi {
 	private final ChangeActiveStatusUsecase changeActiveStatusUsecase;
 	private final GetMembersByActiveStatus getMembersByActiveStatus;
 	private final GetMemberByActiveStatus getMemberByActiveStatus;
+	private final DepartmentUsecase departmentUsecase;
 
 	@Override
 	@PutMapping("/activeStatus/{memberId}")
@@ -66,5 +72,19 @@ public class MemberController implements MemberApi {
 			@Member Long memberId) {
 		QueryMemberResponse response = getMemberByActiveStatus.execute(memberId);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
+	}
+
+	@PutMapping("/department")
+	public ApiResponse<SuccessBody<Void>> changeDepartment(
+			@RequestBody @Valid ChangeDepartmentRequest request){
+		departmentUsecase.changeDepartment(request.memberId(), request.to());
+		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.UPDATE);
+	}
+
+	@GetMapping("/departments")
+	public ApiResponse<SuccessBody<List<DepartmentResponse>>> getDepartments(){
+		List<Department> departments = departmentUsecase.getAllDepartments();
+		List<DepartmentResponse> responses = departments.stream().map(DepartmentResponse::from).toList();
+		return ApiResponseGenerator.success(responses, HttpStatus.OK, MessageCode.GET);
 	}
 }
