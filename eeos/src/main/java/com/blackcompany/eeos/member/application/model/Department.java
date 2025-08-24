@@ -28,7 +28,8 @@ public enum Department {
 	}
 
 	public static boolean isExistByEnName(String enName) {
-		return Arrays.stream(Department.values()).anyMatch(obj -> obj.getEnName().equals(enName.toUpperCase()));
+		return Arrays.stream(Department.values())
+				.anyMatch(obj -> obj.getEnName().equals(enName.toUpperCase()));
 	}
 
 	public static Department findDepartmentByEnName(String enName) {
