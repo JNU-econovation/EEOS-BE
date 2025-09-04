@@ -14,7 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class SemesterPeriodService implements GetSemesterPeriodUsecase, UpdateSemesterPeriodUsecase {
+public class SemesterPeriodService
+		implements GetSemesterPeriodUsecase, UpdateSemesterPeriodUsecase {
 	private final SemesterPeriodRepository semesterPeriodRepository;
 	private final SemesterPeriodProvider semesterPeriodProvider;
 
@@ -26,7 +27,8 @@ public class SemesterPeriodService implements GetSemesterPeriodUsecase, UpdateSe
 
 	@Override
 	@Transactional
-	public SemesterPeriodApplicationQuery updateSemesterPeriod(SemesterPeriodApplicationCommand command) {
+	public SemesterPeriodApplicationQuery updateSemesterPeriod(
+			SemesterPeriodApplicationCommand command) {
 		SemesterPeriodModel model =
 				semesterPeriodRepository.updateSemesterPeriod(
 						new SemesterPeriodModel(command.startDate(), command.endDate()));

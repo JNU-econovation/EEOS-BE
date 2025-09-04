@@ -22,8 +22,8 @@ public class SemesterPeriodController {
 	private final UpdateSemesterPeriodUsecase updateSemesterPeriodUsecase;
 
 	@PutMapping("/admin/semester-periods") // TODO : 인터셉터 단에서 어드민 검증
-	public ApiResponse<ApiResponseBody.SuccessBody<SemesterPeriodApplicationQuery>> updateSemesterPeriod(
-			@RequestBody @Valid UpdateSemesterPeriodRequest request) {
+	public ApiResponse<ApiResponseBody.SuccessBody<SemesterPeriodApplicationQuery>>
+			updateSemesterPeriod(@RequestBody @Valid UpdateSemesterPeriodRequest request) {
 		SemesterPeriodApplicationQuery response =
 				updateSemesterPeriodUsecase.updateSemesterPeriod(
 						new SemesterPeriodApplicationCommand(request.startDate(), request.endDate()));
@@ -31,7 +31,8 @@ public class SemesterPeriodController {
 	}
 
 	@GetMapping("/semester-periods")
-	public ApiResponse<ApiResponseBody.SuccessBody<SemesterPeriodApplicationQuery>> getSemesterPeriod() {
+	public ApiResponse<ApiResponseBody.SuccessBody<SemesterPeriodApplicationQuery>>
+			getSemesterPeriod() {
 		SemesterPeriodApplicationQuery response = getSemesterPeriodUsecase.getSemesterPeriod();
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
 	}

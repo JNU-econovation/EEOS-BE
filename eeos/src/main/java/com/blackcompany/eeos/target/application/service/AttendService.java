@@ -253,8 +253,10 @@ public class AttendService
 	public AttendSummaryInfoResponse getMyAttendSummary(Long startDate, Long endDate) {
 		Long memberId = RequestScope.getMemberId();
 
-		if (startDate == null) startDate = semesterPeriodProvider.getSemesterPeriod().getStartDate().getTime();
-		if (endDate == null) endDate = semesterPeriodProvider.getSemesterPeriod().getEndDate().getTime();
+		if (startDate == null)
+			startDate = semesterPeriodProvider.getSemesterPeriod().getStartDate().getTime();
+		if (endDate == null)
+			endDate = semesterPeriodProvider.getSemesterPeriod().getEndDate().getTime();
 
 		List<ProgramModel> programs = programDateRangeService.getPrograms(startDate, endDate);
 
@@ -288,7 +290,9 @@ public class AttendService
 						? semesterPeriodProvider.getSemesterPeriod().getStartDate()
 						: new Timestamp(startDate);
 		Timestamp endTimestamp =
-				endDate == null ? semesterPeriodProvider.getSemesterPeriod().getEndDate() : new Timestamp(endDate);
+				endDate == null
+						? semesterPeriodProvider.getSemesterPeriod().getEndDate()
+						: new Timestamp(endDate);
 
 		Page<Object[]> pages =
 				penaltyPointRepository.findByPenaltyPointSum(startTimestamp, endTimestamp, pageable);
