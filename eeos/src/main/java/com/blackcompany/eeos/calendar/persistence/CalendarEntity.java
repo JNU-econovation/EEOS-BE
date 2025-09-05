@@ -2,6 +2,7 @@ package com.blackcompany.eeos.calendar.persistence;
 
 import com.blackcompany.eeos.calendar.application.model.CalendarModel;
 import com.blackcompany.eeos.calendar.application.model.CalendarType;
+import com.blackcompany.eeos.common.persistence.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -31,7 +32,7 @@ import lombok.experimental.SuperBuilder;
                 @Index(name = "idx_calendar_start_at", columnList = "calendar_start_at"),
                 @Index(name = "idx_calendar_end_at", columnList = "calendar_end_at")
         })
-public class CalendarEntity {
+public class CalendarEntity extends BaseEntity {
 
     public static final String ENTITY_PREFIX = "calendar";
 
