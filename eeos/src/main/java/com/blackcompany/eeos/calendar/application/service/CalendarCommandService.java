@@ -1,5 +1,6 @@
 package com.blackcompany.eeos.calendar.application.service;
 
+import com.blackcompany.eeos.calendar.application.dto.CalendarCreateCommand;
 import com.blackcompany.eeos.calendar.application.model.CalendarModel;
 import com.blackcompany.eeos.calendar.application.repository.CalendarRepository;
 import com.blackcompany.eeos.calendar.application.usecase.CalendarCreateUsecase;
@@ -16,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class CalendarService implements CalendarCreateUsecase {
+public class CalendarCommandService implements CalendarCreateUsecase {
 
     private final MemberRepository memberRepository;
     private final CalendarRepository repository;
@@ -24,14 +25,19 @@ public class CalendarService implements CalendarCreateUsecase {
 
     @Override
     @Transactional
-    public Long create(String title, String content, String url, String type, LocalDateTime startAt,
-                       LocalDateTime endAt) {
+    public Long create(CalendarCreateCommand command) {
         Long memberId = RequestScope.getMemberId();
-        CalendarModel calendar = CalendarModel.create(title, content, memberId, startAt, endAt, type, url);
+        CalendarModel calendar = newCalendar(command, memberId);
         MemberModel member = memberRepository.findById(memberId);
 
         validator.typeValidator(calendar, member.getDepartment());
 
         return repository.save(calendar);
+    }
+
+    private CalendarModel newCalendar(CalendarCreateCommand command, Long memberId){
+        return CalendarModel.create(
+                command.title(), command.content(), command.startAt(),
+                command.endAt(), command.type(), command.url(), memberId);
     }
 }

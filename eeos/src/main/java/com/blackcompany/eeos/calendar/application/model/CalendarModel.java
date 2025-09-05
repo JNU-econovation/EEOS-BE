@@ -22,7 +22,7 @@ public class CalendarModel {
     private CalendarType type;
     private String url;
 
-    public static CalendarModel create(String title, String content, Long writer, LocalDateTime startAt, LocalDateTime endAt, String type, String url){
+    public static CalendarModel create(String title, String content, LocalDateTime startAt, LocalDateTime endAt, String type, String url, Long writer){
         return CalendarModel.builder()
                 .title(title)
                 .content(content)

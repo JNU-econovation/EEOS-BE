@@ -1,9 +1,9 @@
 package com.blackcompany.eeos.calendar.application.usecase;
 
-import java.time.LocalDateTime;
+import com.blackcompany.eeos.calendar.application.dto.CalendarCreateCommand;
 
 public interface CalendarCreateUsecase {
 
-    Long create(String title, String content, String url, String type, LocalDateTime startAt, LocalDateTime endAt);
+    Long create(CalendarCreateCommand command);
 
 }
