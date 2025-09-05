@@ -36,10 +36,10 @@ public class CalendarController {
 
 	@GetMapping
 	public ApiResponse<SuccessBody<CalendarResponses>> getCalendar(
-			@RequestParam("year") int year,
-			@RequestParam("month") int month,
-			@RequestParam(value = "date", required = false) int date,
-			@RequestParam(value = "duration", required = false) int duration) {
+			@RequestParam("year") Integer year,
+			@RequestParam("month") Integer month,
+			@RequestParam(value = "date", required = false) Integer date,
+			@RequestParam(value = "duration", required = false) Integer duration) {
 		List<CalendarResponse> calendars =
 				getUsecase.getCalendar(new CalendarQuery(year, month, date, duration));
 		CalendarResponses responses = new CalendarResponses(calendars);
