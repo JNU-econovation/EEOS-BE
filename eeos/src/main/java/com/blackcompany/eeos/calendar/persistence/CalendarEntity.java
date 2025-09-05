@@ -29,7 +29,7 @@ import lombok.experimental.SuperBuilder;
         name = CalendarEntity.ENTITY_PREFIX,
         indexes = {
                 @Index(name = "idx_calendar_start_at", columnList = "calendar_start_at"),
-                @Index(name = "idx_calendar_end_at", columnList = "calendar_end_ar")
+                @Index(name = "idx_calendar_end_at", columnList = "calendar_end_at")
         })
 public class CalendarEntity {
 
