@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface CalendarJpaRepository extends JpaRepository<CalendarEntity, Long> {
 
-    @Query("SELECT c FROM CalendarEntity c WHERE c.startAt between :startAt and :endAt")
-    List<CalendarEntity> findBetween(@Param("startAt") LocalDateTime startAt, @Param("endAt")  LocalDateTime endAt);
-
+	@Query("SELECT c FROM CalendarEntity c WHERE c.startAt between :startAt and :endAt")
+	List<CalendarEntity> findBetween(
+			@Param("startAt") LocalDateTime startAt, @Param("endAt") LocalDateTime endAt);
 }

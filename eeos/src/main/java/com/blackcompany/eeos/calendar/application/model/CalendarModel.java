@@ -13,35 +13,47 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CalendarModel {
 
-    private Long id;
-    private String title;
-    private Long writer;
-    private LocalDateTime startAt;
-    private LocalDateTime endAt;
-    private CalendarType type;
-    private String url;
+	private Long id;
+	private String title;
+	private Long writer;
+	private LocalDateTime startAt;
+	private LocalDateTime endAt;
+	private CalendarType type;
+	private String url;
 
-    public static CalendarModel create(String title, LocalDateTime startAt, LocalDateTime endAt, String type, String url, Long writer){
-        return CalendarModel.builder()
-                .title(title)
-                .writer(writer)
-                .startAt(startAt)
-                .endAt(endAt)
-                .url(url)
-                .type(CalendarType.findByName(type))
-                .build();
-    }
+	public static CalendarModel create(
+			String title,
+			LocalDateTime startAt,
+			LocalDateTime endAt,
+			String type,
+			String url,
+			Long writer) {
+		return CalendarModel.builder()
+				.title(title)
+				.writer(writer)
+				.startAt(startAt)
+				.endAt(endAt)
+				.url(url)
+				.type(CalendarType.findByName(type))
+				.build();
+	}
 
-    public static CalendarModel load(Long id,String title, LocalDateTime startAt, LocalDateTime endAt, CalendarType type, String url, Long writer){
-        return CalendarModel.builder()
-                .id(id)
-                .title(title)
-                .writer(writer)
-                .startAt(startAt)
-                .endAt(endAt)
-                .url(url)
-                .type(type)
-                .build();
-    }
-
+	public static CalendarModel load(
+			Long id,
+			String title,
+			LocalDateTime startAt,
+			LocalDateTime endAt,
+			CalendarType type,
+			String url,
+			Long writer) {
+		return CalendarModel.builder()
+				.id(id)
+				.title(title)
+				.writer(writer)
+				.startAt(startAt)
+				.endAt(endAt)
+				.url(url)
+				.type(type)
+				.build();
+	}
 }

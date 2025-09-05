@@ -4,6 +4,5 @@ import com.blackcompany.eeos.calendar.application.dto.CalendarCreateCommand;
 
 public interface CreateCalendarUsecase {
 
-    Long create(CalendarCreateCommand command);
-
+	Long create(CalendarCreateCommand command);
 }

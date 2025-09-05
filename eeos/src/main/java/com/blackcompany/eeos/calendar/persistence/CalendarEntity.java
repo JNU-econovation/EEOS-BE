@@ -27,51 +27,51 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder(toBuilder = true)
 @Entity
 @Table(
-        name = CalendarEntity.ENTITY_PREFIX,
-        indexes = {
-                @Index(name = "idx_calendar_start_at", columnList = "calendar_start_at"),
-                @Index(name = "idx_calendar_end_at", columnList = "calendar_end_at")
-        })
+		name = CalendarEntity.ENTITY_PREFIX,
+		indexes = {
+			@Index(name = "idx_calendar_start_at", columnList = "calendar_start_at"),
+			@Index(name = "idx_calendar_end_at", columnList = "calendar_end_at")
+		})
 public class CalendarEntity extends BaseEntity {
 
-    public static final String ENTITY_PREFIX = "calendar";
+	public static final String ENTITY_PREFIX = "calendar";
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = ENTITY_PREFIX + "_id", nullable = false)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = ENTITY_PREFIX + "_id", nullable = false)
+	private Long id;
 
-    @Column(name = ENTITY_PREFIX + "_writer", nullable = false)
-    private Long writer;
+	@Column(name = ENTITY_PREFIX + "_writer", nullable = false)
+	private Long writer;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = ENTITY_PREFIX + "_type", nullable = false)
-    private CalendarType type;
+	@Enumerated(EnumType.STRING)
+	@Column(name = ENTITY_PREFIX + "_type", nullable = false)
+	private CalendarType type;
 
-    @Column(name = ENTITY_PREFIX + "_title", nullable = false)
-    private String title;
+	@Column(name = ENTITY_PREFIX + "_title", nullable = false)
+	private String title;
 
-    @Column(name = ENTITY_PREFIX + "_url", nullable = false)
-    private String url;
+	@Column(name = ENTITY_PREFIX + "_url", nullable = false)
+	private String url;
 
-    @Column(name = ENTITY_PREFIX + "_start_at", nullable = false)
-    private LocalDateTime startAt;
+	@Column(name = ENTITY_PREFIX + "_start_at", nullable = false)
+	private LocalDateTime startAt;
 
-    @Column(name = ENTITY_PREFIX + "_end_at", nullable = false)
-    private LocalDateTime endAt;
+	@Column(name = ENTITY_PREFIX + "_end_at", nullable = false)
+	private LocalDateTime endAt;
 
-    public CalendarModel toModel(){
-        return CalendarModel.load(id, title, startAt, endAt, type, url, writer);
-    }
+	public CalendarModel toModel() {
+		return CalendarModel.load(id, title, startAt, endAt, type, url, writer);
+	}
 
-    public static CalendarEntity toEntity(CalendarModel model){
-        return CalendarEntity.builder()
-                .title(model.getTitle())
-                .url(model.getUrl())
-                .endAt(model.getEndAt())
-                .startAt(model.getStartAt())
-                .writer(model.getWriter())
-                .type(model.getType())
-                .build();
-    }
+	public static CalendarEntity toEntity(CalendarModel model) {
+		return CalendarEntity.builder()
+				.title(model.getTitle())
+				.url(model.getUrl())
+				.endAt(model.getEndAt())
+				.startAt(model.getStartAt())
+				.writer(model.getWriter())
+				.type(model.getType())
+				.build();
+	}
 }

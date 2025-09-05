@@ -20,26 +20,26 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class CalendarCommandService implements CreateCalendarUsecase {
 
-    private final MemberRepository memberRepository;
-    private final CalendarRepository repository;
-    private final CalendarValidator validator;
+	private final MemberRepository memberRepository;
+	private final CalendarRepository repository;
+	private final CalendarValidator validator;
 
-    @Override
-    @Transactional
-    public Long create(CalendarCreateCommand command) {
-        Long memberId = RequestScope.getMemberId();
-        CalendarModel calendar = newCalendar(command, memberId);
-        MemberModel member = memberRepository.findById(memberId);
+	@Override
+	@Transactional
+	public Long create(CalendarCreateCommand command) {
+		Long memberId = RequestScope.getMemberId();
+		CalendarModel calendar = newCalendar(command, memberId);
+		MemberModel member = memberRepository.findById(memberId);
 
-        validator.typeValidate(calendar, member.getDepartment());
+		validator.typeValidate(calendar, member.getDepartment());
 
-        return repository.save(calendar);
-    }
+		return repository.save(calendar);
+	}
 
-    private CalendarModel newCalendar(CalendarCreateCommand command, Long memberId){
-        LocalDateTime startAt = DateConverter.toLocalDateTime(command.startAt());
-        LocalDateTime endAt = DateConverter.toLocalDateTime(command.endAt());
-        return CalendarModel.create(
-                command.title(), startAt, endAt, command.type(), command.url(), memberId);
-    }
+	private CalendarModel newCalendar(CalendarCreateCommand command, Long memberId) {
+		LocalDateTime startAt = DateConverter.toLocalDateTime(command.startAt());
+		LocalDateTime endAt = DateConverter.toLocalDateTime(command.endAt());
+		return CalendarModel.create(
+				command.title(), startAt, endAt, command.type(), command.url(), memberId);
+	}
 }

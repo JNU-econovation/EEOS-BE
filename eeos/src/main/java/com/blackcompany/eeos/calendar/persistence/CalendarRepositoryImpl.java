@@ -12,27 +12,24 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class CalendarRepositoryImpl implements CalendarRepository {
 
-    private final CalendarJpaRepository jpaRepository;
+	private final CalendarJpaRepository jpaRepository;
 
-    @Override
-    public Long save(CalendarModel calendar) {
-        CalendarEntity entity = CalendarEntity.toEntity(calendar);
-        return jpaRepository.save(entity).getId();
-    }
+	@Override
+	public Long save(CalendarModel calendar) {
+		CalendarEntity entity = CalendarEntity.toEntity(calendar);
+		return jpaRepository.save(entity).getId();
+	}
 
-    @Override
-    public CalendarModel findById(Long id) {
-        Optional<CalendarEntity> entity = jpaRepository.findById(id);
+	@Override
+	public CalendarModel findById(Long id) {
+		Optional<CalendarEntity> entity = jpaRepository.findById(id);
 
-        return entity.map(CalendarEntity::toModel)
-                .orElseThrow();
-    }
+		return entity.map(CalendarEntity::toModel).orElseThrow();
+	}
 
-    @Override
-    public List<CalendarModel> findByBetweenDate(LocalDateTime startAt, LocalDateTime endAt) {
-        List<CalendarEntity> entities = jpaRepository.findBetween(startAt, endAt);
-        return entities.stream()
-                .map(CalendarEntity::toModel)
-                .toList();
-    }
+	@Override
+	public List<CalendarModel> findByBetweenDate(LocalDateTime startAt, LocalDateTime endAt) {
+		List<CalendarEntity> entities = jpaRepository.findBetween(startAt, endAt);
+		return entities.stream().map(CalendarEntity::toModel).toList();
+	}
 }

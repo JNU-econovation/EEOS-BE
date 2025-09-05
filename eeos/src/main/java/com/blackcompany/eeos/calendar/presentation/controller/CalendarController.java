@@ -25,25 +25,24 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class CalendarController {
 
-    private final CreateCalendarUsecase createUsecase;
-    private final GetCalendarUsecase getUsecase;
+	private final CreateCalendarUsecase createUsecase;
+	private final GetCalendarUsecase getUsecase;
 
-    @PostMapping
-    public ApiResponse<SuccessBody<Long>> create(@RequestBody CalendarCreateCommand request){
-        Long createdId = createUsecase.create(request);
-        return ApiResponseGenerator.success(createdId, HttpStatus.CREATED, MessageCode.CREATE);
-    }
+	@PostMapping
+	public ApiResponse<SuccessBody<Long>> create(@RequestBody CalendarCreateCommand request) {
+		Long createdId = createUsecase.create(request);
+		return ApiResponseGenerator.success(createdId, HttpStatus.CREATED, MessageCode.CREATE);
+	}
 
-    @GetMapping
-    public ApiResponse<SuccessBody<CalendarResponses>> getCalendar(
-            @RequestParam("year") int year,
-            @RequestParam("month") int month,
-            @RequestParam(value = "date", required = false) int date,
-            @RequestParam(value = "duration", required = false) int duration
-    ){
-        List<CalendarResponse> calendars = getUsecase.getCalendar(new CalendarQuery(year, month, date, duration));
-        CalendarResponses responses = new CalendarResponses(calendars);
-        return ApiResponseGenerator.success(responses, HttpStatus.OK, MessageCode.GET);
-    }
-
+	@GetMapping
+	public ApiResponse<SuccessBody<CalendarResponses>> getCalendar(
+			@RequestParam("year") int year,
+			@RequestParam("month") int month,
+			@RequestParam(value = "date", required = false) int date,
+			@RequestParam(value = "duration", required = false) int duration) {
+		List<CalendarResponse> calendars =
+				getUsecase.getCalendar(new CalendarQuery(year, month, date, duration));
+		CalendarResponses responses = new CalendarResponses(calendars);
+		return ApiResponseGenerator.success(responses, HttpStatus.OK, MessageCode.GET);
+	}
 }

@@ -9,50 +9,50 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class DateConverter {
-    private static final String KST = "Asia/Seoul";
+	private static final String KST = "Asia/Seoul";
 
-    public static Timestamp toEpochSecond(LocalDate localDate) {
-        if (localDate == null) {
-            return null;
-        }
+	public static Timestamp toEpochSecond(LocalDate localDate) {
+		if (localDate == null) {
+			return null;
+		}
 
-        return Timestamp.valueOf(localDate.atStartOfDay());
-    }
+		return Timestamp.valueOf(localDate.atStartOfDay());
+	}
 
-    public static Timestamp toEpochSecond(Timestamp epochSecond) {
-        if (epochSecond == null) {
-            return null;
-        }
+	public static Timestamp toEpochSecond(Timestamp epochSecond) {
+		if (epochSecond == null) {
+			return null;
+		}
 
-        LocalDate localDate = toLocalDate(epochSecond);
-        return toEpochSecond(localDate);
-    }
+		LocalDate localDate = toLocalDate(epochSecond);
+		return toEpochSecond(localDate);
+	}
 
-    private static LocalDate toLocalDate(Timestamp epochSecond) {
-        if (epochSecond == null) {
-            return null;
-        }
+	private static LocalDate toLocalDate(Timestamp epochSecond) {
+		if (epochSecond == null) {
+			return null;
+		}
 
-        return epochSecond.toLocalDateTime().toLocalDate();
-    }
+		return epochSecond.toLocalDateTime().toLocalDate();
+	}
 
-    public static LocalDate toLocalDate(Long epochMilli) {
-        if (epochMilli == null) {
-            return null;
-        }
+	public static LocalDate toLocalDate(Long epochMilli) {
+		if (epochMilli == null) {
+			return null;
+		}
 
-        return Instant.ofEpochSecond(epochMilli / 1000).atZone(ZoneId.of(KST)).toLocalDate();
-    }
+		return Instant.ofEpochSecond(epochMilli / 1000).atZone(ZoneId.of(KST)).toLocalDate();
+	}
 
-    public static LocalDateTime toLocalDateTime(Long epochMilli) {
-        if (epochMilli == null) {
-            return null;
-        }
+	public static LocalDateTime toLocalDateTime(Long epochMilli) {
+		if (epochMilli == null) {
+			return null;
+		}
 
-        return Instant.ofEpochSecond(epochMilli / 1000).atZone(ZoneId.of(KST)).toLocalDateTime();
-    }
+		return Instant.ofEpochSecond(epochMilli / 1000).atZone(ZoneId.of(KST)).toLocalDateTime();
+	}
 
-	public static Long toMillis(LocalDateTime localDateTime){
-        return localDateTime.atZone(ZoneId.of(KST)).toInstant().toEpochMilli();
-    }
+	public static Long toMillis(LocalDateTime localDateTime) {
+		return localDateTime.atZone(ZoneId.of(KST)).toInstant().toEpochMilli();
+	}
 }

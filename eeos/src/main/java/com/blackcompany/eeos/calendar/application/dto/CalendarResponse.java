@@ -5,21 +5,14 @@ import com.blackcompany.eeos.common.support.dto.AbstractResponseDto;
 import com.blackcompany.eeos.common.utils.DateConverter;
 
 public record CalendarResponse(
-        String title,
-        String url,
-        String type,
-        Long startAt,
-        Long endAt,
-        String writer
-) implements AbstractResponseDto {
+		String title, String url, String type, Long startAt, Long endAt, String writer)
+		implements AbstractResponseDto {
 
-    public static CalendarResponse toResponse(CalendarModel model, String writerName){
-        Long startAt = DateConverter.toMillis(model.getStartAt());
-        Long endAt = DateConverter.toMillis(model.getEndAt());
-        String type = model.getType().name();
+	public static CalendarResponse toResponse(CalendarModel model, String writerName) {
+		Long startAt = DateConverter.toMillis(model.getStartAt());
+		Long endAt = DateConverter.toMillis(model.getEndAt());
+		String type = model.getType().name();
 
-        return new CalendarResponse(
-                model.getTitle(), model.getUrl(), type, startAt, endAt, writerName);
-    }
-
+		return new CalendarResponse(model.getTitle(), model.getUrl(), type, startAt, endAt, writerName);
+	}
 }

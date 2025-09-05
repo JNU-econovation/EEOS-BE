@@ -4,18 +4,16 @@ import com.blackcompany.eeos.calendar.application.exception.NotFoundCalendarType
 import java.util.Arrays;
 
 public enum CalendarType {
+	EVENT,
+	PRESENTATION,
+	ETC;
 
-    EVENT,
-    PRESENTATION,
-    ETC;
+	CalendarType() {}
 
-    CalendarType(){}
-
-    public static CalendarType findByName(String name) {
-        return Arrays.stream(CalendarType.values())
-                .filter(calendarType -> calendarType.name().equalsIgnoreCase(name))
-                .findFirst()
-                .orElseThrow(NotFoundCalendarTypeException::new);
-    }
-
+	public static CalendarType findByName(String name) {
+		return Arrays.stream(CalendarType.values())
+				.filter(calendarType -> calendarType.name().equalsIgnoreCase(name))
+				.findFirst()
+				.orElseThrow(NotFoundCalendarTypeException::new);
+	}
 }

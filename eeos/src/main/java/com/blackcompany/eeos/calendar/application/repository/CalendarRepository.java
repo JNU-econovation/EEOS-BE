@@ -6,10 +6,9 @@ import java.util.List;
 
 public interface CalendarRepository {
 
-    Long save(CalendarModel calendar);
+	Long save(CalendarModel calendar);
 
-    CalendarModel findById(Long id);
+	CalendarModel findById(Long id);
 
-    List<CalendarModel> findByBetweenDate(LocalDateTime startAt, LocalDateTime endAt);
-
+	List<CalendarModel> findByBetweenDate(LocalDateTime startAt, LocalDateTime endAt);
 }
