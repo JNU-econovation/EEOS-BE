@@ -2,6 +2,8 @@ package com.blackcompany.eeos.calendar.persistence;
 
 import com.blackcompany.eeos.calendar.application.model.CalendarModel;
 import com.blackcompany.eeos.calendar.application.repository.CalendarRepository;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -24,5 +26,13 @@ public class CalendarRepositoryImpl implements CalendarRepository {
 
         return entity.map(CalendarEntity::toModel)
                 .orElseThrow();
+    }
+
+    @Override
+    public List<CalendarModel> findByBetweenDate(LocalDateTime startAt, LocalDateTime endAt) {
+        List<CalendarEntity> entities = jpaRepository.findBetween(startAt, endAt);
+        return entities.stream()
+                .map(CalendarEntity::toModel)
+                .toList();
     }
 }
