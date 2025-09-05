@@ -24,7 +24,7 @@ public class CalendarValidator {
         AVAILABLE.put(CalendarType.EVENT, EVENT_AVAILABLE);
     }
 
-    public void typeValidator(CalendarModel calendar, Department department){
+    public void typeValidate(CalendarModel calendar, Department department){
         CalendarType type = calendar.getType();
         Set<Department> departments = AVAILABLE.get(type);
 

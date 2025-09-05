@@ -8,7 +8,6 @@ import com.blackcompany.eeos.calendar.application.validator.CalendarValidator;
 import com.blackcompany.eeos.common.utils.RequestScope;
 import com.blackcompany.eeos.member.application.model.MemberModel;
 import com.blackcompany.eeos.member.application.repository.MemberRepository;
-import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,7 +29,7 @@ public class CalendarCommandService implements CalendarCreateUsecase {
         CalendarModel calendar = newCalendar(command, memberId);
         MemberModel member = memberRepository.findById(memberId);
 
-        validator.typeValidator(calendar, member.getDepartment());
+        validator.typeValidate(calendar, member.getDepartment());
 
         return repository.save(calendar);
     }
