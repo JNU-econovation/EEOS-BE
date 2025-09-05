@@ -3,6 +3,7 @@ package com.blackcompany.eeos.common.utils;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import lombok.experimental.UtilityClass;
 
@@ -41,5 +42,13 @@ public class DateConverter {
 		}
 
 		return Instant.ofEpochSecond(epochMilli / 1000).atZone(ZoneId.of(KST)).toLocalDate();
+	}
+
+	public static LocalDateTime toLocalDateTime(Long epochMilli) {
+		if (epochMilli == null) {
+			return null;
+		}
+
+		return Instant.ofEpochSecond(epochMilli / 1000).atZone(ZoneId.of(KST)).toLocalDateTime();
 	}
 }
