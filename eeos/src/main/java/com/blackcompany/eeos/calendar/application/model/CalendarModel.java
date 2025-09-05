@@ -15,17 +15,15 @@ public class CalendarModel {
 
     private Long id;
     private String title;
-    private String content;
     private Long writer;
     private LocalDateTime startAt;
     private LocalDateTime endAt;
     private CalendarType type;
     private String url;
 
-    public static CalendarModel create(String title, String content, LocalDateTime startAt, LocalDateTime endAt, String type, String url, Long writer){
+    public static CalendarModel create(String title, LocalDateTime startAt, LocalDateTime endAt, String type, String url, Long writer){
         return CalendarModel.builder()
                 .title(title)
-                .content(content)
                 .writer(writer)
                 .startAt(startAt)
                 .endAt(endAt)

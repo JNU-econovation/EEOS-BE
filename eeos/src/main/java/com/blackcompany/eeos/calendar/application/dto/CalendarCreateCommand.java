@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 
 public record CalendarCreateCommand(
         String title,
-        String content,
         String url,
         String type,
         LocalDateTime startAt,

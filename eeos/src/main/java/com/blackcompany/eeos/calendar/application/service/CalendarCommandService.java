@@ -36,7 +36,7 @@ public class CalendarCommandService implements CalendarCreateUsecase {
 
     private CalendarModel newCalendar(CalendarCreateCommand command, Long memberId){
         return CalendarModel.create(
-                command.title(), command.content(), command.startAt(),
+                command.title(), command.startAt(),
                 command.endAt(), command.type(), command.url(), memberId);
     }
 }

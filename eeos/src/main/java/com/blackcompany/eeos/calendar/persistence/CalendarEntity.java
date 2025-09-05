@@ -50,9 +50,6 @@ public class CalendarEntity {
     @Column(name = ENTITY_PREFIX + "_title", nullable = false)
     private String title;
 
-    @Column(name = ENTITY_PREFIX + "_content", nullable = false)
-    private String content;
-
     @Column(name = ENTITY_PREFIX + "_url", nullable = false)
     private String url;
 
@@ -64,7 +61,6 @@ public class CalendarEntity {
 
     public CalendarModel toModel(){
         return CalendarModel.builder()
-                .content(this.content)
                 .title(this.title)
                 .url(this.url)
                 .endAt(this.endAt)
@@ -77,7 +73,6 @@ public class CalendarEntity {
 
     public static CalendarEntity toEntity(CalendarModel model){
         return CalendarEntity.builder()
-                .content(model.getContent())
                 .title(model.getTitle())
                 .url(model.getUrl())
                 .endAt(model.getEndAt())
