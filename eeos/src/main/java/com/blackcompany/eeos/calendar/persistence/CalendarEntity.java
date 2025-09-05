@@ -61,15 +61,7 @@ public class CalendarEntity extends BaseEntity {
     private LocalDateTime endAt;
 
     public CalendarModel toModel(){
-        return CalendarModel.builder()
-                .title(this.title)
-                .url(this.url)
-                .endAt(this.endAt)
-                .startAt(this.startAt)
-                .id(this.id)
-                .writer(this.writer)
-                .type(this.type)
-                .build();
+        return CalendarModel.load(id, title, startAt, endAt, type, url, writer);
     }
 
     public static CalendarEntity toEntity(CalendarModel model){

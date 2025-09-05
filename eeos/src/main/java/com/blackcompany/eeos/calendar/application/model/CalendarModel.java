@@ -32,4 +32,16 @@ public class CalendarModel {
                 .build();
     }
 
+    public static CalendarModel load(Long id,String title, LocalDateTime startAt, LocalDateTime endAt, CalendarType type, String url, Long writer){
+        return CalendarModel.builder()
+                .id(id)
+                .title(title)
+                .writer(writer)
+                .startAt(startAt)
+                .endAt(endAt)
+                .url(url)
+                .type(type)
+                .build();
+    }
+
 }
