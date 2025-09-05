@@ -15,6 +15,6 @@ public class DeniedCalendarTypeException extends BusinessException {
     }
 
     @Override
-    public String getMessage() { return String.format("%s는 해당 타입의 칼렌더를 생성할 수 없습니다.", department.getKoName()); }
+    public String getMessage() { return String.format("%s 부서는 해당 타입의 칼렌더를 생성할 수 없습니다.", department.name()); }
 
 }
