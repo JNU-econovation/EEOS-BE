@@ -26,4 +26,6 @@ public interface MemberRepository {
 	MemberModel save(MemberModel model);
 
 	void deleteById(Long memberId);
+
+	String findNameById(Long memberId);
 }
