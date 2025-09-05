@@ -1,0 +1,37 @@
+package com.blackcompany.eeos.calendar.application.service;
+
+import com.blackcompany.eeos.calendar.application.model.CalendarModel;
+import com.blackcompany.eeos.calendar.application.repository.CalendarRepository;
+import com.blackcompany.eeos.calendar.application.usecase.CalendarCreateUsecase;
+import com.blackcompany.eeos.calendar.application.validator.CalendarValidator;
+import com.blackcompany.eeos.common.utils.RequestScope;
+import com.blackcompany.eeos.member.application.model.MemberModel;
+import com.blackcompany.eeos.member.application.repository.MemberRepository;
+import java.time.LocalDateTime;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class CalendarService implements CalendarCreateUsecase {
+
+    private final MemberRepository memberRepository;
+    private final CalendarRepository repository;
+    private final CalendarValidator validator;
+
+    @Override
+    @Transactional
+    public Long create(String title, String content, String url, String type, LocalDateTime startAt,
+                       LocalDateTime endAt) {
+        Long memberId = RequestScope.getMemberId();
+        CalendarModel calendar = CalendarModel.create(title, content, memberId, startAt, endAt, type, url);
+        MemberModel member = memberRepository.findById(memberId);
+
+        validator.typeValidator(calendar, member.getDepartment());
+
+        return repository.save(calendar);
+    }
+}
