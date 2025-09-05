@@ -3,7 +3,7 @@ package com.blackcompany.eeos.calendar.application.service;
 import com.blackcompany.eeos.calendar.application.dto.CalendarCreateCommand;
 import com.blackcompany.eeos.calendar.application.model.CalendarModel;
 import com.blackcompany.eeos.calendar.application.repository.CalendarRepository;
-import com.blackcompany.eeos.calendar.application.usecase.CalendarCreateUsecase;
+import com.blackcompany.eeos.calendar.application.usecase.CreateCalendarUsecase;
 import com.blackcompany.eeos.calendar.application.validator.CalendarValidator;
 import com.blackcompany.eeos.common.utils.DateConverter;
 import com.blackcompany.eeos.common.utils.RequestScope;
@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class CalendarCommandService implements CalendarCreateUsecase {
+public class CalendarCommandService implements CreateCalendarUsecase {
 
     private final MemberRepository memberRepository;
     private final CalendarRepository repository;
