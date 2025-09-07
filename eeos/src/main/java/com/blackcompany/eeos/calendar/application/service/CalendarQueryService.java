@@ -5,6 +5,7 @@ import com.blackcompany.eeos.calendar.application.dto.CalendarResponse;
 import com.blackcompany.eeos.calendar.application.model.CalendarModel;
 import com.blackcompany.eeos.calendar.application.repository.CalendarRepository;
 import com.blackcompany.eeos.calendar.application.usecase.GetCalendarUsecase;
+import com.blackcompany.eeos.common.utils.DateUtil;
 import com.blackcompany.eeos.member.application.exception.NotFoundMemberException;
 import com.blackcompany.eeos.member.application.repository.MemberRepository;
 import java.time.LocalDate;
@@ -29,9 +30,10 @@ public class CalendarQueryService implements GetCalendarUsecase {
 		Integer date = query.date();
 		Integer duration = query.duration();
 
-		// TODO: 윤년, 30일, 31일 고려하기
-		LocalDateTime start = createTargetDate(year, month, Objects.isNull(date) ? 1 : date);
-		LocalDateTime end = createTargetDate(year, month, Objects.isNull(date) ? 31 : date + duration);
+		boolean dateIsNull = Objects.isNull(date);
+
+		LocalDateTime start = createTargetDate(year, month, dateIsNull ? 1 : date);
+		LocalDateTime end = createTargetDate(year, month, dateIsNull ? DateUtil.getLastDay(year, month) : date + duration);
 
 		return getResult(start, end);
 	}
