@@ -33,7 +33,9 @@ public class CalendarQueryService implements GetCalendarUsecase {
 		boolean dateIsNull = Objects.isNull(date);
 
 		LocalDateTime start = createTargetDate(year, month, dateIsNull ? 1 : date);
-		LocalDateTime end = createTargetDate(year, month, dateIsNull ? DateUtil.getLastDay(year, month) : date + duration);
+		LocalDateTime end =
+				createTargetDate(
+						year, month, dateIsNull ? DateUtil.getLastDay(year, month) : date + duration);
 
 		return getResult(start, end);
 	}
