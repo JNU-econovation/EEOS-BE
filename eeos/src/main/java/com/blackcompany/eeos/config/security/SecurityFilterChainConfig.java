@@ -87,7 +87,7 @@ public class SecurityFilterChainConfig {
 							.requestMatchers("/api/admin/**")
 							.requestMatchers("/api/team-building/**")
 							.requestMatchers("/api/semester-periods/**")
-							.requestMatchers("/api/calendar/**");
+							.requestMatchers("/api/calendars/**");
 				});
 
 		httpSecurity.authorizeHttpRequests(
