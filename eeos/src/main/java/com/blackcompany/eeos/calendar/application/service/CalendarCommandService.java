@@ -56,7 +56,8 @@ public class CalendarCommandService implements CreateCalendarUsecase, UpdateCale
 		LocalDateTime startAt = DateConverter.toLocalDateTime(command.startAt());
 		LocalDateTime endAt = DateConverter.toLocalDateTime(command.endAt());
 
-			model.updateEndAt(endAt)
+		model
+				.updateEndAt(endAt)
 				.updateStartAt(startAt)
 				.updateTitle(command.title())
 				.updateUrl(command.url())

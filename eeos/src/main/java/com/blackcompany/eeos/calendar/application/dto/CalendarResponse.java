@@ -13,6 +13,7 @@ public record CalendarResponse(
 		Long endAt = DateConverter.toMillis(model.getEndAt());
 		String type = model.getType().name();
 
-		return new CalendarResponse(model.getId(), model.getTitle(), model.getUrl(), type, startAt, endAt, writerName);
+		return new CalendarResponse(
+				model.getId(), model.getTitle(), model.getUrl(), type, startAt, endAt, writerName);
 	}
 }

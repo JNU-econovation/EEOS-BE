@@ -29,33 +29,32 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class CalendarController {
 
-    private final CreateCalendarUsecase createUsecase;
-    private final GetCalendarUsecase getUsecase;
-    private final UpdateCalendarUsecase updateUsecase;
+	private final CreateCalendarUsecase createUsecase;
+	private final GetCalendarUsecase getUsecase;
+	private final UpdateCalendarUsecase updateUsecase;
 
-    @PostMapping
-    public ApiResponse<SuccessBody<Long>> create(@RequestBody CalendarCreateCommand request) {
-        Long createdId = createUsecase.create(request);
-        return ApiResponseGenerator.success(createdId, HttpStatus.CREATED, MessageCode.CREATE);
-    }
+	@PostMapping
+	public ApiResponse<SuccessBody<Long>> create(@RequestBody CalendarCreateCommand request) {
+		Long createdId = createUsecase.create(request);
+		return ApiResponseGenerator.success(createdId, HttpStatus.CREATED, MessageCode.CREATE);
+	}
 
-    @GetMapping
-    public ApiResponse<SuccessBody<CalendarResponses>> getCalendar(
-            @RequestParam("year") Integer year,
-            @RequestParam("month") Integer month,
-            @RequestParam(value = "date", required = false) Integer date,
-            @RequestParam(value = "duration", required = false) Integer duration) {
-        List<CalendarResponse> calendars =
-                getUsecase.getCalendar(new CalendarQuery(year, month, date, duration));
-        CalendarResponses responses = new CalendarResponses(calendars);
-        return ApiResponseGenerator.success(responses, HttpStatus.OK, MessageCode.GET);
-    }
+	@GetMapping
+	public ApiResponse<SuccessBody<CalendarResponses>> getCalendar(
+			@RequestParam("year") Integer year,
+			@RequestParam("month") Integer month,
+			@RequestParam(value = "date", required = false) Integer date,
+			@RequestParam(value = "duration", required = false) Integer duration) {
+		List<CalendarResponse> calendars =
+				getUsecase.getCalendar(new CalendarQuery(year, month, date, duration));
+		CalendarResponses responses = new CalendarResponses(calendars);
+		return ApiResponseGenerator.success(responses, HttpStatus.OK, MessageCode.GET);
+	}
 
-    @PutMapping("/{calendarId}")
-    public ApiResponse<SuccessBody<Long>> updateCalendar(
-			@PathVariable("calendarId") Long calendarId,
-			@RequestBody CalendarUpdateCommand command) {
-        Long id = updateUsecase.update(calendarId, command);
+	@PutMapping("/{calendarId}")
+	public ApiResponse<SuccessBody<Long>> updateCalendar(
+			@PathVariable("calendarId") Long calendarId, @RequestBody CalendarUpdateCommand command) {
+		Long id = updateUsecase.update(calendarId, command);
 		return ApiResponseGenerator.success(id, HttpStatus.OK, MessageCode.UPDATE);
-    }
+	}
 }

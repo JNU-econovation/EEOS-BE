@@ -22,33 +22,33 @@ public class CalendarModel {
 	private CalendarType type;
 	private String url;
 
-	public void validateUpdate(Long updater){
-		if(!this.id.equals(updater)){
+	public void validateUpdate(Long updater) {
+		if (!this.id.equals(updater)) {
 			throw new DeniedCalendarUpdateException();
 		}
 	}
 
-	public CalendarModel updateTitle(String title){
+	public CalendarModel updateTitle(String title) {
 		this.title = title;
 		return this;
 	}
 
-	public CalendarModel updateStartAt(LocalDateTime startAt){
+	public CalendarModel updateStartAt(LocalDateTime startAt) {
 		this.startAt = startAt;
 		return this;
 	}
 
-	public CalendarModel updateEndAt(LocalDateTime endAt){
+	public CalendarModel updateEndAt(LocalDateTime endAt) {
 		this.endAt = endAt;
 		return this;
 	}
 
-	public CalendarModel updateType(String type){
+	public CalendarModel updateType(String type) {
 		this.type = CalendarType.findByName(type);
 		return this;
 	}
 
-	public CalendarModel updateUrl(String url){
+	public CalendarModel updateUrl(String url) {
 		this.url = url;
 		return this;
 	}
