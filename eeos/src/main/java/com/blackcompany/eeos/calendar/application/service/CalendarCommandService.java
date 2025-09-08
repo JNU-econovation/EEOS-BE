@@ -5,6 +5,7 @@ import com.blackcompany.eeos.calendar.application.dto.CalendarUpdateCommand;
 import com.blackcompany.eeos.calendar.application.model.CalendarModel;
 import com.blackcompany.eeos.calendar.application.repository.CalendarRepository;
 import com.blackcompany.eeos.calendar.application.usecase.CreateCalendarUsecase;
+import com.blackcompany.eeos.calendar.application.usecase.DeleteCalendarUsecase;
 import com.blackcompany.eeos.calendar.application.usecase.UpdateCalendarUsecase;
 import com.blackcompany.eeos.calendar.application.validator.CalendarValidator;
 import com.blackcompany.eeos.common.utils.DateConverter;
@@ -20,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class CalendarCommandService implements CreateCalendarUsecase, UpdateCalendarUsecase {
+public class CalendarCommandService implements CreateCalendarUsecase, UpdateCalendarUsecase, DeleteCalendarUsecase {
 
 	private final MemberRepository memberRepository;
 	private final CalendarRepository repository;
@@ -49,6 +50,17 @@ public class CalendarCommandService implements CreateCalendarUsecase, UpdateCale
 		repository.save(model);
 
 		return model.getId();
+	}
+
+	@Override
+	public void delete(Long calendarId) {
+		Long memberId = RequestScope.getMemberId();
+
+		CalendarModel model = repository.findById(calendarId);
+
+		model.validateUpdate(memberId);
+
+		repository.delete(calendarId);
 	}
 
 	private void updateCalendar(Long memberId, CalendarUpdateCommand command, CalendarModel model) {

@@ -32,4 +32,9 @@ public class CalendarRepositoryImpl implements CalendarRepository {
 		List<CalendarEntity> entities = jpaRepository.findBetween(startAt, endAt);
 		return entities.stream().map(CalendarEntity::toModel).toList();
 	}
+
+	@Override
+	public void delete(Long id) {
+		jpaRepository.deleteById(id);
+	}
 }

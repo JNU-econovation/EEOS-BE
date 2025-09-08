@@ -6,6 +6,7 @@ import com.blackcompany.eeos.calendar.application.dto.CalendarResponse;
 import com.blackcompany.eeos.calendar.application.dto.CalendarResponses;
 import com.blackcompany.eeos.calendar.application.dto.CalendarUpdateCommand;
 import com.blackcompany.eeos.calendar.application.usecase.CreateCalendarUsecase;
+import com.blackcompany.eeos.calendar.application.usecase.DeleteCalendarUsecase;
 import com.blackcompany.eeos.calendar.application.usecase.GetCalendarUsecase;
 import com.blackcompany.eeos.calendar.application.usecase.UpdateCalendarUsecase;
 import com.blackcompany.eeos.common.presentation.response.ApiResponse;
@@ -15,6 +16,7 @@ import com.blackcompany.eeos.common.presentation.response.MessageCode;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,6 +34,7 @@ public class CalendarController {
 	private final CreateCalendarUsecase createUsecase;
 	private final GetCalendarUsecase getUsecase;
 	private final UpdateCalendarUsecase updateUsecase;
+	private final DeleteCalendarUsecase deleteUsecase;
 
 	@PostMapping
 	public ApiResponse<SuccessBody<Long>> create(@RequestBody CalendarCreateCommand request) {
@@ -56,5 +59,11 @@ public class CalendarController {
 			@PathVariable("calendarId") Long calendarId, @RequestBody CalendarUpdateCommand command) {
 		Long id = updateUsecase.update(calendarId, command);
 		return ApiResponseGenerator.success(id, HttpStatus.OK, MessageCode.UPDATE);
+	}
+
+	@DeleteMapping("/{calendarId}")
+	public ApiResponse<SuccessBody<Void>> deleteCalendar(@PathVariable("calendarId") Long calendarId){
+		deleteUsecase.delete(calendarId);
+		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.DELETE);
 	}
 }
