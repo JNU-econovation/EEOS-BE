@@ -5,7 +5,7 @@ import com.blackcompany.eeos.common.support.dto.AbstractResponseDto;
 import com.blackcompany.eeos.common.utils.DateConverter;
 
 public record CalendarResponse(
-		String title, String url, String type, Long startAt, Long endAt, String writer)
+		Long id, String title, String url, String type, Long startAt, Long endAt, String writer)
 		implements AbstractResponseDto {
 
 	public static CalendarResponse toResponse(CalendarModel model, String writerName) {
@@ -13,6 +13,6 @@ public record CalendarResponse(
 		Long endAt = DateConverter.toMillis(model.getEndAt());
 		String type = model.getType().name();
 
-		return new CalendarResponse(model.getTitle(), model.getUrl(), type, startAt, endAt, writerName);
+		return new CalendarResponse(model.getId(), model.getTitle(), model.getUrl(), type, startAt, endAt, writerName);
 	}
 }
