@@ -66,6 +66,7 @@ public class CalendarEntity extends BaseEntity {
 
 	public static CalendarEntity toEntity(CalendarModel model) {
 		return CalendarEntity.builder()
+				.id(model.getId())
 				.title(model.getTitle())
 				.url(model.getUrl())
 				.endAt(model.getEndAt())
