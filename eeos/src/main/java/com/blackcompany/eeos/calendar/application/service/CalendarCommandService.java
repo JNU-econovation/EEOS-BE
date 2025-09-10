@@ -42,6 +42,7 @@ public class CalendarCommandService
 	}
 
 	@Override
+	@Transactional
 	public Long update(Long calendarId, CalendarUpdateCommand command) {
 		Long memberId = RequestScope.getMemberId();
 
