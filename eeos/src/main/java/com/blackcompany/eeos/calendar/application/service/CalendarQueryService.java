@@ -35,9 +35,11 @@ public class CalendarQueryService implements GetCalendarUsecase {
 		LocalDate startDate = LocalDate.of(year, month, dateIsNull ? 1 : date);
 
 		LocalDateTime start = LocalDateTime.of(startDate, LocalTime.MIDNIGHT);
-		LocalDateTime end = dateIsNull ?
-				LocalDateTime.of(LocalDate.of(year, month, DateUtil.getLastDay(year, month)), LocalTime.MIDNIGHT)
-				: startDate.plusDays(duration).atTime(LocalTime.MIDNIGHT);
+		LocalDateTime end =
+				dateIsNull
+						? LocalDateTime.of(
+								LocalDate.of(year, month, DateUtil.getLastDay(year, month)), LocalTime.MIDNIGHT)
+						: startDate.plusDays(duration).atTime(LocalTime.MIDNIGHT);
 
 		return getDefault(start, end);
 	}
