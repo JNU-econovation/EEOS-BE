@@ -32,10 +32,12 @@ public class CalendarQueryService implements GetCalendarUsecase {
 
 		boolean dateIsNull = Objects.isNull(date);
 
-		LocalDateTime start = createTargetDate(year, month, dateIsNull ? 1 : date);
-		LocalDateTime end =
-				createTargetDate(
-						year, month, dateIsNull ? DateUtil.getLastDay(year, month) : date + duration);
+		LocalDate startDate = LocalDate.of(year, month, dateIsNull ? 1 : date);
+
+		LocalDateTime start = LocalDateTime.of(startDate, LocalTime.MIDNIGHT);
+		LocalDateTime end = dateIsNull ?
+				LocalDateTime.of(LocalDate.of(year, month, DateUtil.getLastDay(year, month)), LocalTime.MIDNIGHT)
+				: startDate.plusDays(duration).atTime(LocalTime.MIDNIGHT);
 
 		return getDefault(start, end);
 	}
@@ -63,15 +65,5 @@ public class CalendarQueryService implements GetCalendarUsecase {
 		} catch (NotFoundMemberException e) {
 			throw new IllegalStateException("달력 작성자 이름 매핑 중 에러가 발생했습니다.");
 		}
-	}
-
-	private LocalDateTime createTargetDate(Integer year, Integer month, Integer date) {
-		LocalDateTime result;
-		LocalDate localDate;
-
-		if (Objects.isNull(date)) localDate = LocalDate.of(year, month, 1);
-		else localDate = LocalDate.of(year, month, date);
-
-		return LocalDateTime.of(localDate, LocalTime.MIDNIGHT);
 	}
 }
