@@ -1,6 +1,5 @@
 package com.blackcompany.eeos.calendar.application.model;
 
-import com.blackcompany.eeos.calendar.application.exception.DeniedCalendarUpdateException;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

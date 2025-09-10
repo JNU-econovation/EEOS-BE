@@ -33,8 +33,8 @@ public class CalendarValidator {
 		AVAILABLE.put(CalendarType.EVENT, EVENT_AVAILABLE);
 	}
 
-	public void updateValidate(CalendarModel calendar, Long memberId){
-		if(!calendar.isWriter(memberId)) throw new DeniedCalendarUpdateException();
+	public void updateValidate(CalendarModel calendar, Long memberId) {
+		if (!calendar.isWriter(memberId)) throw new DeniedCalendarUpdateException();
 	}
 
 	public void durationValidate(CalendarModel calendar) {
