@@ -32,11 +32,11 @@ public class CalendarValidator {
 		AVAILABLE.put(CalendarType.EVENT, EVENT_AVAILABLE);
 	}
 
-	public void durationValidate(CalendarModel calendar){
+	public void durationValidate(CalendarModel calendar) {
 		LocalDateTime startAt = calendar.getStartAt();
 		LocalDateTime endAt = calendar.getEndAt();
 
-		if(startAt.isAfter(endAt)) throw new InvalidDateException();
+		if (startAt.isAfter(endAt)) throw new InvalidDateException();
 	}
 
 	public void typeValidate(CalendarModel calendar, Department department) {
