@@ -66,4 +66,11 @@ public class CalendarController {
 		deleteUsecase.delete(calendarId);
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.DELETE);
 	}
+
+	@GetMapping("/d-day")
+	public ApiResponse<SuccessBody<CalendarResponses>> getCalendarsForDDay(@RequestParam("measure") int measure){
+		List<CalendarResponse> calendars = getUsecase.getCalendarForDDay(measure);
+		CalendarResponses responses = new CalendarResponses(calendars);
+		return ApiResponseGenerator.success(responses, HttpStatus.OK, MessageCode.GET);
+	}
 }

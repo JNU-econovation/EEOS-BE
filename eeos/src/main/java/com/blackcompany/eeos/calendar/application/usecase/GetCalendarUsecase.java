@@ -7,4 +7,6 @@ import java.util.List;
 public interface GetCalendarUsecase {
 
 	List<CalendarResponse> getCalendar(CalendarQuery query);
+
+	List<CalendarResponse> getCalendarForDDay(int DDay);
 }

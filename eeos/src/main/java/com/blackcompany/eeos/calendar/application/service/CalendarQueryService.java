@@ -37,13 +37,27 @@ public class CalendarQueryService implements GetCalendarUsecase {
 				createTargetDate(
 						year, month, dateIsNull ? DateUtil.getLastDay(year, month) : date + duration);
 
-		return getResult(start, end);
+		return getDefault(start, end);
 	}
 
-	private List<CalendarResponse> getResult(LocalDateTime start, LocalDateTime end) {
+	@Override
+	public List<CalendarResponse> getCalendarForDDay(int DDay) {
+
+		LocalDateTime now = LocalDate.now().atTime(LocalTime.MIDNIGHT);
+		LocalDateTime end = now.plusDays(DDay);
+
+		return repository.findNotStarted(now, end).stream().map(this::createResponse).toList();
+
+	}
+
+	private List<CalendarResponse> getDefault(LocalDateTime start, LocalDateTime end) {
 		return repository.findByBetweenDate(start, end).stream()
-				.map(model -> CalendarResponse.toResponse(model, getWriterName(model)))
+				.map(this::createResponse)
 				.toList();
+	}
+
+	private CalendarResponse createResponse(CalendarModel model){
+		return CalendarResponse.toResponse(model, getWriterName(model));
 	}
 
 	private String getWriterName(CalendarModel model) {
