@@ -46,7 +46,7 @@ public class CalendarValidator {
 
 	public void typeValidate(CalendarModel calendar, Department department) {
 		CalendarType type = calendar.getType();
-		Set<Department> departments = AVAILABLE.get(type);
+		Set<Department> departments = AVAILABLE.getOrDefault(type, Set.of());
 
 		if (!departments.contains(department)) {
 			throw new DeniedCalendarTypeException(department);
