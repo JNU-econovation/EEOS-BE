@@ -23,7 +23,7 @@ public class CalendarModel {
 	private String url;
 
 	public void validateUpdate(Long updater) {
-		if (!this.id.equals(updater)) {
+		if (!this.writer.equals(updater)) {
 			throw new DeniedCalendarUpdateException();
 		}
 	}
