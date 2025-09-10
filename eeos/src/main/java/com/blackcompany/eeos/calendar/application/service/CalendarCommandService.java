@@ -36,6 +36,7 @@ public class CalendarCommandService
 		MemberModel member = memberRepository.findById(memberId);
 
 		validator.typeValidate(calendar, member.getDepartment());
+		validator.durationValidate(calendar);
 
 		return repository.save(calendar);
 	}

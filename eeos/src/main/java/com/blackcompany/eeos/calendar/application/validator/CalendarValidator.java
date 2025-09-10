@@ -1,9 +1,11 @@
 package com.blackcompany.eeos.calendar.application.validator;
 
 import com.blackcompany.eeos.calendar.application.exception.DeniedCalendarTypeException;
+import com.blackcompany.eeos.calendar.application.exception.InvalidDateException;
 import com.blackcompany.eeos.calendar.application.model.CalendarModel;
 import com.blackcompany.eeos.calendar.application.model.CalendarType;
 import com.blackcompany.eeos.member.application.model.Department;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -28,6 +30,13 @@ public class CalendarValidator {
 		AVAILABLE.put(CalendarType.ETC, ETC_AVAILABLE);
 		AVAILABLE.put(CalendarType.PRESENTATION, PRESENTATION_AVAILABLE);
 		AVAILABLE.put(CalendarType.EVENT, EVENT_AVAILABLE);
+	}
+
+	public void durationValidate(CalendarModel calendar){
+		LocalDateTime startAt = calendar.getStartAt();
+		LocalDateTime endAt = calendar.getEndAt();
+
+		if(startAt.isAfter(endAt)) throw new InvalidDateException();
 	}
 
 	public void typeValidate(CalendarModel calendar, Department department) {
