@@ -8,7 +8,7 @@ public class DeniedCalendarUpdateException extends BusinessException {
 	private static final String FAIL_CODE = "10002";
 
 	public DeniedCalendarUpdateException() {
-		super(FAIL_CODE, HttpStatus.BAD_REQUEST);
+		super(FAIL_CODE, HttpStatus.UNAUTHORIZED);
 	}
 
 	@Override

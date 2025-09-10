@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 
 public class InvalidDateException extends BusinessException {
 
-	private static final String FAIL_CODE = "";
+	private static final String FAIL_CODE = "10003";
 
 	public InvalidDateException() {
 		super(FAIL_CODE, HttpStatus.BAD_REQUEST);
