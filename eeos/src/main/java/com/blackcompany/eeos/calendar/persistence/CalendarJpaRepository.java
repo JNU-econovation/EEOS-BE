@@ -25,8 +25,10 @@ public interface CalendarJpaRepository extends JpaRepository<CalendarEntity, Lon
 	List<CalendarEntity> findBetween(
 			@Param("startAt") LocalDateTime startAt, @Param("endAt") LocalDateTime endAt);
 
-	@Query("SELECT c FROM CalendarEntity c "
-			+ "WHERE c.startAt BETWEEN :from AND :to "
-			+ "ORDER BY c.startAt ASC")
-	List<CalendarEntity> findNotStarted(@Param("from") LocalDateTime from, @Param("to") LocalDateTime to);
+	@Query(
+			"SELECT c FROM CalendarEntity c "
+					+ "WHERE c.startAt BETWEEN :from AND :to "
+					+ "ORDER BY c.startAt ASC")
+	List<CalendarEntity> findNotStarted(
+			@Param("from") LocalDateTime from, @Param("to") LocalDateTime to);
 }

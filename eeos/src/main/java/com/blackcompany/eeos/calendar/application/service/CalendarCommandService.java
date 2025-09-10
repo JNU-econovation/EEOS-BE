@@ -21,7 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class CalendarCommandService implements CreateCalendarUsecase, UpdateCalendarUsecase, DeleteCalendarUsecase {
+public class CalendarCommandService
+		implements CreateCalendarUsecase, UpdateCalendarUsecase, DeleteCalendarUsecase {
 
 	private final MemberRepository memberRepository;
 	private final CalendarRepository repository;
