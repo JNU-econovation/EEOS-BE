@@ -12,5 +12,7 @@ public interface CalendarRepository {
 
 	List<CalendarModel> findByBetweenDate(LocalDateTime startAt, LocalDateTime endAt);
 
+	List<CalendarModel> findNotStarted(LocalDateTime from, LocalDateTime to);
+
 	void delete(Long id);
 }

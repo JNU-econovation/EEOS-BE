@@ -28,6 +28,12 @@ public class CalendarRepositoryImpl implements CalendarRepository {
 	}
 
 	@Override
+	public List<CalendarModel> findNotStarted(LocalDateTime from, LocalDateTime to) {
+		List<CalendarEntity> entities = jpaRepository.findNotStarted(from, to);
+		return entities.stream().map(CalendarEntity::toModel).toList();
+	}
+
+	@Override
 	public List<CalendarModel> findByBetweenDate(LocalDateTime startAt, LocalDateTime endAt) {
 		List<CalendarEntity> entities = jpaRepository.findBetween(startAt, endAt);
 		return entities.stream().map(CalendarEntity::toModel).toList();
