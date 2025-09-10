@@ -1,6 +1,7 @@
 package com.blackcompany.eeos.calendar.application.validator;
 
 import com.blackcompany.eeos.calendar.application.exception.DeniedCalendarTypeException;
+import com.blackcompany.eeos.calendar.application.exception.DeniedCalendarUpdateException;
 import com.blackcompany.eeos.calendar.application.exception.InvalidDateException;
 import com.blackcompany.eeos.calendar.application.model.CalendarModel;
 import com.blackcompany.eeos.calendar.application.model.CalendarType;
@@ -30,6 +31,10 @@ public class CalendarValidator {
 		AVAILABLE.put(CalendarType.ETC, ETC_AVAILABLE);
 		AVAILABLE.put(CalendarType.PRESENTATION, PRESENTATION_AVAILABLE);
 		AVAILABLE.put(CalendarType.EVENT, EVENT_AVAILABLE);
+	}
+
+	public void updateValidate(CalendarModel calendar, Long memberId){
+		if(!calendar.isWriter(memberId)) throw new DeniedCalendarUpdateException();
 	}
 
 	public void durationValidate(CalendarModel calendar) {

@@ -22,10 +22,8 @@ public class CalendarModel {
 	private CalendarType type;
 	private String url;
 
-	public void validateUpdate(Long updater) {
-		if (!this.writer.equals(updater)) {
-			throw new DeniedCalendarUpdateException();
-		}
+	public boolean isWriter(Long updater) {
+		return this.writer.equals(updater);
 	}
 
 	public CalendarModel updateTitle(String title) {

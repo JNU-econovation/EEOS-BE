@@ -56,18 +56,24 @@ public class CalendarCommandService
 	}
 
 	@Override
+	@Transactional
 	public void delete(Long calendarId) {
 		Long memberId = RequestScope.getMemberId();
 
 		CalendarModel model = repository.findById(calendarId);
 
-		model.validateUpdate(memberId);
+		validator.updateValidate(model, memberId);
 
 		repository.delete(calendarId);
 	}
 
 	private void updateCalendar(Long memberId, CalendarUpdateCommand command, CalendarModel model) {
-		model.validateUpdate(memberId);
+		MemberModel member = memberRepository.findById(memberId);
+
+		validator.updateValidate(model, memberId);
+		validator.typeValidate(model, member.getDepartment());
+		validator.durationValidate(model);
+
 		LocalDateTime startAt = DateConverter.toLocalDateTime(command.startAt());
 		LocalDateTime endAt = DateConverter.toLocalDateTime(command.endAt());
 
