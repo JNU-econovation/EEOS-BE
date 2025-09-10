@@ -13,6 +13,7 @@ import com.blackcompany.eeos.common.presentation.response.ApiResponse;
 import com.blackcompany.eeos.common.presentation.response.ApiResponseBody.SuccessBody;
 import com.blackcompany.eeos.common.presentation.response.ApiResponseGenerator;
 import com.blackcompany.eeos.common.presentation.response.MessageCode;
+import jakarta.validation.constraints.PositiveOrZero;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -70,7 +71,7 @@ public class CalendarController {
 
 	@GetMapping("/d-day")
 	public ApiResponse<SuccessBody<CalendarResponses>> getCalendarsForDDay(
-			@RequestParam("measure") int measure) {
+			@RequestParam("measure") @PositiveOrZero int measure) {
 		List<CalendarResponse> calendars = getUsecase.getCalendarForDDay(measure);
 		CalendarResponses responses = new CalendarResponses(calendars);
 		return ApiResponseGenerator.success(responses, HttpStatus.OK, MessageCode.GET);
