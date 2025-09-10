@@ -13,6 +13,6 @@ public class DeniedCalendarUpdateException extends BusinessException {
 
 	@Override
 	public String getMessage() {
-		return "칼렌더를 수정할 권한이 없습니다.";
+		return "캘린더를 수정할 권한이 없습니다.";
 	}
 }
