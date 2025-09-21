@@ -22,11 +22,17 @@ public class MemberModel implements AbstractModel, MemberIdModel {
 	@Builder.Default private ActiveStatus activeStatus = ActiveStatus.AM;
 	@Builder.Default private boolean isAdmin = false;
 	private OauthServerType oauthServerType;
+	@Builder.Default private Department department = Department.NONE;
 
 	public MemberModel updateActiveStatus(String status) {
 		ActiveStatus requestStatus = ActiveStatus.find(status);
 		canEdit(requestStatus);
 		this.activeStatus = requestStatus;
+		return this;
+	}
+
+	public MemberModel updateDepartment(Department department) {
+		this.department = department;
 		return this;
 	}
 

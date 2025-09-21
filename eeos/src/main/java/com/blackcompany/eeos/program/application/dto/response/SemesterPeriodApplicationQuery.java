@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CalendarPeriodApplicationQuery implements AbstractApplicationDto {
+public class SemesterPeriodApplicationQuery implements AbstractApplicationDto {
 	private Timestamp startDate;
 	private Timestamp endDate;
 }

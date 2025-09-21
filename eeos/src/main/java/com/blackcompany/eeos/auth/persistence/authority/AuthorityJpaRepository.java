@@ -1,5 +1,7 @@
 package com.blackcompany.eeos.auth.persistence.authority;
 
+import com.blackcompany.eeos.auth.application.model.Role;
+import java.util.Optional;
 import java.util.Set;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -9,4 +11,8 @@ public interface AuthorityJpaRepository extends JpaRepository<AuthorityEntity, L
 
 	@Query("SELECT DISTINCT a FROM AuthorityEntity a WHERE a.memberId = :memberId")
 	Set<AuthorityEntity> findByMemberId(@Param("memberId") Long memberId);
+
+	@Query("SELECT a FROM AuthorityEntity a WHERE a.memberId=:memberId AND a.role=:role")
+	Optional<AuthorityEntity> findByMemberIdAndRole(
+			@Param("memberId") Long memberId, @Param("role") Role role);
 }

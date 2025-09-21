@@ -12,11 +12,11 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 @Slf4j
-public class CalendarModel {
+public class SemesterPeriodModel {
 	private Timestamp startDate;
 	private Timestamp endDate;
 
-	public CalendarModel() {
+	public SemesterPeriodModel() {
 		LocalDate now = LocalDate.now();
 
 		// 9월 이후이면 9월 1일부터 다음 해 2월 말까지

@@ -86,6 +86,7 @@ public class SecurityFilterChainConfig {
 							.requestMatchers("/api/teams/**")
 							.requestMatchers("/api/admin/**")
 							.requestMatchers("/api/team-building/**")
+							.requestMatchers("/api/semester-periods/**")
 							.requestMatchers("/api/calendars/**");
 				});
 
@@ -103,6 +104,9 @@ public class SecurityFilterChainConfig {
 					requests.requestMatchers(HttpMethod.DELETE, "/api/members/{memberId}").hasAnyRole(ADMIN);
 					requests
 							.requestMatchers(HttpMethod.PUT, "/api/members/activeStatus/{memberId}")
+							.hasAnyRole(ADMIN);
+					requests
+							.requestMatchers(HttpMethod.PUT, "/api/members/{memberId}/department")
 							.hasAnyRole(ADMIN);
 					requests.anyRequest().authenticated();
 				});

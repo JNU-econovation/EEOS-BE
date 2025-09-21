@@ -59,7 +59,7 @@ public class AuthService {
 						.build();
 		MemberModel savedMember = memberRepository.save(member);
 
-		authorityRepository.save(AuthorityModel.create(savedMember.getMemberId(), Role.ROLE_USER));
+		createDefaultRole(savedMember.getMemberId());
 
 		OauthMemberModel updatedModel = model.toBuilder().memberId(savedMember.getId()).build();
 		return oAuthMemberRepository.save(updatedModel);
@@ -67,5 +67,9 @@ public class AuthService {
 
 	private void checkPassword(String password, String encryptedPassword) {
 		if (!encryptHelper.isMatch(password, encryptedPassword)) throw new NotFoundAccountException();
+	}
+
+	private void createDefaultRole(Long memberId) {
+		authorityRepository.save(AuthorityModel.create(memberId, Role.ROLE_USER));
 	}
 }
