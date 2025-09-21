@@ -8,9 +8,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class CreatedProgramEvent {
 
-    private final Long programId;
+	private final Long programId;
 
-    public static CreatedProgramEvent of(Long programId){
-        return new CreatedProgramEvent(programId);
-    }
+	public static CreatedProgramEvent of(Long programId) {
+		return new CreatedProgramEvent(programId);
+	}
 }

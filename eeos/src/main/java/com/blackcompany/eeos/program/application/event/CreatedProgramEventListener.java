@@ -19,28 +19,33 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @RequiredArgsConstructor
 public class CreatedProgramEventListener {
 
-    private final CreateCalendarUsecase calendarUsecase;
-    private final ProgramRepository programRepository;
-    private final ProgramEntityConverter entityConverter;
+	private final CreateCalendarUsecase calendarUsecase;
+	private final ProgramRepository programRepository;
+	private final ProgramEntityConverter entityConverter;
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    @TransactionalEventListener(value = CreatedProgramEvent.class, phase = TransactionPhase.AFTER_COMMIT)
-    public void createCalendar(CreatedProgramEvent event){
-        Long programId = event.getProgramId();
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	@TransactionalEventListener(
+			value = CreatedProgramEvent.class,
+			phase = TransactionPhase.AFTER_COMMIT)
+	public void createCalendar(CreatedProgramEvent event) {
+		Long programId = event.getProgramId();
 
-        ProgramModel program = entityConverter.from(programRepository.findById(programId)
-                .orElseThrow(() -> new NotFoundProgramException(programId)));
+		ProgramModel program =
+				entityConverter.from(
+						programRepository
+								.findById(programId)
+								.orElseThrow(() -> new NotFoundProgramException(programId)));
 
-        Long programDateMilli = program.getProgramDate().toInstant().toEpochMilli();
+		Long programDateMilli = program.getProgramDate().toInstant().toEpochMilli();
 
-        CalendarCreateCommand command = new CalendarCreateCommand(
-                program.getTitle(),
-                null,
-                CalendarType.PRESENTATION.name().toLowerCase(Locale.ROOT),
-                programDateMilli,
-                programDateMilli);
+		CalendarCreateCommand command =
+				new CalendarCreateCommand(
+						program.getTitle(),
+						null,
+						CalendarType.PRESENTATION.name().toLowerCase(Locale.ROOT),
+						programDateMilli,
+						programDateMilli);
 
-        calendarUsecase.create(command);
-    }
-
+		calendarUsecase.create(command);
+	}
 }
