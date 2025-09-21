@@ -12,7 +12,7 @@ import com.blackcompany.eeos.program.application.model.ProgramAttendMode;
 import com.blackcompany.eeos.program.application.model.ProgramModel;
 import com.blackcompany.eeos.program.application.model.converter.ProgramEntityConverter;
 import com.blackcompany.eeos.program.application.service.ProgramDateRangeService;
-import com.blackcompany.eeos.program.application.support.CalendarProvider;
+import com.blackcompany.eeos.program.application.support.SemesterPeriodProvider;
 import com.blackcompany.eeos.program.persistence.ProgramRepository;
 import com.blackcompany.eeos.target.application.dto.AttendInfoActiveStatusResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfoResponse;
@@ -89,7 +89,7 @@ public class AttendService
 	private final AttendCountCalculate attendCountCalculate;
 	private final AttendPenaltyResponseConverter attendPenaltyResponseConverter;
 	private final ProgramRankCounterRepository programRankCounterRepository;
-	private final CalendarProvider calendarProvider;
+	private final SemesterPeriodProvider semesterPeriodProvider;
 	private final PenaltyPointRepository penaltyPointRepository;
 
 	@Override
@@ -253,8 +253,10 @@ public class AttendService
 	public AttendSummaryInfoResponse getMyAttendSummary(Long startDate, Long endDate) {
 		Long memberId = RequestScope.getMemberId();
 
-		if (startDate == null) startDate = calendarProvider.getCalendar().getStartDate().getTime();
-		if (endDate == null) endDate = calendarProvider.getCalendar().getEndDate().getTime();
+		if (startDate == null)
+			startDate = semesterPeriodProvider.getSemesterPeriod().getStartDate().getTime();
+		if (endDate == null)
+			endDate = semesterPeriodProvider.getSemesterPeriod().getEndDate().getTime();
 
 		List<ProgramModel> programs = programDateRangeService.getPrograms(startDate, endDate);
 
@@ -285,10 +287,12 @@ public class AttendService
 
 		Timestamp startTimestamp =
 				startDate == null
-						? calendarProvider.getCalendar().getStartDate()
+						? semesterPeriodProvider.getSemesterPeriod().getStartDate()
 						: new Timestamp(startDate);
 		Timestamp endTimestamp =
-				endDate == null ? calendarProvider.getCalendar().getEndDate() : new Timestamp(endDate);
+				endDate == null
+						? semesterPeriodProvider.getSemesterPeriod().getEndDate()
+						: new Timestamp(endDate);
 
 		Page<Object[]> pages =
 				penaltyPointRepository.findByPenaltyPointSum(startTimestamp, endTimestamp, pageable);
@@ -331,8 +335,8 @@ public class AttendService
 
 		Long memberId = RequestScope.getMemberId();
 
-		Timestamp startDate = calendarProvider.getCalendar().getStartDate();
-		Timestamp endDate = calendarProvider.getCalendar().getEndDate();
+		Timestamp startDate = semesterPeriodProvider.getSemesterPeriod().getStartDate();
+		Timestamp endDate = semesterPeriodProvider.getSemesterPeriod().getEndDate();
 
 		Long myPenaltyPoint =
 				penaltyPointRepository.findTotalPenaltyScoreByMemberId(startDate, endDate, memberId);

@@ -86,6 +86,7 @@ public class SecurityFilterChainConfig {
 							.requestMatchers("/api/teams/**")
 							.requestMatchers("/api/admin/**")
 							.requestMatchers("/api/team-building/**")
+							.requestMatchers("/api/semester-periods/**")
 							.requestMatchers("/api/calendars/**");
 				});
 

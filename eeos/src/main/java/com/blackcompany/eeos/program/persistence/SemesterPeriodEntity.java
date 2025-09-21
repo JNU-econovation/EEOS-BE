@@ -15,16 +15,16 @@ import org.hibernate.annotations.Where;
 @SuperBuilder(toBuilder = true)
 @Entity
 @Table(
-		name = CalendarEntity.ENTITY_PREFIX,
+		name = SemesterPeriodEntity.ENTITY_PREFIX,
 		indexes = {
 			@Index(
-					name = "idx_calendar_created_date_id",
-					columnList = "createdDate DESC, calendar_id DESC")
+					name = "idx_semester_period_created_date_id",
+					columnList = "createdDate DESC, semester_period_id DESC")
 		})
-@SQLDelete(sql = "UPDATE calendar SET is_deleted=true where calendar_id=?")
+@SQLDelete(sql = "UPDATE semester_period SET is_deleted=true where semester_period_id=?")
 @Where(clause = "is_deleted=false")
-public class CalendarEntity extends BaseEntity {
-	public static final String ENTITY_PREFIX = "calendar";
+public class SemesterPeriodEntity extends BaseEntity {
+	public static final String ENTITY_PREFIX = "semester_period";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
