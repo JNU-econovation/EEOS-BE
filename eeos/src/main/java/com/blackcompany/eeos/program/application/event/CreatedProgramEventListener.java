@@ -10,6 +10,7 @@ import com.blackcompany.eeos.program.persistence.ProgramRepository;
 import java.util.Locale;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -22,7 +23,7 @@ public class CreatedProgramEventListener {
     private final ProgramRepository programRepository;
     private final ProgramEntityConverter entityConverter;
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener(value = CreatedProgramEvent.class, phase = TransactionPhase.AFTER_COMMIT)
     public void createCalendar(CreatedProgramEvent event){
         Long programId = event.getProgramId();
