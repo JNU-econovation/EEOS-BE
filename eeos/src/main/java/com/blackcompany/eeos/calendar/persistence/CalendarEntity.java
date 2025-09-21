@@ -51,7 +51,7 @@ public class CalendarEntity extends BaseEntity {
 	@Column(name = ENTITY_PREFIX + "_title", nullable = false)
 	private String title;
 
-	@Column(name = ENTITY_PREFIX + "_url", nullable = false)
+	@Column(name = ENTITY_PREFIX + "_url", nullable = true)
 	private String url;
 
 	@Column(name = ENTITY_PREFIX + "_start_at", nullable = false)
