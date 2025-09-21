@@ -6,7 +6,7 @@ import com.blackcompany.eeos.common.utils.DateConverter;
 import java.util.Locale;
 
 public record CalendarResponse(
-		Long id, String title, String url, String type, Long startAt, Long endAt, String writer)
+		Long calendarId, String title, String url, String type, Long startAt, Long endAt, String writer)
 		implements AbstractResponseDto {
 
 	public static CalendarResponse toResponse(CalendarModel model, String writerName) {
