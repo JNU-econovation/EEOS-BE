@@ -213,17 +213,27 @@ public class AttendService
 
 		Long memberId = RequestScope.getMemberId();
 
-		Sort.Order order = Sort.Order.desc("createdDate");
-		Pageable pageable = PageRequest.of(page - 1, size, Sort.by(order));
+		List<AttendEntity> myAttend =
+				attendRepository.findAllByMemberIdAndDateBetween(
+						memberId, new Timestamp(startDate), new Timestamp(endDate));
 
-		// 필요한 정보 : ProgramModel , AttendModel, MemberId
-		Page<AttendEntity> myAttend =
-				attendRepository.findAllByMemberIdAndCreatedDateGreaterThan(
-						memberId, new Timestamp(startDate), new Timestamp(endDate), pageable);
-
-		Page<AttendInfoWithProgramResponse> responses;
+		int totalSize = myAttend.size();
 
 		if (!myAttend.isEmpty()) {
+			// start, end
+			int start = (page - 1) * size;
+			// 시작 페이지가 조회한 데이터 범위 밖에 있는 경우
+			if (start >= myAttend.size()) {
+				return new PageResponse<>(Page.empty(PageRequest.of(page - 1, size)));
+			}
+			int end = start + size;
+			// 마지막 인덱스가, 실제 데이터 크기보다 클 경우
+			if (end > myAttend.size()) {
+				end = myAttend.size();
+			}
+			myAttend = myAttend.subList(start, end);
+
+			Page<AttendInfoWithProgramResponse> responses;
 			responses =
 					new PageImpl<>(
 							myAttend.stream()
@@ -240,8 +250,8 @@ public class AttendService
 											})
 									.filter(Objects::nonNull)
 									.toList(),
-							myAttend.getPageable(),
-							myAttend.getTotalElements());
+							PageRequest.of(page - 1, size),
+							totalSize);
 
 			return new PageResponse<>(responses);
 		}
