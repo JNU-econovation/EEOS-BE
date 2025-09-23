@@ -1,4 +1,4 @@
-package com.blackcompany.eeos.target.persistence;
+package com.blackcompany.eeos.target.persistence.policy;
 
 import com.blackcompany.eeos.common.persistence.BaseEntity;
 import com.blackcompany.eeos.target.application.model.AttendStatus;
