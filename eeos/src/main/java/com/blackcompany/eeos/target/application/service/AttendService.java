@@ -19,6 +19,8 @@ import com.blackcompany.eeos.target.application.dto.AttendInfoResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfoWithProgramResponse;
 import com.blackcompany.eeos.target.application.dto.AttendPenaltyRankingResponse;
 import com.blackcompany.eeos.target.application.dto.AttendPenaltyResponse;
+import com.blackcompany.eeos.target.application.dto.AttendStatisticsResponse;
+import com.blackcompany.eeos.target.application.dto.AttendStatisticsResponse.MemberStatistics;
 import com.blackcompany.eeos.target.application.dto.AttendSummaryInfoResponse;
 import com.blackcompany.eeos.target.application.dto.ChangeAttendStatusResponse;
 import com.blackcompany.eeos.target.application.dto.QueryAttendActiveStatusResponse;
@@ -346,6 +348,38 @@ public class AttendService
 						+ 1;
 
 		return new AttendPenaltyRankingResponse(myPenaltyRank < rankOffset, (int) myPenaltyRank);
+	}
+
+	@Override
+	public PageResponse<MemberStatistics> getStatistics(int size, int page, String activeStatus, Long startDate,
+																Long endDate) {
+
+		Sort.Order order = Sort.Order.desc("penaltyScore");
+
+		Pageable pageable = PageRequest.of(page - 1, size, Sort.by(order));
+
+		Timestamp startTimestamp =
+				startDate == null
+						? semesterPeriodProvider.getSemesterPeriod().getStartDate()
+						: new Timestamp(startDate);
+		Timestamp endTimestamp =
+				endDate == null
+						? semesterPeriodProvider.getSemesterPeriod().getEndDate()
+						: new Timestamp(endDate);
+
+		Page<Object[]> pages =
+				penaltyPointRepository.getStatistics(startTimestamp, endTimestamp, AttendStatus.LATE, AttendStatus.ABSENT, pageable);
+
+		if(pages.getTotalElements()!=0) {
+
+			List<MemberStatistics> statistics = pages.get()
+					.map(obj -> new MemberStatistics((Long) obj[0], (String) obj[1],
+							((ActiveStatus) obj[2]).getStatus(), ((Long) obj[3]).intValue(), ((Long) obj[4]).intValue(), ((Long) obj[5]).intValue())).toList();
+
+			return new PageResponse<>(new PageImpl<>(statistics, pageable, pages.getTotalElements()));
+		}
+
+		return new PageResponse<>(Page.empty(PageRequest.of(page - 1, size)));
 	}
 
 	private List<AttendModel> findMyAttends(List<ProgramModel> programs) {
