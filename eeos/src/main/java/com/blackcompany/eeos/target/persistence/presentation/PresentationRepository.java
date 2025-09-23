@@ -1,4 +1,4 @@
-package com.blackcompany.eeos.target.persistence;
+package com.blackcompany.eeos.target.persistence.presentation;
 
 import com.blackcompany.eeos.team.persistence.TeamEntity;
 import java.util.List;
