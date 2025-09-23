@@ -1,4 +1,4 @@
-package com.blackcompany.eeos.target.persistence;
+package com.blackcompany.eeos.target.persistence.rank;
 
 import jakarta.persistence.LockModeType;
 import java.util.Optional;
