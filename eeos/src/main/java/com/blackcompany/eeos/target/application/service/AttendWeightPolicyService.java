@@ -6,7 +6,7 @@ import com.blackcompany.eeos.target.application.model.AttendWeightPolicyModel;
 import com.blackcompany.eeos.target.application.model.SignType;
 import com.blackcompany.eeos.target.application.usecase.CommandAttendWeightPolicyUsecase;
 import com.blackcompany.eeos.target.application.usecase.GetAttendWeightPolicyUsecase;
-import com.blackcompany.eeos.target.persistence.AttendWeightPolicyRepository;
+import com.blackcompany.eeos.target.application.repository.AttendWeightPolicyRepository;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;

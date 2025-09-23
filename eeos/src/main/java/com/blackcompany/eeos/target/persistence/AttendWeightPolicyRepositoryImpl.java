@@ -2,6 +2,7 @@ package com.blackcompany.eeos.target.persistence;
 
 import com.blackcompany.eeos.target.application.model.AttendStatus;
 import com.blackcompany.eeos.target.application.model.AttendWeightPolicyModel;
+import com.blackcompany.eeos.target.application.repository.AttendWeightPolicyRepository;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
