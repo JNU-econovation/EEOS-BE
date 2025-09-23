@@ -11,6 +11,8 @@ import com.blackcompany.eeos.target.application.dto.AttendInfoWithProgramRespons
 import com.blackcompany.eeos.target.application.dto.AttendInfosSearchRequest;
 import com.blackcompany.eeos.target.application.dto.AttendPenaltyRankingResponse;
 import com.blackcompany.eeos.target.application.dto.AttendPenaltyResponse;
+import com.blackcompany.eeos.target.application.dto.AttendStatisticsResponse;
+import com.blackcompany.eeos.target.application.dto.AttendStatisticsResponse.MemberStatistics;
 import com.blackcompany.eeos.target.application.dto.AttendSummaryInfoResponse;
 import com.blackcompany.eeos.target.application.dto.ChangeAttendStatusResponse;
 import com.blackcompany.eeos.target.application.dto.PenaltyInfoRequest;
@@ -138,5 +140,18 @@ public class AttendController implements AttendApi {
 			@RequestParam("offset") int rankOffset) {
 		AttendPenaltyRankingResponse response = getAttendantInfoUsecase.getMyPenaltyRanking(rankOffset);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.GET);
+	}
+
+	@Override
+	@GetMapping("/attend/statistic")
+	public ApiResponse<SuccessBody<PageResponse<MemberStatistics>>> getStatistics(
+							@RequestParam("size") int size,
+							@RequestParam("page") int page,
+							@RequestParam("activeStatus") String activeStatus,
+							@RequestParam(value = "startDate", required = false) Long startDate,
+							@RequestParam(value = "endDate", required = false) Long endDate) {
+		PageResponse<MemberStatistics> response = getAttendantInfoUsecase.getStatistics(size, page, activeStatus, startDate, endDate);
+
+		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.CREATE);
 	}
 }

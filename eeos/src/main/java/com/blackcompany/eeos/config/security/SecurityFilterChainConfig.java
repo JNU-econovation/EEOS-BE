@@ -108,6 +108,8 @@ public class SecurityFilterChainConfig {
 					requests
 							.requestMatchers(HttpMethod.PUT, "/api/members/{memberId}/department")
 							.hasAnyRole(ADMIN);
+					requests.requestMatchers(HttpMethod.GET, "/api/attend/statistic")
+							.hasAnyRole(ADMIN);
 					requests.anyRequest().authenticated();
 				});
 
