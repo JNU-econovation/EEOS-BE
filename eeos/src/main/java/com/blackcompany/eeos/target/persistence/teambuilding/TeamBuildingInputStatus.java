@@ -1,4 +1,4 @@
-package com.blackcompany.eeos.target.persistence;
+package com.blackcompany.eeos.target.persistence.teambuilding;
 
 import com.blackcompany.eeos.target.application.exception.NotFoundTeamBuildingInputStatus;
 import java.util.Arrays;

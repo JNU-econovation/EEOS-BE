@@ -1,4 +1,4 @@
-package com.blackcompany.eeos.target.persistence;
+package com.blackcompany.eeos.target.persistence.teambuilding;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

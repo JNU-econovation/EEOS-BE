@@ -1,4 +1,4 @@
-package com.blackcompany.eeos.target.persistence;
+package com.blackcompany.eeos.target.persistence.teambuilding;
 
 import java.util.List;
 import java.util.Optional;
