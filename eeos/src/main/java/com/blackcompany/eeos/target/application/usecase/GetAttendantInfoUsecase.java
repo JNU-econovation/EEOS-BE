@@ -5,7 +5,6 @@ import com.blackcompany.eeos.target.application.dto.AttendInfoResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfoWithProgramResponse;
 import com.blackcompany.eeos.target.application.dto.AttendPenaltyRankingResponse;
 import com.blackcompany.eeos.target.application.dto.AttendPenaltyResponse;
-import com.blackcompany.eeos.target.application.dto.AttendStatisticsResponse;
 import com.blackcompany.eeos.target.application.dto.AttendStatisticsResponse.MemberStatistics;
 import com.blackcompany.eeos.target.application.dto.AttendSummaryInfoResponse;
 import com.blackcompany.eeos.target.application.dto.QueryAttendStatusResponse;
@@ -35,5 +34,6 @@ public interface GetAttendantInfoUsecase {
 
 	AttendPenaltyRankingResponse getMyPenaltyRanking(int rankOffset);
 
-	PageResponse<MemberStatistics> getStatistics(int size, int page, String activeStatus, Long startDate, Long endDate);
+	PageResponse<MemberStatistics> getStatistics(
+			int size, int page, String activeStatus, Long startDate, Long endDate);
 }

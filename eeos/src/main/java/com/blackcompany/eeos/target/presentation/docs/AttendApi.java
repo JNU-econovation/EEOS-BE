@@ -8,7 +8,6 @@ import com.blackcompany.eeos.target.application.dto.AttendInfoWithProgramRespons
 import com.blackcompany.eeos.target.application.dto.AttendInfosSearchRequest;
 import com.blackcompany.eeos.target.application.dto.AttendPenaltyRankingResponse;
 import com.blackcompany.eeos.target.application.dto.AttendPenaltyResponse;
-import com.blackcompany.eeos.target.application.dto.AttendStatisticsResponse;
 import com.blackcompany.eeos.target.application.dto.AttendStatisticsResponse.MemberStatistics;
 import com.blackcompany.eeos.target.application.dto.AttendSummaryInfoResponse;
 import com.blackcompany.eeos.target.application.dto.ChangeAttendStatusResponse;
@@ -77,5 +76,6 @@ public interface AttendApi {
 	ApiResponse<SuccessBody<AttendPenaltyRankingResponse>> getMyPenaltyRankingInfo(int rankOffset);
 
 	@Operation(summary = "전체 출석 통계 조회", description = "전체 회원의 출석 통계를 조회합니다.")
-	ApiResponse<SuccessBody<PageResponse<MemberStatistics>>> getStatistics(int size, int page, String memberStatus, Long startDate, Long endDate);
+	ApiResponse<SuccessBody<PageResponse<MemberStatistics>>> getStatistics(
+			int size, int page, String memberStatus, Long startDate, Long endDate);
 }

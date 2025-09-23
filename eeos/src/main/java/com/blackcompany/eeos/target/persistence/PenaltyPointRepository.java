@@ -40,5 +40,4 @@ public interface PenaltyPointRepository extends JpaRepository<AttendEntity, Long
 	@Query(
 			"SELECT temp.memberId, temp.totalScore FROM (SELECT a.memberId as memberId, SUM(a.penaltyScore) as totalScore FROM AttendEntity a GROUP BY a.memberId) AS temp")
 	Page<Object[]> findByPenaltyPointSum(Pageable pageable);
-
 }

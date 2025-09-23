@@ -348,8 +348,8 @@ public class AttendService
 	}
 
 	@Override
-	public PageResponse<MemberStatistics> getStatistics(int size, int page, String activeStatus, Long startDate,
-																Long endDate) {
+	public PageResponse<MemberStatistics> getStatistics(
+			int size, int page, String activeStatus, Long startDate, Long endDate) {
 
 		Sort.Order penaltyScore = Sort.Order.desc("penaltyScore");
 		Sort.Order absent = Sort.Order.desc("absent");
@@ -368,14 +368,34 @@ public class AttendService
 
 		Page<Object[]> pages;
 
-		if(activeStatus==null)
-			pages = attendRepository.getStatistics(startTimestamp, endTimestamp, AttendStatus.LATE, AttendStatus.ABSENT, pageable);
+		if (activeStatus == null)
+			pages =
+					attendRepository.getStatistics(
+							startTimestamp, endTimestamp, AttendStatus.LATE, AttendStatus.ABSENT, pageable);
 		else
-			pages = attendRepository.getStatistics(startTimestamp, endTimestamp, AttendStatus.LATE, AttendStatus.ABSENT, ActiveStatus.find(activeStatus), pageable);
+			pages =
+					attendRepository.getStatistics(
+							startTimestamp,
+							endTimestamp,
+							AttendStatus.LATE,
+							AttendStatus.ABSENT,
+							ActiveStatus.find(activeStatus),
+							pageable);
 
-		if(pages.getTotalElements()!=0) {
-			List<MemberStatistics> statistics = pages.get().map(obj -> new MemberStatistics((Long) obj[0], (String) obj[1],
-					((ActiveStatus) obj[2]).getStatus(), ((Long) obj[3]).intValue(), ((Long) obj[4]).intValue(), ((Long) obj[5]).intValue())).toList();
+		if (pages.getTotalElements() != 0) {
+			List<MemberStatistics> statistics =
+					pages
+							.get()
+							.map(
+									obj ->
+											new MemberStatistics(
+													(Long) obj[0],
+													(String) obj[1],
+													((ActiveStatus) obj[2]).getStatus(),
+													((Long) obj[3]).intValue(),
+													((Long) obj[4]).intValue(),
+													((Long) obj[5]).intValue()))
+							.toList();
 
 			return new PageResponse<>(new PageImpl<>(statistics, pageable, pages.getTotalElements()));
 		}
