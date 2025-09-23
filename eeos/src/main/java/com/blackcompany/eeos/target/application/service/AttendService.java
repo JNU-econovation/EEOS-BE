@@ -54,6 +54,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -78,7 +79,6 @@ public class AttendService
 	private final AttendEntityConverter attendEntityConverter;
 	private final QueryMemberService queryMemberService;
 	private final ChangeAttendStatusConverter changeAttendStatusConverter;
-	private final MemberEntityConverter memberEntityConverter;
 	private final AttendInfoConverter attendInfoConverter;
 	private final QueryAttendStatusResponseConverter attendStatusResponseConverter;
 	private final AttendInfoActiveStatusConverter attendInfoActiveStatusConverter;
@@ -354,9 +354,11 @@ public class AttendService
 	public PageResponse<MemberStatistics> getStatistics(int size, int page, String activeStatus, Long startDate,
 																Long endDate) {
 
-		Sort.Order order = Sort.Order.desc("penaltyScore");
+		Sort.Order penaltyScore = Sort.Order.desc("penaltyScore");
+		Sort.Order absent = Sort.Order.desc("absent");
+		Sort.Order late = Sort.Order.desc("late");
 
-		Pageable pageable = PageRequest.of(page - 1, size, Sort.by(order));
+		Pageable pageable = PageRequest.of(page - 1, size, Sort.by(penaltyScore, absent, late));
 
 		Timestamp startTimestamp =
 				startDate == null
@@ -367,14 +369,16 @@ public class AttendService
 						? semesterPeriodProvider.getSemesterPeriod().getEndDate()
 						: new Timestamp(endDate);
 
-		Page<Object[]> pages =
-				penaltyPointRepository.getStatistics(startTimestamp, endTimestamp, AttendStatus.LATE, AttendStatus.ABSENT, pageable);
+		Page<Object[]> pages;
+
+		if(activeStatus==null)
+			pages = attendRepository.getStatistics(startTimestamp, endTimestamp, AttendStatus.LATE, AttendStatus.ABSENT, pageable);
+		else
+			pages = attendRepository.getStatistics(startTimestamp, endTimestamp, AttendStatus.LATE, AttendStatus.ABSENT, ActiveStatus.find(activeStatus), pageable);
 
 		if(pages.getTotalElements()!=0) {
-
-			List<MemberStatistics> statistics = pages.get()
-					.map(obj -> new MemberStatistics((Long) obj[0], (String) obj[1],
-							((ActiveStatus) obj[2]).getStatus(), ((Long) obj[3]).intValue(), ((Long) obj[4]).intValue(), ((Long) obj[5]).intValue())).toList();
+			List<MemberStatistics> statistics = pages.get().map(obj -> new MemberStatistics((Long) obj[0], (String) obj[1],
+					((ActiveStatus) obj[2]).getStatus(), ((Long) obj[3]).intValue(), ((Long) obj[4]).intValue(), ((Long) obj[5]).intValue())).toList();
 
 			return new PageResponse<>(new PageImpl<>(statistics, pageable, pages.getTotalElements()));
 		}
