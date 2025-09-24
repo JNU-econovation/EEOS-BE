@@ -6,6 +6,8 @@ import com.blackcompany.eeos.calendar.application.exception.InvalidDateException
 import com.blackcompany.eeos.calendar.application.model.CalendarModel;
 import com.blackcompany.eeos.calendar.application.model.CalendarType;
 import com.blackcompany.eeos.member.application.model.Department;
+import com.blackcompany.eeos.member.application.model.MemberModel;
+import com.blackcompany.eeos.member.application.repository.MemberRepository;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,9 +17,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class CalendarValidator {
 
-	private final Map<CalendarType, Set<Department>> AVAILABLE = new HashMap<>();
+	private final MemberRepository memberRepository;
+	private final Map<CalendarType, Set<Department>> AVAILABLE;
 
-	public CalendarValidator() {
+	public CalendarValidator(MemberRepository memberRepository) {
+		this.memberRepository = memberRepository;
+
+		AVAILABLE = new HashMap<>();
+
 		final Set<Department> EVENT_AVAILABLE = Set.of(Department.EVENT, Department.PRESIDENT);
 		final Set<Department> PRESENTATION_AVAILABLE = Set.of(Department.PRESIDENT);
 		final Set<Department> ETC_AVAILABLE =
@@ -34,7 +41,11 @@ public class CalendarValidator {
 	}
 
 	public void updateValidate(CalendarModel calendar, Long memberId) {
-		if (!calendar.isWriter(memberId)) throw new DeniedCalendarUpdateException();
+		Department department = memberRepository.findById(memberId).getDepartment();
+
+		if(!isWritable(calendar.getType(), department)){
+			throw new DeniedCalendarUpdateException();
+		}
 	}
 
 	public void durationValidate(CalendarModel calendar) {
@@ -46,11 +57,18 @@ public class CalendarValidator {
 
 	public void typeValidate(CalendarModel calendar, Department department) {
 		CalendarType type = calendar.getType();
-		Set<Department> departments = AVAILABLE.getOrDefault(type, Set.of());
 
-		if (!departments.contains(department)) {
+		if (!isWritable(type, department)) {
 			throw new DeniedCalendarTypeException(department);
 		}
+	}
+
+	/** 업데이트가 가능한지 여부 : 부서가 업데이트 기준이 된다. */
+	private boolean isWritable(CalendarType type, Department department){
+		Set<Department> updatable = AVAILABLE.getOrDefault(type, Set.of());
+
+		if(updatable.contains(department)) return true;
+		return false;
 	}
 
 	public void urlValidator(CalendarModel calendar) {
