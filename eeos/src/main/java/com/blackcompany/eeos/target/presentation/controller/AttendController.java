@@ -150,7 +150,7 @@ public class AttendController implements AttendApi {
 			@RequestParam(value = "startDate", required = false) Long startDate,
 			@RequestParam(value = "endDate", required = false) Long endDate) {
 		PageResponse<MemberStatistics> response =
-				getAttendantInfoUsecase.getStatistics(size, page, activeStatus, startDate, endDate);
+				getAttendantInfoUsecase.getStatistics(page, size, activeStatus, startDate, endDate);
 
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.CREATE);
 	}

@@ -35,5 +35,5 @@ public interface GetAttendantInfoUsecase {
 	AttendPenaltyRankingResponse getMyPenaltyRanking(int rankOffset);
 
 	PageResponse<MemberStatistics> getStatistics(
-			int size, int page, String activeStatus, Long startDate, Long endDate);
+			int page, int size, String activeStatus, Long startDate, Long endDate);
 }

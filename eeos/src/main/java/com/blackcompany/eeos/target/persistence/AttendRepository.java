@@ -92,8 +92,8 @@ public interface AttendRepository extends JpaRepository<AttendEntity, Long> {
 					+ "  SUM(CASE WHEN a.status = :late THEN 1 ELSE 0 END) as late,"
 					+ "  SUM (CASE WHEN a.status = :absent THEN 1 ELSE 0 END ) as absent,"
 					+ "  COALESCE(SUM (a.penaltyScore), 0) as penaltyScore "
-					+ "FROM AttendEntity a JOIN MemberEntity m ON a.memberId=m.id WHERE a.createdDate >= :startDate AND a.createdDate <= :endDate AND m.activeStatus=:activeStatus "
-					+ "GROUP BY m.id, m.name")
+					+ "FROM AttendEntity a JOIN MemberEntity m ON a.memberId=m.id WHERE a.isDeleted=false AND a.createdDate >= :startDate AND a.createdDate <= :endDate AND m.activeStatus=:activeStatus "
+					+ "GROUP BY m.id, m.name, m.activeStatus")
 	Page<Object[]> getStatistics(
 			@Param("startDate") Timestamp startDate,
 			@Param("endDate") Timestamp endDate,

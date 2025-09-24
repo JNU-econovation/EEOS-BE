@@ -349,7 +349,7 @@ public class AttendService
 
 	@Override
 	public PageResponse<MemberStatistics> getStatistics(
-			int size, int page, String activeStatus, Long startDate, Long endDate) {
+			int page, int size, String activeStatus, Long startDate, Long endDate) {
 
 		Sort.Order penaltyScore = Sort.Order.desc("penaltyScore");
 		Sort.Order absent = Sort.Order.desc("absent");
@@ -368,7 +368,7 @@ public class AttendService
 
 		Page<Object[]> pages;
 
-		if (activeStatus == null)
+		if (activeStatus == null || activeStatus.equalsIgnoreCase("all"))
 			pages =
 					attendRepository.getStatistics(
 							startTimestamp, endTimestamp, AttendStatus.LATE, AttendStatus.ABSENT, pageable);
