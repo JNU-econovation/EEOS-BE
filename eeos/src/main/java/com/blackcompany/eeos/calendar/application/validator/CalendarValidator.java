@@ -69,7 +69,6 @@ public class CalendarValidator {
 		if (updatable.contains(department)) return true;
 		return false;
 	}
-
 	public void urlValidator(CalendarModel calendar) {
 		String url = calendar.getUrl();
 
