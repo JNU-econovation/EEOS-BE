@@ -410,7 +410,7 @@ public class AttendService
 			changedModel.setPenaltyScore(
 					attendWeightCalculator.calculateTotalScore(List.of(attendStatus)));
 
-		if (changedModel.getStatus().equals("attend")) {
+		if (attendStatus == AttendStatus.ATTEND) {
 			Long rank = getNextRank(program.getId());
 			changedModel.setRank(rank);
 		}
