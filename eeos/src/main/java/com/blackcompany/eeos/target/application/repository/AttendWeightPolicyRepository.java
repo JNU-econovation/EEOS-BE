@@ -1,4 +1,4 @@
-package com.blackcompany.eeos.target.persistence;
+package com.blackcompany.eeos.target.application.repository;
 
 import com.blackcompany.eeos.target.application.model.AttendStatus;
 import com.blackcompany.eeos.target.application.model.AttendWeightPolicyModel;

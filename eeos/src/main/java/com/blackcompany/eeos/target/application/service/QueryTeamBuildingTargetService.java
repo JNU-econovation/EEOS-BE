@@ -3,7 +3,7 @@ package com.blackcompany.eeos.target.application.service;
 import com.blackcompany.eeos.target.application.exception.NotFoundTargetTeamBuildingException;
 import com.blackcompany.eeos.target.application.model.TeamBuildingTargetModel;
 import com.blackcompany.eeos.target.application.model.converter.TeamBuildingTargetEntityConverter;
-import com.blackcompany.eeos.target.persistence.TeamBuildingTargetRepository;
+import com.blackcompany.eeos.target.persistence.teambuilding.TeamBuildingTargetRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;

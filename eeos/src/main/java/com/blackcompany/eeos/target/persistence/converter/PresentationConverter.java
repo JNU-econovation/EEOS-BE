@@ -1,6 +1,6 @@
 package com.blackcompany.eeos.target.persistence.converter;
 
-import com.blackcompany.eeos.target.persistence.PresentationEntity;
+import com.blackcompany.eeos.target.persistence.presentation.PresentationEntity;
 import org.springframework.stereotype.Component;
 
 @Component

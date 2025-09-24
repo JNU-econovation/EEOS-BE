@@ -2,7 +2,7 @@ package com.blackcompany.eeos.target.application.model;
 
 import com.blackcompany.eeos.common.application.model.MemberIdModel;
 import com.blackcompany.eeos.common.support.AbstractModel;
-import com.blackcompany.eeos.target.persistence.TeamBuildingInputStatus;
+import com.blackcompany.eeos.target.persistence.teambuilding.TeamBuildingInputStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
