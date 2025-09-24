@@ -51,7 +51,6 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -399,7 +398,7 @@ public class AttendService
 		return new PageResponse<>(Page.empty(PageRequest.of(page - 1, size)));
 	}
 
-	private AttendModel updateAttendStatus(AttendModel model, ProgramModel program){
+	private AttendModel updateAttendStatus(AttendModel model, ProgramModel program) {
 		// 현재 출석 모드 가져오기
 		ProgramAttendMode attendMode = program.getAttendMode();
 		AttendStatus attendStatus = AttendStatus.find(attendMode.getMode());
@@ -407,9 +406,9 @@ public class AttendService
 		// 상태 바꾸기
 		AttendModel changedModel = model.changeStatus(attendMode.getMode());
 		// 벌점 반영하기
-		if(attendStatus==AttendStatus.ABSENT
-				|| attendStatus==AttendStatus.LATE)
-			changedModel.setPenaltyScore(attendWeightCalculator.calculateTotalScore(List.of(attendStatus)));
+		if (attendStatus == AttendStatus.ABSENT || attendStatus == AttendStatus.LATE)
+			changedModel.setPenaltyScore(
+					attendWeightCalculator.calculateTotalScore(List.of(attendStatus)));
 
 		if (changedModel.getStatus().equals("attend")) {
 			Long rank = getNextRank(program.getId());
