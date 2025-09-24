@@ -6,7 +6,6 @@ import com.blackcompany.eeos.calendar.application.exception.InvalidDateException
 import com.blackcompany.eeos.calendar.application.model.CalendarModel;
 import com.blackcompany.eeos.calendar.application.model.CalendarType;
 import com.blackcompany.eeos.member.application.model.Department;
-import com.blackcompany.eeos.member.application.model.MemberModel;
 import com.blackcompany.eeos.member.application.repository.MemberRepository;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -43,7 +42,7 @@ public class CalendarValidator {
 	public void updateValidate(CalendarModel calendar, Long memberId) {
 		Department department = memberRepository.findById(memberId).getDepartment();
 
-		if(!isWritable(calendar.getType(), department)){
+		if (!isWritable(calendar.getType(), department)) {
 			throw new DeniedCalendarUpdateException();
 		}
 	}
@@ -64,10 +63,10 @@ public class CalendarValidator {
 	}
 
 	/** 업데이트가 가능한지 여부 : 부서가 업데이트 기준이 된다. */
-	private boolean isWritable(CalendarType type, Department department){
+	private boolean isWritable(CalendarType type, Department department) {
 		Set<Department> updatable = AVAILABLE.getOrDefault(type, Set.of());
 
-		if(updatable.contains(department)) return true;
+		if (updatable.contains(department)) return true;
 		return false;
 	}
 
