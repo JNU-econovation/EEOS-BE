@@ -14,7 +14,7 @@ services:
       - external-network
   eeos-mysql:
     container_name: eeos-mysql
-    image: mysql/mysql-server:8.0.27
+    image: mysql/mysql-server:8.0.32
     environment:
       - MYSQL_DATABASE=eeos
       - MYSQL_ROOT_HOST=%

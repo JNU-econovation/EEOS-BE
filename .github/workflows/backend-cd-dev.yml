@@ -3,7 +3,7 @@ name: CD Deploy
 on:
   pull_request:
     types: [closed]
-    branches: [ "develop" ]
+    branches: ["develop"]
 
 jobs:
   deploy:
@@ -12,11 +12,11 @@ jobs:
     steps:
       - name: SSH 접속 및 배포 실행
         id: deploy
-        uses: appleboy/ssh-action@v0.1.7
+        uses: appleboy/ssh-action@v0.1.10
         with:
-          host: ${{ secrets.DEV_HOST }}             # 예: 000.000.000.000
-          username: ${{ secrets.DEV_USERNAME }}       # SSH 로그인 사용자
-          password: ${{ secrets.DEV_PASSWORD }}       # SSH 비밀번호
+          host: ${{ secrets.DEV_HOST }}
+          username: ${{ secrets.DEV_USERNAME }}
+          password: ${{ secrets.DEV_PASSWORD }}
           port: ${{ secrets.DEV_SSH_PORT }}
           script: |
             set -ex
@@ -31,51 +31,61 @@ jobs:
               exit 1
             fi
 
+  health_check:
+    needs: deploy
+    runs-on: ubuntu-latest
+    outputs:
+      status: ${{ steps.check.outputs.status }}
+    steps:
       - name: API Health Check
-        id: health_check
+        id: check
         run: |
           echo "Waiting for container to start..."
-          sleep 10  
-
-          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" https://dev.eeos.co.kr/api/health-check)
-
-          echo "Health Check returned code: $HTTP_CODE"
-
-          if [ "$HTTP_CODE" = "200" ]; then
+          sleep 20
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 https://dev.eeos.econovation.kr/api/health-check)
+          if [ $? -ne 0 ]; then
+            echo "Health Check timed out."
+            echo "status=timeout" >> $GITHUB_OUTPUT
+          elif [ "$HTTP_CODE" = "200" ]; then
             echo "status=success" >> $GITHUB_OUTPUT
           else
             echo "status=failure" >> $GITHUB_OUTPUT
           fi
 
+  slack_notify:
+    needs: [deploy, health_check]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
       - name: Slack 알림 전송
-        if: always()
         env:
           SLACK_CD_WEBHOOK_URL: ${{ secrets.SLACK_CD_WEBHOOK_URL }}
           COMMIT_MESSAGE: ${{ github.event.pull_request.title }}
           BRANCH_NAME: ${{ github.event.pull_request.base.ref }}
           WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           MERGED_AT: ${{ github.event.pull_request.merged_at }}
-          STATUS: ${{ job.status }}
-          ERROR_MESSAGE: ${{ steps.deploy.outputs.error_message }}
-          HEALTH_STATUS: ${{ steps.health_check.outputs.status }}
-
+          HEALTH_STATUS: ${{ needs.health_check.outputs.status }}
+          DEPLOY_STATUS: ${{ needs.deploy.result }}
         run: |
-          if [ "${STATUS}" = "success" ]; then
+          # Determine deployment result based on the deploy job outcome
+          if [ "${DEPLOY_STATUS}" = "success" ]; then
+            DEPLOY_TEXT="성공"
             BASE_COLOR="#36a64f"
-            DEPLOY_RESULT="성공"
+            if [ "${HEALTH_STATUS}" = "success" ]; then
+              HEALTH_TEXT="성공"
+            elif [ "${HEALTH_STATUS}" = "failure" ]; then
+              HEALTH_TEXT="실패"
+              BASE_COLOR="#FF0000"
+            elif [ "${HEALTH_STATUS}" = "timeout" ]; then
+              HEALTH_TEXT="Timeout"
+              BASE_COLOR="#FFA500"
+            else
+              HEALTH_TEXT="미실시"
+            fi
           else
+            DEPLOY_TEXT="실패"
             BASE_COLOR="#FF0000"
-            DEPLOY_RESULT="실패"
-          fi
-          
-          # 헬스 체크 결과
-          if [ "${HEALTH_STATUS}" = "success" ]; then
-            HEALTH_RESULT="성공"
-          elif [ "${HEALTH_STATUS}" = "failure" ]; then
-            HEALTH_RESULT="실패"
-            BASE_COLOR="#FF0000"  # 헬스 체크 실패면 강제로 색상 빨강
-          else
-            HEALTH_RESULT="Health Check 미실시"
+            HEALTH_TEXT="미실시"
           fi
 
           if [ "${BRANCH_NAME}" = "develop" ]; then
@@ -83,7 +93,7 @@ jobs:
           else
             DEPLOY_TYPE="${BRANCH_NAME}"
           fi
-          
+
           LOCAL_TIME=$(TZ="Asia/Seoul" date -d "${MERGED_AT}" +'%Y-%m-%d %H:%M:%S')
 
           PAYLOAD=$(cat <<EOF
@@ -92,11 +102,11 @@ jobs:
             "attachments": [
               {
                 "color": "${BASE_COLOR}",
-                "title": "${DEPLOY_TYPE} 배포 : ${DEPLOY_RESULT}",
+                "title": "${DEPLOY_TYPE} 배포 : ${DEPLOY_TEXT}",
                 "fields": [
                   {
                     "title": "Health Check",
-                    "value": "\`${HEALTH_RESULT}\`",
+                    "value": "\`${HEALTH_TEXT}\`",
                     "short": false
                   },
                   {

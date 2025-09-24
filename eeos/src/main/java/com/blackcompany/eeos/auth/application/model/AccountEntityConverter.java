@@ -1,6 +1,6 @@
 package com.blackcompany.eeos.auth.application.model;
 
-import com.blackcompany.eeos.auth.persistence.AccountEntity;
+import com.blackcompany.eeos.auth.persistence.account.AccountEntity;
 import com.blackcompany.eeos.common.support.converter.AbstractEntityConverter;
 import org.springframework.stereotype.Component;
 

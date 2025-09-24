@@ -11,7 +11,7 @@ import com.blackcompany.eeos.member.fixture.MemberFixture;
 import com.blackcompany.eeos.target.application.dto.TargetMember;
 import com.blackcompany.eeos.target.application.model.converter.TeamBuildingTargetEntityConverter;
 import com.blackcompany.eeos.target.fixture.TargetMemberFixture;
-import com.blackcompany.eeos.target.persistence.TeamBuildingTargetRepository;
+import com.blackcompany.eeos.target.persistence.teambuilding.TeamBuildingTargetRepository;
 import com.blackcompany.eeos.teamBuilding.application.dto.TeamBuildingMember;
 import com.blackcompany.eeos.teamBuilding.application.service.CommandTeamBuildingTargetMemberService;
 import java.util.List;

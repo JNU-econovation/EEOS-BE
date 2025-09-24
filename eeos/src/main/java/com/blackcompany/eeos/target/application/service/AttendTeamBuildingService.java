@@ -8,8 +8,8 @@ import com.blackcompany.eeos.target.application.model.converter.TeamBuildingTarg
 import com.blackcompany.eeos.target.application.usecase.AttendTeamBuildingUsecase;
 import com.blackcompany.eeos.target.application.usecase.GetTargetInfoUsecase;
 import com.blackcompany.eeos.target.application.usecase.UpdateAttendTeamBuildingUsecase;
-import com.blackcompany.eeos.target.persistence.TeamBuildingTargetEntity;
-import com.blackcompany.eeos.target.persistence.TeamBuildingTargetRepository;
+import com.blackcompany.eeos.target.persistence.teambuilding.TeamBuildingTargetEntity;
+import com.blackcompany.eeos.target.persistence.teambuilding.TeamBuildingTargetRepository;
 import com.blackcompany.eeos.teamBuilding.application.model.TeamBuildingModel;
 import com.blackcompany.eeos.teamBuilding.application.model.converter.TeamBuildingEntityConverter;
 import com.blackcompany.eeos.teamBuilding.application.service.QueryTeamBuildingService;

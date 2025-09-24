@@ -1,0 +1,58 @@
+package com.blackcompany.eeos.member.application.model;
+
+import com.blackcompany.eeos.member.application.exception.NotFoundDepartmentException;
+import java.util.Arrays;
+import java.util.List;
+import lombok.Getter;
+
+@Getter
+public enum Department {
+	PRESIDENT(101L, "PRESIDENT", "회장단"),
+	MARKETING(102L, "MARKETING", "홍보부"),
+	MANAGEMENT(103L, "MANAGEMENT", "관리부"),
+	EVENT(104L, "EVENT", "행사부"),
+	NONE(105L, "NONE", "해당없음");
+
+	private final Long id;
+	private final String enName;
+	private final String koName;
+
+	Department(Long id, String enName, String koName) {
+		this.id = id;
+		this.enName = enName;
+		this.koName = koName;
+	}
+
+	public static boolean isExistById(Long id) {
+		return Arrays.stream(Department.values()).anyMatch(obj -> obj.getId().equals(id));
+	}
+
+	public static boolean isExistByEnName(String enName) {
+		if (enName == null) {
+			return false;
+		}
+		return Arrays.stream(Department.values())
+				.anyMatch(obj -> obj.getEnName().equalsIgnoreCase(enName));
+	}
+
+	public static Department findDepartmentByEnName(String enName) {
+		if (enName == null || enName.trim().isEmpty()) {
+			throw new NotFoundDepartmentException();
+		}
+		return Arrays.stream(Department.values())
+				.filter(obj -> obj.getEnName().equalsIgnoreCase(enName))
+				.findFirst()
+				.orElseThrow(NotFoundDepartmentException::new);
+	}
+
+	public static Department findById(Long id) {
+		return Arrays.stream(Department.values())
+				.filter(obj -> obj.getId().equals(id))
+				.findFirst()
+				.orElseThrow(NotFoundDepartmentException::new);
+	}
+
+	public static List<Department> getAllDepartments() {
+		return Arrays.asList(Department.values());
+	}
+}

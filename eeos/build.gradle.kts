@@ -34,6 +34,7 @@ dependencies {
     implementation(libs.spring.boot.starter.actuator)
     implementation(libs.spring.boot.starter.data.jpa)
     implementation(libs.spring.boot.starter.data.redis)
+    implementation(libs.spring.boot.starter.security)
 
     // Database
     implementation(libs.mysql.connector)
@@ -54,6 +55,7 @@ dependencies {
     // Test
     testImplementation(libs.spring.boot.starter.test)
     testImplementation(libs.spring.cloud.starter.contract.stub.runner)
+    testImplementation(libs.spring.security.test)
 
     // Lombok
     compileOnly(libs.lombok)

@@ -1,6 +1,6 @@
 package com.blackcompany.eeos.teamBuilding.application.event;
 
-import com.blackcompany.eeos.target.persistence.TeamBuildingTargetRepository;
+import com.blackcompany.eeos.target.persistence.teambuilding.TeamBuildingTargetRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;

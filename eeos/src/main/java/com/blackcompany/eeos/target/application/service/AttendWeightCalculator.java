@@ -3,7 +3,7 @@ package com.blackcompany.eeos.target.application.service;
 import com.blackcompany.eeos.target.application.model.AttendStatus;
 import com.blackcompany.eeos.target.application.model.AttendWeightPolicyModel;
 import com.blackcompany.eeos.target.application.model.SignType;
-import com.blackcompany.eeos.target.persistence.AttendWeightPolicyRepository;
+import com.blackcompany.eeos.target.application.repository.AttendWeightPolicyRepository;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;

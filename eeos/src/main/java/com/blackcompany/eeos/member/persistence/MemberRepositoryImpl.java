@@ -67,4 +67,9 @@ public class MemberRepositoryImpl implements MemberRepository {
 	public void deleteById(Long memberId) {
 		jpaRepository.deleteById(memberId);
 	}
+
+	@Override
+	public String findNameById(Long memberId) {
+		return jpaRepository.findNameById(memberId).orElseThrow(NotFoundMemberException::new);
+	}
 }

@@ -2,9 +2,9 @@ package com.blackcompany.eeos.target.application.model.converter;
 
 import com.blackcompany.eeos.common.support.converter.AbstractEntityConverter;
 import com.blackcompany.eeos.target.application.model.TeamBuildingTargetModel;
-import com.blackcompany.eeos.target.persistence.TeamBuildingInputDataEntity;
-import com.blackcompany.eeos.target.persistence.TeamBuildingInputStatus;
-import com.blackcompany.eeos.target.persistence.TeamBuildingTargetEntity;
+import com.blackcompany.eeos.target.persistence.teambuilding.TeamBuildingInputDataEntity;
+import com.blackcompany.eeos.target.persistence.teambuilding.TeamBuildingInputStatus;
+import com.blackcompany.eeos.target.persistence.teambuilding.TeamBuildingTargetEntity;
 import org.springframework.stereotype.Component;
 
 @Component

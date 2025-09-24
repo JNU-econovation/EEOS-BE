@@ -14,4 +14,5 @@ public class QueryMemberResponse implements AbstractResponseDto {
 	private Long memberId;
 	private String name;
 	private String activeStatus;
+	private String department;
 }

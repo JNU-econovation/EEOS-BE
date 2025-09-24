@@ -5,6 +5,7 @@ import com.blackcompany.eeos.target.application.dto.AttendInfoResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfoWithProgramResponse;
 import com.blackcompany.eeos.target.application.dto.AttendPenaltyRankingResponse;
 import com.blackcompany.eeos.target.application.dto.AttendPenaltyResponse;
+import com.blackcompany.eeos.target.application.dto.AttendStatisticsResponse.MemberStatistics;
 import com.blackcompany.eeos.target.application.dto.AttendSummaryInfoResponse;
 import com.blackcompany.eeos.target.application.dto.QueryAttendStatusResponse;
 import java.util.List;
@@ -32,4 +33,7 @@ public interface GetAttendantInfoUsecase {
 	AttendSummaryInfoResponse getMyAttendSummary(Long startDate, Long endDate);
 
 	AttendPenaltyRankingResponse getMyPenaltyRanking(int rankOffset);
+
+	PageResponse<MemberStatistics> getStatistics(
+			int page, int size, String activeStatus, Long startDate, Long endDate);
 }

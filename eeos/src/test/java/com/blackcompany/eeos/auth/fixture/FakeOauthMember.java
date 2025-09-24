@@ -2,7 +2,7 @@ package com.blackcompany.eeos.auth.fixture;
 
 import com.blackcompany.eeos.auth.application.domain.OauthMemberModel;
 import com.blackcompany.eeos.auth.application.domain.OauthServerType;
-import com.blackcompany.eeos.auth.persistence.OAuthMemberEntity;
+import com.blackcompany.eeos.auth.persistence.oauth.OAuthMemberEntity;
 
 public class FakeOauthMember {
 	public static OauthMemberModel oauthMemberModel(OauthServerType type, Long memberId) {

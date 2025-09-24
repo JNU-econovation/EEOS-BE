@@ -1,7 +1,7 @@
 package com.blackcompany.eeos.team.application.Service;
 
 import com.blackcompany.eeos.member.application.service.QueryMemberService;
-import com.blackcompany.eeos.target.persistence.PresentationRepository;
+import com.blackcompany.eeos.target.persistence.presentation.PresentationRepository;
 import com.blackcompany.eeos.team.application.dto.CreateTeamRequest;
 import com.blackcompany.eeos.team.application.dto.CreateTeamResponse;
 import com.blackcompany.eeos.team.application.dto.QueryTeamsResponse;

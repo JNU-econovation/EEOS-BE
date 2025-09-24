@@ -3,6 +3,7 @@ package com.blackcompany.eeos.member.persistence;
 import com.blackcompany.eeos.auth.application.domain.OauthServerType;
 import com.blackcompany.eeos.common.persistence.BaseEntity;
 import com.blackcompany.eeos.member.application.model.ActiveStatus;
+import com.blackcompany.eeos.member.application.model.Department;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -56,4 +57,9 @@ public class MemberEntity extends BaseEntity {
 	@Column(name = ENTITY_PREFIX + "_is_admin", nullable = false)
 	@Builder.Default
 	private boolean isAdmin = false; // TODO : 여러 ROEL 커버 가능하도록
+
+	@Column(name = ENTITY_PREFIX + "_department", nullable = false)
+	@Enumerated(EnumType.STRING)
+	@Builder.Default
+	private Department department = Department.NONE;
 }

@@ -4,7 +4,6 @@ import com.blackcompany.eeos.common.presentation.response.PageResponse;
 import com.blackcompany.eeos.common.utils.RequestScope;
 import com.blackcompany.eeos.member.application.model.ActiveStatus;
 import com.blackcompany.eeos.member.application.model.MemberModel;
-import com.blackcompany.eeos.member.application.model.converter.MemberEntityConverter;
 import com.blackcompany.eeos.member.application.repository.MemberRepository;
 import com.blackcompany.eeos.member.application.service.QueryMemberService;
 import com.blackcompany.eeos.program.application.exception.NotFoundProgramException;
@@ -12,13 +11,14 @@ import com.blackcompany.eeos.program.application.model.ProgramAttendMode;
 import com.blackcompany.eeos.program.application.model.ProgramModel;
 import com.blackcompany.eeos.program.application.model.converter.ProgramEntityConverter;
 import com.blackcompany.eeos.program.application.service.ProgramDateRangeService;
-import com.blackcompany.eeos.program.application.support.CalendarProvider;
+import com.blackcompany.eeos.program.application.support.SemesterPeriodProvider;
 import com.blackcompany.eeos.program.persistence.ProgramRepository;
 import com.blackcompany.eeos.target.application.dto.AttendInfoActiveStatusResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfoResponse;
 import com.blackcompany.eeos.target.application.dto.AttendInfoWithProgramResponse;
 import com.blackcompany.eeos.target.application.dto.AttendPenaltyRankingResponse;
 import com.blackcompany.eeos.target.application.dto.AttendPenaltyResponse;
+import com.blackcompany.eeos.target.application.dto.AttendStatisticsResponse.MemberStatistics;
 import com.blackcompany.eeos.target.application.dto.AttendSummaryInfoResponse;
 import com.blackcompany.eeos.target.application.dto.ChangeAttendStatusResponse;
 import com.blackcompany.eeos.target.application.dto.QueryAttendActiveStatusResponse;
@@ -45,8 +45,8 @@ import com.blackcompany.eeos.target.application.usecase.GetAttendantInfoUsecase;
 import com.blackcompany.eeos.target.persistence.AttendEntity;
 import com.blackcompany.eeos.target.persistence.AttendRepository;
 import com.blackcompany.eeos.target.persistence.PenaltyPointRepository;
-import com.blackcompany.eeos.target.persistence.ProgramRankCounterEntity;
-import com.blackcompany.eeos.target.persistence.ProgramRankCounterRepository;
+import com.blackcompany.eeos.target.persistence.rank.ProgramRankCounterEntity;
+import com.blackcompany.eeos.target.persistence.rank.ProgramRankCounterRepository;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
@@ -76,7 +76,6 @@ public class AttendService
 	private final AttendEntityConverter attendEntityConverter;
 	private final QueryMemberService queryMemberService;
 	private final ChangeAttendStatusConverter changeAttendStatusConverter;
-	private final MemberEntityConverter memberEntityConverter;
 	private final AttendInfoConverter attendInfoConverter;
 	private final QueryAttendStatusResponseConverter attendStatusResponseConverter;
 	private final AttendInfoActiveStatusConverter attendInfoActiveStatusConverter;
@@ -89,7 +88,7 @@ public class AttendService
 	private final AttendCountCalculate attendCountCalculate;
 	private final AttendPenaltyResponseConverter attendPenaltyResponseConverter;
 	private final ProgramRankCounterRepository programRankCounterRepository;
-	private final CalendarProvider calendarProvider;
+	private final SemesterPeriodProvider semesterPeriodProvider;
 	private final PenaltyPointRepository penaltyPointRepository;
 
 	@Override
@@ -253,8 +252,10 @@ public class AttendService
 	public AttendSummaryInfoResponse getMyAttendSummary(Long startDate, Long endDate) {
 		Long memberId = RequestScope.getMemberId();
 
-		if (startDate == null) startDate = calendarProvider.getCalendar().getStartDate().getTime();
-		if (endDate == null) endDate = calendarProvider.getCalendar().getEndDate().getTime();
+		if (startDate == null)
+			startDate = semesterPeriodProvider.getSemesterPeriod().getStartDate().getTime();
+		if (endDate == null)
+			endDate = semesterPeriodProvider.getSemesterPeriod().getEndDate().getTime();
 
 		List<ProgramModel> programs = programDateRangeService.getPrograms(startDate, endDate);
 
@@ -285,10 +286,12 @@ public class AttendService
 
 		Timestamp startTimestamp =
 				startDate == null
-						? calendarProvider.getCalendar().getStartDate()
+						? semesterPeriodProvider.getSemesterPeriod().getStartDate()
 						: new Timestamp(startDate);
 		Timestamp endTimestamp =
-				endDate == null ? calendarProvider.getCalendar().getEndDate() : new Timestamp(endDate);
+				endDate == null
+						? semesterPeriodProvider.getSemesterPeriod().getEndDate()
+						: new Timestamp(endDate);
 
 		Page<Object[]> pages =
 				penaltyPointRepository.findByPenaltyPointSum(startTimestamp, endTimestamp, pageable);
@@ -331,8 +334,8 @@ public class AttendService
 
 		Long memberId = RequestScope.getMemberId();
 
-		Timestamp startDate = calendarProvider.getCalendar().getStartDate();
-		Timestamp endDate = calendarProvider.getCalendar().getEndDate();
+		Timestamp startDate = semesterPeriodProvider.getSemesterPeriod().getStartDate();
+		Timestamp endDate = semesterPeriodProvider.getSemesterPeriod().getEndDate();
 
 		Long myPenaltyPoint =
 				penaltyPointRepository.findTotalPenaltyScoreByMemberId(startDate, endDate, memberId);
@@ -342,6 +345,62 @@ public class AttendService
 						+ 1;
 
 		return new AttendPenaltyRankingResponse(myPenaltyRank < rankOffset, (int) myPenaltyRank);
+	}
+
+	@Override
+	public PageResponse<MemberStatistics> getStatistics(
+			int page, int size, String activeStatus, Long startDate, Long endDate) {
+
+		Sort.Order penaltyScore = Sort.Order.desc("penaltyScore");
+		Sort.Order absent = Sort.Order.desc("absent");
+		Sort.Order late = Sort.Order.desc("late");
+
+		Pageable pageable = PageRequest.of(page - 1, size, Sort.by(penaltyScore, absent, late));
+
+		Timestamp startTimestamp =
+				startDate == null
+						? semesterPeriodProvider.getSemesterPeriod().getStartDate()
+						: new Timestamp(startDate);
+		Timestamp endTimestamp =
+				endDate == null
+						? semesterPeriodProvider.getSemesterPeriod().getEndDate()
+						: new Timestamp(endDate);
+
+		Page<Object[]> pages;
+
+		if (activeStatus == null || activeStatus.equalsIgnoreCase("all"))
+			pages =
+					attendRepository.getStatistics(
+							startTimestamp, endTimestamp, AttendStatus.LATE, AttendStatus.ABSENT, pageable);
+		else
+			pages =
+					attendRepository.getStatistics(
+							startTimestamp,
+							endTimestamp,
+							AttendStatus.LATE,
+							AttendStatus.ABSENT,
+							ActiveStatus.find(activeStatus),
+							pageable);
+
+		if (pages.getTotalElements() != 0) {
+			List<MemberStatistics> statistics =
+					pages
+							.get()
+							.map(
+									obj ->
+											new MemberStatistics(
+													(Long) obj[0],
+													(String) obj[1],
+													((ActiveStatus) obj[2]).getStatus(),
+													((Long) obj[3]).intValue(),
+													((Long) obj[4]).intValue(),
+													((Long) obj[5]).intValue()))
+							.toList();
+
+			return new PageResponse<>(new PageImpl<>(statistics, pageable, pages.getTotalElements()));
+		}
+
+		return new PageResponse<>(Page.empty(PageRequest.of(page - 1, size)));
 	}
 
 	private List<AttendModel> findMyAttends(List<ProgramModel> programs) {

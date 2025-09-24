@@ -15,6 +15,7 @@ import com.blackcompany.eeos.program.application.dto.UpdateProgramRequest;
 import com.blackcompany.eeos.program.application.dto.converter.ProgramPageResponseConverter;
 import com.blackcompany.eeos.program.application.dto.converter.ProgramResponseConverter;
 import com.blackcompany.eeos.program.application.dto.converter.QueryAccessRightResponseConverter;
+import com.blackcompany.eeos.program.application.event.CreatedProgramEvent;
 import com.blackcompany.eeos.program.application.event.DeletedProgramEvent;
 import com.blackcompany.eeos.program.application.exception.DeniedProgramEditException;
 import com.blackcompany.eeos.program.application.exception.NotFoundProgramException;
@@ -90,7 +91,9 @@ public class ProgramService
 
 		attendTargetService.save(saveId, request.getMembers());
 		presentTeamUsecase.save(saveId, request.getTeamIds());
-		quitUsecase.pushQuitAttendJob(model.toBuilder().id(saveId).build());
+		quitUsecase.reserveQuitProgram(model.toBuilder().id(saveId).build());
+
+		applicationEventPublisher.publishEvent(CreatedProgramEvent.of(saveId));
 
 		return responseConverter.from(saveId);
 	}

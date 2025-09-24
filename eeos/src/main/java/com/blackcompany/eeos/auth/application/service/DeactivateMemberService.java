@@ -5,8 +5,8 @@ import com.blackcompany.eeos.auth.application.event.DeletedMemberEvent;
 import com.blackcompany.eeos.auth.application.repository.OAuthMemberRepository;
 import com.blackcompany.eeos.auth.application.usecase.LogOutUsecase;
 import com.blackcompany.eeos.auth.application.usecase.WithDrawUsecase;
-import com.blackcompany.eeos.auth.persistence.AccountRepository;
 import com.blackcompany.eeos.auth.persistence.InvalidTokenRepository;
+import com.blackcompany.eeos.auth.persistence.account.AccountJpaRepository;
 import com.blackcompany.eeos.member.application.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -22,7 +22,7 @@ public class DeactivateMemberService implements LogOutUsecase, WithDrawUsecase {
 	private final ApplicationEventPublisher eventPublisher;
 	private final MemberRepository memberRepository;
 	private final OAuthMemberRepository oAuthMemberRepository;
-	private final AccountRepository accountRepository;
+	private final AccountJpaRepository accountRepository;
 
 	@Override
 	@Transactional

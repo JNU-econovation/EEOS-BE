@@ -1,16 +1,20 @@
 package com.blackcompany.eeos.common.util;
 
 import com.blackcompany.eeos.common.utils.RequestScope;
+import com.blackcompany.eeos.config.security.JwtAuthentication;
+import java.util.Collections;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 public class RequestScopeTest {
 
 	@Test
 	@DisplayName("저장한_값을_꺼낼_수_있다")
 	public void requestScope() {
-		RequestScope.setMemberId(1L);
+		setSecurityContext(1L);
 		Assertions.assertEquals(1L, RequestScope.getMemberId());
 	}
 
@@ -20,7 +24,7 @@ public class RequestScopeTest {
 		Thread setter =
 				new Thread(
 						() -> {
-							RequestScope.setMemberId(1L);
+							setSecurityContext(1L);
 							Assertions.assertEquals(1L, RequestScope.getMemberId());
 						});
 
@@ -37,7 +41,7 @@ public class RequestScopeTest {
 	@Test
 	@DisplayName("null을_저장하면_null이_반환된다")
 	public void nullValue1() {
-		RequestScope.setMemberId(null);
+		setSecurityContext(null);
 		Assertions.assertNull(RequestScope.getMemberId());
 	}
 
@@ -47,11 +51,10 @@ public class RequestScopeTest {
 		Assertions.assertNull(RequestScope.getMemberId());
 	}
 
-	@Test
-	@DisplayName("저장한_값을_삭제하면_null이_반환된다")
-	public void clearValue() {
-		RequestScope.setMemberId(1L);
-		RequestScope.clear();
-		Assertions.assertNull(RequestScope.getMemberId());
+	private void setSecurityContext(Long memberId) {
+		SecurityContextHolder.getContext()
+				.setAuthentication(
+						new JwtAuthentication(
+								memberId, Collections.singletonList(new SimpleGrantedAuthority("USER"))));
 	}
 }
