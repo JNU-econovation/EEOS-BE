@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @Getter
@@ -22,9 +23,8 @@ public class AttendModel implements AbstractModel, MemberIdModel {
 	private Long programId;
 	private AttendStatus status;
 
-	private Long rank;
-
-	private Integer penaltyScore;
+	@Setter private Long rank;
+	@Setter private Integer penaltyScore;
 
 	public AttendModel changeStatus(String afterStatus) {
 		validateChange(afterStatus);
@@ -75,9 +75,5 @@ public class AttendModel implements AbstractModel, MemberIdModel {
 			return;
 		}
 		throw new NotSameBeforeAttendStatusException(memberId);
-	}
-
-	public void setRank(Long rank) {
-		this.rank = rank;
 	}
 }
