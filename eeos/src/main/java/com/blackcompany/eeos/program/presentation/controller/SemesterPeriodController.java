@@ -30,7 +30,7 @@ public class SemesterPeriodController {
 		return ApiResponseGenerator.success(response, HttpStatus.CREATED, MessageCode.CREATE);
 	}
 
-	@GetMapping("/semester-periods")
+	@GetMapping("/admin/semester-periods")
 	public ApiResponse<ApiResponseBody.SuccessBody<SemesterPeriodApplicationQuery>>
 			getSemesterPeriod() {
 		SemesterPeriodApplicationQuery response = getSemesterPeriodUsecase.getSemesterPeriod();
