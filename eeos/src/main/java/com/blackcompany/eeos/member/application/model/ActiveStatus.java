@@ -21,7 +21,7 @@ public enum ActiveStatus {
 		return Arrays.stream(values())
 				.filter(activeStatus -> activeStatus.status.equals(status))
 				.findAny()
-				.orElseThrow(() -> new NotFoundActiveStatusException((status)));
+				.orElseThrow(() -> new NotFoundActiveStatusException(status));
 	}
 
 	public String getStatus() {

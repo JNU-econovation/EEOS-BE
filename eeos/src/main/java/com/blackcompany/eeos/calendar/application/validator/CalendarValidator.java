@@ -65,9 +65,7 @@ public class CalendarValidator {
 	/** 업데이트가 가능한지 여부 : 부서가 업데이트 기준이 된다. */
 	private boolean isWritable(CalendarType type, Department department) {
 		Set<Department> updatable = AVAILABLE.getOrDefault(type, Set.of());
-
-		if (updatable.contains(department)) return true;
-		return false;
+		return updatable.contains(department);
 	}
 
 	public void urlValidator(CalendarModel calendar) {

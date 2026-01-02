@@ -8,7 +8,6 @@ import com.blackcompany.eeos.comment.application.exception.NotConvertedCommentEx
 import com.blackcompany.eeos.comment.application.model.CommentModel;
 import com.blackcompany.eeos.comment.application.model.CommentType;
 import com.blackcompany.eeos.member.application.repository.MemberRepository;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +25,6 @@ public class CommentResponseConverter {
 	}
 
 	public QueryCommentsResponse from(List<QueryCommentResponse> responses) {
-		responses.stream().forEach(r -> r.getAnswers().stream().forEach(a -> a.toString()));
 		return QueryCommentsResponse.builder().comments(responses).build();
 	}
 
@@ -47,7 +45,7 @@ public class CommentResponseConverter {
 	}
 
 	private QueryAnswerResponse from(CommentModel source, Long memberId) {
-		if (source.getSuperCommentId() == -1) throw new NotConvertedCommentException();
+		if (source.isSuperComment()) throw new NotConvertedCommentException();
 		QueryAnswerResponse response =
 				QueryAnswerResponse.builder()
 						.commentId(source.getId())
@@ -64,13 +62,6 @@ public class CommentResponseConverter {
 			return ANONYMOUS_USER_NAME;
 		}
 		return memberRepository.findById(memberId).getName();
-	}
-
-	private String getCreateTimeString(CommentModel model) {
-		return model
-				.getCreatedDate()
-				.toLocalDateTime()
-				.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH시 mm분 ss초"));
 	}
 
 	private Long getCreateTimeLong(CommentModel model) {

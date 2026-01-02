@@ -2,7 +2,6 @@ package com.blackcompany.eeos.comment.application.model;
 
 import com.blackcompany.eeos.comment.application.exception.DeniedCommentEditException;
 import com.blackcompany.eeos.comment.application.exception.ExceedContentLimitLengthException;
-import com.blackcompany.eeos.comment.application.exception.UnExpectedNPException;
 import com.blackcompany.eeos.common.support.AbstractModel;
 import com.blackcompany.eeos.program.application.model.AccessRights;
 import java.sql.Timestamp;
@@ -17,7 +16,7 @@ import lombok.ToString;
 @Getter
 public class CommentModel implements AbstractModel {
 
-	private static final long contentLimitLength = 500L;
+	public static final Long SUPER_COMMENT_ID = -1L;
 
 	private Long id;
 	private Long programId;
@@ -47,7 +46,7 @@ public class CommentModel implements AbstractModel {
 	}
 
 	public boolean isSuperComment() {
-		return superCommentId.equals(-1L);
+		return superCommentId.equals(SUPER_COMMENT_ID);
 	}
 
 	public void changeSuperComment(Long newSuper) {
@@ -55,19 +54,10 @@ public class CommentModel implements AbstractModel {
 	}
 
 	private boolean isEdit(Long memberId) {
-		if (this.writer.equals(memberId)) return true;
-		return false;
+		return this.writer.equals(memberId);
 	}
 
 	private boolean isExceedLengthLimit() {
 		return false; // 코멘트 길이 수는 제한이 없다
-	}
-
-	private long getContentLength() {
-		try {
-			return this.content.length();
-		} catch (NullPointerException e) {
-			throw new UnExpectedNPException();
-		}
 	}
 }
