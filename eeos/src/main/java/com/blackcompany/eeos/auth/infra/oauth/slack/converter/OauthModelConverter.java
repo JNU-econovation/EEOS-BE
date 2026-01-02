@@ -5,7 +5,7 @@ import com.blackcompany.eeos.auth.application.domain.OauthServerType;
 import org.springframework.stereotype.Component;
 
 @Component
-public class OauthModelConverter { // TODO : 제거 고려
+public class OauthModelConverter {
 	public OauthMemberModel from(
 			final String oauthId, final String name, final OauthServerType type) {
 		return OauthMemberModel.builder().oauthId(oauthId).name(name).oauthServerType(type).build();

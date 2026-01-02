@@ -4,7 +4,6 @@ import com.blackcompany.eeos.common.application.model.MemberIdModel;
 import com.blackcompany.eeos.common.support.AbstractModel;
 import com.blackcompany.eeos.target.application.exception.NotSameBeforeAttendStatusException;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -51,7 +50,7 @@ public class AttendModel implements AbstractModel, MemberIdModel {
 	}
 
 	public static List<AttendModel> of(List<Long> memberIds, Long programId) {
-		return memberIds.stream().map(memberId -> of(memberId, programId)).collect(Collectors.toList());
+		return memberIds.stream().map(memberId -> of(memberId, programId)).toList();
 	}
 
 	public static AttendModel of(Long memberId, Long programId) {

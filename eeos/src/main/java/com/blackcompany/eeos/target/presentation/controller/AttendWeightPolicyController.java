@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/admin/attend/weight-policy") // TODO : 인터셉터단에서 어드민 이외 유저 제한 필요
+@RequestMapping("/api/admin/attend/weight-policy")
 public class AttendWeightPolicyController implements AttendWeightPolicyApi {
 	private final CommandAttendWeightPolicyUsecase commandWeightPolicyUsecase;
 	private final GetAttendWeightPolicyUsecase getWeightPolicyUsecase;

@@ -11,7 +11,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.crypto.SecretKey;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,7 +41,7 @@ public class TokenResolver {
 					.stream()
 							.filter(String.class::isInstance)
 							.map(String.class::cast)
-							.collect(Collectors.toList());
+							.toList();
 		}
 		//		return (ArrayList<String>) claims.get(ROLE_CLAIM_KEY, ArrayList.class);
 
@@ -81,7 +80,7 @@ public class TokenResolver {
 		try {
 			return Jwts.parser().setSigningKey(secretKey).build().parseClaimsJws(token).getBody();
 		} catch (ExpiredJwtException e) {
-			throw new TokenExpiredException();
+			throw new TokenExpiredException(e);
 		} catch (SignatureException e) {
 			throw new TokenParsingException(e);
 		} catch (Exception e) {

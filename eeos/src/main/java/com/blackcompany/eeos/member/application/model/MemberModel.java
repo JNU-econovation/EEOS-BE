@@ -36,7 +36,6 @@ public class MemberModel implements AbstractModel, MemberIdModel {
 		return this;
 	}
 
-	// TODO : Equals 재정의로 고민
 	public boolean validateSame(Long memberId) {
 		return id.equals(memberId);
 	}

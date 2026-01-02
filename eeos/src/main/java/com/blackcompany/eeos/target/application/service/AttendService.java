@@ -51,7 +51,6 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -98,7 +97,7 @@ public class AttendService
 
 		return memberRepository.findMembersByProgramId(programId).stream()
 				.map(member -> infoConverter.from(member, getAttendStatus(member.getId(), programId)))
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	@Override
@@ -111,7 +110,7 @@ public class AttendService
 		List<AttendInfoResponse> response =
 				members.stream()
 						.map(member -> combine(member, attends, programId))
-						.collect(Collectors.toList());
+						.toList();
 
 		return attendStatusResponseConverter.of(response);
 	}
@@ -174,7 +173,7 @@ public class AttendService
 				members.stream()
 						.filter(m -> !m.isAdmin())
 						.map(member -> combine(member, findAttend(programId), member.getActiveStatus()))
-						.collect(Collectors.toList());
+						.toList();
 
 		return queryAttendActiveStatusConverter.of(response);
 	}
@@ -189,7 +188,7 @@ public class AttendService
 		List<AttendInfoResponse> response =
 				members.stream()
 						.map(member -> combine(member, attendModels, programId))
-						.collect(Collectors.toList());
+						.toList();
 
 		return attendStatusResponseConverter.of(response);
 	}
@@ -199,7 +198,7 @@ public class AttendService
 				.findTop5ByProgramIdAndStatusOrderByRankAsc(programId, AttendStatus.ATTEND)
 				.stream()
 				.map(attendEntityConverter::from)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	public PageResponse<AttendInfoWithProgramResponse> findMyAttendInfo(
@@ -422,7 +421,7 @@ public class AttendService
 		Long memberId = RequestScope.getMemberId();
 		return attendRepository
 				.findByProgramIdsAndMemberId(
-						programs.stream().map(ProgramModel::getId).collect(Collectors.toList()), memberId)
+						programs.stream().map(ProgramModel::getId).toList(), memberId)
 				.stream()
 				.map(attendEntityConverter::from)
 				.toList();
@@ -483,14 +482,14 @@ public class AttendService
 
 	private List<MemberModel> findMembers(List<AttendModel> attends) {
 		List<Long> memberIds =
-				attends.stream().map(AttendModel::getMemberId).collect(Collectors.toList());
+				attends.stream().map(AttendModel::getMemberId).toList();
 
 		return memberRepository.findMembersByIds(memberIds);
 	}
 
 	private List<MemberModel> findMembersInOrder(List<AttendModel> attends) {
 		List<Long> memberIds =
-				attends.stream().map(AttendModel::getMemberId).collect(Collectors.toList());
+				attends.stream().map(AttendModel::getMemberId).toList();
 
 		return memberRepository.findMembersByIdsInOrder(memberIds);
 	}
@@ -499,13 +498,13 @@ public class AttendService
 		AttendStatus attendStatus = AttendStatus.find(status);
 		return attendRepository.findAllByProgramIdAndStatus(programId, attendStatus).stream()
 				.map(attendEntityConverter::from)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	private List<AttendModel> findAttend(final Long programId) {
 		return attendRepository.findAllByProgramId(programId).stream()
 				.map(attendEntityConverter::from)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	private List<MemberModel> findMembersByActiveStatus(final String activeStatus) {

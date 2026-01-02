@@ -7,7 +7,6 @@ import com.blackcompany.eeos.member.application.model.converter.MemberEntityConv
 import com.blackcompany.eeos.member.application.repository.MemberRepository;
 import com.blackcompany.eeos.target.application.dto.TargetMember;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,7 +23,7 @@ public abstract class SelectTargetMemberService {
 	 */
 	protected <T extends TargetMember> List<MemberModel> findMembers(final List<T> members) {
 		List<Long> requestMemberIds =
-				members.stream().map(TargetMember::getMemberId).collect(Collectors.toList());
+				members.stream().map(TargetMember::getMemberId).toList();
 
 		List<MemberModel> findMembers = findMembersByIds(requestMemberIds);
 		validateAllFind(requestMemberIds, findMembers);

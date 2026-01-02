@@ -34,7 +34,6 @@ import com.blackcompany.eeos.teamBuilding.persistence.TeamBuildingResultReposito
 import com.blackcompany.eeos.teamBuilding.persistence.TeamBuildingStatus;
 import java.util.List;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -113,7 +112,7 @@ public class TeamBuildingService
 		List<List<Long>> memberIds =
 				teamBuildingResultRepository.findAllByTeamBuildingId(model.getId()).stream()
 						.map(TeamBuildingResultEntity::getMemberIds)
-						.collect(Collectors.toList());
+						.toList();
 
 		List<List<MemberModel>> members = getMembers(memberIds);
 
@@ -161,14 +160,14 @@ public class TeamBuildingService
 			List<List<MemberModel>> members, List<List<Long>> memberIds) {
 		return members.stream()
 				.map(memberGroup -> combine(memberGroup, memberIds.get(members.indexOf(memberGroup))))
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	private List<EachMemberResponse> combine(List<MemberModel> members, List<Long> memberIds) {
 		return members.stream()
 				.filter(member -> memberIds.contains(member.getId()))
 				.map(member -> combine(member.getName(), member.getId()))
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	private EachMemberResponse combine(String name, Long memberId) {
@@ -186,7 +185,7 @@ public class TeamBuildingService
 		List<TeamBuildingResultEntity> results =
 				datas.stream()
 						.map(ids -> teamBuildingResultConverter.from(ids, model.getId()))
-						.collect(Collectors.toList());
+						.toList();
 
 		teamBuildingResultRepository.saveAll(results);
 	}
@@ -202,7 +201,7 @@ public class TeamBuildingService
 	}
 
 	private List<List<MemberModel>> getMembers(List<List<Long>> memberIds) {
-		return memberIds.stream().map(memberRepository::findMembersByIds).collect(Collectors.toList());
+		return memberIds.stream().map(memberRepository::findMembersByIds).toList();
 	}
 
 	private void validateReadAccessibility(Long memberId, Long programId) {

@@ -8,4 +8,8 @@ public class AuthorizationException extends BusinessException {
 	public AuthorizationException(String code, HttpStatus httpStatus) {
 		super(code, httpStatus);
 	}
+
+	public AuthorizationException(String code, HttpStatus httpStatus, Throwable cause) {
+		super(code, httpStatus, cause);
+	}
 }

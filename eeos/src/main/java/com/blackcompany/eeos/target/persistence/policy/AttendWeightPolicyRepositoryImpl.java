@@ -6,7 +6,6 @@ import com.blackcompany.eeos.target.application.repository.AttendWeightPolicyRep
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -18,10 +17,10 @@ class AttendWeightPolicyRepositoryImpl implements AttendWeightPolicyRepository {
 	@Override
 	public List<AttendWeightPolicyModel> saveAll(List<AttendWeightPolicyModel> weightPolicies) {
 		return jpaRepository
-				.saveAll(weightPolicies.stream().map(this::convertToEntity).collect(Collectors.toList()))
+				.saveAll(weightPolicies.stream().map(this::convertToEntity).toList())
 				.stream()
 				.map(this::convertToDomain)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	@Override
@@ -33,14 +32,14 @@ class AttendWeightPolicyRepositoryImpl implements AttendWeightPolicyRepository {
 	public List<AttendWeightPolicyModel> findLatestAttendWeight(Set<AttendStatus> attendStatuses) {
 		return jpaRepository.findByTypeIn(attendStatuses).stream()
 				.map(this::convertToDomain)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	private AttendWeightPolicyModel convertToDomain(AttendWeightPolicyEntity entity) {
 		return AttendWeightPolicyModel.builder()
 				.id(entity.getId())
 				.signType(entity.getSignType())
-				.type(entity.getType()) // TODO : builder 필수값 모두 들어갔는지, 중복 컴파일 타임에서 체크 방법 없나?
+				.type(entity.getType())
 				.score(entity.getScore())
 				.build();
 	}

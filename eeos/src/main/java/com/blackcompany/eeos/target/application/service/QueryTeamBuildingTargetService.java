@@ -5,7 +5,6 @@ import com.blackcompany.eeos.target.application.model.TeamBuildingTargetModel;
 import com.blackcompany.eeos.target.application.model.converter.TeamBuildingTargetEntityConverter;
 import com.blackcompany.eeos.target.persistence.teambuilding.TeamBuildingTargetRepository;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -29,6 +28,6 @@ public class QueryTeamBuildingTargetService {
 	public List<TeamBuildingTargetModel> getTarget(Long teamBuildingId) {
 		return teamBuildingTargetRepository.findByTeamBuildingId(teamBuildingId).stream()
 				.map(entityConverter::from)
-				.collect(Collectors.toList());
+				.toList();
 	}
 }

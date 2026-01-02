@@ -1,4 +1,4 @@
 package com.blackcompany.eeos.common.support.dto;
 
-// TODO : Base로 변경
+/** Base interface for all DTOs in the application. */
 public interface AbstractDto {}

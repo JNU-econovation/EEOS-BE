@@ -1,5 +1,7 @@
 package com.blackcompany.eeos.program.infra.api.slack.chat.service;
 
+import static com.blackcompany.eeos.common.presentation.support.AuthorizationScheme.formatBearerToken;
+
 import com.blackcompany.eeos.program.application.dto.CommandProgramResponse;
 import com.blackcompany.eeos.program.application.dto.converter.ProgramResponseConverter;
 import com.blackcompany.eeos.program.application.model.ProgramNotificationModel;
@@ -29,8 +31,6 @@ public class ProgramNotifyServiceComposite {
 	private final BotTokens tokens;
 	private final ObjectToJsonMapper<ChatPostModel.Block[]> mapper;
 
-	private final String BEARER = "Bearer";
-
 	public CommandProgramResponse notify(ProgramNotificationModel notiModel) {
 
 		ChatPostModel model = modelConverter.from(notiModel);
@@ -43,11 +43,11 @@ public class ProgramNotifyServiceComposite {
 	}
 
 	private TokenGetter getEconoBotToken() {
-		return () -> String.format("%s %s", BEARER, tokens.getECONOVATION_EEOS_BOT());
+		return () -> formatBearerToken(tokens.getECONOVATION_EEOS_BOT());
 	}
 
 	private TokenGetter getBlackCompanyBotToken() {
-		return () -> String.format("%s %s", BEARER, tokens.getBLACK_COMPANY_EEOS_BOT());
+		return () -> formatBearerToken(tokens.getBLACK_COMPANY_EEOS_BOT());
 	}
 
 	private ChannelGetter getBlackCompanyNotiChannel() {

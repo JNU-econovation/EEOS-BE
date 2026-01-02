@@ -4,7 +4,6 @@ import com.blackcompany.eeos.common.support.converter.AbstractEntityConverter;
 import com.blackcompany.eeos.program.application.dto.ProgramsResponse;
 import com.blackcompany.eeos.program.application.model.ProgramModel;
 import com.blackcompany.eeos.program.persistence.ProgramEntity;
-import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
@@ -30,7 +29,7 @@ public class ProgramEntityConverter
 	public ProgramsResponse from(Page<ProgramEntity> pages) {
 		return ProgramsResponse.builder()
 				.page(pages)
-				.programs(pages.getContent().stream().map(this::from).collect(Collectors.toList()))
+				.programs(pages.getContent().stream().map(this::from).toList())
 				.build();
 	}
 

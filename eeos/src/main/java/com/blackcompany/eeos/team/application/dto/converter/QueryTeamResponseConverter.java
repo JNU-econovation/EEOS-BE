@@ -4,7 +4,6 @@ import com.blackcompany.eeos.team.application.dto.QueryTeamResponse;
 import com.blackcompany.eeos.team.application.dto.QueryTeamsResponse;
 import com.blackcompany.eeos.team.application.model.TeamModel;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -19,7 +18,7 @@ public class QueryTeamResponseConverter {
 
 	public QueryTeamsResponse from(List<TeamModel> sources) {
 		return QueryTeamsResponse.builder()
-				.teams(sources.stream().map(this::from).collect(Collectors.toList()))
+				.teams(sources.stream().map(this::from).toList())
 				.build();
 	}
 }

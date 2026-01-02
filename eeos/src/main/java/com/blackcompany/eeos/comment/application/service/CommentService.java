@@ -21,7 +21,6 @@ import com.blackcompany.eeos.program.persistence.ProgramRepository;
 import com.blackcompany.eeos.team.application.exception.NotFoundTeamException;
 import com.blackcompany.eeos.team.persistence.TeamRepository;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -84,7 +83,7 @@ public class CommentService
 	public List<CommentModel> getAnswerComments(Long commentId) {
 		return findAnswerCommentsBySuperId(commentId).stream()
 				.map(commentEntityConverter::from)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	private void deleteComment(Long commentId) {
@@ -132,7 +131,7 @@ public class CommentService
 		return commentRepository.findCommentByProgramIdAndPresentingTeamId(programId, teamId).stream()
 				.map(commentEntityConverter::from)
 				.filter(CommentModel::isSuperComment)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	private void validateUser(Long memberId) {

@@ -6,7 +6,6 @@ import com.blackcompany.eeos.program.application.dto.QueryProgramsResponse;
 import com.blackcompany.eeos.program.application.model.ProgramModel;
 import com.blackcompany.eeos.program.application.model.ProgramStatus;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
@@ -28,7 +27,7 @@ public class ProgramPageResponseConverter {
 				.contents(
 						programs.stream()
 								.map(program -> programResponseConverter.from(program, programStatus))
-								.collect(Collectors.toList()))
+								.toList())
 				.build();
 	}
 }

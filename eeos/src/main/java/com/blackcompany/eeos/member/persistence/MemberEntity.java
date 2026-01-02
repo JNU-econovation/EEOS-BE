@@ -56,7 +56,7 @@ public class MemberEntity extends BaseEntity {
 
 	@Column(name = ENTITY_PREFIX + "_is_admin", nullable = false)
 	@Builder.Default
-	private boolean isAdmin = false; // TODO : 여러 ROEL 커버 가능하도록
+	private boolean isAdmin = false;
 
 	@Column(name = ENTITY_PREFIX + "_department", nullable = false)
 	@Enumerated(EnumType.STRING)

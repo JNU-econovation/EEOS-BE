@@ -9,7 +9,6 @@ import com.blackcompany.eeos.target.application.service.SelectTargetMemberServic
 import com.blackcompany.eeos.target.persistence.teambuilding.TeamBuildingTargetEntity;
 import com.blackcompany.eeos.target.persistence.teambuilding.TeamBuildingTargetRepository;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,7 +35,7 @@ public class CommandTeamBuildingTargetMemberService extends SelectTargetMemberSe
 		List<TeamBuildingTargetEntity> targetEntities =
 				findMembers(members).stream()
 						.map(member -> entityConverter.toEntity(eventId, member.getMemberId()))
-						.collect(Collectors.toList());
+						.toList();
 
 		targetRepository.saveAll(targetEntities);
 	}

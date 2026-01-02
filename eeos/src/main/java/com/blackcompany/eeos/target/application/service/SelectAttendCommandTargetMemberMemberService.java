@@ -14,7 +14,6 @@ import com.blackcompany.eeos.target.persistence.AttendEntity;
 import com.blackcompany.eeos.target.persistence.AttendRepository;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -43,7 +42,7 @@ public class SelectAttendCommandTargetMemberMemberService extends SelectTargetMe
 		List<AttendEntity> attendEntities =
 				findMembers(members).stream()
 						.map(member -> entityConverter.toEntity(member.getId(), eventId))
-						.collect(Collectors.toList());
+						.toList();
 
 		attendRepository.saveAll(attendEntities);
 	}
@@ -65,20 +64,20 @@ public class SelectAttendCommandTargetMemberMemberService extends SelectTargetMe
 		List<Long> memberIds =
 				requests.stream()
 						.map(ChangeAllAttendStatusRequest::getMemberId)
-						.collect(Collectors.toList());
+						.toList();
 
 		List<AttendModel> existingAttends = findExistingAttends(programId, memberIds);
 		List<AttendModel> notExistingAttends =
 				findNotExistingAttends(memberIds, existingAttends, programId);
 
 		return Stream.concat(existingAttends.stream(), notExistingAttends.stream())
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	private List<AttendModel> findExistingAttends(Long programId, List<Long> memberIds) {
 		return attendRepository.findAllByProgramMember(programId, memberIds).stream()
 				.map(entityConverter::from)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	private List<AttendModel> findNotExistingAttends(
@@ -90,7 +89,7 @@ public class SelectAttendCommandTargetMemberMemberService extends SelectTargetMe
 	private <T extends MemberIdModel> List<Long> findDifferent(
 			List<Long> requestIds, List<T> findModels) {
 		List<Long> findModelIds =
-				findModels.stream().map(MemberIdModel::getMemberId).collect(Collectors.toList());
+				findModels.stream().map(MemberIdModel::getMemberId).toList();
 		requestIds.removeAll(findModelIds);
 		return requestIds;
 	}
@@ -120,7 +119,7 @@ public class SelectAttendCommandTargetMemberMemberService extends SelectTargetMe
 		List<AttendEntity> nonRelated =
 				attendManager.getNonRelated().stream()
 						.map(entityConverter::toEntity)
-						.collect(Collectors.toList());
+						.toList();
 
 		attendRepository.deleteAll(nonRelated);
 	}
@@ -129,7 +128,7 @@ public class SelectAttendCommandTargetMemberMemberService extends SelectTargetMe
 		List<AttendEntity> related =
 				attendManager.getRelated().stream()
 						.map(entityConverter::toEntity)
-						.collect(Collectors.toList());
+						.toList();
 
 		attendRepository.saveAll(related);
 	}

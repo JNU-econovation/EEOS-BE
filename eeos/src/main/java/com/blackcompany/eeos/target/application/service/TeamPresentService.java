@@ -8,7 +8,6 @@ import com.blackcompany.eeos.team.application.exception.NotFoundTeamException;
 import com.blackcompany.eeos.team.application.model.converter.TeamEntityConverter;
 import com.blackcompany.eeos.team.persistence.TeamRepository;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +39,6 @@ public class TeamPresentService implements PresentTeamUsecase {
 	private List<PresentationEntity> toEntities(Long programId, List<Long> teamIds) {
 		return teamIds.stream()
 				.map(id -> presentationConverter.from(programId, id))
-				.collect(Collectors.toList());
+				.toList();
 	}
 }

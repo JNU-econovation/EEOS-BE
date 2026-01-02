@@ -11,10 +11,15 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CalendarValidator {
+
+	private static final Pattern URL_PATTERN =
+			Pattern.compile(
+					"^(https?://)?([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$", Pattern.CASE_INSENSITIVE);
 
 	private final MemberRepository memberRepository;
 	private final Map<CalendarType, Set<Department>> AVAILABLE;
@@ -72,7 +77,11 @@ public class CalendarValidator {
 
 	public void urlValidator(CalendarModel calendar) {
 		String url = calendar.getUrl();
-
-		// TODO: 정규표현식으로 url 검증
+		if (url == null || url.isBlank()) {
+			return;
+		}
+		if (!URL_PATTERN.matcher(url).matches()) {
+			throw new IllegalArgumentException("Invalid URL format: " + url);
+		}
 	}
 }

@@ -1,5 +1,7 @@
 package com.blackcompany.eeos.comment.application.dto.converter;
 
+import static com.blackcompany.eeos.common.support.Constants.ANONYMOUS_USER_NAME;
+
 import com.blackcompany.eeos.comment.application.dto.CommandCommentResponse;
 import com.blackcompany.eeos.comment.application.dto.QueryAnswerResponse;
 import com.blackcompany.eeos.comment.application.dto.QueryCommentResponse;
@@ -8,9 +10,7 @@ import com.blackcompany.eeos.comment.application.exception.NotConvertedCommentEx
 import com.blackcompany.eeos.comment.application.model.CommentModel;
 import com.blackcompany.eeos.comment.application.model.CommentType;
 import com.blackcompany.eeos.member.application.repository.MemberRepository;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 public class CommentResponseConverter {
 
 	private final MemberRepository memberRepository;
-	private final String ANONYMOUS_USER_NAME = "익명";
 
 	public CommandCommentResponse from(CommentModel source) {
 		return CommandCommentResponse.builder().commentId(source.getId()).build();
@@ -33,7 +32,7 @@ public class CommentResponseConverter {
 	public QueryCommentResponse from(Long memberId, CommentModel source, List<CommentModel> answers) {
 
 		List<QueryAnswerResponse> answersResponse =
-				answers.stream().map(e -> from(e, memberId)).collect(Collectors.toList());
+				answers.stream().map(e -> from(e, memberId)).toList();
 
 		return QueryCommentResponse.builder()
 				.time(getCreateTimeLong(source))

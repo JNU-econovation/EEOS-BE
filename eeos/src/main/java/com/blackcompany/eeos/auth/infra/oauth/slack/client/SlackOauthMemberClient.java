@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 public class SlackOauthMemberClient implements OauthMemberClient {
 	private static final String TOKEN_METHOD_NAME = "getToken";
 	private static final String MEMBER_INFO_METHOD_NAME = "getMemberInfo";
-	private static final String BEARER = "Bearer";
 
 	private final SlackOauthConfig oauthConfig;
 	private final SlackOauthApiClient slackApiClient;

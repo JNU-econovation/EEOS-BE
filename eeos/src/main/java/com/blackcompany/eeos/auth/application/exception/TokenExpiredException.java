@@ -10,6 +10,10 @@ public class TokenExpiredException extends AuthorizationException {
 		super(FAIL_CODE, HttpStatus.FORBIDDEN);
 	}
 
+	public TokenExpiredException(Throwable cause) {
+		super(FAIL_CODE, HttpStatus.FORBIDDEN, cause);
+	}
+
 	@Override
 	public String getMessage() {
 		return "엑세스 토큰이 만료되었습니다.";

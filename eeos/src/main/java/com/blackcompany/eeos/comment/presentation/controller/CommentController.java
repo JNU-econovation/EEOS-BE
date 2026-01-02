@@ -18,7 +18,6 @@ import com.blackcompany.eeos.common.presentation.response.ApiResponseBody.Succes
 import com.blackcompany.eeos.common.presentation.response.ApiResponseGenerator;
 import com.blackcompany.eeos.common.presentation.response.MessageCode;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -84,7 +83,7 @@ public class CommentController implements CommentApi {
 								e ->
 										commentResponseConverter.from(
 												memberId, e, getCommentsUsecase.getAnswerComments(e.getId())))
-						.collect(Collectors.toList());
+						.toList();
 
 		return ApiResponseGenerator.success(
 				commentResponseConverter.from(responses), HttpStatus.OK, MessageCode.GET);

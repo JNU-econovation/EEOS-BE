@@ -15,11 +15,7 @@ public class AccountRepositoryImpl implements AccountRepository {
 	@Override
 	public AccountModel findByLoginId(String loginId) {
 		AccountEntity entity =
-				jpaRepository
-						.findByLoginId(loginId)
-						.orElseThrow(
-								NotFoundAccountException
-										::new); // TODO: 이 예외는 application 계층의 예외이므로, persistence 영역의 예외로 변경
+				jpaRepository.findByLoginId(loginId).orElseThrow(NotFoundAccountException::new);
 		return AccountModel.builder()
 				.id(entity.getId())
 				.loginId(entity.getLoginId())

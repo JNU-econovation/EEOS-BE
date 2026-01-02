@@ -10,7 +10,6 @@ import com.blackcompany.eeos.member.application.repository.MemberRepository;
 import com.blackcompany.eeos.member.application.usecase.GetMemberByActiveStatus;
 import com.blackcompany.eeos.member.application.usecase.GetMembersByActiveStatus;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -53,12 +52,12 @@ public class QueryMemberService implements GetMembersByActiveStatus, GetMemberBy
 	private List<MemberModel> findMembers() {
 		return memberRepository.findMembers().stream()
 				.filter(m -> !m.isAdmin())
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	private List<MemberModel> findMembersByStatus(ActiveStatus activeStatus) {
 		return memberRepository.findMembersByActiveStatus(activeStatus).stream()
 				.filter(m -> !m.isAdmin())
-				.collect(Collectors.toList());
+				.toList();
 	}
 }

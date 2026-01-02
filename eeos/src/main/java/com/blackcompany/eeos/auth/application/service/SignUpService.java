@@ -44,8 +44,6 @@ public class SignUpService implements OAuthSignUpUseCase {
 		saveOAuth(oAuthInfo.getOauthId(), savedMember.getMemberId());
 		saveAuthority(savedMember.getMemberId(), Role.ROLE_USER);
 
-		// TODO: 일반 USER 권한인지 아닌지 계산해주는 도구 추가
-
 		return tokenGenerator.execute(savedMember.getMemberId());
 	}
 

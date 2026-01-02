@@ -22,7 +22,6 @@ import com.blackcompany.eeos.team.persistence.TeamEntity;
 import com.blackcompany.eeos.team.persistence.TeamRepository;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -90,13 +89,13 @@ public class TeamService implements CreateTeamUsecase, DeleteTeamUsecase, GetTea
 	private List<TeamModel> findTeamByProgram(Long programId) {
 		return presentationRepository.findTeamsByProgramId(programId).stream()
 				.map(entityConverter::from)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	private List<TeamModel> findTeams() {
 		return teamRepository.findAllActiveTeams().stream()
 				.map(entityConverter::from)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	private void validateUser(Long memberId) {

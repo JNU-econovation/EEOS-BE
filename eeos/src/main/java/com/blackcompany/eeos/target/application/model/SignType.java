@@ -19,7 +19,7 @@ public enum SignType {
 		return Arrays.stream(SignType.values())
 				.filter(value -> value.getType().equals(type))
 				.findAny()
-				.orElseThrow(() -> new NotFoundSignTypeException(type)); // TODO : 이거 변경하기
+				.orElseThrow(() -> new NotFoundSignTypeException(type));
 	}
 
 	public static boolean isSame(String source, AttendStatus target) {
