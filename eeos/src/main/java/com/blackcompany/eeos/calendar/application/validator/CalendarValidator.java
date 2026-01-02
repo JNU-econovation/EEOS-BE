@@ -3,6 +3,7 @@ package com.blackcompany.eeos.calendar.application.validator;
 import com.blackcompany.eeos.calendar.application.exception.DeniedCalendarTypeException;
 import com.blackcompany.eeos.calendar.application.exception.DeniedCalendarUpdateException;
 import com.blackcompany.eeos.calendar.application.exception.InvalidDateException;
+import com.blackcompany.eeos.calendar.application.exception.InvalidUrlException;
 import com.blackcompany.eeos.calendar.application.model.CalendarModel;
 import com.blackcompany.eeos.calendar.application.model.CalendarType;
 import com.blackcompany.eeos.member.application.model.Department;
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -65,14 +67,25 @@ public class CalendarValidator {
 	/** 업데이트가 가능한지 여부 : 부서가 업데이트 기준이 된다. */
 	private boolean isWritable(CalendarType type, Department department) {
 		Set<Department> updatable = AVAILABLE.getOrDefault(type, Set.of());
-
-		if (updatable.contains(department)) return true;
-		return false;
+		return updatable.contains(department);
 	}
 
-	public void urlValidator(CalendarModel calendar) {
+	private static final Pattern URL_PATTERN =
+			Pattern.compile(
+					"^(https?://)?"
+							+ "([a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,}"
+							+ "(:\\d{1,5})?"
+							+ "(/[^\\s]*)?$");
+
+	public void urlValidate(CalendarModel calendar) {
 		String url = calendar.getUrl();
 
-		// TODO: 정규표현식으로 url 검증
+		if (url == null || url.isBlank()) {
+			return;
+		}
+
+		if (!URL_PATTERN.matcher(url).matches()) {
+			throw new InvalidUrlException();
+		}
 	}
 }

@@ -37,6 +37,7 @@ public class CalendarCommandService
 
 		validator.typeValidate(calendar, member.getDepartment());
 		validator.durationValidate(calendar);
+		validator.urlValidate(calendar);
 
 		return repository.save(calendar);
 	}
@@ -73,6 +74,7 @@ public class CalendarCommandService
 		validator.updateValidate(model, memberId);
 		validator.typeValidate(model, member.getDepartment());
 		validator.durationValidate(model);
+		validator.urlValidate(model);
 
 		LocalDateTime startAt = DateConverter.toLocalDateTime(command.startAt());
 		LocalDateTime endAt = DateConverter.toLocalDateTime(command.endAt());
