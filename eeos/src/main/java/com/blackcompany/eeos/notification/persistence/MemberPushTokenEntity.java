@@ -10,6 +10,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,6 +24,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @SuperBuilder(toBuilder = true)
+@Table(name = "member_push_token")
 public class MemberPushTokenEntity extends BaseEntity {
 
 	public static final String ENTITY_PREFIX = "member_push_token";
@@ -38,6 +40,9 @@ public class MemberPushTokenEntity extends BaseEntity {
 	@Column(name = ENTITY_PREFIX + "_provider", nullable = false)
 	@Enumerated(EnumType.STRING)
 	private NotificationProvider provider;
+
+	@Column(name = ENTITY_PREFIX + "_pushToken", nullable = false)
+	private String pushToken;
 
 
 }
