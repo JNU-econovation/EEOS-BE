@@ -40,6 +40,6 @@ public class MemberPushTokenEntity extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	private NotificationProvider provider;
 
-	@Column(name = ENTITY_PREFIX + "_pushToken", nullable = false)
+	@Column(name = ENTITY_PREFIX + "_push_token", nullable = false, unique = true)
 	private String pushToken;
 }
