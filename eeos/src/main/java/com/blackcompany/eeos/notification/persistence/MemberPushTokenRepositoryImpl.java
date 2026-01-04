@@ -1,18 +1,15 @@
 package com.blackcompany.eeos.notification.persistence;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.stereotype.Repository;
-
 import com.blackcompany.eeos.notification.application.model.MemberPushTokenModel;
 import com.blackcompany.eeos.notification.application.model.NotificationProvider;
 import com.blackcompany.eeos.notification.application.model.converter.MemberPushTokenEntityConverter;
 import com.blackcompany.eeos.notification.application.respository.MemberPushTokenRepository;
-
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
@@ -33,14 +30,16 @@ public class MemberPushTokenRepositoryImpl implements MemberPushTokenRepository 
 	}
 
 	@Override
-	public List<MemberPushTokenModel> findByMemberIdAndProvider(Long memberId, NotificationProvider provider) {
-		return jpaRepository.findByMemberIdAndProvider(memberId, provider).stream().map(converter::from).toList();
+	public List<MemberPushTokenModel> findByMemberIdAndProvider(
+			Long memberId, NotificationProvider provider) {
+		return jpaRepository.findByMemberIdAndProvider(memberId, provider).stream()
+				.map(converter::from)
+				.toList();
 	}
 
 	@Override
 	public void deleteByPushToken(String pushToken) {
 		jpaRepository.deleteByPushToken(pushToken);
-
 	}
 
 	@Override
@@ -59,9 +58,5 @@ public class MemberPushTokenRepositoryImpl implements MemberPushTokenRepository 
 		MemberPushTokenEntity memberPushTokenEntity = converter.toEntity(memberPushToken);
 		MemberPushTokenEntity saved = jpaRepository.save(memberPushTokenEntity);
 		return converter.from(saved);
-
-
-
 	}
-
 }

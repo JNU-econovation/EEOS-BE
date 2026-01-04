@@ -1,9 +1,6 @@
 package com.blackcompany.eeos.notification.application.model;
 
-import java.time.LocalDateTime;
-
 import com.blackcompany.eeos.common.support.AbstractModel;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

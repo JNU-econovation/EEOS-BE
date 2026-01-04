@@ -1,8 +1,5 @@
 package com.blackcompany.eeos.notification.application.service;
 
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.blackcompany.eeos.notification.application.dto.CreateMemberPushTokenRequest;
 import com.blackcompany.eeos.notification.application.dto.DeleteMemberPushTokenRequest;
 import com.blackcompany.eeos.notification.application.exception.DeniedDeletePushTokenException;
@@ -13,16 +10,19 @@ import com.blackcompany.eeos.notification.application.respository.MemberPushToke
 import com.blackcompany.eeos.notification.application.usecase.CreateMemberPushTokenUsecase;
 import com.blackcompany.eeos.notification.application.usecase.DeleteAllMemberPushTokensUsecase;
 import com.blackcompany.eeos.notification.application.usecase.DeleteMemberPushTokenUsecase;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Slf4j
-public class NotificationTokenService implements CreateMemberPushTokenUsecase, DeleteAllMemberPushTokensUsecase,
-	DeleteMemberPushTokenUsecase {
+public class NotificationTokenService
+		implements CreateMemberPushTokenUsecase,
+				DeleteAllMemberPushTokensUsecase,
+				DeleteMemberPushTokenUsecase {
 
 	private final MemberPushTokenRepository memberPushTokenRepository;
 
@@ -31,12 +31,13 @@ public class NotificationTokenService implements CreateMemberPushTokenUsecase, D
 	public void create(Long memberId, CreateMemberPushTokenRequest request) {
 
 		NotificationProvider provider = NotificationProvider.find(request.getProvider());
-		if(memberPushTokenRepository.findByPushToken(request.getPushToken()).isEmpty()) {
-			MemberPushTokenModel model = MemberPushTokenModel.builder()
-				.memberId(memberId)
-				.pushToken(request.getPushToken())
-				.notificationProvider(provider)
-				.build();
+		if (memberPushTokenRepository.findByPushToken(request.getPushToken()).isEmpty()) {
+			MemberPushTokenModel model =
+					MemberPushTokenModel.builder()
+							.memberId(memberId)
+							.pushToken(request.getPushToken())
+							.notificationProvider(provider)
+							.build();
 
 			memberPushTokenRepository.save(model);
 		}
@@ -51,8 +52,11 @@ public class NotificationTokenService implements CreateMemberPushTokenUsecase, D
 	@Override
 	@Transactional
 	public void delete(Long memberId, DeleteMemberPushTokenRequest request) {
-		MemberPushTokenModel model = memberPushTokenRepository.findByPushToken(request.getPushToken()).orElseThrow(() -> new NotFoundPushTokenException(request.getPushToken()));
-		if(!model.getMemberId().equals(memberId)) {
+		MemberPushTokenModel model =
+				memberPushTokenRepository
+						.findByPushToken(request.getPushToken())
+						.orElseThrow(() -> new NotFoundPushTokenException(request.getPushToken()));
+		if (!model.getMemberId().equals(memberId)) {
 			throw new DeniedDeletePushTokenException();
 		}
 		memberPushTokenRepository.deleteByPushToken(request.getPushToken());

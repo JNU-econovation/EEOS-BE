@@ -2,7 +2,6 @@ package com.blackcompany.eeos.notification.persistence;
 
 import com.blackcompany.eeos.common.persistence.BaseEntity;
 import com.blackcompany.eeos.notification.application.model.NotificationProvider;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -43,6 +42,4 @@ public class MemberPushTokenEntity extends BaseEntity {
 
 	@Column(name = ENTITY_PREFIX + "_pushToken", nullable = false)
 	private String pushToken;
-
-
 }

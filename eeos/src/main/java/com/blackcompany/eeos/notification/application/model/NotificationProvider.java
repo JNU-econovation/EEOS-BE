@@ -1,9 +1,7 @@
 package com.blackcompany.eeos.notification.application.model;
 
-import java.util.Arrays;
-
 import com.blackcompany.eeos.notification.application.exception.NotFoundNotificationProviderException;
-
+import java.util.Arrays;
 import lombok.Getter;
 
 @Getter
@@ -17,11 +15,10 @@ public enum NotificationProvider {
 		this.provider = provider;
 	}
 
-	public static NotificationProvider find(String name){
+	public static NotificationProvider find(String name) {
 		return Arrays.stream(NotificationProvider.values())
-			.filter(provider -> provider.name().equalsIgnoreCase(name))
-			.findFirst()
-			.orElseThrow(() -> new NotFoundNotificationProviderException(name));
+				.filter(provider -> provider.name().equalsIgnoreCase(name))
+				.findFirst()
+				.orElseThrow(() -> new NotFoundNotificationProviderException(name));
 	}
-
 }
