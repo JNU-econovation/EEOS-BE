@@ -1,4 +1,4 @@
-package com.blackcompany.eeos.notification.application.respository;
+package com.blackcompany.eeos.notification.application.repository;
 
 import com.blackcompany.eeos.notification.application.model.MemberPushTokenModel;
 import com.blackcompany.eeos.notification.application.model.NotificationProvider;

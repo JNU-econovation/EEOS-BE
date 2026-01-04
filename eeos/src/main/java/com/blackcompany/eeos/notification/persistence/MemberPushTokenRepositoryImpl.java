@@ -3,7 +3,7 @@ package com.blackcompany.eeos.notification.persistence;
 import com.blackcompany.eeos.notification.application.model.MemberPushTokenModel;
 import com.blackcompany.eeos.notification.application.model.NotificationProvider;
 import com.blackcompany.eeos.notification.application.model.converter.MemberPushTokenEntityConverter;
-import com.blackcompany.eeos.notification.application.respository.MemberPushTokenRepository;
+import com.blackcompany.eeos.notification.application.repository.MemberPushTokenRepository;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
