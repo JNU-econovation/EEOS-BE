@@ -18,6 +18,4 @@ public class MemberPushTokenModel implements AbstractModel {
 	private Long memberId;
 	private NotificationProvider notificationProvider;
 	private String pushToken;
-	private LocalDateTime createdAt;
-	private LocalDateTime updatedAt;
 }
