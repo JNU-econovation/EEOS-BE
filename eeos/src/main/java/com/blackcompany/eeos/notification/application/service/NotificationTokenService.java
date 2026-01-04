@@ -6,7 +6,7 @@ import com.blackcompany.eeos.notification.application.exception.DeniedDeletePush
 import com.blackcompany.eeos.notification.application.exception.NotFoundPushTokenException;
 import com.blackcompany.eeos.notification.application.model.MemberPushTokenModel;
 import com.blackcompany.eeos.notification.application.model.NotificationProvider;
-import com.blackcompany.eeos.notification.application.respository.MemberPushTokenRepository;
+import com.blackcompany.eeos.notification.application.repository.MemberPushTokenRepository;
 import com.blackcompany.eeos.notification.application.usecase.CreateMemberPushTokenUsecase;
 import com.blackcompany.eeos.notification.application.usecase.DeleteAllMemberPushTokensUsecase;
 import com.blackcompany.eeos.notification.application.usecase.DeleteMemberPushTokenUsecase;
@@ -55,7 +55,7 @@ public class NotificationTokenService
 		MemberPushTokenModel model =
 				memberPushTokenRepository
 						.findByPushToken(request.getPushToken())
-						.orElseThrow(() -> new NotFoundPushTokenException(request.getPushToken()));
+						.orElseThrow(NotFoundPushTokenException::new);
 		if (!model.getMemberId().equals(memberId)) {
 			throw new DeniedDeletePushTokenException();
 		}
