@@ -7,7 +7,7 @@ public class DeniedDeletePushTokenException extends BusinessException {
 	private static final String FAIL_CODE = "5008";
 
 	public DeniedDeletePushTokenException() {
-		super(FAIL_CODE, HttpStatus.UNAUTHORIZED);
+		super(FAIL_CODE, HttpStatus.FORBIDDEN);
 	}
 
 	@Override
