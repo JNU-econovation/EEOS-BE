@@ -16,7 +16,7 @@ public interface MemberPushTokenRepository {
 
 	void deleteByPushToken(String pushToken);
 
-	int deleteByMemberId(Long memberId);
+	void deleteByMemberId(Long memberId);
 
 	int deleteByUpdatedDateBefore(LocalDateTime updatedDate);
 

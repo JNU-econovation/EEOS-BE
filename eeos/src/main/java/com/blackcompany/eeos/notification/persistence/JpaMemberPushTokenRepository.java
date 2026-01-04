@@ -20,7 +20,7 @@ public interface JpaMemberPushTokenRepository extends JpaRepository<MemberPushTo
 
 	@Modifying
 	@Query("DELETE FROM MemberPushTokenEntity t WHERE t.memberId = :memberId")
-	int deleteByMemberId(@Param("memberId") Long memberId);
+	void deleteByMemberId(@Param("memberId") Long memberId);
 
 	void deleteByPushToken(String token);
 

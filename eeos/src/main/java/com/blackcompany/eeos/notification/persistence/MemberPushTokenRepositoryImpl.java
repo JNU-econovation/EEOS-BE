@@ -43,8 +43,8 @@ public class MemberPushTokenRepositoryImpl implements MemberPushTokenRepository 
 	}
 
 	@Override
-	public int deleteByMemberId(Long memberId) {
-		return jpaRepository.deleteByMemberId(memberId);
+	public void deleteByMemberId(Long memberId) {
+		jpaRepository.deleteByMemberId(memberId);
 	}
 
 	@Override
