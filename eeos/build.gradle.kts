@@ -63,6 +63,10 @@ dependencies {
 
     // OpenFeign
     implementation(libs.spring.cloud.starter.openfeign)
+
+    // Firebase Admin SDK
+    implementation(libs.firebase.admin)
+
 }
 
 dependencyManagement {

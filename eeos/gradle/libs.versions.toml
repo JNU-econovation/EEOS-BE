@@ -10,6 +10,7 @@ spotless = "7.2.1"
 asciidoctor = "4.0.2"
 epages-restdocs = "0.18.2"
 swagger = "5.10.3"
+firebase-admin = "9.2.0"
 
 # Security
 jwt = "0.12.6"
@@ -56,6 +57,9 @@ jbcrypt = { group = "org.mindrot", name = "jbcrypt", version.ref = "jbcrypt" }
 
 # Lombok
 lombok = { group = "org.projectlombok", name = "lombok" }
+
+# Firebase Admin SDK
+firebase-admin = { group = "com.google.firebase", name = "firebase-admin", version.ref = "firebase-admin" }
 
 [plugins]
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
