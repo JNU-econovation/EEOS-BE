@@ -18,6 +18,8 @@ public interface JpaMemberPushTokenRepository extends JpaRepository<MemberPushTo
 	List<MemberPushTokenEntity> findByMemberIdAndProvider(
 			Long memberId, NotificationProvider provider);
 
+	Optional<MemberPushTokenEntity> findByMemberIdAndPushToken(Long memberId, String token);
+
 	@Modifying
 	@Query("DELETE FROM MemberPushTokenEntity t WHERE t.memberId = :memberId")
 	void deleteByMemberId(@Param("memberId") Long memberId);

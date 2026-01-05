@@ -30,6 +30,11 @@ public class MemberPushTokenRepositoryImpl implements MemberPushTokenRepository 
 	}
 
 	@Override
+	public Optional<MemberPushTokenModel> findByMemberIdAndPushToken(Long memberId, String pushToken) {
+		return jpaRepository.findByMemberIdAndPushToken(memberId, pushToken).map(converter::from);
+	}
+
+	@Override
 	public List<MemberPushTokenModel> findByMemberIdAndProvider(
 			Long memberId, NotificationProvider provider) {
 		return jpaRepository.findByMemberIdAndProvider(memberId, provider).stream()

@@ -14,6 +14,8 @@ public interface MemberPushTokenRepository {
 	List<MemberPushTokenModel> findByMemberIdAndProvider(
 			Long memberId, NotificationProvider provider);
 
+	Optional<MemberPushTokenModel> findByMemberIdAndPushToken(Long memberId, String pushToken);
+
 	void deleteByPushToken(String pushToken);
 
 	void deleteByMemberId(Long memberId);

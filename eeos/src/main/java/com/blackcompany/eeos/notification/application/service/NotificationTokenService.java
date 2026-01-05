@@ -32,7 +32,7 @@ public class NotificationTokenService
 
 		MemberPushTokenModel model =
 				memberPushTokenRepository
-						.findByPushToken(request.getPushToken())
+						.findByMemberIdAndPushToken(memberId, request.getPushToken())
 						.map(existingModel -> existingModel.renew(memberId))
 						.orElseGet(
 								() ->
