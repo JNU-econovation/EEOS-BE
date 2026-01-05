@@ -1,5 +1,7 @@
 package com.blackcompany.eeos.notification.application.service;
 
+import java.time.LocalDateTime;
+
 import com.blackcompany.eeos.notification.application.dto.CreateMemberPushTokenRequest;
 import com.blackcompany.eeos.notification.application.dto.DeleteMemberPushTokenRequest;
 import com.blackcompany.eeos.notification.application.exception.DeniedDeletePushTokenException;
@@ -27,18 +29,18 @@ public class NotificationTokenService
 	@Override
 	@Transactional
 	public void create(Long memberId, CreateMemberPushTokenRequest request) {
-
 		NotificationProvider provider = NotificationProvider.find(request.getProvider());
-		if (memberPushTokenRepository.findByPushToken(request.getPushToken()).isEmpty()) {
-			MemberPushTokenModel model =
-					MemberPushTokenModel.builder()
-							.memberId(memberId)
-							.pushToken(request.getPushToken())
-							.notificationProvider(provider)
-							.build();
 
-			memberPushTokenRepository.save(model);
-		}
+		MemberPushTokenModel model = memberPushTokenRepository.findByPushToken(request.getPushToken())
+			.map(existingModel -> existingModel.renew(memberId))
+			.orElseGet(() -> MemberPushTokenModel.builder()
+				.memberId(memberId)
+				.pushToken(request.getPushToken())
+				.notificationProvider(provider)
+				.lastActiveAt(LocalDateTime.now())
+				.build());
+
+		memberPushTokenRepository.save(model);
 	}
 
 	@Override
