@@ -30,7 +30,8 @@ public class MemberPushTokenRepositoryImpl implements MemberPushTokenRepository 
 	}
 
 	@Override
-	public Optional<MemberPushTokenModel> findByMemberIdAndPushToken(Long memberId, String pushToken) {
+	public Optional<MemberPushTokenModel> findByMemberIdAndPushToken(
+			Long memberId, String pushToken) {
 		return jpaRepository.findByMemberIdAndPushToken(memberId, pushToken).map(converter::from);
 	}
 
