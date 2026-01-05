@@ -1,7 +1,5 @@
 package com.blackcompany.eeos.notification.application.service;
 
-import java.time.LocalDateTime;
-
 import com.blackcompany.eeos.notification.application.dto.CreateMemberPushTokenRequest;
 import com.blackcompany.eeos.notification.application.dto.DeleteMemberPushTokenRequest;
 import com.blackcompany.eeos.notification.application.exception.DeniedDeletePushTokenException;
@@ -12,6 +10,7 @@ import com.blackcompany.eeos.notification.application.repository.MemberPushToken
 import com.blackcompany.eeos.notification.application.usecase.CreateMemberPushTokenUsecase;
 import com.blackcompany.eeos.notification.application.usecase.DeleteAllMemberPushTokensUsecase;
 import com.blackcompany.eeos.notification.application.usecase.DeleteMemberPushTokenUsecase;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,14 +30,18 @@ public class NotificationTokenService
 	public void create(Long memberId, CreateMemberPushTokenRequest request) {
 		NotificationProvider provider = NotificationProvider.find(request.getProvider());
 
-		MemberPushTokenModel model = memberPushTokenRepository.findByPushToken(request.getPushToken())
-			.map(existingModel -> existingModel.renew(memberId))
-			.orElseGet(() -> MemberPushTokenModel.builder()
-				.memberId(memberId)
-				.pushToken(request.getPushToken())
-				.notificationProvider(provider)
-				.lastActiveAt(LocalDateTime.now())
-				.build());
+		MemberPushTokenModel model =
+				memberPushTokenRepository
+						.findByPushToken(request.getPushToken())
+						.map(existingModel -> existingModel.renew(memberId))
+						.orElseGet(
+								() ->
+										MemberPushTokenModel.builder()
+												.memberId(memberId)
+												.pushToken(request.getPushToken())
+												.notificationProvider(provider)
+												.lastActiveAt(LocalDateTime.now())
+												.build());
 
 		memberPushTokenRepository.save(model);
 	}

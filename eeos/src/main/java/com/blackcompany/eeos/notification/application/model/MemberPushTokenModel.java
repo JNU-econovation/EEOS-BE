@@ -1,8 +1,7 @@
 package com.blackcompany.eeos.notification.application.model;
 
-import java.time.LocalDateTime;
-
 import com.blackcompany.eeos.common.support.AbstractModel;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,10 +18,7 @@ public class MemberPushTokenModel implements AbstractModel {
 	private String pushToken;
 	private LocalDateTime lastActiveAt;
 
-	public MemberPushTokenModel renew(Long memberId){
-		return this.toBuilder()
-			.memberId(memberId)
-			.lastActiveAt(LocalDateTime.now())
-			.build();
+	public MemberPushTokenModel renew(Long memberId) {
+		return this.toBuilder().memberId(memberId).lastActiveAt(LocalDateTime.now()).build();
 	}
 }
