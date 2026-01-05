@@ -16,6 +16,7 @@ public class MemberPushTokenEntityConverter
 				.memberId(source.getMemberId())
 				.notificationProvider(source.getProvider())
 				.pushToken(source.getPushToken())
+				.lastActiveAt(source.getLastActiveAt())
 				.build();
 	}
 
@@ -26,6 +27,7 @@ public class MemberPushTokenEntityConverter
 				.memberId(source.getMemberId())
 				.pushToken(source.getPushToken())
 				.provider(source.getNotificationProvider())
+				.lastActiveAt(source.getLastActiveAt())
 				.build();
 	}
 }

@@ -1,5 +1,7 @@
 package com.blackcompany.eeos.notification.persistence;
 
+import java.time.LocalDateTime;
+
 import com.blackcompany.eeos.common.persistence.BaseEntity;
 import com.blackcompany.eeos.notification.application.model.NotificationProvider;
 import jakarta.persistence.Column;
@@ -42,4 +44,7 @@ public class MemberPushTokenEntity extends BaseEntity {
 
 	@Column(name = ENTITY_PREFIX + "_push_token", nullable = false, unique = true)
 	private String pushToken;
+
+	@Column(name = ENTITY_PREFIX + "_last_activate_at", nullable = false)
+	private LocalDateTime lastActiveAt;
 }
