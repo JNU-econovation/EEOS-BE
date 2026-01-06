@@ -2,6 +2,7 @@ package com.blackcompany.eeos.team.application.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
 
 import com.blackcompany.eeos.member.application.model.MemberModel;
@@ -196,7 +197,7 @@ class TeamServiceTest {
 		when(teamRepository.findAllActiveTeams()).thenReturn(List.of(entity1, entity2));
 		when(entityConverter.from(entity1)).thenReturn(model1);
 		when(entityConverter.from(entity2)).thenReturn(model2);
-		when(queryTeamResponseConverter.from(any())).thenReturn(response);
+		when(queryTeamResponseConverter.from(anyList())).thenReturn(response);
 
 		// when
 		QueryTeamsResponse result = teamService.execute("none");
@@ -217,7 +218,7 @@ class TeamServiceTest {
 
 		when(presentationRepository.findTeamsByProgramId(programId)).thenReturn(List.of(entity));
 		when(entityConverter.from(entity)).thenReturn(model);
-		when(queryTeamResponseConverter.from(any())).thenReturn(response);
+		when(queryTeamResponseConverter.from(anyList())).thenReturn(response);
 
 		// when
 		QueryTeamsResponse result = teamService.execute("1");

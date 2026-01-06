@@ -85,7 +85,7 @@ public class CommentFixture {
 		return CommentEntity.builder()
 				.id(commentId)
 				.programId(DEFAULT_PROGRAM_ID)
-				.presentingTeam(DEFAULT_TEAM_ID)
+				.presentingTeamId(DEFAULT_TEAM_ID)
 				.superCommentId(SUPER_COMMENT_ID)
 				.content("테스트 댓글입니다.")
 				.writer(writerId)
