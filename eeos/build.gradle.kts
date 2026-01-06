@@ -57,6 +57,11 @@ dependencies {
     testImplementation(libs.spring.cloud.starter.contract.stub.runner)
     testImplementation(libs.spring.security.test)
 
+    // Integration Test
+    "integrationTestImplementation"(libs.spring.boot.starter.test)
+    "integrationTestImplementation"(libs.rest.assured)
+    "integrationTestImplementation"(libs.spring.security.test)
+
     // Lombok
     compileOnly(libs.lombok)
     annotationProcessor(libs.lombok)

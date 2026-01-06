@@ -11,6 +11,9 @@ asciidoctor = "4.0.2"
 epages-restdocs = "0.18.2"
 swagger = "5.10.3"
 
+# Test
+rest-assured = "5.4.0"
+
 # Security
 jwt = "0.12.6"
 jbcrypt = "0.4"
@@ -53,6 +56,9 @@ jwt-api = { group = "io.jsonwebtoken", name = "jjwt-api", version.ref = "jwt" }
 jwt-impl = { group = "io.jsonwebtoken", name = "jjwt-impl", version.ref = "jwt" }
 jwt-jackson = { group = "io.jsonwebtoken", name = "jjwt-jackson", version.ref = "jwt" }
 jbcrypt = { group = "org.mindrot", name = "jbcrypt", version.ref = "jbcrypt" }
+
+# Test
+rest-assured = { group = "io.rest-assured", name = "rest-assured", version.ref = "rest-assured" }
 
 # Lombok
 lombok = { group = "org.projectlombok", name = "lombok" }
