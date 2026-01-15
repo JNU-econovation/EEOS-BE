@@ -65,4 +65,9 @@ public class MemberPushTokenRepositoryImpl implements MemberPushTokenRepository 
 		MemberPushTokenEntity saved = jpaRepository.save(memberPushTokenEntity);
 		return converter.from(saved);
 	}
+
+	@Override
+	public int deleteByLastActiveAtBefore(LocalDateTime limitDate) {
+		return jpaRepository.deleteByLastActiveAtBefore(limitDate);
+	}
 }

@@ -24,10 +24,10 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @SuperBuilder(toBuilder = true)
-@Table(name = "member_push_token")
+@Table(name = "Notification_token")
 public class MemberPushTokenEntity extends BaseEntity {
 
-	public static final String ENTITY_PREFIX = "member_push_token";
+	public static final String ENTITY_PREFIX = "Notification_token";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
