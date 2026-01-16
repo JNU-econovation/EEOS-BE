@@ -1,6 +1,7 @@
 package com.blackcompany.eeos.notification.application.scheduler;
 
 import com.blackcompany.eeos.notification.application.repository.MemberPushTokenRepository;
+import com.blackcompany.eeos.notification.application.service.NotificationTokenService;
 import com.blackcompany.eeos.notification.application.service.SlackNotificationService;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class PushTokenCleanScheduler {
 
-	private final MemberPushTokenRepository memberPushTokenRepository;
 	private final SlackNotificationService slackNotificationService;
+	private final NotificationTokenService notificationTokenService;
 
 	private static final int INACTIVE_DAYS_THRESHOLD = 90;
 	private static final String SCHEDULER_NAME = "비활성화 토큰 삭제 스케줄러";
@@ -29,16 +30,14 @@ public class PushTokenCleanScheduler {
 	 * */
 
 	@Scheduled(cron = "0 0 3 * * 6")
-	@Transactional
 	@Retryable(
 			maxAttempts = 3,
 			backoff = @Backoff(delay = 2000),
 			recover = "recoverDeleteInactiveTokens")
 	public void deleteInactiveTokens() {
 		log.info("{} 시작", SCHEDULER_NAME);
-		LocalDateTime limitDate = LocalDateTime.now().minusDays(INACTIVE_DAYS_THRESHOLD);
-		int deleteCount = memberPushTokenRepository.deleteByLastActiveAtBefore(limitDate);
-		log.info("{}개의 비활성 푸시 토큰 삭제 완료 (기준일: {})", deleteCount, limitDate);
+		int deleteCount = notificationTokenService.deleteInactiveTokens();
+		log.info("{}개의 비활성화 토큰 삭제 완료", deleteCount);
 	}
 
 	@Recover
