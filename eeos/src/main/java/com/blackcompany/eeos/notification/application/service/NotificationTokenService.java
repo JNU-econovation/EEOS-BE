@@ -67,7 +67,7 @@ public class NotificationTokenService
 	}
 
 	@Transactional
-	public int deleteInactiveTokens(){
+	public int deleteInactiveTokens() {
 		LocalDateTime limitDate = LocalDateTime.now().minusDays(INACTIVE_DAYS_THRESHOLD);
 		return memberPushTokenRepository.deleteByLastActiveAtBefore(limitDate);
 	}

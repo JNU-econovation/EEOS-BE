@@ -1,9 +1,7 @@
 package com.blackcompany.eeos.notification.application.scheduler;
 
-import com.blackcompany.eeos.notification.application.repository.MemberPushTokenRepository;
 import com.blackcompany.eeos.notification.application.service.NotificationTokenService;
 import com.blackcompany.eeos.notification.application.service.SlackNotificationService;
-import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.retry.annotation.Backoff;
@@ -11,7 +9,6 @@ import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Slf4j
