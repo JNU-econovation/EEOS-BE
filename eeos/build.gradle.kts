@@ -67,6 +67,11 @@ dependencies {
     // Firebase Admin SDK
     implementation(libs.firebase.admin)
 
+    implementation(libs.spring.retry)
+    implementation(libs.spring.aspects)
+
+
+
 }
 
 dependencyManagement {

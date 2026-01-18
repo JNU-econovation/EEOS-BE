@@ -14,6 +14,8 @@ slack:
     black-company:
       slack-message-test: ${BLACK_COMPANY_TEST_CHANNEL_ID}
       notification : ${BLACK_COMPANY_NOTIFICATION_CHANNEL_ID}
+      error-report : ${BLACK_COMPANY_ERROR_REPORT_CHANNEL_ID}
+
     econovation:
       notification: ${ECONOVATION_NOTIFICATION_CHANNEL_ID}
       small_talk: ${ECONOVATION_SMALL_TALK_CHANNEL_ID}

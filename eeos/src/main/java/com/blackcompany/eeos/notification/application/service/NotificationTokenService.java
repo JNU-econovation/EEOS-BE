@@ -24,6 +24,7 @@ public class NotificationTokenService
 				DeleteMemberPushTokenUsecase {
 
 	private final MemberPushTokenRepository memberPushTokenRepository;
+	private static final int INACTIVE_DAYS_THRESHOLD = 90;
 
 	@Override
 	@Transactional
@@ -63,5 +64,11 @@ public class NotificationTokenService
 			throw new DeniedDeletePushTokenException();
 		}
 		memberPushTokenRepository.deleteByPushToken(request.getPushToken());
+	}
+
+	@Transactional
+	public int deleteInactiveTokens() {
+		LocalDateTime limitDate = LocalDateTime.now().minusDays(INACTIVE_DAYS_THRESHOLD);
+		return memberPushTokenRepository.deleteByLastActiveAtBefore(limitDate);
 	}
 }
