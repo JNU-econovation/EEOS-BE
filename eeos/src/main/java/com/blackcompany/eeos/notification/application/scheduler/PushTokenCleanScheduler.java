@@ -18,7 +18,6 @@ public class PushTokenCleanScheduler {
 	private final SlackNotificationService slackNotificationService;
 	private final NotificationTokenService notificationTokenService;
 
-	private static final int INACTIVE_DAYS_THRESHOLD = 90;
 	private static final String SCHEDULER_NAME = "비활성화 토큰 삭제 스케줄러";
 
 	/*
