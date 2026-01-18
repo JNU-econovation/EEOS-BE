@@ -1,4 +1,4 @@
-FROM openjdk:21-oracle
+FROM eclipse-temurin:21-jdk
 RUN mkdir -p /logs
 
 ENV	PROFILE defaultgi
