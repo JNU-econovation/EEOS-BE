@@ -2,7 +2,7 @@ package com.blackcompany.eeos.notification.persistence;
 
 import com.blackcompany.eeos.common.persistence.BaseEntity;
 import com.blackcompany.eeos.notification.application.model.NotificationProvider;
-import com.blackcompany.eeos.notification.application.model.PushStatus;
+import com.blackcompany.eeos.notification.application.model.NotificationPermission;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -51,5 +51,5 @@ public class NotificationTokenEntity extends BaseEntity {
 
 	@Column(name = ENTITY_PREFIX + "_status", nullable = false)
 	@Enumerated(EnumType.STRING)
-	private PushStatus pushStatus;
+	private NotificationPermission notificationPermission;
 }

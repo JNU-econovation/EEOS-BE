@@ -17,7 +17,7 @@ public class MemberPushTokenEntityConverter
 				.notificationProvider(source.getProvider())
 				.pushToken(source.getPushToken())
 				.lastActiveAt(source.getLastActiveAt())
-				.pushStatus(source.getPushStatus())
+				.notificationPermission(source.getNotificationPermission())
 				.build();
 	}
 
@@ -29,7 +29,7 @@ public class MemberPushTokenEntityConverter
 				.pushToken(source.getPushToken())
 				.provider(source.getNotificationProvider())
 				.lastActiveAt(source.getLastActiveAt())
-				.pushStatus(source.getPushStatus())
+				.notificationPermission(source.getNotificationPermission())
 				.build();
 	}
 }

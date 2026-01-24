@@ -19,10 +19,11 @@ public class MemberPushTokenModel implements AbstractModel {
 	private NotificationProvider notificationProvider;
 	private String pushToken;
 	private LocalDateTime lastActiveAt;
-	private PushStatus pushStatus;
+	private NotificationPermission notificationPermission;
 
 	public MemberPushTokenModel renew(Long memberId) {
-		return this.toBuilder().memberId(memberId).lastActiveAt(LocalDateTime.now()).pushStatus(PushStatus.ON).build();
+		return this.toBuilder().memberId(memberId).lastActiveAt(LocalDateTime.now()).notificationPermission(
+			NotificationPermission.ON).build();
 	}
 
 	public void validateTokenOwner(Long requestMemberId) {
@@ -31,7 +32,7 @@ public class MemberPushTokenModel implements AbstractModel {
 		}
 	}
 
-	public MemberPushTokenModel updateStatus(PushStatus requestStatus) {
-		return this.toBuilder().pushStatus(requestStatus).lastActiveAt(LocalDateTime.now()).build();
+	public MemberPushTokenModel updateNotificationPermission(NotificationPermission notificationPermission) {
+		return this.toBuilder().notificationPermission(notificationPermission).lastActiveAt(LocalDateTime.now()).build();
 	}
 }
