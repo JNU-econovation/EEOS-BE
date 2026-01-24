@@ -61,8 +61,8 @@ public class MemberPushTokenRepositoryImpl implements MemberPushTokenRepository 
 
 	@Override
 	public MemberPushTokenModel save(MemberPushTokenModel memberPushToken) {
-		MemberPushTokenEntity memberPushTokenEntity = converter.toEntity(memberPushToken);
-		MemberPushTokenEntity saved = jpaRepository.save(memberPushTokenEntity);
+		NotificationTokenEntity notificationTokenEntity = converter.toEntity(memberPushToken);
+		NotificationTokenEntity saved = jpaRepository.save(notificationTokenEntity);
 		return converter.from(saved);
 	}
 

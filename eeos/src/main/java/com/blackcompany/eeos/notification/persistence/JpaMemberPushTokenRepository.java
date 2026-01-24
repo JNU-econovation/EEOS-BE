@@ -10,19 +10,19 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface JpaMemberPushTokenRepository extends JpaRepository<MemberPushTokenEntity, Long> {
+public interface JpaMemberPushTokenRepository extends JpaRepository<NotificationTokenEntity, Long> {
 
-	Optional<MemberPushTokenEntity> findByPushToken(String token);
+	Optional<NotificationTokenEntity> findByPushToken(String token);
 
-	List<MemberPushTokenEntity> findByMemberId(Long memberId);
+	List<NotificationTokenEntity> findByMemberId(Long memberId);
 
-	List<MemberPushTokenEntity> findByMemberIdAndProvider(
+	List<NotificationTokenEntity> findByMemberIdAndProvider(
 			Long memberId, NotificationProvider provider);
 
-	Optional<MemberPushTokenEntity> findByMemberIdAndPushToken(Long memberId, String token);
+	Optional<NotificationTokenEntity> findByMemberIdAndPushToken(Long memberId, String token);
 
 	@Modifying
-	@Query("DELETE FROM MemberPushTokenEntity t WHERE t.memberId = :memberId")
+	@Query("DELETE FROM NotificationTokenEntity t WHERE t.memberId = :memberId")
 	void deleteByMemberId(@Param("memberId") Long memberId);
 
 	void deleteByPushToken(String token);
@@ -30,6 +30,6 @@ public interface JpaMemberPushTokenRepository extends JpaRepository<MemberPushTo
 	int deleteByUpdatedDateBefore(Timestamp updatedDate);
 
 	@Modifying
-	@Query("DELETE FROM MemberPushTokenEntity t where t.lastActiveAt < :limitDate")
+	@Query("DELETE FROM NotificationTokenEntity t where t.lastActiveAt < :limitDate")
 	int deleteByLastActiveAtBefore(@Param("limitDate") LocalDateTime limitDate);
 }

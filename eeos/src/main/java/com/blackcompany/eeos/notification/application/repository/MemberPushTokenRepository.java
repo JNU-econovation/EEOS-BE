@@ -25,4 +25,5 @@ public interface MemberPushTokenRepository {
 	MemberPushTokenModel save(MemberPushTokenModel memberPushToken);
 
 	int deleteByLastActiveAtBefore(LocalDateTime limitDate);
+
 }
