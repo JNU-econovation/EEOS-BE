@@ -4,6 +4,8 @@ import com.blackcompany.eeos.common.presentation.response.ApiResponse;
 import com.blackcompany.eeos.common.presentation.response.ApiResponseBody.SuccessBody;
 import com.blackcompany.eeos.notification.application.dto.CreateMemberPushTokenRequest;
 import com.blackcompany.eeos.notification.application.dto.DeleteMemberPushTokenRequest;
+import com.blackcompany.eeos.notification.application.dto.UpdatePushStatusRequest;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,4 +24,7 @@ public interface MemberPushTokenApi {
 
 	@Operation(summary = "알림 토큰 전체 삭제", description = "특정 유저의 알림토큰을 모두 삭제한다.")
 	ApiResponse<SuccessBody<Void>> deleteAll(@Parameter(hidden = true) Long memberId);
+
+	@Operation(summary = "알림 상태 변경", description = "사용자의 기기 알림 상태를 변경한다.")
+	ApiResponse<SuccessBody<Void>> updatePushStatus(@Parameter(hidden = true) Long memberId, @Valid UpdatePushStatusRequest request);
 }
