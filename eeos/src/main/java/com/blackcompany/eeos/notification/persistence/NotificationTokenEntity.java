@@ -49,7 +49,7 @@ public class NotificationTokenEntity extends BaseEntity {
 	@Column(name = ENTITY_PREFIX + "_last_activate_at", nullable = false)
 	private LocalDateTime lastActiveAt;
 
-	@Column(name = ENTITY_PREFIX + "_status", nullable = false)
+	@Column(name = ENTITY_PREFIX + "_notification_permission", nullable = false)
 	@Enumerated(EnumType.STRING)
 	private NotificationPermission notificationPermission;
 }

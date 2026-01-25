@@ -9,6 +9,7 @@ spring:
         - actuator
         - local-redis
         - slack
+        - fcm
         - swagger
         - admin
       dev:
@@ -21,6 +22,7 @@ spring:
         - redis
         - swagger
         - slack
+        - fcm
         - admin
       prod:
         - mysql
@@ -31,5 +33,6 @@ spring:
         - actuator
         - redis
         - slack
+        - fcm
         - admin
     active: local
