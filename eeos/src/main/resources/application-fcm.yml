@@ -1,0 +1,7 @@
+spring:
+  config:
+    activate:
+      on-profile: fcm
+
+firebase:
+  credentials: ${FIREBASE_CREDENTIALS}
