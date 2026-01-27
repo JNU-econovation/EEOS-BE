@@ -1,6 +1,7 @@
 package com.blackcompany.eeos.notification.persistence;
 
 import com.blackcompany.eeos.notification.application.model.MemberPushTokenModel;
+import com.blackcompany.eeos.notification.application.model.NotificationPermission;
 import com.blackcompany.eeos.notification.application.model.NotificationProvider;
 import com.blackcompany.eeos.notification.application.model.converter.MemberPushTokenEntityConverter;
 import com.blackcompany.eeos.notification.application.repository.MemberPushTokenRepository;
@@ -69,5 +70,14 @@ public class MemberPushTokenRepositoryImpl implements MemberPushTokenRepository 
 	@Override
 	public int deleteByLastActiveAtBefore(LocalDateTime limitDate) {
 		return jpaRepository.deleteByLastActiveAtBefore(limitDate);
+	}
+
+	@Override
+	public List<MemberPushTokenModel> findByMemberIdsAndNotificationPermission(List<Long> memberIds,
+		NotificationPermission permission) {
+		return jpaRepository.findByMemberIdInAndNotificationPermission(memberIds, permission)
+			.stream()
+			.map(converter::from)
+			.toList();
 	}
 }

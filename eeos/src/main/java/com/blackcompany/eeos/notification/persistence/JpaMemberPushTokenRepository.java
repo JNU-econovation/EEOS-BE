@@ -1,5 +1,6 @@
 package com.blackcompany.eeos.notification.persistence;
 
+import com.blackcompany.eeos.notification.application.model.NotificationPermission;
 import com.blackcompany.eeos.notification.application.model.NotificationProvider;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -32,4 +33,10 @@ public interface JpaMemberPushTokenRepository extends JpaRepository<Notification
 	@Modifying
 	@Query("DELETE FROM NotificationTokenEntity t where t.lastActiveAt < :limitDate")
 	int deleteByLastActiveAtBefore(@Param("limitDate") LocalDateTime limitDate);
+
+	@Query("SELECT t FROM NotificationTokenEntity t WHERE t.memberId IN :memberIds AND t.notificationPermission = :permission")
+	List<NotificationTokenEntity> findByMemberIdInAndNotificationPermission(
+		@Param("memberIds") List<Long> memberIds,
+		@Param("permission") NotificationPermission permission
+	);
 }
