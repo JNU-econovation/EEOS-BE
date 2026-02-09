@@ -21,7 +21,6 @@ public class CalenderNotificationScheduler {
 	private final NotificationService notificationService;
 	private static final String NOTIFICATION_HEAD_TITLE = "EEOS 일정 알림";
 
-
 	@Scheduled(cron = "${notification.morningTime}")
 	public void sendMorningNotification() {
 		LocalDateTime today = getStartOfDay(0);

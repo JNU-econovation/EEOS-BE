@@ -42,8 +42,7 @@ class CalenderNotificationSchedulerTest {
 		scheduler.sendMorningNotification();
 
 		// then
-		ArgumentCaptor<NotificationRequest> captor =
-				ArgumentCaptor.forClass(NotificationRequest.class);
+		ArgumentCaptor<NotificationRequest> captor = ArgumentCaptor.forClass(NotificationRequest.class);
 		verify(notificationService, times(1)).sendNotification(captor.capture());
 
 		NotificationRequest request = captor.getValue();
@@ -64,7 +63,6 @@ class CalenderNotificationSchedulerTest {
 		verify(notificationService, never()).sendNotification(any());
 	}
 
-
 	@Test
 	@DisplayName("알림 본문에 일정 제목과 남은 일수가 포함된다")
 	void notification_body_contains_title_and_days() {
@@ -77,8 +75,7 @@ class CalenderNotificationSchedulerTest {
 		scheduler.sendMorningNotification();
 
 		// then
-		ArgumentCaptor<NotificationRequest> captor =
-				ArgumentCaptor.forClass(NotificationRequest.class);
+		ArgumentCaptor<NotificationRequest> captor = ArgumentCaptor.forClass(NotificationRequest.class);
 		verify(notificationService).sendNotification(captor.capture());
 
 		NotificationRequest request = captor.getValue();

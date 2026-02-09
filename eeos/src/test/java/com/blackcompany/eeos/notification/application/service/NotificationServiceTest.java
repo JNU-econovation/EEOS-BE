@@ -104,8 +104,7 @@ class NotificationServiceTest {
 		setupMockTokens("token1");
 
 		when(notificationSender.sendAll(anyString(), anyString(), anyList()))
-				.thenReturn(
-						Map.of("token1", NotificationResult.fail(NotificationErrorCode.UNKNOWN_ERROR)));
+				.thenReturn(Map.of("token1", NotificationResult.fail(NotificationErrorCode.UNKNOWN_ERROR)));
 		when(notificationSender.getNotificationProvider()).thenReturn(NotificationProvider.FCM);
 
 		NotificationRequest request = createTestRequest();
@@ -168,12 +167,9 @@ class NotificationServiceTest {
 		MemberModel cmMember = createMemberModel(2L);
 		MemberModel rmMember = createMemberModel(3L);
 
-		when(memberRepository.findMembersByActiveStatus(ActiveStatus.AM))
-				.thenReturn(List.of(amMember));
-		when(memberRepository.findMembersByActiveStatus(ActiveStatus.CM))
-				.thenReturn(List.of(cmMember));
-		when(memberRepository.findMembersByActiveStatus(ActiveStatus.RM))
-				.thenReturn(List.of(rmMember));
+		when(memberRepository.findMembersByActiveStatus(ActiveStatus.AM)).thenReturn(List.of(amMember));
+		when(memberRepository.findMembersByActiveStatus(ActiveStatus.CM)).thenReturn(List.of(cmMember));
+		when(memberRepository.findMembersByActiveStatus(ActiveStatus.RM)).thenReturn(List.of(rmMember));
 		when(memberPushTokenRepository.findByMemberIdsAndNotificationPermission(
 						anyList(), any(NotificationPermission.class)))
 				.thenReturn(List.of());
