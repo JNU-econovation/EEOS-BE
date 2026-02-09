@@ -49,7 +49,6 @@ public class MemberPushTokenController implements MemberPushTokenApi {
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.DELETE);
 	}
 
-
 	@Override
 	@DeleteMapping("/all")
 	public ApiResponse<SuccessBody<Void>> deleteAll(@Member Long memberId) {
@@ -59,7 +58,8 @@ public class MemberPushTokenController implements MemberPushTokenApi {
 
 	@Override
 	@PatchMapping("/notificationPermission")
-	public ApiResponse<SuccessBody<Void>> updateNotificationPermission(@Member Long memberId, @RequestBody @Valid UpdateNotificationPermissionRequest request) {
+	public ApiResponse<SuccessBody<Void>> updateNotificationPermission(
+			@Member Long memberId, @RequestBody @Valid UpdateNotificationPermissionRequest request) {
 		updateNotificationPermissionUsecase.updateNotificationPermission(memberId, request);
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.UPDATE);
 	}

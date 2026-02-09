@@ -1,8 +1,7 @@
 package com.blackcompany.eeos.notification.application.exception;
 
-import org.springframework.http.HttpStatus;
-
 import com.blackcompany.eeos.common.exception.BusinessException;
+import org.springframework.http.HttpStatus;
 
 public class NotFoundNotificationPermissionException extends BusinessException {
 
@@ -16,7 +15,7 @@ public class NotFoundNotificationPermissionException extends BusinessException {
 	}
 
 	@Override
-	public String getMessage(){
+	public String getMessage() {
 		return String.format("%s 는 존재하지 않는 알림상태 입니다.", notificationPermission);
 	}
 }

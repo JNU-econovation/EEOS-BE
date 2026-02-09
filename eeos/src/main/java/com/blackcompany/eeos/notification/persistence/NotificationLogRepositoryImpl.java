@@ -4,12 +4,11 @@ import com.blackcompany.eeos.notification.application.model.NotificationLogModel
 import com.blackcompany.eeos.notification.application.model.NotificationStatus;
 import com.blackcompany.eeos.notification.application.model.converter.NotificationLogEntityConverter;
 import com.blackcompany.eeos.notification.application.repository.NotificationLogRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
@@ -32,24 +31,24 @@ public class NotificationLogRepositoryImpl implements NotificationLogRepository 
 
 	@Override
 	public List<NotificationLogModel> findByStatus(NotificationStatus status) {
-		return jpaRepository.findByStatus(status).stream()
-				.map(converter::from)
-				.toList();
+		return jpaRepository.findByStatus(status).stream().map(converter::from).toList();
 	}
 
 	@Override
-	public List<NotificationLogModel> findByProgramIdAndScheduledAtAndStatus(
-			Long programId, LocalDateTime scheduledAt, NotificationStatus status) {
-		return jpaRepository.findByProgramIdAndScheduledAtAndStatus(programId, scheduledAt, status)
+	public List<NotificationLogModel> findByCalendarIdAndScheduledAtAndStatus(
+			Long calendarId, LocalDateTime scheduledAt, NotificationStatus status) {
+		return jpaRepository
+				.findByCalendarIdAndScheduledAtAndStatus(calendarId, scheduledAt, status)
 				.stream()
 				.map(converter::from)
 				.toList();
 	}
 
 	@Override
-	public Optional<NotificationLogModel> findByProgramIdAndPushTokenAndScheduledAt(
-			Long programId, String pushToken, LocalDateTime scheduledAt) {
-		return jpaRepository.findByProgramIdAndPushTokenAndScheduledAt(programId, pushToken, scheduledAt)
+	public Optional<NotificationLogModel> findByCalendarIdAndPushTokenAndScheduledAt(
+			Long calendarId, String pushToken, LocalDateTime scheduledAt) {
+		return jpaRepository
+				.findByCalendarIdAndPushTokenAndScheduledAt(calendarId, pushToken, scheduledAt)
 				.map(converter::from);
 	}
 }

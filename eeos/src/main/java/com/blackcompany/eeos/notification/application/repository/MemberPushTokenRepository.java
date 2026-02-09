@@ -27,5 +27,8 @@ public interface MemberPushTokenRepository {
 
 	int deleteByLastActiveAtBefore(LocalDateTime limitDate);
 
-	List<MemberPushTokenModel> findByMemberIdsAndNotificationPermission(List<Long> memberIds, NotificationPermission permission);
+	List<MemberPushTokenModel> findByMemberIdsAndNotificationPermission(
+			List<Long> memberIds, NotificationPermission permission);
+
+	void deleteByPushTokenIn(List<String> tokens);
 }

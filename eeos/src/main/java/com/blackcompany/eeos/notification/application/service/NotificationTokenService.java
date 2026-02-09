@@ -5,14 +5,13 @@ import com.blackcompany.eeos.notification.application.dto.DeleteMemberPushTokenR
 import com.blackcompany.eeos.notification.application.dto.UpdateNotificationPermissionRequest;
 import com.blackcompany.eeos.notification.application.exception.NotFoundPushTokenException;
 import com.blackcompany.eeos.notification.application.model.MemberPushTokenModel;
-import com.blackcompany.eeos.notification.application.model.NotificationProvider;
 import com.blackcompany.eeos.notification.application.model.NotificationPermission;
+import com.blackcompany.eeos.notification.application.model.NotificationProvider;
 import com.blackcompany.eeos.notification.application.repository.MemberPushTokenRepository;
 import com.blackcompany.eeos.notification.application.usecase.CreateMemberPushTokenUsecase;
 import com.blackcompany.eeos.notification.application.usecase.DeleteAllMemberPushTokensUsecase;
 import com.blackcompany.eeos.notification.application.usecase.DeleteMemberPushTokenUsecase;
 import com.blackcompany.eeos.notification.application.usecase.UpdateNotificationPermissionUsecase;
-
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,7 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class NotificationTokenService
 		implements CreateMemberPushTokenUsecase,
 				DeleteAllMemberPushTokensUsecase,
-				DeleteMemberPushTokenUsecase, UpdateNotificationPermissionUsecase {
+				DeleteMemberPushTokenUsecase,
+				UpdateNotificationPermissionUsecase {
 
 	private final MemberPushTokenRepository memberPushTokenRepository;
 	private static final int INACTIVE_DAYS_THRESHOLD = 90;
@@ -74,15 +74,17 @@ public class NotificationTokenService
 		return memberPushTokenRepository.deleteByLastActiveAtBefore(limitDate);
 	}
 
-
 	@Override
 	@Transactional
-	public void updateNotificationPermission(Long memberId, UpdateNotificationPermissionRequest request) {
-		MemberPushTokenModel model = memberPushTokenRepository.findByPushToken(request.getPushToken())
-			.orElseThrow(NotFoundPushTokenException::new);
+	public void updateNotificationPermission(
+			Long memberId, UpdateNotificationPermissionRequest request) {
+		MemberPushTokenModel model =
+				memberPushTokenRepository
+						.findByPushToken(request.getPushToken())
+						.orElseThrow(NotFoundPushTokenException::new);
 		model.validateTokenOwner(memberId);
-		MemberPushTokenModel updateModel = model.updateNotificationPermission(request.getNotificationPermission());
+		MemberPushTokenModel updateModel =
+				model.updateNotificationPermission(request.getNotificationPermission());
 		memberPushTokenRepository.save(updateModel);
 	}
-
 }

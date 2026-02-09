@@ -10,12 +10,11 @@ public class NotificationResult {
 	private boolean success;
 	private NotificationErrorCode errorCode;
 
-	public static NotificationResult success(){
+	public static NotificationResult success() {
 		return new NotificationResult(true, null);
 	}
 
-	public static NotificationResult fail(NotificationErrorCode errorCode){
+	public static NotificationResult fail(NotificationErrorCode errorCode) {
 		return new NotificationResult(false, errorCode);
 	}
-
 }

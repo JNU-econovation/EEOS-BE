@@ -5,7 +5,6 @@ import com.blackcompany.eeos.common.presentation.response.ApiResponseBody.Succes
 import com.blackcompany.eeos.notification.application.dto.CreateMemberPushTokenRequest;
 import com.blackcompany.eeos.notification.application.dto.DeleteMemberPushTokenRequest;
 import com.blackcompany.eeos.notification.application.dto.UpdateNotificationPermissionRequest;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,5 +25,6 @@ public interface MemberPushTokenApi {
 	ApiResponse<SuccessBody<Void>> deleteAll(@Parameter(hidden = true) Long memberId);
 
 	@Operation(summary = "알림 허용 상태 변경", description = "사용자의 기기 알림 허용 상태를 변경한다.")
-	ApiResponse<SuccessBody<Void>> updateNotificationPermission(@Parameter(hidden = true) Long memberId, @Valid UpdateNotificationPermissionRequest request);
+	ApiResponse<SuccessBody<Void>> updateNotificationPermission(
+			@Parameter(hidden = true) Long memberId, @Valid UpdateNotificationPermissionRequest request);
 }

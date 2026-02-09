@@ -73,11 +73,15 @@ public class MemberPushTokenRepositoryImpl implements MemberPushTokenRepository 
 	}
 
 	@Override
-	public List<MemberPushTokenModel> findByMemberIdsAndNotificationPermission(List<Long> memberIds,
-		NotificationPermission permission) {
-		return jpaRepository.findByMemberIdInAndNotificationPermission(memberIds, permission)
-			.stream()
-			.map(converter::from)
-			.toList();
+	public List<MemberPushTokenModel> findByMemberIdsAndNotificationPermission(
+			List<Long> memberIds, NotificationPermission permission) {
+		return jpaRepository.findByMemberIdInAndNotificationPermission(memberIds, permission).stream()
+				.map(converter::from)
+				.toList();
+	}
+
+	@Override
+	public void deleteByPushTokenIn(List<String> pushTokens) {
+		jpaRepository.deleteByPushTokenIn(pushTokens);
 	}
 }

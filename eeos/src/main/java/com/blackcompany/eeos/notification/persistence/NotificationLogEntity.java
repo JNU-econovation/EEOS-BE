@@ -1,12 +1,10 @@
 package com.blackcompany.eeos.notification.persistence;
 
-import java.time.LocalDateTime;
-
+import com.blackcompany.eeos.calendar.application.model.CalendarType;
 import com.blackcompany.eeos.common.persistence.BaseEntity;
 import com.blackcompany.eeos.notification.application.model.NotificationProvider;
 import com.blackcompany.eeos.notification.application.model.NotificationStatus;
-import com.blackcompany.eeos.program.persistence.ProgramCategory;
-
+import com.blackcompany.eeos.notification.application.port.NotificationErrorCode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -15,6 +13,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,22 +30,22 @@ import lombok.experimental.SuperBuilder;
 @Table(name = NotificationLogEntity.ENTITY_PREFIX)
 public class NotificationLogEntity extends BaseEntity {
 
-	public static final String ENTITY_PREFIX = "NotificationLog";
+	public static final String ENTITY_PREFIX = "notification_log";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = ENTITY_PREFIX + "_id", nullable = false)
 	private Long id;
 
-	@Column(name = ENTITY_PREFIX + "_program_id", nullable = false)
-	private Long programId;
+	@Column(name = ENTITY_PREFIX + "_calendar_id", nullable = false)
+	private Long calendarId;
 
 	@Column(name = ENTITY_PREFIX + "_push_token", nullable = false)
 	private String pushToken;
 
 	@Column(name = ENTITY_PREFIX + "_category", nullable = false)
 	@Enumerated(EnumType.STRING)
-	private ProgramCategory programCategory;
+	private CalendarType calendarType;
 
 	@Column(name = ENTITY_PREFIX + "_title", nullable = false)
 	private String messageTitle;
@@ -59,10 +58,8 @@ public class NotificationLogEntity extends BaseEntity {
 	private NotificationStatus status;
 
 	@Column(name = ENTITY_PREFIX + "_error_code", nullable = true)
-	private String errorCode;
-
-	@Column(name = ENTITY_PREFIX + "_retry_count", nullable = false)
-	private int retryCount;
+	@Enumerated(EnumType.STRING)
+	private NotificationErrorCode errorCode;
 
 	@Column(name = ENTITY_PREFIX + "_scheduled_at", nullable = false)
 	private LocalDateTime scheduledAt; // 예정 발송 시간
@@ -73,5 +70,4 @@ public class NotificationLogEntity extends BaseEntity {
 	@Column(name = ENTITY_PREFIX + "_provider", nullable = false)
 	@Enumerated(EnumType.STRING)
 	private NotificationProvider provider;
-
 }

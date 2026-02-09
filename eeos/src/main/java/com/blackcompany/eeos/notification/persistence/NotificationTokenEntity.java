@@ -1,9 +1,8 @@
 package com.blackcompany.eeos.notification.persistence;
 
 import com.blackcompany.eeos.common.persistence.BaseEntity;
-import com.blackcompany.eeos.notification.application.model.NotificationProvider;
 import com.blackcompany.eeos.notification.application.model.NotificationPermission;
-
+import com.blackcompany.eeos.notification.application.model.NotificationProvider;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -29,7 +28,7 @@ import lombok.experimental.SuperBuilder;
 @Table(name = NotificationTokenEntity.ENTITY_PREFIX)
 public class NotificationTokenEntity extends BaseEntity {
 
-	public static final String ENTITY_PREFIX = "Notification_token";
+	public static final String ENTITY_PREFIX = "notification_token";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

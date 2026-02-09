@@ -1,10 +1,9 @@
 package com.blackcompany.eeos.notification.application.model;
 
-import java.time.LocalDateTime;
-
+import com.blackcompany.eeos.calendar.application.model.CalendarType;
 import com.blackcompany.eeos.common.support.AbstractModel;
-import com.blackcompany.eeos.program.persistence.ProgramCategory;
-
+import com.blackcompany.eeos.notification.application.port.NotificationErrorCode;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,14 +16,13 @@ import lombok.NoArgsConstructor;
 public class NotificationLogModel implements AbstractModel {
 
 	private Long id;
-	private Long programId;
+	private Long calendarId;
 	private String pushToken;
-	private ProgramCategory programCategory;
+	private CalendarType calendarType;
 	private String messageTitle;
 	private String messageBody;
 	private NotificationStatus status;
-	private String errorCode;
-	private int retryCount;
+	private NotificationErrorCode errorCode;
 	private LocalDateTime scheduledAt;
 	private LocalDateTime sentAt;
 	private NotificationProvider provider;

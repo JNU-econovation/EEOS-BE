@@ -1,7 +1,7 @@
 package com.blackcompany.eeos.notification.application.dto;
 
-import com.blackcompany.eeos.program.persistence.ProgramCategory;
-
+import com.blackcompany.eeos.calendar.application.model.CalendarType;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,8 +10,9 @@ import lombok.Getter;
 @Builder
 @AllArgsConstructor
 public class NotificationRequest {
-	private Long programId;
-	private ProgramCategory category;
+	private LocalDateTime scheduledAt;
+	private Long calendarId;
+	private CalendarType calendarType;
 	private String title;
 	private String body;
 }

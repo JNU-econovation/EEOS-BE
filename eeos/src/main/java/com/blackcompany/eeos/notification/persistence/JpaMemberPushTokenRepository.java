@@ -34,9 +34,13 @@ public interface JpaMemberPushTokenRepository extends JpaRepository<Notification
 	@Query("DELETE FROM NotificationTokenEntity t where t.lastActiveAt < :limitDate")
 	int deleteByLastActiveAtBefore(@Param("limitDate") LocalDateTime limitDate);
 
-	@Query("SELECT t FROM NotificationTokenEntity t WHERE t.memberId IN :memberIds AND t.notificationPermission = :permission")
+	@Query(
+			"SELECT t FROM NotificationTokenEntity t WHERE t.memberId IN :memberIds AND t.notificationPermission = :permission")
 	List<NotificationTokenEntity> findByMemberIdInAndNotificationPermission(
-		@Param("memberIds") List<Long> memberIds,
-		@Param("permission") NotificationPermission permission
-	);
+			@Param("memberIds") List<Long> memberIds,
+			@Param("permission") NotificationPermission permission);
+
+	@Modifying(clearAutomatically = true)
+	@Query("DELETE FROM NotificationTokenEntity  t WHERE t.pushToken IN :pushTokens")
+	void deleteByPushTokenIn(@Param("pushTokens") List<String> pushTokens);
 }

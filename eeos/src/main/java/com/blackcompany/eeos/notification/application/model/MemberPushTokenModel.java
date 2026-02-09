@@ -2,7 +2,6 @@ package com.blackcompany.eeos.notification.application.model;
 
 import com.blackcompany.eeos.common.support.AbstractModel;
 import com.blackcompany.eeos.notification.application.exception.DeniedUpdatePushTokenException;
-
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,17 +21,24 @@ public class MemberPushTokenModel implements AbstractModel {
 	private NotificationPermission notificationPermission;
 
 	public MemberPushTokenModel renew(Long memberId) {
-		return this.toBuilder().memberId(memberId).lastActiveAt(LocalDateTime.now()).notificationPermission(
-			NotificationPermission.ON).build();
+		return this.toBuilder()
+				.memberId(memberId)
+				.lastActiveAt(LocalDateTime.now())
+				.notificationPermission(NotificationPermission.ON)
+				.build();
 	}
 
 	public void validateTokenOwner(Long requestMemberId) {
-		if(!this.memberId.equals(requestMemberId)) {
+		if (!this.memberId.equals(requestMemberId)) {
 			throw new DeniedUpdatePushTokenException();
 		}
 	}
 
-	public MemberPushTokenModel updateNotificationPermission(NotificationPermission notificationPermission) {
-		return this.toBuilder().notificationPermission(notificationPermission).lastActiveAt(LocalDateTime.now()).build();
+	public MemberPushTokenModel updateNotificationPermission(
+			NotificationPermission notificationPermission) {
+		return this.toBuilder()
+				.notificationPermission(notificationPermission)
+				.lastActiveAt(LocalDateTime.now())
+				.build();
 	}
 }

@@ -52,17 +52,16 @@ public class SlackNotificationService {
 		}
 	}
 
-	public void sendFailureReport(List<String> failedTokens){
+	public void sendFailureReport(List<String> failedTokens) {
 		String message =
-			String.format(
-				":rotating_light: *알림전송 최종 실패 알림*\n\n"
-					+ "*실패 건수*\n `%s`\n\n"
-					+ "*실패 토큰*\n`%s`\n\n"
-					+ "*Failed At*\n`%s`\n\n",
-				failedTokens.size(),
-				failedTokens,
-				LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-				);
+				String.format(
+						":rotating_light: *알림전송 최종 실패 알림*\n\n"
+								+ "*실패 건수*\n `%s`\n\n"
+								+ "*실패 토큰*\n`%s`\n\n"
+								+ "*Failed At*\n`%s`\n\n",
+						failedTokens.size(),
+						failedTokens,
+						LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 		sendMessage(message);
 	}
 }
