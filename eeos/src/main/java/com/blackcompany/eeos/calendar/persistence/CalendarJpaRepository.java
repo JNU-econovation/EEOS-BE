@@ -31,4 +31,10 @@ public interface CalendarJpaRepository extends JpaRepository<CalendarEntity, Lon
 					+ "ORDER BY c.startAt ASC")
 	List<CalendarEntity> findNotStarted(
 			@Param("from") LocalDateTime from, @Param("to") LocalDateTime to);
+
+	@Query(
+			"SELECT c FROM CalendarEntity c "
+					+ "WHERE DATE(c.startAt) = :date "
+					+ "ORDER BY c.startAt ASC")
+	List<CalendarEntity> findByStartDate(@Param("date") LocalDateTime date);
 }
