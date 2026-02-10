@@ -41,6 +41,6 @@ public interface JpaMemberPushTokenRepository extends JpaRepository<Notification
 			@Param("permission") NotificationPermission permission);
 
 	@Modifying(clearAutomatically = true)
-	@Query("DELETE FROM NotificationTokenEntity  t WHERE t.pushToken IN :pushTokens")
+	@Query("DELETE FROM NotificationTokenEntity t WHERE t.pushToken IN :pushTokens")
 	void deleteByPushTokenIn(@Param("pushTokens") List<String> pushTokens);
 }
