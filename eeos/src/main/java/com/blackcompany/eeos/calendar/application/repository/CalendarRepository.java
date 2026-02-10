@@ -16,5 +16,5 @@ public interface CalendarRepository {
 
 	void delete(Long id);
 
-	List<CalendarModel> findByStartDate(LocalDateTime startAt);
+	List<CalendarModel> findByStartDate(LocalDateTime startOfDay, LocalDateTime startOfNextDay);
 }

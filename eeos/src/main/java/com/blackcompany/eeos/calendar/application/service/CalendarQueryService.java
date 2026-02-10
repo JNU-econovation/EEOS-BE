@@ -71,6 +71,10 @@ public class CalendarQueryService implements GetCalendarUsecase {
 
 	@Override
 	public List<CalendarResponse> getCalendarByStartAt(LocalDateTime startAt) {
-		return repository.findByStartDate(startAt).stream().map(this::createResponse).toList();
+		LocalDateTime startOfDay = startAt.toLocalDate().atStartOfDay();
+		LocalDateTime startOfNextDay = startOfDay.plusDays(1);
+		return repository.findByStartDate(startOfDay, startOfNextDay).stream()
+				.map(this::createResponse)
+				.toList();
 	}
 }

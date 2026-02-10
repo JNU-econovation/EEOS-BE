@@ -45,7 +45,9 @@ public class CalendarRepositoryImpl implements CalendarRepository {
 	}
 
 	@Override
-	public List<CalendarModel> findByStartDate(LocalDateTime startAt) {
-		return jpaRepository.findByStartDate(startAt).stream().map(CalendarEntity::toModel).toList();
+	public List<CalendarModel> findByStartDate(LocalDateTime startOfDay, LocalDateTime startOfNextDay) {
+		return jpaRepository.findByStartDate(startOfDay, startOfNextDay).stream()
+				.map(CalendarEntity::toModel)
+				.toList();
 	}
 }
