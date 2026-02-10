@@ -21,16 +21,14 @@ public enum NotificationPermission {
 
 	public static NotificationPermission find(String notificationPermission) {
 		return Arrays.stream(values())
-				.filter(
-					permission ->
-						permission.getNotificationPermission().equals(notificationPermission))
+				.filter(permission -> permission.getNotificationPermission().equals(notificationPermission))
 				.findAny()
 				.orElseThrow(() -> new NotFoundNotificationPermissionException(notificationPermission));
 	}
 
 	@JsonCreator
 	public static NotificationPermission from(String value) {
-		if(value == null) {
+		if (value == null) {
 			throw new NotFoundNotificationPermissionException("null");
 		}
 		return find(value.toLowerCase());

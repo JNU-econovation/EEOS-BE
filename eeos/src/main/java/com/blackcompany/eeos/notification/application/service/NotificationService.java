@@ -150,7 +150,6 @@ public class NotificationService {
 						.map(MemberModel::getId)
 						.toList();
 
-
 		return memberPushTokenRepository.findByMemberIdsAndNotificationPermission(
 				memberIds, NotificationPermission.ON);
 	}

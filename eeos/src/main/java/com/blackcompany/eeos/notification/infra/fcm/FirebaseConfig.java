@@ -7,7 +7,6 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +23,8 @@ public class FirebaseConfig {
 		FirebaseApp firebaseApp;
 
 		if (FirebaseApp.getApps().isEmpty()) {
-			ByteArrayInputStream serviceAccount = new ByteArrayInputStream(credentials.getBytes(StandardCharsets.UTF_8));
+			ByteArrayInputStream serviceAccount =
+					new ByteArrayInputStream(credentials.getBytes(StandardCharsets.UTF_8));
 
 			FirebaseOptions options =
 					FirebaseOptions.builder()
