@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class CalenderNotificationScheduler {
+public class CalendarNotificationScheduler {
 
 	private final CalendarQueryService calendarQueryService;
 	private final NotificationService notificationService;
