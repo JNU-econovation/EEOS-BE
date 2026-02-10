@@ -1,5 +1,6 @@
 package com.blackcompany.eeos.notification.application.scheduler;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -18,16 +19,16 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class CalenderNotificationSchedulerTest {
+class CalendarNotificationSchedulerTest {
 
 	@Mock private CalendarQueryService calendarQueryService;
 	@Mock private NotificationService notificationService;
 
-	private CalenderNotificationScheduler scheduler;
+	private CalendarNotificationScheduler scheduler;
 
 	@BeforeEach
 	void setUp() {
-		scheduler = new CalenderNotificationScheduler(calendarQueryService, notificationService);
+		scheduler = new CalendarNotificationScheduler(calendarQueryService, notificationService);
 	}
 
 	@Test
@@ -46,8 +47,9 @@ class CalenderNotificationSchedulerTest {
 		verify(notificationService, times(1)).sendNotification(captor.capture());
 
 		NotificationRequest request = captor.getValue();
-		assert request.getBody().contains("당일입니다");
-		assert request.getTitle().equals("EEOS 일정 알림");
+
+		assertTrue(request.getBody().contains("당일입니다"));
+		assertEquals("EEOS 일정 알림", request.getTitle());
 	}
 
 	@Test
@@ -79,7 +81,7 @@ class CalenderNotificationSchedulerTest {
 		verify(notificationService).sendNotification(captor.capture());
 
 		NotificationRequest request = captor.getValue();
-		assert request.getBody().equals("정기회의 - 당일입니다.");
+		assertEquals("정기회의 - 당일입니다.", request.getBody());
 	}
 
 	@Test
@@ -89,10 +91,12 @@ class CalenderNotificationSchedulerTest {
 		List<Integer> days = CalendarType.PRESENTATION.getNotificationDays();
 
 		// then
-		assert days.size() == 1;
-		assert days.contains(1);
-		assert !days.contains(3);
-		assert !days.contains(5);
+		assertAll("days 검증",
+			() -> assertEquals(1, days.size()),
+			() -> assertTrue(days.contains(1)),
+			() -> assertFalse(days.contains(3)),
+			() -> assertFalse(days.contains(5))
+		);
 	}
 
 	@Test
@@ -102,9 +106,11 @@ class CalenderNotificationSchedulerTest {
 		List<Integer> days = CalendarType.ETC.getNotificationDays();
 
 		// then
-		assert days.size() == 2;
-		assert days.contains(3);
-		assert days.contains(1);
-		assert !days.contains(5);
+		assertAll("Days 리스트 검증",
+			() -> assertEquals(2, days.size(), "사이즈는 2여야 합니다."),
+			() -> assertTrue(days.contains(3), "3을 포함해야 합니다."),
+			() -> assertTrue(days.contains(1), "1을 포함해야 합니다."),
+			() -> assertFalse(days.contains(5), "5를 포함하지 않아야 합니다.")
+		);
 	}
 }
