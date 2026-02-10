@@ -84,16 +84,15 @@ public class NotificationService {
 							classified.getInvalidTokens().size(),
 							classified.getPermanentlyFailedTokens().size());
 
-					saveNotificationLogs(request, classified);
-
-					deleteInvalidTokens(classified.getInvalidTokens());
-					permanentlyFailed.addAll(classified.getPermanentlyFailedTokens());
-
 					retryTokens.clear();
 					retryTokens.addAll(classified.getRetryTokens());
+					permanentlyFailed.addAll(classified.getPermanentlyFailedTokens());
+
+					saveNotificationLogs(request, classified);
+					deleteInvalidTokens(classified.getInvalidTokens());
 
 					if (!retryTokens.isEmpty()) {
-						throw new RetryableNotificationException("재시도 필요");
+						throw new RetryableNotificationException();
 					}
 
 					return permanentlyFailed;
@@ -150,6 +149,7 @@ public class NotificationService {
 						.flatMap(List::stream)
 						.map(MemberModel::getId)
 						.toList();
+
 
 		return memberPushTokenRepository.findByMemberIdsAndNotificationPermission(
 				memberIds, NotificationPermission.ON);
