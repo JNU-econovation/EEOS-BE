@@ -7,5 +7,5 @@ firebase:
   credentials: ${FIREBASE_CREDENTIALS}
 
 notification:
-  morningTime: 0 0 9 * * *
-  eveningTime: 0 0 19 * * *
+  morningTime: "0 0 9 * * *"
+  eveningTime: "0 0 19 * * *"
