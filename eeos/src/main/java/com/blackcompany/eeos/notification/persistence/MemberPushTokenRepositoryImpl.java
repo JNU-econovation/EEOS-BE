@@ -75,6 +75,9 @@ public class MemberPushTokenRepositoryImpl implements MemberPushTokenRepository 
 	@Override
 	public List<MemberPushTokenModel> findByMemberIdsAndNotificationPermission(
 			List<Long> memberIds, NotificationPermission permission) {
+		if(memberIds.isEmpty()){
+			return List.of();
+		}
 		return jpaRepository.findByMemberIdInAndNotificationPermission(memberIds, permission).stream()
 				.map(converter::from)
 				.toList();
