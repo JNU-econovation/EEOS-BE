@@ -38,7 +38,7 @@ public class NotificationTokenEntity extends BaseEntity {
 	@Column(name = ENTITY_PREFIX + "_member_id", nullable = false)
 	private Long memberId;
 
-	@Column(name = ENTITY_PREFIX + "_provider", nullable = false)
+	@Column(name = ENTITY_PREFIX + "_provider", nullable = false, columnDefinition = "varchar(50)")
 	@Enumerated(EnumType.STRING)
 	private NotificationProvider provider;
 
@@ -48,7 +48,10 @@ public class NotificationTokenEntity extends BaseEntity {
 	@Column(name = ENTITY_PREFIX + "_last_activate_at", nullable = false)
 	private LocalDateTime lastActiveAt;
 
-	@Column(name = ENTITY_PREFIX + "_notification_permission", nullable = false)
+	@Column(
+			name = ENTITY_PREFIX + "_notification_permission",
+			nullable = false,
+			columnDefinition = "varchar(50)")
 	@Enumerated(EnumType.STRING)
 	private NotificationPermission notificationPermission;
 }
