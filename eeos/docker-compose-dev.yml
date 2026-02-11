@@ -24,15 +24,21 @@ services:
       - "3306"
     volumes:
       - ./resources/local-develop-environment/mysql-data:/var/lib/mysql
+    restart: always
     networks:
       - internal-network
   eeos-flyway:
     container_name: eeos-flyway
     image: flyway/flyway:latest
-    command: -url=jdbc:mysql://eeos-mysql:3306/eeos?useSSL=false&allowPublicKeyRetrieval=true  -user=root -password=root migrate
+    command: [
+      "-url=jdbc:mysql://eeos-mysql:3306/eeos?useSSL=false&allowPublicKeyRetrieval=true",
+      "-user=root",
+      "-password=root",
+      "-connectRetries=60",
+      "migrate"
+    ]
     volumes:
-      - ./flyway/conf/:/flyway/conf
-      - ./flyway/sql/:/flyway/sql
+      - ./src/main/resources/db/migration/:/flyway/sql
     networks:
       - internal-network
     depends_on:
@@ -44,6 +50,7 @@ services:
       - "6379"
     environment:
       - REDIS_PASSWORD=root
+    restart: always
     networks:
       - internal-network
   eeos-backend:
