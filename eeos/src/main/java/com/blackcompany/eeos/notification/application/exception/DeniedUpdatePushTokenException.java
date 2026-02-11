@@ -3,10 +3,10 @@ package com.blackcompany.eeos.notification.application.exception;
 import com.blackcompany.eeos.common.exception.BusinessException;
 import org.springframework.http.HttpStatus;
 
-public class DeniedDeletePushTokenException extends BusinessException {
+public class DeniedUpdatePushTokenException extends BusinessException {
 	private static final String FAIL_CODE = "5008";
 
-	public DeniedDeletePushTokenException() {
+	public DeniedUpdatePushTokenException() {
 		super(FAIL_CODE, HttpStatus.FORBIDDEN);
 	}
 

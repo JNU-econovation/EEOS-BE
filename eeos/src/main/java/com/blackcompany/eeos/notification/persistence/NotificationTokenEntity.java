@@ -1,6 +1,7 @@
 package com.blackcompany.eeos.notification.persistence;
 
 import com.blackcompany.eeos.common.persistence.BaseEntity;
+import com.blackcompany.eeos.notification.application.model.NotificationPermission;
 import com.blackcompany.eeos.notification.application.model.NotificationProvider;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,10 +25,10 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @SuperBuilder(toBuilder = true)
-@Table(name = "Notification_token")
-public class MemberPushTokenEntity extends BaseEntity {
+@Table(name = NotificationTokenEntity.ENTITY_PREFIX)
+public class NotificationTokenEntity extends BaseEntity {
 
-	public static final String ENTITY_PREFIX = "Notification_token";
+	public static final String ENTITY_PREFIX = "notification_token";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,4 +47,8 @@ public class MemberPushTokenEntity extends BaseEntity {
 
 	@Column(name = ENTITY_PREFIX + "_last_activate_at", nullable = false)
 	private LocalDateTime lastActiveAt;
+
+	@Column(name = ENTITY_PREFIX + "_notification_permission", nullable = false)
+	@Enumerated(EnumType.STRING)
+	private NotificationPermission notificationPermission;
 }

@@ -9,6 +9,7 @@ spring:
         - actuator
         - local-redis
         - slack
+        - noti
         - swagger
         - admin
       dev:
@@ -21,6 +22,7 @@ spring:
         - redis
         - swagger
         - slack
+        - noti
         - admin
       prod:
         - mysql
@@ -31,5 +33,6 @@ spring:
         - actuator
         - redis
         - slack
+        - noti
         - admin
     active: local

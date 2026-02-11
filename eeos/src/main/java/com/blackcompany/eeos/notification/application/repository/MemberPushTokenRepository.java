@@ -1,6 +1,7 @@
 package com.blackcompany.eeos.notification.application.repository;
 
 import com.blackcompany.eeos.notification.application.model.MemberPushTokenModel;
+import com.blackcompany.eeos.notification.application.model.NotificationPermission;
 import com.blackcompany.eeos.notification.application.model.NotificationProvider;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,4 +26,9 @@ public interface MemberPushTokenRepository {
 	MemberPushTokenModel save(MemberPushTokenModel memberPushToken);
 
 	int deleteByLastActiveAtBefore(LocalDateTime limitDate);
+
+	List<MemberPushTokenModel> findByMemberIdsAndNotificationPermission(
+			List<Long> memberIds, NotificationPermission permission);
+
+	void deleteByPushTokenIn(List<String> tokens);
 }

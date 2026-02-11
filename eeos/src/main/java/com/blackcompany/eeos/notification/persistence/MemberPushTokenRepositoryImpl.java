@@ -1,6 +1,7 @@
 package com.blackcompany.eeos.notification.persistence;
 
 import com.blackcompany.eeos.notification.application.model.MemberPushTokenModel;
+import com.blackcompany.eeos.notification.application.model.NotificationPermission;
 import com.blackcompany.eeos.notification.application.model.NotificationProvider;
 import com.blackcompany.eeos.notification.application.model.converter.MemberPushTokenEntityConverter;
 import com.blackcompany.eeos.notification.application.repository.MemberPushTokenRepository;
@@ -61,13 +62,29 @@ public class MemberPushTokenRepositoryImpl implements MemberPushTokenRepository 
 
 	@Override
 	public MemberPushTokenModel save(MemberPushTokenModel memberPushToken) {
-		MemberPushTokenEntity memberPushTokenEntity = converter.toEntity(memberPushToken);
-		MemberPushTokenEntity saved = jpaRepository.save(memberPushTokenEntity);
+		NotificationTokenEntity notificationTokenEntity = converter.toEntity(memberPushToken);
+		NotificationTokenEntity saved = jpaRepository.save(notificationTokenEntity);
 		return converter.from(saved);
 	}
 
 	@Override
 	public int deleteByLastActiveAtBefore(LocalDateTime limitDate) {
 		return jpaRepository.deleteByLastActiveAtBefore(limitDate);
+	}
+
+	@Override
+	public List<MemberPushTokenModel> findByMemberIdsAndNotificationPermission(
+			List<Long> memberIds, NotificationPermission permission) {
+		if (memberIds.isEmpty()) {
+			return List.of();
+		}
+		return jpaRepository.findByMemberIdInAndNotificationPermission(memberIds, permission).stream()
+				.map(converter::from)
+				.toList();
+	}
+
+	@Override
+	public void deleteByPushTokenIn(List<String> pushTokens) {
+		jpaRepository.deleteByPushTokenIn(pushTokens);
 	}
 }
