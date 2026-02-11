@@ -53,7 +53,10 @@ public class NotificationLogEntity extends BaseEntity {
 	@Column(name = ENTITY_PREFIX + "_body", nullable = false)
 	private String messageBody;
 
-	@Column(name = ENTITY_PREFIX + "_notification_status", nullable = false, columnDefinition = "varchar(50)")
+	@Column(
+			name = ENTITY_PREFIX + "_notification_status",
+			nullable = false,
+			columnDefinition = "varchar(50)")
 	@Enumerated(EnumType.STRING)
 	private NotificationStatus status;
 
