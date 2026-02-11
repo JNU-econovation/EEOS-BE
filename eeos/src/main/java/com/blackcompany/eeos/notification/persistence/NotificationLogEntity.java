@@ -43,7 +43,7 @@ public class NotificationLogEntity extends BaseEntity {
 	@Column(name = ENTITY_PREFIX + "_push_token", nullable = false)
 	private String pushToken;
 
-	@Column(name = ENTITY_PREFIX + "_category", nullable = false)
+	@Column(name = ENTITY_PREFIX + "_category", nullable = false, columnDefinition = "varchar(50)")
 	@Enumerated(EnumType.STRING)
 	private CalendarType calendarType;
 
@@ -53,11 +53,11 @@ public class NotificationLogEntity extends BaseEntity {
 	@Column(name = ENTITY_PREFIX + "_body", nullable = false)
 	private String messageBody;
 
-	@Column(name = ENTITY_PREFIX + "_notification_status", nullable = false)
+	@Column(name = ENTITY_PREFIX + "_notification_status", nullable = false, columnDefinition = "varchar(50)")
 	@Enumerated(EnumType.STRING)
 	private NotificationStatus status;
 
-	@Column(name = ENTITY_PREFIX + "_error_code", nullable = true)
+	@Column(name = ENTITY_PREFIX + "_error_code", nullable = true, columnDefinition = "varchar(50)")
 	@Enumerated(EnumType.STRING)
 	private NotificationErrorCode errorCode;
 
@@ -67,7 +67,7 @@ public class NotificationLogEntity extends BaseEntity {
 	@Column(name = ENTITY_PREFIX + "_sent_at", nullable = true)
 	private LocalDateTime sentAt;
 
-	@Column(name = ENTITY_PREFIX + "_provider", nullable = false)
+	@Column(name = ENTITY_PREFIX + "_provider", nullable = false, columnDefinition = "varchar(50)")
 	@Enumerated(EnumType.STRING)
 	private NotificationProvider provider;
 }
