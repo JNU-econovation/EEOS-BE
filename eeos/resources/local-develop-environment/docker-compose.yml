@@ -21,7 +21,7 @@ services:
       - REDIS_PASSWORD=root
   eeos-local-adminer: # mysql web admin
     container_name: eeos-adminer
-    image: adminer:4
+    image: adminer:5
     ports:
       - "18080:8080"
     environment:
