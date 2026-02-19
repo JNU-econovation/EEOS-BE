@@ -3,6 +3,7 @@ package com.blackcompany.eeos.notification.application.service;
 import com.blackcompany.eeos.notification.application.dto.CreateMemberPushTokenRequest;
 import com.blackcompany.eeos.notification.application.dto.DeleteMemberPushTokenRequest;
 import com.blackcompany.eeos.notification.application.dto.UpdateNotificationPermissionRequest;
+import com.blackcompany.eeos.notification.application.exception.DuplicatePushTokenException;
 import com.blackcompany.eeos.notification.application.exception.NotFoundPushTokenException;
 import com.blackcompany.eeos.notification.application.model.MemberPushTokenModel;
 import com.blackcompany.eeos.notification.application.model.NotificationPermission;
@@ -39,14 +40,20 @@ public class NotificationTokenService
 						.findByMemberIdAndPushToken(memberId, request.getPushToken())
 						.map(existingModel -> existingModel.renew(memberId))
 						.orElseGet(
-								() ->
-										MemberPushTokenModel.builder()
-												.memberId(memberId)
-												.pushToken(request.getPushToken())
-												.notificationProvider(provider)
-												.lastActiveAt(LocalDateTime.now())
-												.notificationPermission(NotificationPermission.ON)
-												.build());
+								() -> {
+									if (memberPushTokenRepository
+											.findByPushToken(request.getPushToken())
+											.isPresent()) {
+										throw new DuplicatePushTokenException();
+									}
+									return MemberPushTokenModel.builder()
+											.memberId(memberId)
+											.pushToken(request.getPushToken())
+											.notificationProvider(provider)
+											.lastActiveAt(LocalDateTime.now())
+											.notificationPermission(NotificationPermission.ON)
+											.build();
+								});
 
 		memberPushTokenRepository.save(model);
 	}
