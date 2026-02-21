@@ -15,6 +15,7 @@ import com.blackcompany.eeos.notification.application.usecase.DeleteMemberPushTo
 import com.blackcompany.eeos.notification.application.usecase.UpdateNotificationPermissionUsecase;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,22 +41,20 @@ public class NotificationTokenService
 						.findByMemberIdAndPushToken(memberId, request.getPushToken())
 						.map(existingModel -> existingModel.renew(memberId))
 						.orElseGet(
-								() -> {
-									if (memberPushTokenRepository
-											.findByPushToken(request.getPushToken())
-											.isPresent()) {
-										throw new DuplicatePushTokenException();
-									}
-									return MemberPushTokenModel.builder()
-											.memberId(memberId)
-											.pushToken(request.getPushToken())
-											.notificationProvider(provider)
-											.lastActiveAt(LocalDateTime.now())
-											.notificationPermission(NotificationPermission.ON)
-											.build();
-								});
+								() ->
+										MemberPushTokenModel.builder()
+												.memberId(memberId)
+												.pushToken(request.getPushToken())
+												.notificationProvider(provider)
+												.lastActiveAt(LocalDateTime.now())
+												.notificationPermission(NotificationPermission.ON)
+												.build());
 
-		memberPushTokenRepository.save(model);
+		try {
+			memberPushTokenRepository.saveAndFlush(model);
+		} catch (DataIntegrityViolationException e) {
+			throw new DuplicatePushTokenException();
+		}
 	}
 
 	@Override
