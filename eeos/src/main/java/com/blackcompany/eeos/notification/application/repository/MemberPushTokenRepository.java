@@ -25,6 +25,8 @@ public interface MemberPushTokenRepository {
 
 	MemberPushTokenModel save(MemberPushTokenModel memberPushToken);
 
+	MemberPushTokenModel saveAndFlush(MemberPushTokenModel memberPushToken);
+
 	int deleteByLastActiveAtBefore(LocalDateTime limitDate);
 
 	List<MemberPushTokenModel> findByMemberIdsAndNotificationPermission(
