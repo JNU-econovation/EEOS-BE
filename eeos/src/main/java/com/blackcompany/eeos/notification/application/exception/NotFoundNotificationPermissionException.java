@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 
 public class NotFoundNotificationPermissionException extends BusinessException {
 
-	private static final String FAIL_CODE = "5007";
+	private static final String FAIL_CODE = "5010";
 	private final String notificationPermission;
 
 	public NotFoundNotificationPermissionException(String notificationPermission) {

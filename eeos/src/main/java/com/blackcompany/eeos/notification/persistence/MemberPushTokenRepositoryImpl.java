@@ -68,6 +68,13 @@ public class MemberPushTokenRepositoryImpl implements MemberPushTokenRepository 
 	}
 
 	@Override
+	public MemberPushTokenModel saveAndFlush(MemberPushTokenModel memberPushToken) {
+		NotificationTokenEntity notificationTokenEntity = converter.toEntity(memberPushToken);
+		NotificationTokenEntity saved = jpaRepository.saveAndFlush(notificationTokenEntity);
+		return converter.from(saved);
+	}
+
+	@Override
 	public int deleteByLastActiveAtBefore(LocalDateTime limitDate) {
 		return jpaRepository.deleteByLastActiveAtBefore(limitDate);
 	}

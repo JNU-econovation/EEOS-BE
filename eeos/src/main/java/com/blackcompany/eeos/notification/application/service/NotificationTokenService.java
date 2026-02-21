@@ -3,6 +3,7 @@ package com.blackcompany.eeos.notification.application.service;
 import com.blackcompany.eeos.notification.application.dto.CreateMemberPushTokenRequest;
 import com.blackcompany.eeos.notification.application.dto.DeleteMemberPushTokenRequest;
 import com.blackcompany.eeos.notification.application.dto.UpdateNotificationPermissionRequest;
+import com.blackcompany.eeos.notification.application.exception.DuplicatePushTokenException;
 import com.blackcompany.eeos.notification.application.exception.NotFoundPushTokenException;
 import com.blackcompany.eeos.notification.application.model.MemberPushTokenModel;
 import com.blackcompany.eeos.notification.application.model.NotificationPermission;
@@ -14,6 +15,7 @@ import com.blackcompany.eeos.notification.application.usecase.DeleteMemberPushTo
 import com.blackcompany.eeos.notification.application.usecase.UpdateNotificationPermissionUsecase;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,7 +50,11 @@ public class NotificationTokenService
 												.notificationPermission(NotificationPermission.ON)
 												.build());
 
-		memberPushTokenRepository.save(model);
+		try {
+			memberPushTokenRepository.saveAndFlush(model);
+		} catch (DataIntegrityViolationException e) {
+			throw new DuplicatePushTokenException();
+		}
 	}
 
 	@Override
