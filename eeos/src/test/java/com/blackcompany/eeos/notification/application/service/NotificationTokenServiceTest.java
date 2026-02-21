@@ -58,10 +58,7 @@ class NotificationTokenServiceTest {
 		// given
 		Long memberId = 1L;
 		CreateMemberPushTokenRequest request =
-				CreateMemberPushTokenRequest.builder()
-						.pushToken("existing-token")
-						.provider("FCM")
-						.build();
+				CreateMemberPushTokenRequest.builder().pushToken("existing-token").provider("FCM").build();
 
 		MemberPushTokenModel existingModel = createTokenModel(memberId, "existing-token");
 		when(memberPushTokenRepository.findByMemberIdAndPushToken(memberId, "existing-token"))
@@ -82,10 +79,7 @@ class NotificationTokenServiceTest {
 		// given
 		Long memberId = 1L;
 		CreateMemberPushTokenRequest request =
-				CreateMemberPushTokenRequest.builder()
-						.pushToken("duplicate-token")
-						.provider("FCM")
-						.build();
+				CreateMemberPushTokenRequest.builder().pushToken("duplicate-token").provider("FCM").build();
 
 		when(memberPushTokenRepository.findByMemberIdAndPushToken(memberId, "duplicate-token"))
 				.thenReturn(Optional.empty());
