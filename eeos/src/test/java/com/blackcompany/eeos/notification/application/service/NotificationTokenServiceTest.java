@@ -74,8 +74,8 @@ class NotificationTokenServiceTest {
 	}
 
 	@Test
-	@DisplayName("다른 회원이 이미 등록한 토큰으로 생성 시도하면 DuplicatePushTokenException이 발생한다")
-	void create_throws_exception_when_token_belongs_to_another_member() {
+	@DisplayName("DB unique 제약 위반 시 DuplicatePushTokenException으로 변환된다")
+	void create_converts_DataIntegrityViolationException_to_DuplicatePushTokenException() {
 		// given
 		Long memberId = 1L;
 		CreateMemberPushTokenRequest request =
@@ -89,29 +89,6 @@ class NotificationTokenServiceTest {
 		// when & then
 		assertThatThrownBy(() -> notificationTokenService.create(memberId, request))
 				.isInstanceOf(DuplicatePushTokenException.class);
-	}
-
-	@Test
-	@DisplayName("동시에 같은 토큰으로 생성 시도 시 TOCTOU 문제가 발생하지 않고 예외가 발생한다")
-	void create_handles_concurrent_duplicate_token_creation() {
-		// given
-		Long memberIdA = 1L;
-		Long memberIdB = 2L;
-		String sameToken = "same-token";
-
-		CreateMemberPushTokenRequest requestA =
-				CreateMemberPushTokenRequest.builder().pushToken(sameToken).provider("FCM").build();
-
-		when(memberPushTokenRepository.findByMemberIdAndPushToken(memberIdA, sameToken))
-				.thenReturn(Optional.empty());
-		when(memberPushTokenRepository.saveAndFlush(any(MemberPushTokenModel.class)))
-				.thenThrow(new DataIntegrityViolationException("Duplicate entry"));
-
-		// when & then
-		assertThatThrownBy(() -> notificationTokenService.create(memberIdA, requestA))
-				.isInstanceOf(DuplicatePushTokenException.class);
-
-		verify(memberPushTokenRepository).saveAndFlush(any(MemberPushTokenModel.class));
 	}
 
 	private MemberPushTokenModel createTokenModel(Long memberId, String pushToken) {
