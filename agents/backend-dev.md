@@ -30,7 +30,7 @@
    - `application/dto/` → Request/Response DTO, Converter만
    - `application/repository/` → Repository 인터페이스만 (Port)
    - `persistence/` → JPA Entity, JpaRepository 구현체만
-3. **Soft Delete 필수** — 모든 Entity에 `@SQLDelete(sql = "UPDATE ... SET is_deleted = true WHERE id = ?")` 및 `@Where(clause = "is_deleted=false")` 적용.
+3. **Soft Delete 필수** — 모든 Entity에 `@SQLDelete(sql = "UPDATE ... SET is_deleted = true WHERE id = ?")` 및 `@SQLRestriction("is_deleted=false")` 적용.
 4. **Cross-domain Event** — 다른 도메인의 Service를 직접 주입하지 않는다. `ApplicationEventPublisher`를 사용한다.
 5. **코드 포맷** — 구현 완료 후 반드시 `./gradlew spotlessApply` 실행.
 6. **테스트 통과 확인** — 구현 완료 후 `./gradlew test`와 `./gradlew integrationTest`를 실행하여 전체 테스트 통과를 확인한다.
@@ -86,7 +86,7 @@ public class CreateXxxService implements CreateXxxUsecase {
 @Entity
 @Table(name = "xxx")
 @SQLDelete(sql = "UPDATE xxx SET is_deleted = true WHERE id = ?")
-@Where(clause = "is_deleted=false")
+@SQLRestriction("is_deleted=false")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class XxxEntity extends BaseEntity {
@@ -131,6 +131,6 @@ public interface XxxJpaRepository extends JpaRepository<XxxEntity, Long>, XxxRep
 - [ ] `./gradlew integrationTest` 전체 통과?
 - [ ] `./gradlew spotlessApply` 실행 완료?
 - [ ] 각 클래스가 정해진 패키지에 위치하는가?
-- [ ] Entity에 `@SQLDelete` + `@Where` 적용되어 있는가?
+- [ ] Entity에 `@SQLDelete` + `@SQLRestriction` 적용되어 있는가?
 - [ ] 다른 도메인 Service 직접 주입 없음 (Event 사용)?
 - [ ] Flyway 마이그레이션 파일 버전 충돌 없음?

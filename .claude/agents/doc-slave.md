@@ -27,7 +27,7 @@ description: 코드 리뷰가 승인된 후 호출한다. 구현 코드를 기�
 
 **② DTO 필드 문서화**
 ```java
-@Schema(description = "Xxx 이름", example = "테스트", requiredMode = REQUIRED)
+@Schema(description = "Xxx 이름", example = "테스트", requiredMode = Schema.RequiredMode.REQUIRED)
 private String name;
 ```
 

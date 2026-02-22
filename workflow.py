@@ -178,7 +178,7 @@ async def run_workflow(
     start_from: str = "planner",
 ):
     """전체 워크플로우를 순서대로 실행한다."""
-    print(f"\n🚀 EEOS 개발 워크플로우 시작")
+    print("\n🚀 EEOS 개발 워크플로우 시작")
     print(f"   유형: {'버그 수정' if is_bug_fix else '새 기능 개발'}")
     print(f"   요구사항: {requirement[:80]}{'...' if len(requirement) > 80 else ''}")
 
@@ -201,7 +201,7 @@ async def run_workflow(
 
         # 에이전트 실행
         step_prompt = build_step_prompt(step, requirement, context, is_bug_fix)
-        result = await run_step(step, step_prompt, context)
+        result = await run_step(step, step_prompt)
 
         if result:
             print(f"\n\n📄 {STEP_NAMES[step]} 결과:\n{result}")

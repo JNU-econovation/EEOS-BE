@@ -9,7 +9,7 @@
 1. **관리자 작성 금지**: `validateUser`에서 `QueryMemberService`로 작성자를 조회해 `isAdmin()`이면 `NotCreateAdminCommentException`을 던집니다.
 2. **프로그램/팀 유효성 검증**: `createValidate`가 `teamRepository.existsById`와 `programRepository.existsById`를 확인하며, 존재하지 않으면 `NotFoundTeamException`/`NotFoundProgramException`을 발생시킵니다.
 3. **최대 2단계 쓰레드**: `superCommentId`가 `-1`이면 루트 댓글로 간주하고, 대댓글의 대댓글은 `changeSuperComment`로 최상위 댓글의 ID로 치환해 쓰레드 깊이를 제한합니다.
-4. **작성자만 편집/삭제**: `CommentModel.validateUpdate`/`validateDelete`가 `writer`와 요청자 ID를 비교하지 않으면 `DeniedCommentEditException`을 던집니다.
+4. **작성자만 편집/삭제**: `CommentModel.validateUpdate`/`validateDelete`가 `writer`와 요청자 ID를 비교해 일치하지 않으면 `DeniedCommentEditException`을 던집니다.
 5. **댓글 조회 제약**: `getComments`는 `programId`와 `teamId`가 `null`이면 바로 `NullPointerException`을 던져 필수 파라미터를 강제하고, 생성일 오름차순으로 정렬된 상위 댓글만 반환합니다.
 6. **소프트 삭제**: `CommentEntity`는 `@SQLDelete`와 `@Where`를 사용해 `DELETE` 대신 `is_deleted` 플래그를 업데이트하며 물리 삭제를 피합니다.
 7. **컨텐츠 길이**: `CommentModel`에 `contentLimitLength`가 정의되어 있지만 현재 `isExceedLengthLimit`가 항상 `false`를 반환하도록 고정돼 있어 길이 제한을 적용하지 않는 것이 현 정책입니다.

@@ -35,7 +35,7 @@ description: 테스트 설계자가 테스트 코드를 작성한 후 호출한�
 
 - **레이어 경계 엄수**: 각 클래스는 정해진 패키지에만 위치한다.
 - **Entity ≠ Model**: `persistence/` Entity에는 `@Entity`, `application/model/`에는 JPA 어노테이션 없음.
-- **Soft Delete 필수**: `@SQLDelete(sql="UPDATE ... SET is_deleted=true WHERE id=?")` + `@Where(clause="is_deleted=false")`
+- **Soft Delete 필수**: `@SQLDelete(sql="UPDATE ... SET is_deleted=true WHERE id=?")` + `@SQLRestriction("is_deleted=false")`
 - **Cross-domain**: 다른 도메인 Service 직접 주입 금지 → `ApplicationEventPublisher` 사용.
 - **UseCase 단일 책임**: `CreateXxxUsecase`, `UpdateXxxUsecase` 각각 별도 인터페이스.
 

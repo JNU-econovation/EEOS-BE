@@ -24,7 +24,7 @@
 1. **기존 패턴 존중** — 새 도메인/기능도 기존 DDD 구조(`presentation → application → persistence`)를 따른다.
 2. **Model/Entity 분리** — JPA Entity는 `persistence/`, Domain Model은 `application/model/`에 위치한다.
 3. **UseCase 단일 책임** — 각 유스케이스는 하나의 작업만 담당하는 인터페이스로 정의한다.
-4. **Soft Delete 기본** — 모든 Entity는 `BaseEntity`를 상속하고 `@SQLDelete` + `@Where`를 적용한다.
+4. **Soft Delete 기본** — 모든 Entity는 `BaseEntity`를 상속하고 `@SQLDelete` + `@SQLRestriction`을 적용한다.
 5. **Cross-domain은 Event로** — 도메인 간 직접 호출 금지, Spring `ApplicationEvent` 사용.
 6. **Flyway 버전 충돌 방지** — `db/migration/` 기존 파일의 최신 버전을 확인 후 다음 버전 번호 사용.
 7. **컨펌 요청** — 설계 완료 후 반드시 사용자에게 승인을 요청한다.
@@ -63,6 +63,7 @@
 ### DB 스키마 변경
 
 #### 신규 테이블: `table_name`
+
 | 컬럼명 | 타입 | 제약조건 | 설명 |
 |--------|------|----------|------|
 | id | BIGINT | PK, AUTO_INCREMENT | |
@@ -71,6 +72,7 @@
 | is_deleted | TINYINT(1) | NOT NULL DEFAULT 0 | BaseEntity |
 
 #### Flyway 마이그레이션
+
 - 파일명: `V{major}.{minor}.{patch}.{seq}__{description}.sql`
 - 예시: `V1.0.0.1__create_new_table.sql`
 
@@ -79,7 +81,7 @@
 ### 도메인 구조
 
 #### 신규/변경 클래스 목록
-```
+```plaintext
 <domain>/
   presentation/
     - XxxController.java
@@ -101,6 +103,7 @@
 ```
 
 ---
+```plaintext
 ✅ 위 설계서를 검토 후 승인해주세요.
 승인하면 테스트 설계자 단계로 진행합니다.
 ```

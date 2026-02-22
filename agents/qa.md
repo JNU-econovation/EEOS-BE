@@ -33,7 +33,7 @@ TDD 원칙에 따라 구현 코드 없이 테스트만 작성하며, 개발자�
 
 ## 테스트 파일 구조
 
-```
+```plaintext
 eeos/src/test/java/com/blackcompany/eeos/<domain>/
   application/
     service/
@@ -87,7 +87,10 @@ class CreateXxxServiceTest {
         Long unauthorizedMemberId = 999L;
 
         // when & then
-        assertThatThrownBy(() -> createXxxService.create(unauthorizedMemberId, any()))
+        CreateXxxRequest request = CreateXxxRequest.builder().name("테스트").build();
+
+        // when & then
+        assertThatThrownBy(() -> createXxxService.create(unauthorizedMemberId, request))
             .isInstanceOf(ForbiddenException.class);
     }
 }

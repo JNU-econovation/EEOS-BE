@@ -46,7 +46,7 @@ Pre-commit hook runs `spotlessApply` automatically. Installed via `./gradlew cle
 Base package: `com.blackcompany.eeos`
 
 Each domain follows this structure:
-```
+```plaintext
 <domain>/
   presentation/   → @RestController, API docs interfaces
   application/
@@ -66,7 +66,7 @@ Each domain follows this structure:
 ### Key Conventions
 
 - **Model/Entity separation**: JPA entities live in `persistence/`, domain models in `application/model/`. Always convert between them.
-- **Soft delete everywhere**: All entities extend `BaseEntity` which provides `createdDate`, `updatedDate`, `isDeleted`. Entities use `@SQLDelete` + `@Where(clause = "is_deleted=false")`.
+- **Soft delete everywhere**: All entities extend `BaseEntity` which provides `createdDate`, `updatedDate`, `isDeleted`. Entities use `@SQLDelete` + `@SQLRestriction("is_deleted=false")` (Hibernate 6.3+ replacement for deprecated `@Where`).
 - **UseCase pattern**: Each operation gets its own interface in `usecase/` package, implemented by a service class.
 - **Cross-domain events**: Domains communicate via Spring `ApplicationEvent`, not direct service calls.
 - **Port/Adapter repositories**: `application/repository/` defines interfaces; `persistence/` implements them.
@@ -81,7 +81,7 @@ Flyway migrations in `src/main/resources/db/migration/`. Follow naming: `V{major
 
 ### Code Style
 
-Google Java Format with tabs (indent size 2). Enforced by Spotless plugin. Run `./gradlew spotlessApply` before committing.
+Google Java Format (2-space) with tab conversion via Spotless `indentWithTabs(2)`. Enforced by Spotless plugin. Run `./gradlew spotlessApply` before committing.
 
 ## Development Workflow
 
@@ -96,7 +96,7 @@ Google Java Format with tabs (indent size 2). Enforced by Spotless plugin. Run `
 
 ### 워크플로우 순서
 
-```
+```plaintext
 플래너 → 아키텍트 → 테스트 설계자 → 개발자 → 코드 리뷰어 → 문서화 노예 → 문서 리뷰어
   (컨펌)    (컨펌)
 ```

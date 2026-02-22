@@ -48,14 +48,14 @@
 - Mock 남용 여부 (실제 동작을 테스트하지 않는 Shell 테스트)
 
 ### 6. Soft Delete
-- `@SQLDelete` + `@Where` 누락 여부
+- `@SQLDelete` + `@SQLRestriction` 누락 여부
 - `is_deleted` 필터 없이 직접 데이터 조회/삭제 여부
 
 ---
 
 ## 피드백 형식
 
-```markdown
+````markdown
 ## 코드 리뷰: [기능명]
 
 ### 🔴 Must Fix (반드시 수정)
@@ -92,7 +92,7 @@
 ### ✅ 승인 조건
 - [ ] 🔴 Must Fix 항목 모두 수정
 - [ ] 재리뷰 요청 (🔴 항목 수정 후)
-```
+````
 
 ---
 

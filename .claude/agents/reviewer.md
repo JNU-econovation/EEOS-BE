@@ -37,7 +37,7 @@ description: 개발자가 구현을 완료하고 테스트가 전부 통과된 �
 - [ ] 적절한 HTTP 상태 코드
 
 **Soft Delete**
-- [ ] `@SQLDelete` + `@Where` 누락 없음
+- [ ] `@SQLDelete` + `@SQLRestriction` 누락 없음
 
 ## 출력 형식
 

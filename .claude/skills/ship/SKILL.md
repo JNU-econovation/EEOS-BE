@@ -32,7 +32,7 @@ cd eeos && ./gradlew spotlessApply
 - `chore:` 빌드/설정 변경
 
 커밋 메시지 끝에 반드시 추가:
-```
+```text
 Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
 ```
 

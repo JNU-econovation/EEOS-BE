@@ -47,5 +47,5 @@ mockMvc.perform(post("/api/xxx")...)
 ## 완료 기준
 
 - 모든 테스트 파일 작성 완료
-- `./gradlew test` 실행 시 **컴파일 오류 또는 테스트 실패** 확인 (실패해야 정상)
+- `./gradlew test integrationTest` 실행 시 **컴파일 오류 또는 테스트 실패** 확인 (실패해야 정상)
 - 개발자에게 "이 테스트를 통과시켜주세요" 메시지 출력
