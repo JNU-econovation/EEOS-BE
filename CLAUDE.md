@@ -82,3 +82,40 @@ Flyway migrations in `src/main/resources/db/migration/`. Follow naming: `V{major
 ### Code Style
 
 Google Java Format with tabs (indent size 2). Enforced by Spotless plugin. Run `./gradlew spotlessApply` before committing.
+
+## Development Workflow
+
+이 프로젝트는 **페르소나 기반 TDD 개발 프로세스**를 따른다.
+
+### 슬래시 커맨드
+
+| 커맨드 | 용도 |
+|--------|------|
+| `/new-feature [요구사항]` | 새 기능 개발 워크플로우 시작 |
+| `/fix-bug [버그 내용]` | 버그 수정 워크플로우 시작 |
+
+### 워크플로우 순서
+
+```
+플래너 → 아키텍트 → 테스트 설계자 → 개발자 → 코드 리뷰어 → 문서화 노예 → 문서 리뷰어
+  (컨펌)    (컨펌)
+```
+
+### 서브에이전트 목록 (`.claude/agents/`)
+
+| 에이전트 | 역할 | 컨펌 필요 |
+|---------|------|----------|
+| `planner` | 요구사항 분석 → To-do 리스트 | ✅ |
+| `architect` | API/DB 설계 | ✅ |
+| `qa` | 실패 테스트 작성 (TDD) | - |
+| `backend-dev` | 구현 코드 작성 | - |
+| `reviewer` | 코드 리뷰 | - |
+| `doc-slave` | 문서 작성/업데이트 | - |
+| `doc-reviewer` | 문서 검토 | - |
+
+### 규칙
+
+1. **순서 준수** — 반드시 1→7 순서로 진행
+2. **컨펌 필수** — 플래너·아키텍트 산출물은 사용자 승인 후 다음 단계 진행
+3. **TDD 원칙** — 테스트 없이 구현 코드 작성 금지
+4. **명령어 참조** — 테스트/빌드/DB 명령어는 `docs/DEV_COMMANDS.md` 참조

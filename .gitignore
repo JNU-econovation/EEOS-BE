@@ -44,3 +44,8 @@ eeos/src/main/resources/env.properties
 
 ### macOS
 .DS_Store
+
+### Python ###
+.venv
+__pycache__
+*.pyc
