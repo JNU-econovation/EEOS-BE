@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ import lombok.NoArgsConstructor;
 public class EeosSignUpRequest {
 
 	@NotBlank(message = "아이디는 필수 입력값입니다")
+	@Size(max = 50, message = "아이디는 50자 이하여야 합니다")
 	private String id;
 
 	@NotBlank(message = "비밀번호는 필수 입력값입니다")

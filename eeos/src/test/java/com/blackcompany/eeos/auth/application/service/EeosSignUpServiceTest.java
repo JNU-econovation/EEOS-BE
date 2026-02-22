@@ -1,5 +1,6 @@
 package com.blackcompany.eeos.auth.application.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
@@ -9,13 +10,11 @@ import static org.mockito.Mockito.when;
 import com.blackcompany.eeos.auth.application.domain.TokenModel;
 import com.blackcompany.eeos.auth.application.dto.request.EeosSignUpCommand;
 import com.blackcompany.eeos.auth.application.exception.DuplicateLoginIdException;
-import com.blackcompany.eeos.auth.application.model.AuthorityModel;
 import com.blackcompany.eeos.auth.application.model.Role;
 import com.blackcompany.eeos.auth.application.repository.AccountRepository;
 import com.blackcompany.eeos.auth.application.repository.AuthorityRepository;
 import com.blackcompany.eeos.auth.application.support.AuthenticationTokenGenerator;
 import com.blackcompany.eeos.auth.application.support.EncryptHelper;
-import com.blackcompany.eeos.auth.fixture.FakeAuthority;
 import com.blackcompany.eeos.member.application.model.MemberModel;
 import com.blackcompany.eeos.member.application.repository.MemberRepository;
 import java.util.Set;
@@ -51,7 +50,6 @@ class EeosSignUpServiceTest {
 		EeosSignUpCommand command = new EeosSignUpCommand(loginId, rawPassword, generation, name);
 
 		MemberModel savedMember = MemberModel.builder().id(memberId).name(name, generation).build();
-		Set<AuthorityModel> authorities = Set.of(FakeAuthority.authorityModel(1L, memberId, Role.ROLE_USER));
 		TokenModel expectedToken = TokenModel.builder()
 				.accessToken("access_token")
 				.refreshToken("refresh_token")
@@ -60,16 +58,16 @@ class EeosSignUpServiceTest {
 		when(accountRepository.existsByLoginId(loginId)).thenReturn(false);
 		when(encryptHelper.encrypt(rawPassword)).thenReturn(encryptedPassword);
 		when(memberRepository.save(any(MemberModel.class))).thenReturn(savedMember);
-		when(authorityRepository.findByMemberId(memberId)).thenReturn(authorities);
-		when(tokenGenerator.execute(any(Long.class), any(Set.class))).thenReturn(expectedToken);
+		when(tokenGenerator.execute(memberId, Set.of(Role.ROLE_USER.name()))).thenReturn(expectedToken);
 
 		// when
 		TokenModel result = eeosSignUpService.signUp(command);
 
 		// then
+		assertEquals(expectedToken, result);
 		verify(accountRepository).save(any());
 		verify(authorityRepository).save(any());
-		verify(tokenGenerator).execute(any(Long.class), any(Set.class));
+		verify(tokenGenerator).execute(memberId, Set.of(Role.ROLE_USER.name()));
 	}
 
 	@Test

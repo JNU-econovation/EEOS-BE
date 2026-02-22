@@ -9,7 +9,6 @@ import com.blackcompany.eeos.auth.application.exception.NotFoundAccountException
 import com.blackcompany.eeos.auth.application.model.AccountModel;
 import com.blackcompany.eeos.auth.application.repository.AccountRepository;
 import com.blackcompany.eeos.auth.application.repository.AuthorityRepository;
-import com.blackcompany.eeos.auth.application.repository.OAuthMemberRepository;
 import com.blackcompany.eeos.auth.application.support.EncryptHelper;
 import com.blackcompany.eeos.member.application.model.MemberModel;
 import com.blackcompany.eeos.member.application.repository.MemberRepository;
@@ -24,7 +23,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class EeosLoginServiceTest {
 
 	@Mock MemberRepository memberRepository;
-	@Mock OAuthMemberRepository oAuthMemberRepository;
 	@Mock AccountRepository accountRepository;
 	@Mock AuthorityRepository authorityRepository;
 	@Mock EncryptHelper encryptHelper;

@@ -5,7 +5,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 import java.util.Set;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -13,11 +15,18 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 class EeosSignUpRequestTest {
 
+	private ValidatorFactory factory;
 	private Validator validator;
 
 	@BeforeEach
 	void setUp() {
-		validator = Validation.buildDefaultValidatorFactory().getValidator();
+		factory = Validation.buildDefaultValidatorFactory();
+		validator = factory.getValidator();
+	}
+
+	@AfterEach
+	void tearDown() {
+		factory.close();
 	}
 
 	@ParameterizedTest

@@ -135,6 +135,7 @@ public class AuthController implements AuthApi {
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.DELETE);
 	}
 
+	@Override
 	@PostMapping("/signup")
 	public ApiResponse<SuccessBody<TokenResponse>> signUp(
 			@Valid @RequestBody EeosSignUpRequest request, HttpServletResponse httpResponse) {

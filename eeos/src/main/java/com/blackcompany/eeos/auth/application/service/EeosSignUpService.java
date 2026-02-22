@@ -15,11 +15,13 @@ import com.blackcompany.eeos.auth.application.usecase.EeosSignUpUseCase;
 import com.blackcompany.eeos.member.application.model.MemberModel;
 import com.blackcompany.eeos.member.application.repository.MemberRepository;
 import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -40,8 +42,7 @@ public class EeosSignUpService implements EeosSignUpUseCase {
 		saveAccount(command.getLoginId(), command.getPassword(), savedMember.getMemberId());
 		saveAuthority(savedMember.getMemberId());
 
-		Set<String> roles = getRoles(savedMember.getMemberId());
-		return tokenGenerator.execute(savedMember.getMemberId(), roles);
+		return tokenGenerator.execute(savedMember.getMemberId(), Set.of(Role.ROLE_USER.name()));
 	}
 
 	private void validateDuplicateLoginId(String loginId) {
@@ -67,17 +68,15 @@ public class EeosSignUpService implements EeosSignUpUseCase {
 						.password(encryptedPassword)
 						.memberId(memberId)
 						.build();
-		accountRepository.save(accountModel);
+		try {
+			accountRepository.save(accountModel);
+		} catch (DataIntegrityViolationException e) {
+			log.warn("loginId 중복 저장 시도: {}", loginId);
+			throw new DuplicateLoginIdException();
+		}
 	}
 
 	private void saveAuthority(Long memberId) {
 		authorityRepository.save(AuthorityModel.create(memberId, Role.ROLE_USER));
-	}
-
-	private Set<String> getRoles(Long memberId) {
-		return authorityRepository.findByMemberId(memberId).stream()
-				.map(AuthorityModel::getRole)
-				.map(Role::name)
-				.collect(Collectors.toSet());
 	}
 }
