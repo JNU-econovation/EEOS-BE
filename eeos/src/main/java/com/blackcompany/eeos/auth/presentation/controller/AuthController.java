@@ -4,11 +4,13 @@ import com.blackcompany.eeos.auth.application.domain.TokenModel;
 import com.blackcompany.eeos.auth.application.dto.converter.TokenResponseConverter;
 import com.blackcompany.eeos.auth.application.dto.request.AdditionalInfoApplicationCommand;
 import com.blackcompany.eeos.auth.application.dto.request.EEOSLoginRequest;
+import com.blackcompany.eeos.auth.application.dto.request.EeosSignUpCommand;
 import com.blackcompany.eeos.auth.application.dto.request.OAuthLoginRequestCommand;
 import com.blackcompany.eeos.auth.application.dto.response.TokenResponse;
 import com.blackcompany.eeos.auth.application.usecase.*;
 import com.blackcompany.eeos.auth.presentation.docs.AuthApi;
 import com.blackcompany.eeos.auth.presentation.dto.AdditionalInfoRequest;
+import com.blackcompany.eeos.auth.presentation.dto.EeosSignUpRequest;
 import com.blackcompany.eeos.auth.presentation.support.AuthConstants;
 import com.blackcompany.eeos.auth.presentation.support.Member;
 import com.blackcompany.eeos.auth.presentation.support.TokenExtractor;
@@ -44,6 +46,7 @@ public class AuthController implements AuthApi {
 	private final LogOutUsecase logOutUsecase;
 	private final WithDrawUsecase withDrawUsecase;
 	private final OAuthSignUpUseCase oAuthSignUpUseCase;
+	private final EeosSignUpUseCase eeosSignUpUseCase;
 
 	public AuthController(
 			LoginUsecase loginUsecase,
@@ -53,7 +56,8 @@ public class AuthController implements AuthApi {
 			CookieManager cookieManager,
 			LogOutUsecase logOutUsecase,
 			WithDrawUsecase withDrawUsecase,
-			OAuthSignUpUseCase oAuthSignUpUseCase) {
+			OAuthSignUpUseCase oAuthSignUpUseCase,
+			EeosSignUpUseCase eeosSignUpUseCase) {
 		this.loginUsecase = loginUsecase;
 		this.reissueUsecase = reissueUsecase;
 		this.tokenExtractor = tokenExtractor;
@@ -62,6 +66,7 @@ public class AuthController implements AuthApi {
 		this.logOutUsecase = logOutUsecase;
 		this.withDrawUsecase = withDrawUsecase;
 		this.oAuthSignUpUseCase = oAuthSignUpUseCase;
+		this.eeosSignUpUseCase = eeosSignUpUseCase;
 	}
 
 	@Override
@@ -128,6 +133,17 @@ public class AuthController implements AuthApi {
 		deleteTokenResponse(httpResponse);
 
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.DELETE);
+	}
+
+	@PostMapping("/signup")
+	public ApiResponse<SuccessBody<TokenResponse>> signUp(
+			@Valid @RequestBody EeosSignUpRequest request, HttpServletResponse httpResponse) {
+		EeosSignUpCommand command =
+				new EeosSignUpCommand(
+						request.getId(), request.getPassword(), request.getGeneration(), request.getName());
+		TokenModel tokenModel = eeosSignUpUseCase.signUp(command);
+		TokenResponse response = generateTokenResponse(tokenModel, httpResponse);
+		return ApiResponseGenerator.success(response, HttpStatus.CREATED, MessageCode.CREATE);
 	}
 
 	@PostMapping("/login/additional-info")
