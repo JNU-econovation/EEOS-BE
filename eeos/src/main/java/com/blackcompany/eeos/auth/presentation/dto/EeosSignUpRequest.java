@@ -29,5 +29,6 @@ public class EeosSignUpRequest {
 	private Integer generation;
 
 	@NotBlank(message = "성함은 필수 입력값입니다")
+	@Size(max = 50, message = "성함은 50자 이하여야 합니다")
 	private String name;
 }
