@@ -53,10 +53,7 @@ public class EeosSignUpService implements EeosSignUpUseCase {
 
 	private MemberModel saveMember(String name, Integer generation) {
 		MemberModel memberModel =
-				MemberModel.builder()
-						.name(name, generation)
-						.oauthServerType(OauthServerType.EEOS)
-						.build();
+				MemberModel.builder().name(name, generation).oauthServerType(OauthServerType.EEOS).build();
 		return memberRepository.save(memberModel);
 	}
 

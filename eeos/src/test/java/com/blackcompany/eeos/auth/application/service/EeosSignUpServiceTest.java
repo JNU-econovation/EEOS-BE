@@ -50,10 +50,8 @@ class EeosSignUpServiceTest {
 		EeosSignUpCommand command = new EeosSignUpCommand(loginId, rawPassword, generation, name);
 
 		MemberModel savedMember = MemberModel.builder().id(memberId).name(name, generation).build();
-		TokenModel expectedToken = TokenModel.builder()
-				.accessToken("access_token")
-				.refreshToken("refresh_token")
-				.build();
+		TokenModel expectedToken =
+				TokenModel.builder().accessToken("access_token").refreshToken("refresh_token").build();
 
 		when(accountRepository.existsByLoginId(loginId)).thenReturn(false);
 		when(encryptHelper.encrypt(rawPassword)).thenReturn(encryptedPassword);

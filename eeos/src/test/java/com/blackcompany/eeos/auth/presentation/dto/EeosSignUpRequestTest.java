@@ -41,7 +41,8 @@ class EeosSignUpRequestTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = {"short1", "onlyletters", "12345678", "!special1", "toolongpassword12345678"})
+	@ValueSource(
+			strings = {"short1", "onlyletters", "12345678", "!special1", "toolongpassword12345678"})
 	@DisplayName("조건을 만족하지 않는 비밀번호는 유효하지 않다.")
 	void invalid_password(String password) {
 		EeosSignUpRequest request = new EeosSignUpRequest("testId", password, 15, "홍길동");

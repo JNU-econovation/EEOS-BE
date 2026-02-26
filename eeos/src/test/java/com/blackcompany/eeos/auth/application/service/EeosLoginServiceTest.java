@@ -84,7 +84,8 @@ class EeosLoginServiceTest {
 		when(encryptHelper.isMatch(rawPassword, encryptedPassword)).thenReturn(false);
 
 		// when & then
-		assertThrows(NotFoundAccountException.class, () -> authService.authenticate(loginId, rawPassword));
+		assertThrows(
+				NotFoundAccountException.class, () -> authService.authenticate(loginId, rawPassword));
 	}
 
 	@Test
@@ -97,6 +98,7 @@ class EeosLoginServiceTest {
 		when(accountRepository.findByLoginId(loginId)).thenThrow(new NotFoundAccountException());
 
 		// when & then
-		assertThrows(NotFoundAccountException.class, () -> authService.authenticate(loginId, rawPassword));
+		assertThrows(
+				NotFoundAccountException.class, () -> authService.authenticate(loginId, rawPassword));
 	}
 }
