@@ -56,6 +56,12 @@ public class GlobalExceptionHandler {
 	protected ApiResponse<FailureBody> handleMethodArgumentNotValidException(
 			MethodArgumentNotValidException e) {
 		log.warn("MethodArgumentNotValidException", e);
+
+		if (e.getBindingResult().getFieldErrors().isEmpty()) {
+			String code = String.valueOf(HttpStatus.BAD_REQUEST.value());
+			return ApiResponseGenerator.fail("잘못된 요청입니다", code, HttpStatus.BAD_REQUEST);
+		}
+
 		String defaultMessage = e.getBindingResult().getFieldErrors().get(0).getDefaultMessage();
 		String code = String.valueOf(HttpStatus.BAD_REQUEST.value());
 		String message = defaultMessage;

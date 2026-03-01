@@ -38,7 +38,7 @@ public interface AuthApi {
 				responseCode = "200",
 				description = "로그인 성공"),
 		@io.swagger.v3.oas.annotations.responses.ApiResponse(
-				responseCode = "404",
+				responseCode = "401",
 				description = "4008: ID 또는 비밀번호가 일치하지 않습니다",
 				content = @Content)
 	})
@@ -68,6 +68,7 @@ public interface AuthApi {
 								+ "| 4106 | 성함은 필수 입력값입니다 |\n"
 								+ "| 4107 | 성함은 50자 이하여야 합니다 |\n"
 								+ "| 4108 | 활동 상태는 필수 입력값입니다 |\n"
+								+ "| 4109 | 활동 상태는 am, cm, rm, ob 중 하나여야 합니다 |\n"
 								+ "| 3001 | {status}는 존재하지 않는 활동 상태입니다 |",
 				content = @Content),
 		@io.swagger.v3.oas.annotations.responses.ApiResponse(
