@@ -34,6 +34,9 @@ public class EeosSignUpRequest {
 	private String name;
 
 	@NotBlank(message = "4108:활동 상태는 필수 입력값입니다")
+	@Pattern(
+			regexp = "^(am|cm|rm|ob)$",
+			message = "4109:활동 상태는 am, cm, rm, ob 중 하나여야 합니다")
 	@Schema(description = "활동 상태", example = "am", allowableValues = {"am", "cm", "rm", "ob"})
 	private String activeStatus;
 }
