@@ -2,6 +2,7 @@ package com.blackcompany.eeos.auth.presentation.docs;
 
 import com.blackcompany.eeos.auth.application.dto.request.EEOSLoginRequest;
 import com.blackcompany.eeos.auth.application.dto.response.TokenResponse;
+import com.blackcompany.eeos.auth.presentation.dto.EeosSignUpRequest;
 import com.blackcompany.eeos.auth.presentation.support.Member;
 import com.blackcompany.eeos.common.presentation.response.ApiResponse;
 import com.blackcompany.eeos.common.presentation.response.ApiResponseBody.SuccessBody;
@@ -11,6 +12,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,6 +33,12 @@ public interface AuthApi {
 	@Operation(summary = "일반 로그인", description = "사용자가 id와 password를 이용하여 로그인한다.")
 	ApiResponse<SuccessBody<TokenResponse>> login(
 			@Parameter(description = "로그인 요청 정보", required = true) @RequestBody EEOSLoginRequest request,
+			HttpServletResponse httpResponse);
+
+	@Operation(summary = "회원가입", description = "id, password, 기수, 성함으로 회원가입하고 토큰을 반환한다.")
+	ApiResponse<SuccessBody<TokenResponse>> signUp(
+			@Parameter(description = "회원가입 요청 정보", required = true) @Valid @RequestBody
+					EeosSignUpRequest request,
 			HttpServletResponse httpResponse);
 
 	@Operation(
