@@ -46,9 +46,7 @@ public interface AuthApi {
 			@Parameter(description = "로그인 요청 정보", required = true) @RequestBody EEOSLoginRequest request,
 			HttpServletResponse httpResponse);
 
-	@Operation(
-			summary = "회원가입",
-			description = "id, password, 기수, 성함, 활동상태로 회원가입하고 토큰을 반환한다.")
+	@Operation(summary = "회원가입", description = "id, password, 기수, 성함, 활동상태로 회원가입하고 토큰을 반환한다.")
 	@ApiResponses({
 		@io.swagger.v3.oas.annotations.responses.ApiResponse(
 				responseCode = "201",

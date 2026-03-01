@@ -47,8 +47,7 @@ class EeosSignUpServiceTest {
 		String name = "홍길동";
 		Integer generation = 15;
 
-		EeosSignUpCommand command =
-				new EeosSignUpCommand(loginId, rawPassword, generation, name, "am");
+		EeosSignUpCommand command = new EeosSignUpCommand(loginId, rawPassword, generation, name, "am");
 
 		MemberModel savedMember = MemberModel.builder().id(memberId).name(name, generation).build();
 		TokenModel expectedToken =
