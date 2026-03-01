@@ -31,10 +31,14 @@ cd eeos && ./gradlew spotlessApply
 - `docs:` 문서 변경
 - `chore:` 빌드/설정 변경
 
-커밋 메시지 끝에 반드시 추가:
+커밋 메시지 본문과 트레일러 사이에 **빈 줄** 필수:
 ```text
-Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+feat: 기능 설명
+
+Co-Authored-By: Claude Sonnet 4.6
 ```
+
+> ⚠️ `Co-Authored-By`에 이메일을 포함하지 않는다. `noreply@anthropic.com`은 타 GitHub 계정에 귀속되는 버그가 있다.
 
 ## 4. 푸시
 
