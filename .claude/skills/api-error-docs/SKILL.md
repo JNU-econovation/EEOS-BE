@@ -46,9 +46,16 @@ Controller의 docs 인터페이스에 `@ApiResponses`를 추가한다:
 
 ## Step 4: 검증
 
+작업 완료 후 반드시 아래 명령어를 순서대로 실행하여 통과를 확인한다.
+
 ```bash
-./gradlew compileJava  # 컴파일 확인 (특히 ApiResponse 이름 충돌)
+./gradlew compileJava      # 1. 메인 코드 컴파일 (ApiResponse 이름 충돌 등)
+./gradlew compileTestJava  # 2. 테스트 코드 컴파일 (생성자 변경 시 테스트도 수정했는지)
+./gradlew test             # 3. 전체 테스트 실행 (CI와 동일)
 ```
+
+**주의:** DTO나 Command에 필드를 추가/변경하면, 해당 클래스를 사용하는 **테스트 코드도 반드시 수정**해야 한다.
+테스트 컴파일 실패는 CI 실패의 가장 흔한 원인이다.
 
 ## Quick Reference
 
