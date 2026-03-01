@@ -1,6 +1,7 @@
 package com.blackcompany.eeos.auth.application.service;
 
 import com.blackcompany.eeos.auth.application.domain.OauthServerType;
+import com.blackcompany.eeos.member.application.model.ActiveStatus;
 import com.blackcompany.eeos.auth.application.domain.TokenModel;
 import com.blackcompany.eeos.auth.application.dto.request.EeosSignUpCommand;
 import com.blackcompany.eeos.auth.application.exception.DuplicateLoginIdException;
@@ -38,7 +39,8 @@ public class EeosSignUpService implements EeosSignUpUseCase {
 	public TokenModel signUp(EeosSignUpCommand command) {
 		validateDuplicateLoginId(command.getLoginId());
 
-		MemberModel savedMember = saveMember(command.getName(), command.getGeneration());
+		MemberModel savedMember =
+				saveMember(command.getName(), command.getGeneration(), command.getActiveStatus());
 		saveAccount(command.getLoginId(), command.getPassword(), savedMember.getMemberId());
 		saveAuthority(savedMember.getMemberId());
 
@@ -51,9 +53,13 @@ public class EeosSignUpService implements EeosSignUpUseCase {
 		}
 	}
 
-	private MemberModel saveMember(String name, Integer generation) {
+	private MemberModel saveMember(String name, Integer generation, String activeStatus) {
 		MemberModel memberModel =
-				MemberModel.builder().name(name, generation).oauthServerType(OauthServerType.EEOS).build();
+				MemberModel.builder()
+						.name(name, generation)
+						.activeStatus(ActiveStatus.find(activeStatus))
+						.oauthServerType(OauthServerType.EEOS)
+						.build();
 		return memberRepository.save(memberModel);
 	}
 
