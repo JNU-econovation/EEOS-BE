@@ -39,7 +39,7 @@ public interface AuthApi {
 				description = "로그인 성공"),
 		@io.swagger.v3.oas.annotations.responses.ApiResponse(
 				responseCode = "401",
-				description = "4008: ID 또는 비밀번호가 일치하지 않습니다",
+				description = "| 코드 | 메시지 |\n" + "|------|--------|\n" + "| 4008 | ID 또는 비밀번호가 일치하지 않습니다 |",
 				content = @Content)
 	})
 	ApiResponse<SuccessBody<TokenResponse>> login(
@@ -54,8 +54,7 @@ public interface AuthApi {
 		@io.swagger.v3.oas.annotations.responses.ApiResponse(
 				responseCode = "400",
 				description =
-						"Validation 에러\n\n"
-								+ "| 코드 | 메시지 |\n"
+						"| 코드 | 메시지 |\n"
 								+ "|------|--------|\n"
 								+ "| 4100 | 아이디는 필수 입력값입니다 |\n"
 								+ "| 4101 | 아이디는 50자 이하여야 합니다 |\n"
@@ -71,7 +70,7 @@ public interface AuthApi {
 				content = @Content),
 		@io.swagger.v3.oas.annotations.responses.ApiResponse(
 				responseCode = "409",
-				description = "4009: 이미 사용 중인 아이디입니다",
+				description = "| 코드 | 메시지 |\n" + "|------|--------|\n" + "| 4009 | 이미 사용 중인 아이디입니다 |",
 				content = @Content)
 	})
 	ApiResponse<SuccessBody<TokenResponse>> signUp(
