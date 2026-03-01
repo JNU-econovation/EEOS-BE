@@ -141,7 +141,11 @@ public class AuthController implements AuthApi {
 			@Valid @RequestBody EeosSignUpRequest request, HttpServletResponse httpResponse) {
 		EeosSignUpCommand command =
 				new EeosSignUpCommand(
-						request.getId(), request.getPassword(), request.getGeneration(), request.getName());
+						request.getId(),
+						request.getPassword(),
+						request.getGeneration(),
+						request.getName(),
+						request.getActiveStatus());
 		TokenModel tokenModel = eeosSignUpUseCase.signUp(command);
 		TokenResponse response = generateTokenResponse(tokenModel, httpResponse);
 		return ApiResponseGenerator.success(response, HttpStatus.CREATED, MessageCode.CREATE);

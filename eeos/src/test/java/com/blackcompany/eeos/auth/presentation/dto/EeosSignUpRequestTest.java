@@ -33,7 +33,7 @@ class EeosSignUpRequestTest {
 	@ValueSource(strings = {"password1", "Password1", "abc12345", "ABCD1234", "abcd1234efgh5678"})
 	@DisplayName("영문+숫자 조합 8~20자 비밀번호는 유효하다.")
 	void valid_password(String password) {
-		EeosSignUpRequest request = new EeosSignUpRequest("testId", password, 15, "홍길동");
+		EeosSignUpRequest request = new EeosSignUpRequest("testId", password, 15, "홍길동", "am");
 
 		Set<ConstraintViolation<EeosSignUpRequest>> violations = validator.validate(request);
 
@@ -45,7 +45,7 @@ class EeosSignUpRequestTest {
 			strings = {"short1", "onlyletters", "12345678", "!special1", "toolongpassword12345678"})
 	@DisplayName("조건을 만족하지 않는 비밀번호는 유효하지 않다.")
 	void invalid_password(String password) {
-		EeosSignUpRequest request = new EeosSignUpRequest("testId", password, 15, "홍길동");
+		EeosSignUpRequest request = new EeosSignUpRequest("testId", password, 15, "홍길동", "am");
 
 		Set<ConstraintViolation<EeosSignUpRequest>> violations = validator.validate(request);
 
