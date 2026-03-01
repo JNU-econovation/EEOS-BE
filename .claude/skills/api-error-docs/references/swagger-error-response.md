@@ -27,32 +27,32 @@ import com.blackcompany.eeos.common.presentation.response.ApiResponse; // 프로
 ApiResponse<SuccessBody<TokenResponse>> myMethod(...);
 ```
 
-### Validation 에러가 여러 개인 경우 (400)
+### 에러 응답 형식 (모든 상태 코드 동일)
 
-마크다운 테이블로 코드-메시지를 정리:
+**모든 에러 응답은 마크다운 테이블 형식으로 통일한다.** 상태 코드(400, 401, 409 등) 무관.
 
 ```java
+// 에러가 여러 개인 경우 (400 등)
 @io.swagger.v3.oas.annotations.responses.ApiResponse(
         responseCode = "400",
         description =
-                "Validation 에러\n\n"
-                        + "| 코드 | 메시지 |\n"
+                "| 코드 | 메시지 |\n"
                         + "|------|--------|\n"
                         + "| 4100 | 아이디는 필수 입력값입니다 |\n"
                         + "| 4101 | 아이디는 50자 이하여야 합니다 |",
         content = @Content)
-```
 
-### 비즈니스 예외 (409, 404 등)
-
-간결하게 `코드: 메시지` 형식:
-
-```java
+// 에러가 1개인 경우 (401, 409 등)도 동일하게 테이블
 @io.swagger.v3.oas.annotations.responses.ApiResponse(
         responseCode = "409",
-        description = "4009: 이미 사용 중인 아이디입니다",
+        description =
+                "| 코드 | 메시지 |\n"
+                        + "|------|--------|\n"
+                        + "| 4009 | 이미 사용 중인 아이디입니다 |",
         content = @Content)
 ```
+
+**금지:** `"코드: 메시지"` 텍스트 형식, `"Validation 에러"` 등 헤더 텍스트
 
 ## 필요한 import
 
