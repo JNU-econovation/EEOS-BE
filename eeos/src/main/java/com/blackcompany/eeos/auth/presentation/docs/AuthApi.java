@@ -8,6 +8,8 @@ import com.blackcompany.eeos.common.presentation.response.ApiResponse;
 import com.blackcompany.eeos.common.presentation.response.ApiResponseBody.SuccessBody;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,11 +33,48 @@ public interface AuthApi {
 			HttpServletResponse httpResponse);
 
 	@Operation(summary = "일반 로그인", description = "사용자가 id와 password를 이용하여 로그인한다.")
+	@ApiResponses({
+		@io.swagger.v3.oas.annotations.responses.ApiResponse(
+				responseCode = "200",
+				description = "로그인 성공"),
+		@io.swagger.v3.oas.annotations.responses.ApiResponse(
+				responseCode = "404",
+				description = "4008: ID 또는 비밀번호가 일치하지 않습니다",
+				content = @Content)
+	})
 	ApiResponse<SuccessBody<TokenResponse>> login(
 			@Parameter(description = "로그인 요청 정보", required = true) @RequestBody EEOSLoginRequest request,
 			HttpServletResponse httpResponse);
 
-	@Operation(summary = "회원가입", description = "id, password, 기수, 성함으로 회원가입하고 토큰을 반환한다.")
+	@Operation(
+			summary = "회원가입",
+			description = "id, password, 기수, 성함, 활동상태로 회원가입하고 토큰을 반환한다.")
+	@ApiResponses({
+		@io.swagger.v3.oas.annotations.responses.ApiResponse(
+				responseCode = "201",
+				description = "회원가입 성공"),
+		@io.swagger.v3.oas.annotations.responses.ApiResponse(
+				responseCode = "400",
+				description =
+						"Validation 에러\n\n"
+								+ "| 코드 | 메시지 |\n"
+								+ "|------|--------|\n"
+								+ "| 4100 | 아이디는 필수 입력값입니다 |\n"
+								+ "| 4101 | 아이디는 50자 이하여야 합니다 |\n"
+								+ "| 4102 | 비밀번호는 필수 입력값입니다 |\n"
+								+ "| 4103 | 비밀번호는 8~20자이며, 영문과 숫자를 포함해야 합니다 |\n"
+								+ "| 4104 | 기수는 필수 입력값입니다 |\n"
+								+ "| 4105 | 기수는 1 이상이어야 합니다 |\n"
+								+ "| 4106 | 성함은 필수 입력값입니다 |\n"
+								+ "| 4107 | 성함은 50자 이하여야 합니다 |\n"
+								+ "| 4108 | 활동 상태는 필수 입력값입니다 |\n"
+								+ "| 3001 | {status}는 존재하지 않는 활동 상태입니다 |",
+				content = @Content),
+		@io.swagger.v3.oas.annotations.responses.ApiResponse(
+				responseCode = "409",
+				description = "4009: 이미 사용 중인 아이디입니다",
+				content = @Content)
+	})
 	ApiResponse<SuccessBody<TokenResponse>> signUp(
 			@Parameter(description = "회원가입 요청 정보", required = true) @Valid @RequestBody
 					EeosSignUpRequest request,
