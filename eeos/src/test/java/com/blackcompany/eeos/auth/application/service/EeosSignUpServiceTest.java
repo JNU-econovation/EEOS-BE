@@ -47,7 +47,8 @@ class EeosSignUpServiceTest {
 		String name = "홍길동";
 		Integer generation = 15;
 
-		EeosSignUpCommand command = new EeosSignUpCommand(loginId, rawPassword, generation, name);
+		EeosSignUpCommand command =
+				new EeosSignUpCommand(loginId, rawPassword, generation, name, "am");
 
 		MemberModel savedMember = MemberModel.builder().id(memberId).name(name, generation).build();
 		TokenModel expectedToken =
@@ -73,7 +74,7 @@ class EeosSignUpServiceTest {
 	void signUp_duplicateLoginId_throwsException() {
 		// given
 		String loginId = "existingId";
-		EeosSignUpCommand command = new EeosSignUpCommand(loginId, "password", 15, "홍길동");
+		EeosSignUpCommand command = new EeosSignUpCommand(loginId, "password", 15, "홍길동", "am");
 
 		when(accountRepository.existsByLoginId(loginId)).thenReturn(true);
 
