@@ -55,12 +55,24 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler({MethodArgumentNotValidException.class})
 	protected ApiResponse<FailureBody> handleMethodArgumentNotValidException(
 			MethodArgumentNotValidException e) {
-		String code = String.valueOf(HttpStatus.BAD_REQUEST.value());
 		log.warn("MethodArgumentNotValidException", e);
-		return ApiResponseGenerator.fail(
-				e.getBindingResult().getFieldErrors().get(0).getDefaultMessage(),
-				code,
-				HttpStatus.BAD_REQUEST);
+
+		if (e.getBindingResult().getFieldErrors().isEmpty()) {
+			String code = String.valueOf(HttpStatus.BAD_REQUEST.value());
+			return ApiResponseGenerator.fail("잘못된 요청입니다", code, HttpStatus.BAD_REQUEST);
+		}
+
+		String defaultMessage = e.getBindingResult().getFieldErrors().get(0).getDefaultMessage();
+		String code = String.valueOf(HttpStatus.BAD_REQUEST.value());
+		String message = defaultMessage;
+
+		if (defaultMessage != null && defaultMessage.contains(":")) {
+			String[] parts = defaultMessage.split(":", 2);
+			code = parts[0];
+			message = parts[1];
+		}
+
+		return ApiResponseGenerator.fail(message, code, HttpStatus.BAD_REQUEST);
 	}
 
 	/** OAuth 로그인 후 추가 정보 필요한 경우 */

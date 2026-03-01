@@ -14,4 +14,5 @@ public class EeosSignUpCommand implements AbstractDto {
 	private String password;
 	private Integer generation;
 	private String name;
+	private String activeStatus;
 }

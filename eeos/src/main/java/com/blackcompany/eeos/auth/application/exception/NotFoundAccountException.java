@@ -8,7 +8,7 @@ public class NotFoundAccountException extends BusinessException {
 	private static final String FAIL_CODE = "4008";
 
 	public NotFoundAccountException() {
-		super(FAIL_CODE, HttpStatus.NOT_FOUND);
+		super(FAIL_CODE, HttpStatus.UNAUTHORIZED);
 	}
 
 	@Override
