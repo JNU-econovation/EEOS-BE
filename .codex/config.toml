@@ -1,0 +1,46 @@
+[features]
+multi_agent = true
+
+[agents]
+max_threads = 6
+
+[agents.default]
+description = "General-purpose helper for EEOS project tasks."
+config_file = "agents/default.toml"
+
+[agents.worker]
+description = "Implementation-focused agent for code and document changes."
+config_file = "agents/worker.toml"
+
+[agents.explorer]
+description = "Read-heavy codebase explorer for fast analysis and discovery."
+config_file = "agents/explorer.toml"
+
+[agents.planner]
+description = "Requirements analyst that produces actionable To-do lists and asks for confirmation."
+config_file = "agents/planner.toml"
+
+[agents.architect]
+description = "API/DB designer for EEOS DDD + UseCase architecture (confirmation gate)."
+config_file = "agents/architect.toml"
+
+[agents.qa]
+description = "TDD test designer that writes failing tests before implementation."
+config_file = "agents/qa.toml"
+
+[agents."backend-dev"]
+description = "Backend implementer that makes tests pass while following project architecture."
+config_file = "agents/backend-dev.toml"
+
+[agents.reviewer]
+description = "Code reviewer focused on correctness, security, regressions, and missing tests."
+config_file = "agents/reviewer.toml"
+
+[agents."doc-slave"]
+description = "Documentation writer that updates API and project docs after code changes."
+config_file = "agents/doc-slave.toml"
+
+[agents."doc-reviewer"]
+description = "Documentation reviewer checking correctness, completeness, and consistency."
+config_file = "agents/doc-reviewer.toml"
+
