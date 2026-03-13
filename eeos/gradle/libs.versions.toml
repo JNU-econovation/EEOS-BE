@@ -7,7 +7,7 @@ spring-doc-openapi = "2.3.0"
 
 # Plugins
 spotless = "7.2.1"
-asciidoctor = "4.0.2"
+asciidoctor = "4.0.5"
 epages-restdocs = "0.18.2"
 swagger = "5.10.3"
 firebase-admin = "9.2.0"
