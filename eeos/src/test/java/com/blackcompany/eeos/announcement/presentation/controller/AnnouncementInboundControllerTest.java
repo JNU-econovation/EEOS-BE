@@ -33,7 +33,7 @@ class AnnouncementInboundControllerTest {
 	private TokenExtractor cookieTokenExtractor;
 
 	@Test
-	@DisplayName("유효한 요청으로 POST /api/internal/announcements 요청을 보내면 201 Created를 반환한다")
+	@DisplayName("유효한 요청으로 POST /api/internal/slack/announcements 요청을 보내면 201 Created를 반환한다")
 	void post_with_valid_request_returns_201() throws Exception {
 		String body =
 				"""
@@ -51,7 +51,7 @@ class AnnouncementInboundControllerTest {
 
 		mockMvc
 				.perform(
-						post("/api/internal/announcements")
+						post("/api/internal/slack/announcements")
 								.contentType(MediaType.APPLICATION_JSON)
 								.content(body))
 				.andExpect(status().isCreated());
