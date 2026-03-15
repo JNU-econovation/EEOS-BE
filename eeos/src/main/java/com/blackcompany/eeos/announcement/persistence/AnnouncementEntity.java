@@ -11,6 +11,8 @@ import jakarta.persistence.Index;
 import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -48,6 +50,12 @@ public class AnnouncementEntity extends BaseEntity {
 	@Column(name = ENTITY_PREFIX + "_body", nullable = false, columnDefinition = "TEXT")
 	private String body;
 
+	@Column(name = ENTITY_PREFIX + "_announced_at", nullable = false)
+	private LocalDateTime announcedAt;
+
+	@Column(name = ENTITY_PREFIX + "_deadline", nullable = true)
+	private LocalDate deadline;
+
 	public AnnouncementModel toModel() {
 		Timestamp createdDate = getCreatedDate();
 		return AnnouncementModel.builder()
@@ -55,6 +63,8 @@ public class AnnouncementEntity extends BaseEntity {
 				.slackAnnounceEventId(slackAnnounceEventId)
 				.title(title)
 				.body(body)
+				.announcedAt(announcedAt)
+				.deadline(deadline)
 				.createdDate(createdDate != null ? createdDate.toLocalDateTime() : null)
 				.build();
 	}
@@ -65,6 +75,8 @@ public class AnnouncementEntity extends BaseEntity {
 				.slackAnnounceEventId(model.getSlackAnnounceEventId())
 				.title(model.getTitle())
 				.body(model.getBody())
+				.announcedAt(model.getAnnouncedAt())
+				.deadline(model.getDeadline())
 				.build();
 	}
 }
