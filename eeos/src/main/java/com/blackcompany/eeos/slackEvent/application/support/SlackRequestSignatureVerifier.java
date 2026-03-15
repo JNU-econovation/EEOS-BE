@@ -7,9 +7,11 @@ import java.time.Instant;
 import java.util.HexFormat;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class SlackRequestSignatureVerifier {
 
@@ -27,9 +29,14 @@ public class SlackRequestSignatureVerifier {
 
 	// 검증 시작
 	public void verify(String timestamp, String signature, String rawBody) {
-		long requestTs = parseTimestamp(timestamp);
-		validateTimestamp(requestTs);
-		validateSignature(requestTs, signature, rawBody);
+		try {
+			long requestTs = parseTimestamp(timestamp);
+			validateTimestamp(requestTs);
+			validateSignature(requestTs, signature, rawBody);
+		} catch (Exception e) {
+			log.error("slack event 검증 실패", e);
+			throw e;
+		}
 	}
 
 	private long parseTimestamp(String timestamp) {
