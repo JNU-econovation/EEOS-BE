@@ -9,10 +9,10 @@ import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verifyNoInteractions;
 
-import com.blackcompany.eeos.slackEvent.application.exception.InvalidSlackEventIdException;
 import com.blackcompany.eeos.slackEvent.application.dto.EeosSlackMessageForwardRequest;
 import com.blackcompany.eeos.slackEvent.application.dto.SlackEventAckResponse;
 import com.blackcompany.eeos.slackEvent.application.dto.SlackEventEnvelopeRequest;
+import com.blackcompany.eeos.slackEvent.application.exception.InvalidSlackEventIdException;
 import com.blackcompany.eeos.slackEvent.application.exception.SlackForwardFailedException;
 import com.blackcompany.eeos.slackEvent.application.repository.SlackEventDedupRepository;
 import com.blackcompany.eeos.slackEvent.infra.client.EeosSlackForwardApiClient;
