@@ -10,7 +10,7 @@ slack:
     forward:
       base-url: ${EEOS_SLACK_FORWARD_BASE_URL:http://localhost:8080}
       path: ${EEOS_SLACK_FORWARD_PATH:/api/internal/slack/announcements}
-      api-key: ${EEOS_SLACK_FORWARD_API_KEY:}
+      api-key: ${eeos.internal-api-key:}
 
   bot:
     black-company:
