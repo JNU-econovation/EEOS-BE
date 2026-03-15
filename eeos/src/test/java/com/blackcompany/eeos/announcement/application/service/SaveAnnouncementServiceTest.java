@@ -12,7 +12,7 @@ import com.blackcompany.eeos.announcement.application.model.AnnouncementModel;
 import com.blackcompany.eeos.announcement.application.model.SlackAnnounceEventModel;
 import com.blackcompany.eeos.announcement.application.repository.AnnouncementRepository;
 import com.blackcompany.eeos.announcement.application.repository.SlackAnnounceEventRepository;
-import com.blackcompany.eeos.announcement.application.support.SlackMessageParser;
+import com.blackcompany.eeos.announcement.application.support.AnnouncementTextParser;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,7 +26,7 @@ class SaveAnnouncementServiceTest {
 
 	@Mock private SlackAnnounceEventRepository slackAnnounceEventRepository;
 	@Mock private AnnouncementRepository announcementRepository;
-	@Mock private SlackMessageParser slackMessageParser;
+	@Mock private AnnouncementTextParser slackMessageParser;
 
 	@InjectMocks private SaveAnnouncementService saveAnnouncementService;
 
@@ -95,7 +95,7 @@ class SaveAnnouncementServiceTest {
 		given(slackAnnounceEventRepository.save(any()))
 				.willReturn(SlackAnnounceEventModel.builder().id(1L).build());
 		given(slackMessageParser.parse("[공지] 정상 공지입니다."))
-				.willReturn(new SlackMessageParser.ParsedMessage("공지", "정상 공지입니다."));
+				.willReturn(new AnnouncementTextParser.ParsedMessage("공지", "정상 공지입니다."));
 
 		// when
 		saveAnnouncementService.save(request);
@@ -123,7 +123,7 @@ class SaveAnnouncementServiceTest {
 		given(slackAnnounceEventRepository.save(any()))
 				.willReturn(SlackAnnounceEventModel.builder().id(2L).build());
 		given(slackMessageParser.parse("[이벤트 안내] 이번 주 행사 안내드립니다."))
-				.willReturn(new SlackMessageParser.ParsedMessage("이벤트 안내", "이번 주 행사 안내드립니다."));
+				.willReturn(new AnnouncementTextParser.ParsedMessage("이벤트 안내", "이번 주 행사 안내드립니다."));
 
 		// when
 		saveAnnouncementService.save(request);

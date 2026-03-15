@@ -6,8 +6,9 @@ import lombok.Getter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SlackMessageParser {
+public class AnnouncementTextParser {
 
+	// [제목]\n내용 패턴
 	private static final Pattern BRACKET_PATTERN = Pattern.compile("^\\[(.+)]$");
 
 	public ParsedMessage parse(String text) {

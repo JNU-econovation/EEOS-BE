@@ -5,7 +5,7 @@ import com.blackcompany.eeos.announcement.application.model.AnnouncementModel;
 import com.blackcompany.eeos.announcement.application.model.SlackAnnounceEventModel;
 import com.blackcompany.eeos.announcement.application.repository.AnnouncementRepository;
 import com.blackcompany.eeos.announcement.application.repository.SlackAnnounceEventRepository;
-import com.blackcompany.eeos.announcement.application.support.SlackMessageParser;
+import com.blackcompany.eeos.announcement.application.support.AnnouncementTextParser;
 import com.blackcompany.eeos.announcement.application.usecase.SaveAnnouncementUsecase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ public class SaveAnnouncementService implements SaveAnnouncementUsecase {
 
 	private final SlackAnnounceEventRepository slackAnnounceEventRepository;
 	private final AnnouncementRepository announcementRepository;
-	private final SlackMessageParser slackMessageParser;
+	private final AnnouncementTextParser slackMessageParser;
 
 	@Override
 	@Transactional
@@ -40,7 +40,7 @@ public class SaveAnnouncementService implements SaveAnnouncementUsecase {
 						request.getUserId(),
 						request.getMessageTs());
 
-		SlackMessageParser.ParsedMessage parsed = slackMessageParser.parse(request.getText());
+		AnnouncementTextParser.ParsedMessage parsed = slackMessageParser.parse(request.getText());
 
 		SlackAnnounceEventModel savedEvent = slackAnnounceEventRepository.save(eventModel);
 

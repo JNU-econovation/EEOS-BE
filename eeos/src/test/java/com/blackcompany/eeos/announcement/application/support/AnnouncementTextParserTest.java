@@ -6,13 +6,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class SlackMessageParserTest {
+class AnnouncementTextParserTest {
 
-	private SlackMessageParser parser;
+	private AnnouncementTextParser parser;
 
 	@BeforeEach
 	void setUp() {
-		parser = new SlackMessageParser();
+		parser = new AnnouncementTextParser();
 	}
 
 	@Test
@@ -22,7 +22,7 @@ class SlackMessageParserTest {
 		String text = "[제목]\n본문 내용입니다.";
 
 		// when
-		SlackMessageParser.ParsedMessage result = parser.parse(text);
+		AnnouncementTextParser.ParsedMessage result = parser.parse(text);
 
 		// then
 		assertThat(result.getTitle()).isEqualTo("제목");
@@ -36,7 +36,7 @@ class SlackMessageParserTest {
 		String text = "[ 🔔 제목 🔔 ]\n본문 내용입니다.";
 
 		// when
-		SlackMessageParser.ParsedMessage result = parser.parse(text);
+		AnnouncementTextParser.ParsedMessage result = parser.parse(text);
 
 		// then
 		assertThat(result.getTitle()).isEqualTo("🔔 제목 🔔");
@@ -50,7 +50,7 @@ class SlackMessageParserTest {
 		String text = "그냥 공지 텍스트입니다.";
 
 		// when
-		SlackMessageParser.ParsedMessage result = parser.parse(text);
+		AnnouncementTextParser.ParsedMessage result = parser.parse(text);
 
 		// then
 		assertThat(result.getTitle()).isNull();
@@ -64,7 +64,7 @@ class SlackMessageParserTest {
 		String text = "";
 
 		// when
-		SlackMessageParser.ParsedMessage result = parser.parse(text);
+		AnnouncementTextParser.ParsedMessage result = parser.parse(text);
 
 		// then
 		assertThat(result.getTitle()).isNull();
@@ -78,7 +78,7 @@ class SlackMessageParserTest {
 		String text = "[제목만 있음]";
 
 		// when
-		SlackMessageParser.ParsedMessage result = parser.parse(text);
+		AnnouncementTextParser.ParsedMessage result = parser.parse(text);
 
 		// then
 		assertThat(result.getTitle()).isEqualTo("제목만 있음");
