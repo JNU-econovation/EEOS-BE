@@ -22,11 +22,12 @@ class AnnouncementTextParserTest {
 		String text = "[제목]\n본문 내용입니다.";
 
 		// when
-		AnnouncementTextParser.ParsedMessage result = parser.parse(text);
+		ParsedAnnouncement result = parser.parse(text);
 
 		// then
-		assertThat(result.getTitle()).isEqualTo("제목");
-		assertThat(result.getBody()).isEqualTo("본문 내용입니다.");
+		assertThat(result.title()).isEqualTo("제목");
+		assertThat(result.body()).isEqualTo("본문 내용입니다.");
+		assertThat(result.deadline()).isNull();
 	}
 
 	@Test
@@ -36,11 +37,12 @@ class AnnouncementTextParserTest {
 		String text = "[ 🔔 제목 🔔 ]\n본문 내용입니다.";
 
 		// when
-		AnnouncementTextParser.ParsedMessage result = parser.parse(text);
+		ParsedAnnouncement result = parser.parse(text);
 
 		// then
-		assertThat(result.getTitle()).isEqualTo("🔔 제목 🔔");
-		assertThat(result.getBody()).isEqualTo("본문 내용입니다.");
+		assertThat(result.title()).isEqualTo("🔔 제목 🔔");
+		assertThat(result.body()).isEqualTo("본문 내용입니다.");
+		assertThat(result.deadline()).isNull();
 	}
 
 	@Test
@@ -50,11 +52,12 @@ class AnnouncementTextParserTest {
 		String text = "그냥 공지 텍스트입니다.";
 
 		// when
-		AnnouncementTextParser.ParsedMessage result = parser.parse(text);
+		ParsedAnnouncement result = parser.parse(text);
 
 		// then
-		assertThat(result.getTitle()).isNull();
-		assertThat(result.getBody()).isEqualTo("그냥 공지 텍스트입니다.");
+		assertThat(result.title()).isNull();
+		assertThat(result.body()).isEqualTo("그냥 공지 텍스트입니다.");
+		assertThat(result.deadline()).isNull();
 	}
 
 	@Test
@@ -64,11 +67,12 @@ class AnnouncementTextParserTest {
 		String text = "";
 
 		// when
-		AnnouncementTextParser.ParsedMessage result = parser.parse(text);
+		ParsedAnnouncement result = parser.parse(text);
 
 		// then
-		assertThat(result.getTitle()).isNull();
-		assertThat(result.getBody()).isEqualTo("");
+		assertThat(result.title()).isNull();
+		assertThat(result.body()).isEqualTo("");
+		assertThat(result.deadline()).isNull();
 	}
 
 	@Test
@@ -78,10 +82,11 @@ class AnnouncementTextParserTest {
 		String text = "[제목만 있음]";
 
 		// when
-		AnnouncementTextParser.ParsedMessage result = parser.parse(text);
+		ParsedAnnouncement result = parser.parse(text);
 
 		// then
-		assertThat(result.getTitle()).isEqualTo("제목만 있음");
-		assertThat(result.getBody()).isEqualTo("");
+		assertThat(result.title()).isEqualTo("제목만 있음");
+		assertThat(result.body()).isEqualTo("");
+		assertThat(result.deadline()).isNull();
 	}
 }
