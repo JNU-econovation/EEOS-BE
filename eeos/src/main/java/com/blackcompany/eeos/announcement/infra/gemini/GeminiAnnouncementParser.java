@@ -62,9 +62,13 @@ public class GeminiAnnouncementParser implements AnnouncementParser {
 			maxAttempts = 3,
 			backoff = @Backoff(delay = 1000, multiplier = 2.0))
 	public ParsedAnnouncement parse(String text) {
+		log.info("Gemini 파싱 요청. model={}, textLength={}", model, text.length());
 		String prompt = String.format(PROMPT_TEMPLATE, text);
 		GenerateContentResponse response = geminiClient.models.generateContent(model, prompt, null);
-		return parseResponse(response.text());
+		log.debug("Gemini 응답. responseText={}", response.text());
+		ParsedAnnouncement result = parseResponse(response.text());
+		log.info("Gemini 파싱 완료. title={}, deadline={}", result.title(), result.deadline());
+		return result;
 	}
 
 	@Recover
@@ -91,6 +95,7 @@ public class GeminiAnnouncementParser implements AnnouncementParser {
 
 			return new ParsedAnnouncement(title, body, deadline);
 		} catch (Exception e) {
+			log.error("Gemini 응답 파싱 실패. responseText={}", responseText, e);
 			throw new IllegalStateException("Gemini 응답 파싱 실패: " + responseText, e);
 		}
 	}
