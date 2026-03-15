@@ -1,6 +1,6 @@
 ---
 name: new-pr
-description: 현재 브랜치에서 커밋한 내용을 바탕으로 새로운 pull request 를 하나 생성한다. pull request 본문 템플릿은 .github/PULL_REQUEST_TEMPLATE.md 를 사용한다.  create new pull request about current branch using ./github/PULL_REQUEST_TEMPLATE.md
+description: 현재 브랜치에서 커밋한 내용을 바탕으로 새로운 pull request 를 하나 생성한다. pull request 본문 템플릿은 .github/PULL_REQUEST_TEMPLATE.md 를 사용한다.  create new pull request about current branch using .github/PULL_REQUEST_TEMPLATE.md
 ---
 
 # new-pr
