@@ -24,7 +24,6 @@ repositories {
 }
 
 apply(from = "gradle/git-hooks.gradle.kts")
-apply(from = "gradle/integration-test.gradle.kts")
 apply(from = "gradle/asciidoctor.gradle.kts")
 
 dependencies {

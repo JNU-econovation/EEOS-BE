@@ -54,6 +54,7 @@ public class SecurityFilterChainConfig {
 							.requestMatchers(HttpMethod.POST, "/api/auth/login/**")
 							.requestMatchers(HttpMethod.POST, "/api/auth/login")
 							.requestMatchers(HttpMethod.POST, "/api/auth/signup")
+							.requestMatchers(HttpMethod.POST, "/api/slack/events")
 							.requestMatchers("/api/guest/**")
 							.requestMatchers("/api/health-check");
 				});
@@ -76,6 +77,7 @@ public class SecurityFilterChainConfig {
 	@Order(2)
 	// 인증이 필요한 엔드포인트
 	SecurityFilterChain authenticated(HttpSecurity httpSecurity) throws Exception {
+		// 매칭 유무 설정
 		httpSecurity.securityMatchers(
 				(matcher) -> {
 					matcher
@@ -92,6 +94,7 @@ public class SecurityFilterChainConfig {
 							.requestMatchers("/api/pushToken", "/api/pushToken/**");
 				});
 
+		// 권한 검증 설정
 		httpSecurity.authorizeHttpRequests(
 				(requests) -> {
 					requests.requestMatchers("/api/admin/**").hasAnyRole(ADMIN);
