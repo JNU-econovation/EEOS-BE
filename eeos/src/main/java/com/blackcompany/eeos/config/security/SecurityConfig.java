@@ -34,7 +34,8 @@ public class SecurityConfig {
 	}
 
 	@Bean
-	public FilterRegistrationBean<InternalApiKeyFilter> internalApiKeyFilterRegistration(InternalApiKeyFilter internalApiKeyFilter) {
+	public FilterRegistrationBean<InternalApiKeyFilter> internalApiKeyFilterRegistration(
+			InternalApiKeyFilter internalApiKeyFilter) {
 		FilterRegistrationBean<InternalApiKeyFilter> registration =
 				new FilterRegistrationBean<>(internalApiKeyFilter);
 		registration.setEnabled(false);
