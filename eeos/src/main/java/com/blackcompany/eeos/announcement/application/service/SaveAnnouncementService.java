@@ -32,6 +32,7 @@ public class SaveAnnouncementService implements SaveAnnouncementUsecase {
 			return;
 		}
 
+		// Slack Event에 대한 정보 생성
 		SlackAnnounceEventModel eventModel =
 				SlackAnnounceEventModel.create(
 						request.getEventId(),
@@ -40,13 +41,17 @@ public class SaveAnnouncementService implements SaveAnnouncementUsecase {
 						request.getUserId(),
 						request.getMessageTs());
 
+		// Slack 메세지 파싱
 		AnnouncementTextParser.ParsedMessage parsed = slackMessageParser.parse(request.getText());
 
+		// Slack Event 저장
 		SlackAnnounceEventModel savedEvent = slackAnnounceEventRepository.save(eventModel);
 
+		// Announcement 생성
 		AnnouncementModel announcementModel =
 				AnnouncementModel.create(savedEvent.getId(), parsed.getTitle(), parsed.getBody());
 
+		// Announcement 저장
 		announcementRepository.save(announcementModel);
 	}
 }
