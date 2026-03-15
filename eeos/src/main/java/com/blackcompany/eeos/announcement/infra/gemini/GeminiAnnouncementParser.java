@@ -5,9 +5,11 @@ import com.blackcompany.eeos.announcement.application.support.AnnouncementTextPa
 import com.blackcompany.eeos.announcement.application.support.ParsedAnnouncement;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.genai.Client;
+import com.google.genai.types.GenerateContentResponse;
+import jakarta.annotation.PostConstruct;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
@@ -15,15 +17,12 @@ import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestClient;
 
 @Slf4j
 @Primary
 @Component
+@RequiredArgsConstructor
 public class GeminiAnnouncementParser implements AnnouncementParser {
-
-	private static final String GEMINI_API_URL =
-			"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent";
 
 	private static final String PROMPT_TEMPLATE =
 			"""
@@ -41,7 +40,6 @@ public class GeminiAnnouncementParser implements AnnouncementParser {
 			%s
 			""";
 
-	private final RestClient restClient;
 	private final ObjectMapper objectMapper;
 	private final AnnouncementTextParser fallbackParser;
 
@@ -51,13 +49,11 @@ public class GeminiAnnouncementParser implements AnnouncementParser {
 	@Value("${gemini.model}")
 	private String model;
 
-	public GeminiAnnouncementParser(
-			RestClient.Builder restClientBuilder,
-			ObjectMapper objectMapper,
-			AnnouncementTextParser fallbackParser) {
-		this.restClient = restClientBuilder.build();
-		this.objectMapper = objectMapper;
-		this.fallbackParser = fallbackParser;
+	private Client geminiClient;
+
+	@PostConstruct
+	void init() {
+		geminiClient = Client.builder().apiKey(apiKey).build();
 	}
 
 	@Override
@@ -67,20 +63,8 @@ public class GeminiAnnouncementParser implements AnnouncementParser {
 			backoff = @Backoff(delay = 1000, multiplier = 2.0))
 	public ParsedAnnouncement parse(String text) {
 		String prompt = String.format(PROMPT_TEMPLATE, text);
-
-		Map<String, Object> requestBody =
-				Map.of("contents", List.of(Map.of("parts", List.of(Map.of("text", prompt)))));
-
-		String responseJson =
-				restClient
-						.post()
-						.uri(GEMINI_API_URL + "?key={apiKey}", Map.of("model", model, "apiKey", apiKey))
-						.header("Content-Type", "application/json")
-						.body(requestBody)
-						.retrieve()
-						.body(String.class);
-
-		return parseGeminiResponse(responseJson);
+		GenerateContentResponse response = geminiClient.models.generateContent(model, prompt, null);
+		return parseResponse(response.text());
 	}
 
 	@Recover
@@ -89,20 +73,9 @@ public class GeminiAnnouncementParser implements AnnouncementParser {
 		return fallbackParser.parse(text);
 	}
 
-	private ParsedAnnouncement parseGeminiResponse(String responseJson) {
+	private ParsedAnnouncement parseResponse(String responseText) {
 		try {
-			JsonNode root = objectMapper.readTree(responseJson);
-			String content =
-					root.path("candidates")
-							.path(0)
-							.path("content")
-							.path("parts")
-							.path(0)
-							.path("text")
-							.asText();
-
-			// JSON 블록 마커 제거
-			String cleaned = content.replaceAll("```json\\s*", "").replaceAll("```\\s*", "").trim();
+			String cleaned = responseText.replaceAll("```json\\s*", "").replaceAll("```\\s*", "").trim();
 
 			JsonNode parsed = objectMapper.readTree(cleaned);
 
@@ -118,7 +91,7 @@ public class GeminiAnnouncementParser implements AnnouncementParser {
 
 			return new ParsedAnnouncement(title, body, deadline);
 		} catch (Exception e) {
-			throw new IllegalStateException("Gemini 응답 파싱 실패: " + responseJson, e);
+			throw new IllegalStateException("Gemini 응답 파싱 실패: " + responseText, e);
 		}
 	}
 }
