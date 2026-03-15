@@ -2,18 +2,18 @@ package com.blackcompany.eeos.announcement.application.support;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import lombok.Getter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AnnouncementTextParser {
+public class AnnouncementTextParser implements AnnouncementParser {
 
 	// [제목]\n내용 패턴
 	private static final Pattern BRACKET_PATTERN = Pattern.compile("^\\[(.+)]$");
 
-	public ParsedMessage parse(String text) {
+	@Override
+	public ParsedAnnouncement parse(String text) {
 		if (text == null || text.isEmpty()) {
-			return new ParsedMessage(null, text == null ? "" : text);
+			return new ParsedAnnouncement(null, text == null ? "" : text, null);
 		}
 
 		String[] lines = text.split("\n", 2);
@@ -23,21 +23,9 @@ public class AnnouncementTextParser {
 		if (matcher.matches()) {
 			String title = matcher.group(1).trim();
 			String body = lines.length > 1 ? lines[1].trim() : "";
-			return new ParsedMessage(title, body);
+			return new ParsedAnnouncement(title, body, null);
 		}
 
-		return new ParsedMessage(null, text.trim());
-	}
-
-	@Getter
-	public static class ParsedMessage {
-
-		private final String title;
-		private final String body;
-
-		public ParsedMessage(String title, String body) {
-			this.title = title;
-			this.body = body;
-		}
+		return new ParsedAnnouncement(null, text.trim(), null);
 	}
 }
