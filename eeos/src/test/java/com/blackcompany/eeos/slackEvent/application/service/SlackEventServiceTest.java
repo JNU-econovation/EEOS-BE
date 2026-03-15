@@ -9,7 +9,7 @@ import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verifyNoInteractions;
 
-import com.blackcompany.eeos.common.exception.InvalidParameterException;
+import com.blackcompany.eeos.slackEvent.application.exception.InvalidSlackEventIdException;
 import com.blackcompany.eeos.slackEvent.application.dto.EeosSlackMessageForwardRequest;
 import com.blackcompany.eeos.slackEvent.application.dto.SlackEventAckResponse;
 import com.blackcompany.eeos.slackEvent.application.dto.SlackEventEnvelopeRequest;
@@ -134,14 +134,14 @@ class SlackEventServiceTest {
 	}
 
 	@Test
-	@DisplayName("event_id가 비어 있으면 InvalidParameterException을 던진다")
+	@DisplayName("event_id가 비어 있으면 InvalidSlackEventIdException을 던진다")
 	void throw_when_event_id_is_blank() {
 		// given
 		SlackEventEnvelopeRequest request = createEventCallback(" ", "message", null);
 
 		// when & then
 		assertThatThrownBy(() -> slackEventService.handle(request))
-				.isInstanceOf(InvalidParameterException.class);
+				.isInstanceOf(InvalidSlackEventIdException.class);
 		verifyNoInteractions(forwardApiClient);
 	}
 
