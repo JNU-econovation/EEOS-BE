@@ -2,7 +2,7 @@ package com.blackcompany.eeos.announcement.presentation.controller;
 
 import com.blackcompany.eeos.announcement.application.dto.SaveAnnouncementRequest;
 import com.blackcompany.eeos.announcement.application.usecase.SaveAnnouncementUsecase;
-import com.blackcompany.eeos.announcement.presentation.docs.SlackInternalMessageApi;
+import com.blackcompany.eeos.announcement.presentation.docs.AnnouncementInboundApi;
 import com.blackcompany.eeos.common.presentation.response.ApiResponse;
 import com.blackcompany.eeos.common.presentation.response.ApiResponseBody.SuccessBody;
 import com.blackcompany.eeos.common.presentation.response.ApiResponseGenerator;
@@ -15,16 +15,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/internal/slack")
+@RequestMapping("/api/internal")
 @RequiredArgsConstructor
-public class SlackInternalMessageController implements SlackInternalMessageApi {
+public class AnnouncementInboundController implements AnnouncementInboundApi {
 
 	private final SaveAnnouncementUsecase saveAnnouncementUsecase;
 
 	@Override
-	@PostMapping("/messages")
-	public ApiResponse<SuccessBody<Void>> receiveMessage(
-			@RequestBody SaveAnnouncementRequest request) {
+	@PostMapping("/announcements")
+	public ApiResponse<SuccessBody<Void>> save(@RequestBody SaveAnnouncementRequest request) {
 		saveAnnouncementUsecase.save(request);
 		return ApiResponseGenerator.success(HttpStatus.CREATED, MessageCode.CREATE);
 	}

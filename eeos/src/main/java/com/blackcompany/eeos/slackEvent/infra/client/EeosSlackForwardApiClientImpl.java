@@ -14,7 +14,7 @@ public interface EeosSlackForwardApiClientImpl extends EeosSlackForwardApiClient
 
 	@Override
 	@PostMapping(
-			path = "${slack.event.forward.path:/api/internal/slack/messages}",
+			path = "${slack.event.forward.path:/api/internal/announcements}",
 			consumes = MediaType.APPLICATION_JSON_VALUE)
 	void forward(
 			@RequestHeader(value = "X-EEOS-API-KEY", required = false) String apiKey,

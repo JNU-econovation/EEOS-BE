@@ -17,9 +17,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(SlackInternalMessageController.class)
+@WebMvcTest(AnnouncementInboundController.class)
 @AutoConfigureMockMvc(addFilters = false)
-class SlackInternalMessageControllerTest {
+class AnnouncementInboundControllerTest {
 
 	@Autowired private MockMvc mockMvc;
 
@@ -33,7 +33,7 @@ class SlackInternalMessageControllerTest {
 	private TokenExtractor cookieTokenExtractor;
 
 	@Test
-	@DisplayName("유효한 요청으로 POST 요청을 보내면 201 Created를 반환한다")
+	@DisplayName("유효한 요청으로 POST /api/internal/announcements 요청을 보내면 201 Created를 반환한다")
 	void post_with_valid_request_returns_201() throws Exception {
 		String body =
 				"""
@@ -51,7 +51,7 @@ class SlackInternalMessageControllerTest {
 
 		mockMvc
 				.perform(
-						post("/api/internal/slack/messages")
+						post("/api/internal/announcements")
 								.contentType(MediaType.APPLICATION_JSON)
 								.content(body))
 				.andExpect(status().isCreated());
