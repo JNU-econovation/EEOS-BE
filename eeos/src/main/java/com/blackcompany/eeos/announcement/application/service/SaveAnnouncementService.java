@@ -8,6 +8,7 @@ import com.blackcompany.eeos.announcement.application.repository.SlackAnnounceEv
 import com.blackcompany.eeos.announcement.application.support.AnnouncementParser;
 import com.blackcompany.eeos.announcement.application.support.ParsedAnnouncement;
 import com.blackcompany.eeos.announcement.application.usecase.SaveAnnouncementUsecase;
+import com.blackcompany.eeos.common.utils.DateConverter;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -49,7 +50,7 @@ public class SaveAnnouncementService implements SaveAnnouncementUsecase {
 		ParsedAnnouncement parsed = announcementParser.parse(request.getText());
 
 		// messageTs -> LocalDateTime 변환
-		LocalDateTime announcedAt = toLocalDateTime(request.getMessageTs());
+		LocalDateTime announcedAt = DateConverter.toLocalDateTime((long)Double.parseDouble(request.getMessageTs()));
 
 		// Slack Event 저장
 		SlackAnnounceEventModel savedEvent = slackAnnounceEventRepository.save(eventModel);
@@ -61,10 +62,5 @@ public class SaveAnnouncementService implements SaveAnnouncementUsecase {
 
 		// Announcement 저장
 		announcementRepository.save(announcementModel);
-	}
-
-	private LocalDateTime toLocalDateTime(String messageTs) {
-		long epochSecond = (long) Double.parseDouble(messageTs);
-		return LocalDateTime.ofInstant(Instant.ofEpochSecond(epochSecond), ZoneId.of("Asia/Seoul"));
 	}
 }
