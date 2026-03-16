@@ -1,0 +1,70 @@
+apiVersion: 1
+
+contactPoints:
+  - orgId: 1
+    name: Slack
+    receivers:
+      - uid: slack-receiver
+        type: slack
+        settings:
+          url: ${SLACK_WEBHOOK_URL}
+          title: '[{{ .Status | toUpper }}] {{ .CommonLabels.alertname }}'
+          text: |
+            {{ range .Alerts }}
+            *Alert:* {{ .Annotations.summary }}
+            *Description:* {{ .Annotations.description }}
+            *Severity:* {{ .Labels.severity }}
+            {{ end }}
+
+policies:
+  - orgId: 1
+    receiver: Slack
+    group_by: ['alertname', 'job']
+    group_wait: 30s
+    group_interval: 5m
+    repeat_interval: 1h
+
+groups:
+  - orgId: 1
+    name: service-down
+    folder: Alerts
+    interval: 1m
+    rules:
+      - uid: eeos-service-down
+        title: 'EEOS Service Down'
+        condition: C
+        for: 2m
+        noDataState: Alerting
+        execErrState: Alerting
+        annotations:
+          summary: 'EEOS 서비스 다운'
+          description: '{{ $labels.job }} 서비스가 응답하지 않습니다. (instance: {{ $labels.instance }})'
+        labels:
+          severity: critical
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: 'up{job=~"eeos.*"}'
+              instant: true
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: A
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              type: threshold
+              refId: C
+              conditions:
+                - evaluator:
+                    params: [1]
+                    type: lt
+                  operator:
+                    type: and
+                  query:
+                    params: [A]
+                  reducer:
+                    type: last
