@@ -57,7 +57,7 @@ public class SaveAnnouncementService implements SaveAnnouncementUsecase {
 
 		// messageTs -> LocalDateTime 변환
 		LocalDateTime announcedAt =
-				DateConverter.toLocalDateTime((long) Double.parseDouble(request.getMessageTs()));
+				DateConverter.toLocalDateTime((long) (Double.parseDouble(request.getMessageTs()) * 1000));
 
 		// Slack Event 저장
 		SlackAnnounceEventModel savedEvent = slackAnnounceEventRepository.save(eventModel);
