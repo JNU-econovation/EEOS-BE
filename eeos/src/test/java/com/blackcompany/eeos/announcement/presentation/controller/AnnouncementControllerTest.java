@@ -10,6 +10,7 @@ import com.blackcompany.eeos.announcement.application.dto.GetAnnouncementsRespon
 import com.blackcompany.eeos.announcement.application.usecase.GetAnnouncementsUsecase;
 import com.blackcompany.eeos.auth.application.domain.token.TokenResolver;
 import com.blackcompany.eeos.auth.presentation.support.TokenExtractor;
+import com.blackcompany.eeos.common.utils.DateConverter;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -49,13 +50,13 @@ class AnnouncementControllerTest {
 												.id(1L)
 												.title("이벤트 안내")
 												.body("이번 주 행사 안내드립니다.")
-												.createdDate(LocalDateTime.of(2026, 3, 15, 10, 0, 0))
+												.createdDate(DateConverter.toMillis(LocalDateTime.of(2026, 3, 15, 10, 0, 0)))
 												.build(),
 										AnnouncementResponse.builder()
 												.id(2L)
 												.title(null)
 												.body("제목 없는 공지입니다.")
-												.createdDate(LocalDateTime.of(2026, 3, 14, 9, 0, 0))
+												.createdDate(DateConverter.toMillis(LocalDateTime.of(2026, 3, 14, 9, 0, 0)))
 												.build()))
 						.build();
 		given(getAnnouncementsUsecase.getAnnouncements()).willReturn(response);
