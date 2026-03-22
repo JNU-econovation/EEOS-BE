@@ -11,3 +11,6 @@ token:
   cookie:
     domain: ${COOKIE_TOKEN_DOMAIN}
     path: ${COOKIE_TOKEN_PATH}
+
+auth:
+  login-page-url: ${AUTH_LOGIN_PAGE_URL:http://localhost:3000/login}

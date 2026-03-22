@@ -54,6 +54,10 @@ public class SecurityFilterChainConfig {
 							.requestMatchers(HttpMethod.POST, "/api/auth/login/**")
 							.requestMatchers(HttpMethod.POST, "/api/auth/login")
 							.requestMatchers(HttpMethod.POST, "/api/auth/signup")
+							.requestMatchers(HttpMethod.GET, "/api/auth/authorize")
+							.requestMatchers(HttpMethod.POST, "/api/auth/login/oauth2")
+							.requestMatchers(HttpMethod.POST, "/api/auth/token")
+							.requestMatchers(HttpMethod.POST, "/api/auth/clients")
 							.requestMatchers("/api/guest/**")
 							.requestMatchers("/api/health-check");
 				});

@@ -26,6 +26,12 @@ public class ReissueService implements ReissueUsecase {
 		Long memberId = tokenResolver.getUserDataByRefreshToken(token);
 		saveUsedToken(token, memberId);
 
+		String clientType = tokenResolver.getClientTypeByRefreshToken(token);
+		if (clientType != null) {
+			String clientId = tokenResolver.getClientIdByRefreshToken(token);
+			return authenticationTokenGenerator.execute(memberId, clientType, clientId);
+		}
+
 		return authenticationTokenGenerator.execute(memberId);
 	}
 
