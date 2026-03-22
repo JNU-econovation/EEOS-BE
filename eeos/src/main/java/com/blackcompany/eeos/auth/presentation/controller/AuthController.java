@@ -4,9 +4,7 @@ import com.blackcompany.eeos.auth.application.domain.TokenModel;
 import com.blackcompany.eeos.auth.application.domain.token.TokenResolver;
 import com.blackcompany.eeos.auth.application.dto.converter.TokenResponseConverter;
 import com.blackcompany.eeos.auth.application.dto.request.AdditionalInfoApplicationCommand;
-import com.blackcompany.eeos.auth.application.dto.request.EEOSLoginRequest;
 import com.blackcompany.eeos.auth.application.dto.request.EeosSignUpCommand;
-import com.blackcompany.eeos.auth.application.dto.request.OAuthLoginRequestCommand;
 import com.blackcompany.eeos.auth.application.dto.response.TokenResponse;
 import com.blackcompany.eeos.auth.application.usecase.*;
 import com.blackcompany.eeos.auth.presentation.docs.AuthApi;
@@ -30,11 +28,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -75,35 +71,6 @@ public class AuthController implements AuthApi {
 		this.oAuthSignUpUseCase = oAuthSignUpUseCase;
 		this.eeosSignUpUseCase = eeosSignUpUseCase;
 		this.tokenResolver = tokenResolver;
-	}
-
-	@Deprecated
-	@Override
-	@PostMapping("/login/{oauthServerType}")
-	public ApiResponse<SuccessBody<TokenResponse>> login(
-			@PathVariable String oauthServerType,
-			@RequestParam("code") String code,
-			@RequestParam("redirect_uri") String uri,
-			HttpServletResponse httpResponse) {
-		String formatUri = uri.trim().replaceAll("[\n\r\t ]", "");
-
-		OAuthLoginRequestCommand command =
-				new OAuthLoginRequestCommand(oauthServerType, code, formatUri);
-		TokenModel tokenModel = loginUsecase.login(command);
-
-		TokenResponse response = generateTokenResponse(tokenModel, httpResponse);
-
-		return ApiResponseGenerator.success(response, HttpStatus.CREATED, MessageCode.CREATE);
-	}
-
-	@Deprecated
-	@Override
-	@PostMapping("/login/legacy")
-	public ApiResponse<SuccessBody<TokenResponse>> login(
-			@RequestBody EEOSLoginRequest request, HttpServletResponse httpResponse) {
-		TokenModel tokenModel = loginUsecase.login(request.getId(), request.getPassword());
-		TokenResponse response = generateTokenResponse(tokenModel, httpResponse);
-		return ApiResponseGenerator.success(response, HttpStatus.CREATED, MessageCode.CREATE);
 	}
 
 	@Override
