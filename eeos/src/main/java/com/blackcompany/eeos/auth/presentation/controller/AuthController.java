@@ -1,6 +1,7 @@
 package com.blackcompany.eeos.auth.presentation.controller;
 
 import com.blackcompany.eeos.auth.application.domain.TokenModel;
+import com.blackcompany.eeos.auth.application.domain.token.TokenResolver;
 import com.blackcompany.eeos.auth.application.dto.converter.TokenResponseConverter;
 import com.blackcompany.eeos.auth.application.dto.request.AdditionalInfoApplicationCommand;
 import com.blackcompany.eeos.auth.application.dto.request.EEOSLoginRequest;
@@ -12,6 +13,7 @@ import com.blackcompany.eeos.auth.presentation.docs.AuthApi;
 import com.blackcompany.eeos.auth.presentation.dto.AdditionalInfoRequest;
 import com.blackcompany.eeos.auth.presentation.dto.EeosSignUpRequest;
 import com.blackcompany.eeos.auth.presentation.support.AuthConstants;
+import com.blackcompany.eeos.auth.presentation.support.AuthCookieManager;
 import com.blackcompany.eeos.auth.presentation.support.Member;
 import com.blackcompany.eeos.auth.presentation.support.TokenExtractor;
 import com.blackcompany.eeos.auth.presentation.support.VerificationId;
@@ -42,11 +44,13 @@ public class AuthController implements AuthApi {
 	private final ReissueUsecase reissueUsecase;
 	private final TokenExtractor tokenExtractor;
 	private final CookieManager cookieManager;
+	private final AuthCookieManager authCookieManager;
 	private final TokenResponseConverter tokenResponseConverter;
 	private final LogOutUsecase logOutUsecase;
 	private final WithDrawUsecase withDrawUsecase;
 	private final OAuthSignUpUseCase oAuthSignUpUseCase;
 	private final EeosSignUpUseCase eeosSignUpUseCase;
+	private final TokenResolver tokenResolver;
 
 	public AuthController(
 			LoginUsecase loginUsecase,
@@ -54,21 +58,26 @@ public class AuthController implements AuthApi {
 			@Qualifier("cookie") TokenExtractor tokenExtractor,
 			TokenResponseConverter tokenResponseConverter,
 			CookieManager cookieManager,
+			AuthCookieManager authCookieManager,
 			LogOutUsecase logOutUsecase,
 			WithDrawUsecase withDrawUsecase,
 			OAuthSignUpUseCase oAuthSignUpUseCase,
-			EeosSignUpUseCase eeosSignUpUseCase) {
+			EeosSignUpUseCase eeosSignUpUseCase,
+			TokenResolver tokenResolver) {
 		this.loginUsecase = loginUsecase;
 		this.reissueUsecase = reissueUsecase;
 		this.tokenExtractor = tokenExtractor;
 		this.tokenResponseConverter = tokenResponseConverter;
 		this.cookieManager = cookieManager;
+		this.authCookieManager = authCookieManager;
 		this.logOutUsecase = logOutUsecase;
 		this.withDrawUsecase = withDrawUsecase;
 		this.oAuthSignUpUseCase = oAuthSignUpUseCase;
 		this.eeosSignUpUseCase = eeosSignUpUseCase;
+		this.tokenResolver = tokenResolver;
 	}
 
+	@Deprecated
 	@Override
 	@PostMapping("/login/{oauthServerType}")
 	public ApiResponse<SuccessBody<TokenResponse>> login(
@@ -84,13 +93,7 @@ public class AuthController implements AuthApi {
 
 		TokenResponse response = generateTokenResponse(tokenModel, httpResponse);
 
-		// 마이그레이션 필요 체크 - 임시 코드
-		HttpHeaders headers = new HttpHeaders();
-		if ("slack".equals(oauthServerType)) {
-			headers.add("Migration-Required", "true");
-		}
-
-		return ApiResponseGenerator.success(response, HttpStatus.CREATED, headers, MessageCode.CREATE);
+		return ApiResponseGenerator.success(response, HttpStatus.CREATED, MessageCode.CREATE);
 	}
 
 	@Override
@@ -107,9 +110,16 @@ public class AuthController implements AuthApi {
 	public ApiResponse<SuccessBody<TokenResponse>> reissue(
 			HttpServletRequest request, HttpServletResponse httpResponse) {
 		String token = tokenExtractor.extract(request);
-		TokenModel tokenModel = reissueUsecase.execute(token);
-		TokenResponse response = generateTokenResponse(tokenModel, httpResponse);
+		String clientType = tokenResolver.getClientTypeByRefreshToken(token);
 
+		TokenModel tokenModel = reissueUsecase.execute(token);
+
+		if ("WEB".equals(clientType)) {
+			setWebCookies(tokenModel, httpResponse);
+		}
+
+		TokenResponse response =
+				tokenResponseConverter.from(tokenModel.getAccessToken(), tokenModel.getAccessExpiredTime());
 		return ApiResponseGenerator.success(response, HttpStatus.CREATED, MessageCode.CREATE);
 	}
 
@@ -118,7 +128,13 @@ public class AuthController implements AuthApi {
 	public ApiResponse<SuccessBody<Void>> logout(
 			HttpServletRequest request, HttpServletResponse httpResponse, @Member Long memberId) {
 		String token = tokenExtractor.extract(request);
+		String clientType = tokenResolver.getClientTypeByRefreshToken(token);
+
 		logOutUsecase.logOut(token, memberId);
+
+		if ("WEB".equals(clientType)) {
+			deleteWebCookies(httpResponse);
+		}
 		deleteTokenResponse(httpResponse);
 
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.DELETE);
@@ -178,6 +194,20 @@ public class AuthController implements AuthApi {
 		httpServletResponse.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
 		return response;
+	}
+
+	private void setWebCookies(TokenModel tokenModel, HttpServletResponse httpResponse) {
+		ResponseCookie atCookie = authCookieManager.setAccessTokenCookie(tokenModel.getAccessToken());
+		ResponseCookie rtCookie = authCookieManager.setRefreshTokenCookie(tokenModel.getRefreshToken());
+		httpResponse.addHeader(HttpHeaders.SET_COOKIE, atCookie.toString());
+		httpResponse.addHeader(HttpHeaders.SET_COOKIE, rtCookie.toString());
+	}
+
+	private void deleteWebCookies(HttpServletResponse httpResponse) {
+		ResponseCookie atCookie = authCookieManager.deleteAccessTokenCookie();
+		ResponseCookie rtCookie = authCookieManager.deleteRefreshTokenCookie();
+		httpResponse.addHeader(HttpHeaders.SET_COOKIE, atCookie.toString());
+		httpResponse.addHeader(HttpHeaders.SET_COOKIE, rtCookie.toString());
 	}
 
 	private void deleteTokenResponse(HttpServletResponse httpServletResponse) {

@@ -21,9 +21,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "인증", description = "인증 관련 API")
 public interface AuthApi {
+	@Deprecated
 	@Operation(
-			summary = "OAuth 로그인",
-			description = "PathVariable에 담긴 redirect_url, code를 받아 액세스 토큰과 리프레시 토큰을 발급한다.")
+			summary = "[Deprecated] OAuth 로그인",
+			description =
+					"레거시 OAuth 로그인 엔드포인트. /api/auth/login/oauth2를 사용하세요. "
+							+ "PathVariable에 담긴 redirect_url, code를 받아 액세스 토큰과 리프레시 토큰을 발급한다.")
 	ApiResponse<SuccessBody<TokenResponse>> login(
 			@Parameter(description = "OAuth 서버 타입 (예: slack)", required = true) @PathVariable
 					String oauthServerType,
@@ -81,15 +84,36 @@ public interface AuthApi {
 
 	@Operation(
 			summary = "토큰 재발급",
-			description = "쿠키에 담긴 사용자 토큰을 이용하여 리프레시 토큰을 반환한다.",
+			description =
+					"리프레시 토큰을 이용하여 새로운 AT/RT를 발급한다. "
+							+ "Web 클라이언트: AT/RT 쿠키를 재설정한다. "
+							+ "App 클라이언트: 응답 바디에 토큰을 반환한다.",
 			security = @SecurityRequirement(name = "bearerAuth"))
+	@ApiResponses({
+		@io.swagger.v3.oas.annotations.responses.ApiResponse(
+				responseCode = "201",
+				description = "토큰 재발급 성공"),
+		@io.swagger.v3.oas.annotations.responses.ApiResponse(
+				responseCode = "401",
+				description = "4003: 만료된 토큰 / 4004: 블랙리스트 등록된 토큰",
+				content = @Content)
+	})
 	ApiResponse<SuccessBody<TokenResponse>> reissue(
 			HttpServletRequest request, HttpServletResponse httpResponse);
 
 	@Operation(
 			summary = "로그아웃",
-			description = "쿠키에 담긴 리프레시 토큰을 이용하여 로그아웃한다.",
+			description = "리프레시 토큰을 블랙리스트에 등록하여 로그아웃한다. " + "Web 클라이언트: AT/RT 쿠키도 함께 삭제한다.",
 			security = @SecurityRequirement(name = "bearerAuth"))
+	@ApiResponses({
+		@io.swagger.v3.oas.annotations.responses.ApiResponse(
+				responseCode = "200",
+				description = "로그아웃 성공"),
+		@io.swagger.v3.oas.annotations.responses.ApiResponse(
+				responseCode = "401",
+				description = "4003: 인증 실패",
+				content = @Content)
+	})
 	ApiResponse<SuccessBody<Void>> logout(
 			HttpServletRequest request,
 			HttpServletResponse httpResponse,
