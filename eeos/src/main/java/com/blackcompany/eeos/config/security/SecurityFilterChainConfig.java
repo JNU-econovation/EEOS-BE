@@ -70,6 +70,7 @@ public class SecurityFilterChainConfig {
 							.requestMatchers(HttpMethod.POST, "/api/auth/login/**")
 							.requestMatchers(HttpMethod.POST, "/api/auth/login")
 							.requestMatchers(HttpMethod.POST, "/api/auth/signup")
+							.requestMatchers(HttpMethod.POST, "/api/auth/reissue")
 							.requestMatchers(HttpMethod.POST, "/api/slack/events")
 							.requestMatchers("/api/guest/**")
 							.requestMatchers("/api/health-check");
