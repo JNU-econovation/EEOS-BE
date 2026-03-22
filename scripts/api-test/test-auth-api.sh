@@ -196,10 +196,10 @@ if [ -n "${APP_CLIENT_ID:-}" ]; then
 fi
 
 # ============================================
-# 3. /login/oauth2 엔드포인트
+# 3. /login 엔드포인트
 # ============================================
 echo ""
-echo -e "${YELLOW}--- 3. /login/oauth2 엔드포인트 ---${NC}"
+echo -e "${YELLOW}--- 3. /login 엔드포인트 ---${NC}"
 
 # 테스트 계정 (환경변수로 설정 가능)
 TEST_EMAIL="${TEST_EMAIL:-}"
@@ -208,7 +208,7 @@ TEST_PASSWORD="${TEST_PASSWORD:-}"
 if [ -n "${WEB_CLIENT_ID:-}" ] && [ -n "$TEST_EMAIL" ]; then
 	# 3-1. 성공: WEB 로그인 → 303 + 쿠키
 	RESPONSE=$(curl -s -D - -o /dev/null -w "\n%{http_code}" \
-		-X POST "$BASE_URL/api/auth/login/oauth2" \
+		-X POST "$BASE_URL/api/auth/login" \
 		-d "client_id=$WEB_CLIENT_ID&redirect_uri=http://localhost:3000/callback&state=test123&email=$TEST_EMAIL&password=$TEST_PASSWORD")
 	STATUS=$(echo "$RESPONSE" | tail -1)
 	HEADERS=$(echo "$RESPONSE" | head -n -1)
@@ -220,7 +220,7 @@ if [ -n "${WEB_CLIENT_ID:-}" ] && [ -n "$TEST_EMAIL" ]; then
 
 	# 3-2. 실패: 잘못된 credentials → 303 (로그인 페이지로)
 	RESPONSE=$(curl -s -o /dev/null -w "%{http_code}\n%{redirect_url}" \
-		-X POST "$BASE_URL/api/auth/login/oauth2" \
+		-X POST "$BASE_URL/api/auth/login" \
 		-d "client_id=$WEB_CLIENT_ID&redirect_uri=http://localhost:3000/callback&state=test123&email=$TEST_EMAIL&password=wrong_password")
 	STATUS=$(echo "$RESPONSE" | head -1)
 	LOCATION=$(echo "$RESPONSE" | tail -1)
@@ -228,19 +228,19 @@ if [ -n "${WEB_CLIENT_ID:-}" ] && [ -n "$TEST_EMAIL" ]; then
 
 	# 3-3. 실패: 잘못된 client_id → 400
 	RESPONSE=$(curl -s -w "\n%{http_code}" \
-		-X POST "$BASE_URL/api/auth/login/oauth2" \
+		-X POST "$BASE_URL/api/auth/login" \
 		-d "client_id=nonexistent&redirect_uri=http://fake.com&state=test123&email=$TEST_EMAIL&password=$TEST_PASSWORD")
 	STATUS=$(echo "$RESPONSE" | tail -1)
 	assert_status "3-3. 잘못된 client_id → 400" 400 "$STATUS"
 
 	# 3-4. 실패: redirect_uri 불일치 → 400
 	RESPONSE=$(curl -s -w "\n%{http_code}" \
-		-X POST "$BASE_URL/api/auth/login/oauth2" \
+		-X POST "$BASE_URL/api/auth/login" \
 		-d "client_id=$WEB_CLIENT_ID&redirect_uri=http://evil.com/steal&state=test123&email=$TEST_EMAIL&password=$TEST_PASSWORD")
 	STATUS=$(echo "$RESPONSE" | tail -1)
 	assert_status "3-4. redirect_uri 불일치 → 400" 400 "$STATUS"
 else
-	echo -e "${YELLOW}[SKIP]${NC} /login/oauth2 테스트: WEB_CLIENT_ID 또는 TEST_EMAIL 미설정"
+	echo -e "${YELLOW}[SKIP]${NC} /login 테스트: WEB_CLIENT_ID 또는 TEST_EMAIL 미설정"
 	echo "       export TEST_EMAIL=<이메일> TEST_PASSWORD=<비밀번호> 후 재실행"
 fi
 
@@ -275,7 +275,7 @@ if [ -n "${APP_CLIENT_ID:-}" ] && [ -n "$TEST_EMAIL" ]; then
 
 	# App 로그인 → authorization_code 받기
 	RESPONSE=$(curl -s -o /dev/null -w "%{http_code}\n%{redirect_url}" \
-		-X POST "$BASE_URL/api/auth/login/oauth2" \
+		-X POST "$BASE_URL/api/auth/login" \
 		-d "client_id=$APP_CLIENT_ID&redirect_uri=kr.econovation.eeos://callback&state=test456&email=$TEST_EMAIL&password=$TEST_PASSWORD&code_challenge=$CODE_CHALLENGE&code_challenge_method=S256")
 	STATUS=$(echo "$RESPONSE" | head -1)
 	REDIRECT_URL=$(echo "$RESPONSE" | tail -1)
@@ -323,7 +323,7 @@ if [ -n "${APP_CLIENT_ID:-}" ] && [ -n "$TEST_EMAIL" ]; then
 	# 4-5. 실패: PKCE code_verifier 불일치
 	# 새 code 발급
 	RESPONSE=$(curl -s -o /dev/null -w "%{http_code}\n%{redirect_url}" \
-		-X POST "$BASE_URL/api/auth/login/oauth2" \
+		-X POST "$BASE_URL/api/auth/login" \
 		-d "client_id=$APP_CLIENT_ID&redirect_uri=kr.econovation.eeos://callback&state=test789&email=$TEST_EMAIL&password=$TEST_PASSWORD&code_challenge=$CODE_CHALLENGE&code_challenge_method=S256")
 	STATUS=$(echo "$RESPONSE" | head -1)
 	REDIRECT_URL=$(echo "$RESPONSE" | tail -1)
