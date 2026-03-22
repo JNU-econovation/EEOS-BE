@@ -96,8 +96,9 @@ public class AuthController implements AuthApi {
 		return ApiResponseGenerator.success(response, HttpStatus.CREATED, MessageCode.CREATE);
 	}
 
+	@Deprecated
 	@Override
-	@PostMapping("/login")
+	@PostMapping("/login/legacy")
 	public ApiResponse<SuccessBody<TokenResponse>> login(
 			@RequestBody EEOSLoginRequest request, HttpServletResponse httpResponse) {
 		TokenModel tokenModel = loginUsecase.login(request.getId(), request.getPassword());

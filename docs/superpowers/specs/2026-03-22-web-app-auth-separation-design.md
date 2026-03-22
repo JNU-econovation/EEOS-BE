@@ -356,4 +356,4 @@ Redis 장애 시:
 | Method | Path                                 | 상태                                        |
 |--------|--------------------------------------|---------------------------------------------|
 | POST   | `/api/auth/login/{oauthServerType}`  | @Deprecated (Slack OAuth, 추후 제거 예정)   |
-| POST   | `/api/auth/login` (기존 버전)        | @Deprecated (새 `/api/auth/login/oauth2`로 대체) |
+| POST   | `/api/auth/login` (기존 버전)        | @Deprecated (새 `/api/auth/login`로 대체) |
