@@ -53,7 +53,11 @@ public class GeminiAnnouncementParser implements AnnouncementParser {
 
 	@PostConstruct
 	void init() {
-		geminiClient = Client.builder().apiKey(apiKey).build();
+		if (apiKey != null && !apiKey.isBlank()) {
+			geminiClient = Client.builder().apiKey(apiKey).build();
+		} else {
+			log.warn("Gemini API 키가 설정되지 않았습니다. rule-based 파서로 fallback합니다.");
+		}
 	}
 
 	@Override
@@ -62,6 +66,9 @@ public class GeminiAnnouncementParser implements AnnouncementParser {
 			maxAttempts = 3,
 			backoff = @Backoff(delay = 1000, multiplier = 2.0))
 	public ParsedAnnouncement parse(String text) {
+		if (geminiClient == null) {
+			return fallbackParser.parse(text);
+		}
 		log.info("Gemini 파싱 요청. model={}, textLength={}", model, text.length());
 		String prompt = String.format(PROMPT_TEMPLATE, text);
 		GenerateContentResponse response = geminiClient.models.generateContent(model, prompt, null);
