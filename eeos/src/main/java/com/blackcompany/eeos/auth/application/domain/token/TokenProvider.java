@@ -17,6 +17,8 @@ public class TokenProvider {
 
 	private static final String MEMBER_ID_CLAIM_KEY = "memberId";
 	private static final String ROLE_CLAIM_KEY = "role";
+	private static final String CLIENT_TYPE_CLAIM_KEY = "clientType";
+	private static final String CLIENT_ID_CLAIM_KEY = "clientId";
 	private final SecretKey accessSecretKey;
 	private final SecretKey refreshSecretKey;
 	private final long accessValidTime;
@@ -77,6 +79,21 @@ public class TokenProvider {
 		return Jwts.builder()
 				.setHeaderParam(Header.TYPE, Header.JWT_TYPE)
 				.claim(MEMBER_ID_CLAIM_KEY, memberId)
+				.setIssuedAt(now)
+				.setExpiration(new Date(now.getTime() + refreshValidTime))
+				.signWith(refreshSecretKey)
+				.compact();
+	}
+
+	public String createRefreshToken(
+			final Long memberId, final String clientType, final String clientId) {
+		final Date now = new Date();
+
+		return Jwts.builder()
+				.setHeaderParam(Header.TYPE, Header.JWT_TYPE)
+				.claim(MEMBER_ID_CLAIM_KEY, memberId)
+				.claim(CLIENT_TYPE_CLAIM_KEY, clientType)
+				.claim(CLIENT_ID_CLAIM_KEY, clientId)
 				.setIssuedAt(now)
 				.setExpiration(new Date(now.getTime() + refreshValidTime))
 				.signWith(refreshSecretKey)
