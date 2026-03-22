@@ -3,7 +3,6 @@ package com.blackcompany.eeos.announcement.application.dto;
 import com.blackcompany.eeos.announcement.application.model.AnnouncementModel;
 import com.blackcompany.eeos.common.utils.DateConverter;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 

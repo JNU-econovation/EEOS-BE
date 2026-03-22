@@ -50,7 +50,8 @@ class AnnouncementControllerTest {
 												.id(1L)
 												.title("이벤트 안내")
 												.body("이번 주 행사 안내드립니다.")
-												.createdDate(DateConverter.toMillis(LocalDateTime.of(2026, 3, 15, 10, 0, 0)))
+												.createdDate(
+														DateConverter.toMillis(LocalDateTime.of(2026, 3, 15, 10, 0, 0)))
 												.build(),
 										AnnouncementResponse.builder()
 												.id(2L)
