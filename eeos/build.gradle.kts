@@ -36,6 +36,9 @@ dependencies {
     implementation(libs.spring.boot.starter.data.redis)
     implementation(libs.spring.boot.starter.security)
 
+    // Monitoring
+    implementation(libs.micrometer.registry.prometheus)
+
     // Database
     implementation(libs.mysql.connector)
     implementation(libs.flyway.core)

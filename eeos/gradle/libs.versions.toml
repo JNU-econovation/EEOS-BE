@@ -69,6 +69,9 @@ firebase-admin = { group = "com.google.firebase", name = "firebase-admin", versi
 spring-retry = { group = "org.springframework.retry", name = "spring-retry", version.ref = "spring-retry" }
 spring-aspects = { group = "org.springframework", name = "spring-aspects" }
 
+# Monitoring
+micrometer-registry-prometheus = { group = "io.micrometer", name = "micrometer-registry-prometheus" }
+
 
 [plugins]
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
