@@ -1,10 +1,3 @@
----
-name: new-pr
-description: 현재 브랜치에서 커밋한 내용을 바탕으로 새로운 pull request 를 하나 생성한다. pull request 본문 템플릿은 .github/PULL_REQUEST_TEMPLATE.md 를 사용한다.  create new pull request about current branch using .github/PULL_REQUEST_TEMPLATE.md
-user-invocable: true
-allowed-tools: Bash, Read, Glob, Grep
----
-
 # new-pr
 
 새로운 pull request 를 생성한다.
@@ -19,7 +12,7 @@ allowed-tools: Bash, Read, Glob, Grep
 
 ### 스크린샷 🏞️ (선택)
 
-## 💬 REVIEWER에게 요구사항 💬 
+## 💬 REVIEWER에게 요구사항 💬
 ```
 
 ## 규칙
