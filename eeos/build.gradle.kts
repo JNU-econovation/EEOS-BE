@@ -69,6 +69,9 @@ dependencies {
     implementation(libs.spring.retry)
     implementation(libs.spring.aspects)
 
+    // Google Gen AI SDK
+    implementation(libs.google.genai)
+
 
 
 }

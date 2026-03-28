@@ -23,6 +23,7 @@ public class SecurityFilterChainConfig {
 	private final DynamicCorsConfigurationSource corsConfigurationSource;
 	private final AccessTokenEntryPoint accessTokenEntryPoint;
 	private final UnknownEndpointFilter unknownEndpointFilter;
+	private final InternalApiKeyFilter internalApiKeyFilter;
 
 	@Bean
 	@Order(0)
@@ -43,6 +44,21 @@ public class SecurityFilterChainConfig {
 
 	@Bean
 	@Order(1)
+	// Internal API Key 인증이 필요한 엔드포인트
+	SecurityFilterChain internalApiKey(HttpSecurity httpSecurity) throws Exception {
+		httpSecurity.securityMatchers((matcher) -> matcher.requestMatchers("/api/internal/**"));
+
+		commonConfiguration(httpSecurity);
+		httpSecurity.logout(AbstractHttpConfigurer::disable);
+		httpSecurity.securityContext(AbstractHttpConfigurer::disable);
+
+		httpSecurity.addFilterBefore(internalApiKeyFilter, DisableEncodeUrlFilter.class);
+
+		return httpSecurity.build();
+	}
+
+	@Bean
+	@Order(2)
 	// 인증 필요 없는 엔드포인트
 	SecurityFilterChain nonAuthenticated(HttpSecurity httpSecurity) throws Exception {
 		httpSecurity.securityMatchers(
@@ -54,6 +70,7 @@ public class SecurityFilterChainConfig {
 							.requestMatchers(HttpMethod.POST, "/api/auth/login/**")
 							.requestMatchers(HttpMethod.POST, "/api/auth/login")
 							.requestMatchers(HttpMethod.POST, "/api/auth/signup")
+							.requestMatchers(HttpMethod.POST, "/api/auth/reissue")
 							.requestMatchers(HttpMethod.POST, "/api/slack/events")
 							.requestMatchers("/api/guest/**")
 							.requestMatchers("/api/health-check");
@@ -74,7 +91,7 @@ public class SecurityFilterChainConfig {
 	}
 
 	@Bean
-	@Order(2)
+	@Order(3)
 	// 인증이 필요한 엔드포인트
 	SecurityFilterChain authenticated(HttpSecurity httpSecurity) throws Exception {
 		// 매칭 유무 설정
@@ -91,6 +108,7 @@ public class SecurityFilterChainConfig {
 							.requestMatchers("/api/team-building/**")
 							.requestMatchers("/api/semester-periods/**")
 							.requestMatchers("/api/calendars/**")
+							.requestMatchers("/api/announcements/**")
 							.requestMatchers("/api/pushToken", "/api/pushToken/**");
 				});
 
@@ -131,7 +149,7 @@ public class SecurityFilterChainConfig {
 	}
 
 	@Bean
-	@Order(3)
+	@Order(4)
 	SecurityFilterChain unknownEndpoint(HttpSecurity httpSecurity) throws Exception {
 		httpSecurity.securityMatcher("/**");
 

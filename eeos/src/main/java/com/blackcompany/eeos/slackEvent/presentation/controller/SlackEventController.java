@@ -10,6 +10,7 @@ import com.blackcompany.eeos.slackEvent.application.usecase.HandleSlackEventUsec
 import com.blackcompany.eeos.slackEvent.presentation.docs.SlackEventApi;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/slack")
 @RequiredArgsConstructor
@@ -49,6 +51,7 @@ public class SlackEventController implements SlackEventApi {
 
 		// 요청 타입이 이벤트 콜백일 경우, 이벤트 처리
 		if (EVENT_CALLBACK.equals(request.getType())) {
+			log.info("Event callback received");
 			SlackEventAckResponse response = handleSlackEventUsecase.handle(request);
 			return eventCallback(response);
 		}
