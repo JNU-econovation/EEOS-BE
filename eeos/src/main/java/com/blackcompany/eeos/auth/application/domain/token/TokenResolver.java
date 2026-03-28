@@ -23,6 +23,8 @@ public class TokenResolver {
 
 	private static final String MEMBER_ID_CLAIM_KEY = "memberId";
 	private static final String ROLE_CLAIM_KEY = "role";
+	private static final String CLIENT_TYPE_CLAIM_KEY = "clientType";
+	private static final String CLIENT_ID_CLAIM_KEY = "clientId";
 	private final SecretKey accessSecretKey;
 	private final SecretKey refreshSecretKey;
 
@@ -63,6 +65,14 @@ public class TokenResolver {
 
 	public Long getUserDataByRefreshToken(final String token) {
 		return getClaimValue(getRefreshClaims(token), MEMBER_ID_CLAIM_KEY);
+	}
+
+	public String getClientTypeByRefreshToken(final String token) {
+		return getRefreshClaims(token).get(CLIENT_TYPE_CLAIM_KEY, String.class);
+	}
+
+	public String getClientIdByRefreshToken(final String token) {
+		return getRefreshClaims(token).get(CLIENT_ID_CLAIM_KEY, String.class);
 	}
 
 	private SecretKey generateSecretKey(String key) {

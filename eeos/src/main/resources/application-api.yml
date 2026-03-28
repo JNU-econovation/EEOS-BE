@@ -14,3 +14,6 @@ token:
 
 eeos:
   internal-api-key: ${EEOS_INTERNAL_API_KEY:}
+
+auth:
+  login-page-url: ${AUTH_LOGIN_PAGE_URL:http://localhost:3000/login}

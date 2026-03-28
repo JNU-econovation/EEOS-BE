@@ -2,10 +2,12 @@ package com.blackcompany.eeos.config.security;
 
 import com.blackcompany.eeos.auth.application.domain.token.TokenResolver;
 import com.blackcompany.eeos.auth.application.exception.NotFoundHeaderTokenException;
+import com.blackcompany.eeos.auth.presentation.support.AuthConstants;
 import com.blackcompany.eeos.auth.presentation.support.TokenExtractor;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -20,12 +22,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Component
 public class AccessTokenFilter extends OncePerRequestFilter {
 
-	private final TokenExtractor tokenExtractor;
+	private final TokenExtractor headerExtractor;
 	private final TokenResolver tokenResolver;
 
 	public AccessTokenFilter(
-			@Qualifier("header") TokenExtractor tokenExtractor, TokenResolver tokenResolver) {
-		this.tokenExtractor = tokenExtractor;
+			@Qualifier("header") TokenExtractor headerExtractor, TokenResolver tokenResolver) {
+		this.headerExtractor = headerExtractor;
 		this.tokenResolver = tokenResolver;
 	}
 
@@ -34,7 +36,7 @@ public class AccessTokenFilter extends OncePerRequestFilter {
 			HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 		try {
-			String token = tokenExtractor.extract(request); // tokenExtractor 에서 Auth 헤더가 있는지 검사함
+			String token = extractToken(request);
 
 			createAuthentication(token)
 					.ifPresentOrElse(this::setAuthentication, SecurityContextHolder::clearContext);
@@ -44,6 +46,26 @@ public class AccessTokenFilter extends OncePerRequestFilter {
 			SecurityContextHolder.clearContext();
 			filterChain.doFilter(request, response);
 		}
+	}
+
+	private String extractToken(HttpServletRequest request) {
+		try {
+			return headerExtractor.extract(request);
+		} catch (NotFoundHeaderTokenException e) {
+			return extractFromCookie(request);
+		}
+	}
+
+	private String extractFromCookie(HttpServletRequest request) {
+		Cookie[] cookies = request.getCookies();
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if (AuthConstants.ACCESS_TOKEN_KEY.equals(cookie.getName())) {
+					return cookie.getValue();
+				}
+			}
+		}
+		throw new NotFoundHeaderTokenException();
 	}
 
 	private Optional<JwtAuthentication> createAuthentication(String token) {

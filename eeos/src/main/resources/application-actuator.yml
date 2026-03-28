@@ -7,7 +7,17 @@ management:
   endpoints:
     web:
       exposure:
-        include: health
-      base-path: "/manage"
-  server:
-    port: 8081
+        include: health, prometheus, info, metrics
+      base-path: "/actuator"
+  endpoint:
+    health:
+      show-details: always
+    prometheus:
+      enabled: true
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  metrics:
+    tags:
+      application: eeos

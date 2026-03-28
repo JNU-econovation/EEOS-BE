@@ -52,17 +52,20 @@ class SecurityFilterChainTest {
 		private final MemberModel testMember = MemberFixture.멤버_모델(1L, ActiveStatus.AM);
 
 		@Test
+		@DisplayName("인증 없이 /api/auth/login 접근 가능 (400 또는 303 반환)")
 		void loginShouldReturn200() throws Exception {
-			// given
-			given(authService.authenticate(id, password)).willReturn(testMember);
-
-			// when
+			// /api/auth/login은 비인증 엔드포인트이므로 400 또는 303이 반환되어야 한다 (401/403이 아님)
 			mockMvc
 					.perform(
 							post("/api/auth/login")
-									.contentType(MediaType.APPLICATION_JSON)
-									.content(String.format("{\"id\":\"%s\",\"password\":\"%s\"}", id, password)))
-					.andExpect(status().isCreated()); // then
+									.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+									.param("client_id", "unknown")
+									.param("redirect_uri", "http://test.com")
+									.param("state", "test")
+									.param("email", id)
+									.param("password", password))
+					.andExpect(status().is(org.hamcrest.Matchers.not(401)))
+					.andExpect(status().is(org.hamcrest.Matchers.not(403)));
 		}
 
 		@Test

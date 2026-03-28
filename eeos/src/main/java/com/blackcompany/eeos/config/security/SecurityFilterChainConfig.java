@@ -72,6 +72,9 @@ public class SecurityFilterChainConfig {
 							.requestMatchers(HttpMethod.POST, "/api/auth/signup")
 							.requestMatchers(HttpMethod.POST, "/api/auth/reissue")
 							.requestMatchers(HttpMethod.POST, "/api/slack/events")
+							.requestMatchers(HttpMethod.GET, "/api/auth/authorize")
+							.requestMatchers(HttpMethod.POST, "/api/auth/token")
+							.requestMatchers(HttpMethod.POST, "/api/auth/clients")
 							.requestMatchers("/api/guest/**")
 							.requestMatchers("/api/health-check");
 				});
