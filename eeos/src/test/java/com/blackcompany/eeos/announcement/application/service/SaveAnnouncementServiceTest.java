@@ -13,7 +13,7 @@ import com.blackcompany.eeos.announcement.application.model.SlackAnnounceEventMo
 import com.blackcompany.eeos.announcement.application.repository.AnnouncementRepository;
 import com.blackcompany.eeos.announcement.application.repository.SlackAnnounceEventRepository;
 import com.blackcompany.eeos.announcement.application.support.AnnouncementParser;
-import com.blackcompany.eeos.announcement.application.support.ParsedAnnouncement;
+import com.blackcompany.eeos.announcement.application.model.ParsedAnnouncement;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

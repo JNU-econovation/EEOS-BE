@@ -1,4 +1,4 @@
-package com.blackcompany.eeos.announcement.application.support;
+package com.blackcompany.eeos.announcement.application.model;
 
 import java.time.LocalDate;
 
