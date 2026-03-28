@@ -99,7 +99,7 @@ class OAuth2ControllerTest {
 					.thenThrow(new InvalidClientException());
 
 			ResponseEntity<Void> result =
-					controller.loginOAuth2(
+					controller.login(
 							"bad",
 							"http://x",
 							"state",
@@ -140,7 +140,7 @@ class OAuth2ControllerTest {
 			MockHttpServletResponse response = new MockHttpServletResponse();
 
 			ResponseEntity<Void> result =
-					controller.loginOAuth2(
+					controller.login(
 							"web1",
 							"http://web/callback",
 							"state1",
@@ -178,7 +178,7 @@ class OAuth2ControllerTest {
 			request.setRemoteAddr("127.0.0.1");
 
 			ResponseEntity<Void> result =
-					controller.loginOAuth2(
+					controller.login(
 							"app1",
 							"http://app/callback",
 							"state1",
