@@ -4,7 +4,7 @@ import com.blackcompany.eeos.common.exception.BusinessException;
 import org.springframework.http.HttpStatus;
 
 public class AmbiguousTokenException extends BusinessException {
-	private static final String FAIL_CODE = "4013";
+	private static final String FAIL_CODE = "4017";
 
 	public AmbiguousTokenException() {
 		super(FAIL_CODE, HttpStatus.BAD_REQUEST);

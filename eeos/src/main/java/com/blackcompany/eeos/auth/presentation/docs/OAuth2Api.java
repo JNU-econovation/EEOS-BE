@@ -24,11 +24,11 @@ public interface OAuth2Api {
 		@io.swagger.v3.oas.annotations.responses.ApiResponse(
 				responseCode = "400",
 				description =
-						"요청 검증 실패\n\n"
-								+ "| 코드 | 메시지 |\n"
+						"| 코드 | 메시지 |\n"
 								+ "|------|--------|\n"
-								+ "| 4010 | 유효하지 않은 클라이언트 |\n"
-								+ "| 4011 | 등록되지 않은 redirect URI |",
+								+ "| 4014 | 유효하지 않은 클라이언트 |\n"
+								+ "| 4015 | 등록되지 않은 redirect URI |\n"
+								+ "| 4015 | redirect_uri 불일치 시 redirect 없이 즉시 반환 |",
 				content = @Content)
 	})
 	ResponseEntity<Void> authorize(
@@ -43,34 +43,39 @@ public interface OAuth2Api {
 			summary = "OAuth2 로그인",
 			description =
 					"credentials를 검증하고 clientType에 따라 분기한다. "
-							+ "WEB: 쿠키에 AT/RT 설정 후 303 redirect. "
-							+ "APP: authorization_code 발급 후 303 redirect.")
+							+ "WEB: eeos_access_token / eeos_refresh_token 쿠키 설정 후 303 redirect. "
+							+ "APP: authorization_code 발급 후 303 redirect. "
+							+ "credentials 실패 시 로그인 페이지로 303 redirect (error=invalid_credentials).")
 	@ApiResponses({
 		@io.swagger.v3.oas.annotations.responses.ApiResponse(
 				responseCode = "303",
 				description = "인증 성공 후 redirect_uri로 리다이렉트"),
 		@io.swagger.v3.oas.annotations.responses.ApiResponse(
 				responseCode = "400",
-				description = "client_id 또는 redirect_uri 검증 실패",
+				description =
+						"| 코드 | 메시지 |\n"
+								+ "|------|--------|\n"
+								+ "| 4014 | 유효하지 않은 클라이언트 |\n"
+								+ "| 4015 | 등록되지 않은 redirect URI |",
 				content = @Content),
 		@io.swagger.v3.oas.annotations.responses.ApiResponse(
 				responseCode = "429",
-				description = "4290: 로그인 시도 횟수 초과",
+				description = "| 코드 | 메시지 |\n" + "|------|--------|\n" + "| 4290 | 로그인 시도 횟수를 초과했습니다 |",
 				content = @Content)
 	})
 	ResponseEntity<Void> login(
 			@Parameter(description = "클라이언트 ID", required = true) String clientId,
 			@Parameter(description = "리다이렉트 URI", required = true) String redirectUri,
-			@Parameter(description = "CSRF 상태값", required = true) String state,
+			@Parameter(description = "CSRF 방지용 상태값", required = true) String state,
 			@Parameter(description = "이메일", required = true) String email,
 			@Parameter(description = "비밀번호", required = true) String password,
-			@Parameter(description = "PKCE code_challenge") String codeChallenge,
-			@Parameter(description = "PKCE 방식") String codeChallengeMethod,
+			@Parameter(description = "PKCE code_challenge (APP 필수)") String codeChallenge,
+			@Parameter(description = "PKCE 방식 (S256만 지원, APP 필수)") String codeChallengeMethod,
 			HttpServletRequest request,
 			HttpServletResponse response);
 
 	@Operation(
-			summary = "토큰 교환",
+			summary = "토큰 교환 (App 전용)",
 			description =
 					"authorization_code를 AT/RT로 교환한다. "
 							+ "Content-Type: application/x-www-form-urlencoded. "
@@ -82,11 +87,10 @@ public interface OAuth2Api {
 		@io.swagger.v3.oas.annotations.responses.ApiResponse(
 				responseCode = "400",
 				description =
-						"교환 실패\n\n"
-								+ "| 코드 | 메시지 |\n"
+						"| 코드 | 메시지 |\n"
 								+ "|------|--------|\n"
-								+ "| 4010 | client_id 불일치 |\n"
-								+ "| 4012 | code 만료/사용됨/PKCE 실패/redirect_uri 불일치 |",
+								+ "| 4014 | 유효하지 않은 클라이언트 (client_id 불일치) |\n"
+								+ "| 4016 | 유효하지 않은 인가 코드 (만료/재사용/PKCE 실패/redirect_uri 불일치) |",
 				content = @Content)
 	})
 	ResponseEntity<Map<String, Object>> token(
@@ -94,6 +98,6 @@ public interface OAuth2Api {
 					String grantType,
 			@Parameter(description = "authorization code", required = true) String code,
 			@Parameter(description = "PKCE code_verifier", required = true) String codeVerifier,
-			@Parameter(description = "리다이렉트 URI", required = true) String redirectUri,
+			@Parameter(description = "리다이렉트 URI (인가 요청 시와 동일해야 함)", required = true) String redirectUri,
 			@Parameter(description = "클라이언트 ID", required = true) String clientId);
 }

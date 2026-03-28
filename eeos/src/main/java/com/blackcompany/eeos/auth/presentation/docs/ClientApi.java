@@ -27,14 +27,13 @@ public interface ClientApi {
 		@io.swagger.v3.oas.annotations.responses.ApiResponse(
 				responseCode = "400",
 				description =
-						"요청 검증 실패\n\n"
-								+ "| 코드 | 메시지 |\n"
+						"| 코드 | 메시지 |\n"
 								+ "|------|--------|\n"
-								+ "| 4011 | redirectUris가 비어있거나 10개 초과 또는 512자 초과 |",
+								+ "| 4015 | redirectUris가 비어있거나 10개 초과 또는 512자 초과 |",
 				content = @Content),
 		@io.swagger.v3.oas.annotations.responses.ApiResponse(
 				responseCode = "403",
-				description = "관리자 권한 필요",
+				description = "| 코드 | 메시지 |\n" + "|------|--------|\n" + "| 403 | 관리자 권한 필요 |",
 				content = @Content)
 	})
 	ApiResponse<SuccessBody<ClientRegistrationResponse>> register(
