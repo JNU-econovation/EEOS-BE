@@ -12,6 +12,7 @@ spring:
         - noti
         - swagger
         - admin
+        - ai
       dev:
         - mysql
         - api
@@ -24,6 +25,7 @@ spring:
         - slack
         - noti
         - admin
+        - ai
       prod:
         - mysql
         - api
@@ -35,4 +37,5 @@ spring:
         - slack
         - noti
         - admin
+        - ai
     active: local

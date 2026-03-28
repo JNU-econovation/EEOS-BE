@@ -56,4 +56,11 @@ public class DateConverter {
 	public static Long toMillis(LocalDateTime localDateTime) {
 		return localDateTime.atZone(ZoneId.of(KST)).toInstant().toEpochMilli();
 	}
+
+	public static Long toMillis(LocalDate localDate) {
+		if (localDate == null) {
+			return null;
+		}
+		return localDate.atStartOfDay(ZoneId.of(KST)).toInstant().toEpochMilli();
+	}
 }

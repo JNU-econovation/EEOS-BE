@@ -25,6 +25,9 @@ flyway = "10.7.1"
 # Retry
 spring-retry = "2.0.5"
 
+# Google Gen AI
+google-genai = "1.0.0"
+
 
 [libraries]
 # Spring Boot
@@ -68,6 +71,9 @@ firebase-admin = { group = "com.google.firebase", name = "firebase-admin", versi
 # Retry
 spring-retry = { group = "org.springframework.retry", name = "spring-retry", version.ref = "spring-retry" }
 spring-aspects = { group = "org.springframework", name = "spring-aspects" }
+
+# Google Gen AI
+google-genai = { group = "com.google.genai", name = "google-genai", version.ref = "google-genai" }
 
 
 [plugins]
