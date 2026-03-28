@@ -4,9 +4,7 @@ import com.blackcompany.eeos.auth.infra.oauth.github.client.GithubApiErrorDecode
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.codec.ErrorDecoder;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
-@Configuration
 public class GithubApiFeignConfig {
 	@Bean
 	public ErrorDecoder githubErrorDecoder(ObjectMapper objectMapper) {

@@ -24,7 +24,6 @@ repositories {
 }
 
 apply(from = "gradle/git-hooks.gradle.kts")
-apply(from = "gradle/integration-test.gradle.kts")
 apply(from = "gradle/asciidoctor.gradle.kts")
 
 dependencies {
@@ -72,6 +71,9 @@ dependencies {
 
     implementation(libs.spring.retry)
     implementation(libs.spring.aspects)
+
+    // Google Gen AI SDK
+    implementation(libs.google.genai)
 
 
 

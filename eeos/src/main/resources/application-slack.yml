@@ -4,6 +4,14 @@ spring:
       on-profile: slack
 
 slack:
+  event:
+    signing-secret: ${SLACK_SIGNING_SECRET:test-signing-secret}
+    allowed-time-skew-seconds: ${SLACK_ALLOWED_TIME_SKEW_SECONDS:300}
+    forward:
+      base-url: ${EEOS_SLACK_FORWARD_BASE_URL:http://localhost:8080}
+      path: ${EEOS_SLACK_FORWARD_PATH:/api/internal/slack/announcements}
+      api-key: ${eeos.internal-api-key:}
+
   bot:
     black-company:
       eeos: ${BLACK_COMPANY_EEOS_BOT_TOKEN}

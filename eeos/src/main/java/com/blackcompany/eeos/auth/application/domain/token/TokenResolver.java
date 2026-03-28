@@ -95,7 +95,7 @@ public class TokenResolver {
 		} catch (SignatureException e) {
 			throw new TokenParsingException(e);
 		} catch (Exception e) {
-			log.error("JWT 파싱 중 오류 발생: {}", e.getMessage(), e);
+			log.error("JWT 파싱 중 오류 발생: token={}, error={}", token, e.getMessage(), e);
 			throw new TokenParsingException(e);
 		}
 	}
