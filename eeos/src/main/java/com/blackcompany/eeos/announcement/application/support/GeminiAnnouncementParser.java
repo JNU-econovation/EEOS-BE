@@ -1,13 +1,8 @@
-package com.blackcompany.eeos.announcement.infra.gemini;
+package com.blackcompany.eeos.announcement.application.support;
 
-import com.blackcompany.eeos.announcement.application.support.AnnouncementParser;
-import com.blackcompany.eeos.announcement.application.support.AnnouncementTextParser;
-import com.blackcompany.eeos.announcement.application.support.ParsedAnnouncement;
+import com.blackcompany.eeos.announcement.infra.gemini.GeminiApiClient;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.genai.Client;
-import com.google.genai.types.GenerateContentResponse;
-import jakarta.annotation.PostConstruct;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,54 +35,45 @@ public class GeminiAnnouncementParser implements AnnouncementParser {
 			%s
 			""";
 
-	private final ObjectMapper objectMapper;
+	private final GeminiApiClient geminiApiClient;
 	private final AnnouncementTextParser fallbackParser;
-
-	@Value("${gemini.api-key}")
-	private String apiKey;
+	private final ObjectMapper objectMapper;
 
 	@Value("${gemini.model}")
 	private String model;
 
-	private Client geminiClient;
-
-	@PostConstruct
-	void init() {
-		if (apiKey != null && !apiKey.isBlank()) {
-			geminiClient = Client.builder().apiKey(apiKey).build();
-		} else {
-			log.warn("Gemini API 키가 설정되지 않았습니다. rule-based 파서로 fallback합니다.");
+	@Override
+	public ParsedAnnouncement parse(String text) {
+		try {
+			String responseText = callGemini(text);
+			return parseResponse(responseText);
+		} catch (Exception e) {
+			log.error("Gemini 파싱 실패. rule-based 파서로 fallback합니다. text={}", text, e);
+			return fallbackParser.parse(text);
 		}
 	}
 
-	@Override
 	@Retryable(
 			retryFor = Exception.class,
 			maxAttempts = 3,
 			backoff = @Backoff(delay = 1000, multiplier = 2.0))
-	public ParsedAnnouncement parse(String text) {
-		if (geminiClient == null) {
-			return fallbackParser.parse(text);
-		}
-		log.info("Gemini 파싱 요청. model={}, textLength={}", model, text.length());
+	public String callGemini(String text) {
 		String prompt = String.format(PROMPT_TEMPLATE, text);
-		GenerateContentResponse response = geminiClient.models.generateContent(model, prompt, null);
-		log.debug("Gemini 응답. responseText={}", response.text());
-		ParsedAnnouncement result = parseResponse(response.text());
-		log.info("Gemini 파싱 완료. title={}, deadline={}", result.title(), result.deadline());
-		return result;
+		log.info("Gemini 파싱 요청. model={}, textLength={}", model, text.length());
+		String responseText = geminiApiClient.generateContent(model, prompt);
+		log.debug("Gemini 응답. responseText={}", responseText);
+		return responseText;
 	}
 
 	@Recover
-	public ParsedAnnouncement recover(Exception e, String text) {
-		log.error("Gemini 파싱 3회 재시도 모두 실패. rule-based 파서로 fallback합니다. text={}", text, e);
-		return fallbackParser.parse(text);
+	public String recoverCallGemini(Exception e, String text) {
+		log.error("Gemini API 3회 재시도 모두 실패. text={}", text, e);
+		throw new GeminiApiException("Gemini API 3회 재시도 모두 실패.", e);
 	}
 
 	private ParsedAnnouncement parseResponse(String responseText) {
+		String cleaned = responseText.replaceAll("```json\\s*", "").replaceAll("```\\s*", "").trim();
 		try {
-			String cleaned = responseText.replaceAll("```json\\s*", "").replaceAll("```\\s*", "").trim();
-
 			JsonNode parsed = objectMapper.readTree(cleaned);
 
 			String title = parsed.path("title").isNull() ? null : parsed.path("title").asText(null);
@@ -103,7 +89,7 @@ public class GeminiAnnouncementParser implements AnnouncementParser {
 			return new ParsedAnnouncement(title, body, deadline);
 		} catch (Exception e) {
 			log.error("Gemini 응답 파싱 실패. responseText={}", responseText, e);
-			throw new IllegalStateException("Gemini 응답 파싱 실패: " + responseText, e);
+			throw new GeminiApiException("Gemini 응답 파싱 실패.", e);
 		}
 	}
 }
