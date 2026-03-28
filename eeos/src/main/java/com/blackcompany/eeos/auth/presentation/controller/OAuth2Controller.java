@@ -76,7 +76,7 @@ public class OAuth2Controller implements OAuth2Api {
 
 	@Override
 	@PostMapping("/login")
-	public ResponseEntity<Void> loginOAuth2(
+	public ResponseEntity<Void> login(
 			@RequestParam("client_id") String clientId,
 			@RequestParam("redirect_uri") String redirectUri,
 			@RequestParam("state") String state,
