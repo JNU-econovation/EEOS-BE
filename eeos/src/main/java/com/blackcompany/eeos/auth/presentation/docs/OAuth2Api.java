@@ -58,7 +58,7 @@ public interface OAuth2Api {
 				description = "4290: 로그인 시도 횟수 초과",
 				content = @Content)
 	})
-	ResponseEntity<Void> loginOAuth2(
+	ResponseEntity<Void> login(
 			@Parameter(description = "클라이언트 ID", required = true) String clientId,
 			@Parameter(description = "리다이렉트 URI", required = true) String redirectUri,
 			@Parameter(description = "CSRF 상태값", required = true) String state,
