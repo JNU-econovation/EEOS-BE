@@ -15,7 +15,7 @@ public class AuthCookieManager implements CookieManager {
 
 	private static final Boolean HTTP_ONLY = true;
 	private static final Boolean SECURE = true;
-	private static final String SAMESITE = "Lax";
+	private static final String SAMESITE = "None";
 	private static final Long EXPIRATION = 0L;
 
 	@Value("${token.cookie.domain}")
