@@ -1,4 +1,4 @@
-package com.blackcompany.eeos.announcement.infra.gemini;
+package com.blackcompany.eeos.announcement.application.support;
 
 public interface GeminiApiClient {
 

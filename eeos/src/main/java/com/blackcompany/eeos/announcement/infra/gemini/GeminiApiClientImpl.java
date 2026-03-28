@@ -1,6 +1,7 @@
 package com.blackcompany.eeos.announcement.infra.gemini;
 
-import com.blackcompany.eeos.announcement.application.support.GeminiApiException;
+import com.blackcompany.eeos.announcement.application.exception.GeminiApiException;
+import com.blackcompany.eeos.announcement.application.support.GeminiApiClient;
 import com.google.genai.Client;
 import com.google.genai.errors.ClientException;
 import com.google.genai.errors.GenAiIOException;
