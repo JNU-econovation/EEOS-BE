@@ -4,7 +4,7 @@ import com.blackcompany.eeos.common.exception.BusinessException;
 import org.springframework.http.HttpStatus;
 
 public class InvalidGrantException extends BusinessException {
-	private static final String FAIL_CODE = "4012";
+	private static final String FAIL_CODE = "4016";
 
 	public InvalidGrantException() {
 		super(FAIL_CODE, HttpStatus.BAD_REQUEST);

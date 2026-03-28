@@ -4,7 +4,7 @@ import com.blackcompany.eeos.common.exception.BusinessException;
 import org.springframework.http.HttpStatus;
 
 public class InvalidRedirectUriException extends BusinessException {
-	private static final String FAIL_CODE = "4011";
+	private static final String FAIL_CODE = "4015";
 
 	public InvalidRedirectUriException() {
 		super(FAIL_CODE, HttpStatus.BAD_REQUEST);

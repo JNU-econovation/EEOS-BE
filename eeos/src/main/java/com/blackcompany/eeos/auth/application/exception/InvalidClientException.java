@@ -4,7 +4,7 @@ import com.blackcompany.eeos.common.exception.BusinessException;
 import org.springframework.http.HttpStatus;
 
 public class InvalidClientException extends BusinessException {
-	private static final String FAIL_CODE = "4010";
+	private static final String FAIL_CODE = "4014";
 
 	public InvalidClientException() {
 		super(FAIL_CODE, HttpStatus.BAD_REQUEST);
