@@ -6,28 +6,34 @@ import com.blackcompany.eeos.announcement.application.model.SlackAnnounceEventMo
 import com.blackcompany.eeos.announcement.application.repository.AnnouncementRepository;
 import com.blackcompany.eeos.announcement.application.repository.SlackAnnounceEventRepository;
 import com.blackcompany.eeos.announcement.application.support.AnnouncementParser;
-import com.blackcompany.eeos.announcement.application.support.ParsedAnnouncement;
+import com.blackcompany.eeos.announcement.application.exception.GeminiApiException;
+import com.blackcompany.eeos.announcement.application.model.ParsedAnnouncement;
 import com.blackcompany.eeos.announcement.application.usecase.SaveAnnouncementUsecase;
 import com.blackcompany.eeos.common.utils.DateConverter;
 import java.time.LocalDateTime;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 public class SaveAnnouncementService implements SaveAnnouncementUsecase {
 
 	private final SlackAnnounceEventRepository slackAnnounceEventRepository;
 	private final AnnouncementRepository announcementRepository;
 	private final AnnouncementParser announcementParser;
+	private final AnnouncementParser fallbackParser;
 
 	public SaveAnnouncementService(
 			SlackAnnounceEventRepository slackAnnounceEventRepository,
 			AnnouncementRepository announcementRepository,
-			@Qualifier("geminiAnnouncementParser") AnnouncementParser announcementParser) {
+			@Qualifier("geminiAnnouncementParser") AnnouncementParser announcementParser,
+			@Qualifier("announcementTextParser") AnnouncementParser fallbackParser) {
 		this.slackAnnounceEventRepository = slackAnnounceEventRepository;
 		this.announcementRepository = announcementRepository;
 		this.announcementParser = announcementParser;
+		this.fallbackParser = fallbackParser;
 	}
 
 	@Override
@@ -53,7 +59,13 @@ public class SaveAnnouncementService implements SaveAnnouncementUsecase {
 						request.getMessageTs());
 
 		// Slack 메세지 파싱
-		ParsedAnnouncement parsed = announcementParser.parse(request.getText());
+		ParsedAnnouncement parsed;
+		try {
+			parsed = announcementParser.parse(request.getText());
+		} catch (GeminiApiException e) {
+			log.warn("Gemini 파싱 실패. rule-based 파서로 fallback합니다. text={}", request.getText(), e);
+			parsed = fallbackParser.parse(request.getText());
+		}
 
 		// messageTs -> LocalDateTime 변환
 		LocalDateTime announcedAt =

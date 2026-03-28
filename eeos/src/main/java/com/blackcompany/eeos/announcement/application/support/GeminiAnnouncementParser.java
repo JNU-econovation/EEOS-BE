@@ -1,6 +1,7 @@
 package com.blackcompany.eeos.announcement.application.support;
 
-import com.blackcompany.eeos.announcement.infra.gemini.GeminiApiClient;
+import com.blackcompany.eeos.announcement.application.exception.GeminiApiException;
+import com.blackcompany.eeos.announcement.application.model.ParsedAnnouncement;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDate;
@@ -36,38 +37,26 @@ public class GeminiAnnouncementParser implements AnnouncementParser {
 			""";
 
 	private final GeminiApiClient geminiApiClient;
-	private final AnnouncementTextParser fallbackParser;
 	private final ObjectMapper objectMapper;
 
 	@Value("${gemini.model}")
 	private String model;
 
 	@Override
-	public ParsedAnnouncement parse(String text) {
-		try {
-			String responseText = callGemini(text);
-			return parseResponse(responseText);
-		} catch (Exception e) {
-			log.error("Gemini 파싱 실패. rule-based 파서로 fallback합니다. text={}", text, e);
-			return fallbackParser.parse(text);
-		}
-	}
-
 	@Retryable(
-			retryFor = Exception.class,
+			retryFor = GeminiApiException.class,
 			maxAttempts = 3,
 			backoff = @Backoff(delay = 1000, multiplier = 2.0))
-	public String callGemini(String text) {
+	public ParsedAnnouncement parse(String text) {
 		String prompt = String.format(PROMPT_TEMPLATE, text);
 		log.info("Gemini 파싱 요청. model={}, textLength={}", model, text.length());
 		String responseText = geminiApiClient.generateContent(model, prompt);
 		log.debug("Gemini 응답. responseText={}", responseText);
-		return responseText;
+		return parseResponse(responseText);
 	}
 
 	@Recover
-	public String recoverCallGemini(Exception e, String text) {
-		log.error("Gemini API 3회 재시도 모두 실패. text={}", text, e);
+	public ParsedAnnouncement recoverParse(GeminiApiException e, String text) {
 		throw new GeminiApiException("Gemini API 3회 재시도 모두 실패.", e);
 	}
 
@@ -89,7 +78,7 @@ public class GeminiAnnouncementParser implements AnnouncementParser {
 			return new ParsedAnnouncement(title, body, deadline);
 		} catch (Exception e) {
 			log.error("Gemini 응답 파싱 실패. responseText={}", responseText, e);
-			throw new GeminiApiException("Gemini 응답 파싱 실패.", e);
+			throw new IllegalStateException("Gemini 응답 파싱 실패.", e);
 		}
 	}
 }
