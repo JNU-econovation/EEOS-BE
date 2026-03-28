@@ -145,8 +145,7 @@ class SlackEventServiceTest {
 		verifyNoInteractions(forwardApiClient);
 	}
 
-	private SlackEventRequest createEventCallback(
-			String eventId, String eventType, String subtype) {
+	private SlackEventRequest createEventCallback(String eventId, String eventType, String subtype) {
 		return SlackEventRequest.builder()
 				.type("event_callback")
 				.eventId(eventId)
