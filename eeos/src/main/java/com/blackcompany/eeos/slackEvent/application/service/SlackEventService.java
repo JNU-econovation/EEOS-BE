@@ -59,7 +59,10 @@ public class SlackEventService implements HandleSlackEventUsecase {
 			return SlackEventAckResponse.of(eventId, STATUS_IGNORED_DUPLICATE);
 		}
 
+		// 락 획득하면 그대로 진행
 		try {
+			// TODO: ChannelId 별로 수행할 동작을 다르게 취하도록 분리 가능 -> 전략 패턴 적용
+
 			// internal call 수행
 			forwardApiClient.forward(forwardApiKey, toForwardRequest(request));
 			// event processed 처리
