@@ -8,10 +8,16 @@ description: 현재 브랜치에서 커밋한 내용을 바탕으로 새로운 p
 새로운 pull request 를 생성한다.
 
 ## 본문 형식
-다음의 경로에 있는 markdown 파일을 그대로 사용한다.
+아래의 Pull Request Template 에 맞게, PR 본문을 작성하여 Pull Request 를 생성한다.
 
-```
-.github/PULL_REQUEST_TEMPLATE.md
+```markdown
+## 📌 관련 이슈
+
+## ✒️ 작업 내용
+
+### 스크린샷 🏞️ (선택)
+
+## 💬 REVIEWER에게 요구사항 💬 
 ```
 
 ## 규칙
