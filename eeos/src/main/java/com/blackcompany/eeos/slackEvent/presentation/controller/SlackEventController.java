@@ -1,7 +1,7 @@
 package com.blackcompany.eeos.slackEvent.presentation.controller;
 
 import com.blackcompany.eeos.slackEvent.application.dto.SlackEventAckResponse;
-import com.blackcompany.eeos.slackEvent.application.dto.SlackEventEnvelopeRequest;
+import com.blackcompany.eeos.slackEvent.application.dto.SlackEventRequest;
 import com.blackcompany.eeos.slackEvent.application.dto.SlackUrlVerificationResponse;
 import com.blackcompany.eeos.slackEvent.application.exception.SlackEventParsingException;
 import com.blackcompany.eeos.slackEvent.application.exception.UnsupportedSlackEventTypeException;
@@ -42,7 +42,7 @@ public class SlackEventController implements SlackEventApi {
 		slackRequestSignatureVerifier.verify(requestTimestamp, requestSignature, rawBody);
 
 		// Request Parsing
-		SlackEventEnvelopeRequest request = parse(rawBody);
+		SlackEventRequest request = parse(rawBody);
 
 		// 요청 타입이 URL 검증일 경우, 받은 challenge를 반환
 		if (URL_VERIFICATION.equals(request.getType())) {
@@ -68,9 +68,9 @@ public class SlackEventController implements SlackEventApi {
 		return ResponseEntity.ok(response);
 	}
 
-	private SlackEventEnvelopeRequest parse(String rawBody) {
+	private SlackEventRequest parse(String rawBody) {
 		try {
-			return objectMapper.readValue(rawBody, SlackEventEnvelopeRequest.class);
+			return objectMapper.readValue(rawBody, SlackEventRequest.class);
 		} catch (Exception e) {
 			throw new SlackEventParsingException();
 		}

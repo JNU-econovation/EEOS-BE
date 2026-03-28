@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SlackEventEnvelopeRequest {
+public class SlackEventRequest {
 
 	private String type;
 	private String challenge;
@@ -27,14 +27,14 @@ public class SlackEventEnvelopeRequest {
 	@JsonProperty("team_id")
 	private String teamId;
 
-	private SlackInnerEvent event;
+	private SlackMessageInfo event;
 
 	@Getter
 	@Builder
 	@NoArgsConstructor
 	@AllArgsConstructor
 	@JsonIgnoreProperties(ignoreUnknown = true)
-	public static class SlackInnerEvent {
+	public static class SlackMessageInfo {
 
 		private String type;
 		private String channel;

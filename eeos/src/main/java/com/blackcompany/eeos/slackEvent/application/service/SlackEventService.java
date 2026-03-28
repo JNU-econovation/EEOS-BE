@@ -2,8 +2,8 @@ package com.blackcompany.eeos.slackEvent.application.service;
 
 import com.blackcompany.eeos.slackEvent.application.dto.EeosSlackMessageForwardRequest;
 import com.blackcompany.eeos.slackEvent.application.dto.SlackEventAckResponse;
-import com.blackcompany.eeos.slackEvent.application.dto.SlackEventEnvelopeRequest;
-import com.blackcompany.eeos.slackEvent.application.dto.SlackEventEnvelopeRequest.SlackInnerEvent;
+import com.blackcompany.eeos.slackEvent.application.dto.SlackEventRequest;
+import com.blackcompany.eeos.slackEvent.application.dto.SlackEventRequest.SlackMessageInfo;
 import com.blackcompany.eeos.slackEvent.application.exception.InvalidSlackEventIdException;
 import com.blackcompany.eeos.slackEvent.application.exception.SlackForwardFailedException;
 import com.blackcompany.eeos.slackEvent.application.repository.SlackEventDedupRepository;
@@ -37,8 +37,8 @@ public class SlackEventService implements HandleSlackEventUsecase {
 	}
 
 	@Override
-	public SlackEventAckResponse handle(SlackEventEnvelopeRequest request) {
-		SlackInnerEvent event = request.getEvent();
+	public SlackEventAckResponse handle(SlackEventRequest request) {
+		SlackMessageInfo event = request.getEvent();
 		String eventId = request.getEventId();
 		validateEventId(eventId);
 
@@ -81,8 +81,8 @@ public class SlackEventService implements HandleSlackEventUsecase {
 		}
 	}
 
-	private EeosSlackMessageForwardRequest toForwardRequest(SlackEventEnvelopeRequest request) {
-		SlackInnerEvent event = request.getEvent();
+	private EeosSlackMessageForwardRequest toForwardRequest(SlackEventRequest request) {
+		SlackMessageInfo event = request.getEvent();
 		return EeosSlackMessageForwardRequest.builder()
 				.eventId(request.getEventId())
 				.teamId(request.getTeamId())

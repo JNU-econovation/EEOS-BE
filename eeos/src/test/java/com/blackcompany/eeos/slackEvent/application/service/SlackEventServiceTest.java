@@ -11,7 +11,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 
 import com.blackcompany.eeos.slackEvent.application.dto.EeosSlackMessageForwardRequest;
 import com.blackcompany.eeos.slackEvent.application.dto.SlackEventAckResponse;
-import com.blackcompany.eeos.slackEvent.application.dto.SlackEventEnvelopeRequest;
+import com.blackcompany.eeos.slackEvent.application.dto.SlackEventRequest;
 import com.blackcompany.eeos.slackEvent.application.exception.InvalidSlackEventIdException;
 import com.blackcompany.eeos.slackEvent.application.exception.SlackForwardFailedException;
 import com.blackcompany.eeos.slackEvent.application.repository.SlackEventDedupRepository;
@@ -36,7 +36,7 @@ class SlackEventServiceTest {
 	@DisplayName("message 타입이 아니면 내부 API 호출 없이 무시한다")
 	void ignore_when_not_message_event() {
 		// given
-		SlackEventEnvelopeRequest request = createEventCallback("Ev-1", "reaction_added", null);
+		SlackEventRequest request = createEventCallback("Ev-1", "reaction_added", null);
 
 		// when
 		SlackEventAckResponse response = slackEventService.handle(request);
@@ -50,7 +50,7 @@ class SlackEventServiceTest {
 	@DisplayName("message 이벤트여도 subtype이 있으면 내부 API 호출 없이 무시한다")
 	void ignore_when_message_has_subtype() {
 		// given
-		SlackEventEnvelopeRequest request = createEventCallback("Ev-2", "message", "bot_message");
+		SlackEventRequest request = createEventCallback("Ev-2", "message", "bot_message");
 
 		// when
 		SlackEventAckResponse response = slackEventService.handle(request);
@@ -64,7 +64,7 @@ class SlackEventServiceTest {
 	@DisplayName("이미 처리된 event_id는 중복으로 무시한다")
 	void ignore_when_event_already_processed() {
 		// given
-		SlackEventEnvelopeRequest request = createEventCallback("Ev-3", "message", null);
+		SlackEventRequest request = createEventCallback("Ev-3", "message", null);
 		given(dedupRepository.isProcessed("Ev-3")).willReturn(true);
 
 		// when
@@ -80,7 +80,7 @@ class SlackEventServiceTest {
 	@DisplayName("처리 락 획득에 실패하면 중복으로 무시한다")
 	void ignore_when_lock_not_acquired() {
 		// given
-		SlackEventEnvelopeRequest request = createEventCallback("Ev-4", "message", null);
+		SlackEventRequest request = createEventCallback("Ev-4", "message", null);
 		given(dedupRepository.isProcessed("Ev-4")).willReturn(false);
 		given(dedupRepository.tryLock("Ev-4")).willReturn(false);
 
@@ -96,7 +96,7 @@ class SlackEventServiceTest {
 	@DisplayName("유효한 메시지 이벤트는 내부 API로 전달하고 처리 완료를 기록한다")
 	void forward_when_valid_message_event() {
 		// given
-		SlackEventEnvelopeRequest request = createEventCallback("Ev-5", "message", null);
+		SlackEventRequest request = createEventCallback("Ev-5", "message", null);
 		given(dedupRepository.isProcessed("Ev-5")).willReturn(false);
 		given(dedupRepository.tryLock("Ev-5")).willReturn(true);
 
@@ -121,7 +121,7 @@ class SlackEventServiceTest {
 	@DisplayName("내부 API 전달 중 예외가 발생하면 SlackForwardFailedException을 던지고 락을 해제한다")
 	void throw_when_forward_failed() {
 		// given
-		SlackEventEnvelopeRequest request = createEventCallback("Ev-6", "message", null);
+		SlackEventRequest request = createEventCallback("Ev-6", "message", null);
 		given(dedupRepository.isProcessed("Ev-6")).willReturn(false);
 		given(dedupRepository.tryLock("Ev-6")).willReturn(true);
 		willThrow(new RuntimeException("forward fail")).given(forwardApiClient).forward(any(), any());
@@ -137,7 +137,7 @@ class SlackEventServiceTest {
 	@DisplayName("event_id가 비어 있으면 InvalidSlackEventIdException을 던진다")
 	void throw_when_event_id_is_blank() {
 		// given
-		SlackEventEnvelopeRequest request = createEventCallback(" ", "message", null);
+		SlackEventRequest request = createEventCallback(" ", "message", null);
 
 		// when & then
 		assertThatThrownBy(() -> slackEventService.handle(request))
@@ -145,15 +145,15 @@ class SlackEventServiceTest {
 		verifyNoInteractions(forwardApiClient);
 	}
 
-	private SlackEventEnvelopeRequest createEventCallback(
+	private SlackEventRequest createEventCallback(
 			String eventId, String eventType, String subtype) {
-		return SlackEventEnvelopeRequest.builder()
+		return SlackEventRequest.builder()
 				.type("event_callback")
 				.eventId(eventId)
 				.eventTime(1710000000L)
 				.teamId("T123")
 				.event(
-						SlackEventEnvelopeRequest.SlackInnerEvent.builder()
+						SlackEventRequest.SlackMessageInfo.builder()
 								.type(eventType)
 								.channel("C123")
 								.user("U123")
