@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v2/auth")
 @RequiredArgsConstructor
 public class OAuth2Controller implements OAuth2Api {
 
