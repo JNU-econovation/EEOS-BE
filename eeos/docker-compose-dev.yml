@@ -81,49 +81,7 @@ services:
       - internal-network
       - external-network
 
-  # Monitoring Stack
-  prometheus:
-    image: prom/prometheus:latest
-    container_name: prometheus
-    ports:
-      - "9090:9090"
-    volumes:
-      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml.template:ro
-      - prometheus-data:/prometheus
-    environment:
-      - PROD_SERVER_IP=${PROD_SERVER_IP}
-    entrypoint: /bin/sh
-    command: >
-      -c "apk add --no-cache gettext && envsubst '$$PROD_SERVER_IP' < /etc/prometheus/prometheus.yml.template > /etc/prometheus/prometheus.yml && /bin/prometheus --config.file=/etc/prometheus/prometheus.yml --storage.tsdb.path=/prometheus --web.enable-lifecycle"
-    restart: always
-    networks:
-      - internal-network
-      - external-network
-
-  grafana:
-    image: grafana/grafana:latest
-    container_name: grafana
-    ports:
-      - "3000:3000"
-    environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=admin
-      - GF_USERS_ALLOW_SIGN_UP=false
-      - SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL}
-    volumes:
-      - grafana-data:/var/lib/grafana
-      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
-    depends_on:
-      - prometheus
-    restart: always
-    networks:
-      - internal-network
-      - external-network
-
 networks:
   internal-network:
   external-network:
 
-volumes:
-  prometheus-data:
-  grafana-data:
