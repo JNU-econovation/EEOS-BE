@@ -11,9 +11,10 @@ contactPoints:
           title: '[{{ .Status | toUpper }}] {{ .CommonLabels.alertname }}'
           text: |
             {{ range .Alerts }}
-            *Alert:* {{ .Annotations.summary }}
-            *Description:* {{ .Annotations.description }}
-            *Severity:* {{ .Labels.severity }}
+            *상태:* {{ if eq .Status "firing" }}🔴 발생{{ else }}✅ 해제{{ end }}
+            *요약:* {{ .Annotations.summary }}
+            *상세:* {{ .Annotations.description }}
+            *심각도:* {{ .Labels.severity }}
             {{ end }}
 
 policies:
@@ -37,8 +38,8 @@ groups:
         noDataState: Alerting
         execErrState: Alerting
         annotations:
-          summary: 'EEOS 서비스 다운'
-          description: '{{ $labels.job }} 서비스가 응답하지 않습니다. (instance: {{ $labels.instance }})'
+          summary: "EEOS 서비스 상태 이상"
+          description: "{{ if $labels.job }}{{ $labels.job }}{{ else }}EEOS 관련{{ end }} 서비스가 응답하지 않습니다. (instance: {{ $labels.instance | default \"알 수 없음\" }})"
         labels:
           severity: critical
         data:
