@@ -6,7 +6,12 @@ import com.blackcompany.eeos.auth.application.dto.converter.TokenResponseConvert
 import com.blackcompany.eeos.auth.application.dto.request.AdditionalInfoApplicationCommand;
 import com.blackcompany.eeos.auth.application.dto.request.EeosSignUpCommand;
 import com.blackcompany.eeos.auth.application.dto.response.TokenResponse;
-import com.blackcompany.eeos.auth.application.usecase.*;
+import com.blackcompany.eeos.auth.application.usecase.EeosSignUpUseCase;
+import com.blackcompany.eeos.auth.application.usecase.LogOutUsecase;
+import com.blackcompany.eeos.auth.application.usecase.LoginUsecase;
+import com.blackcompany.eeos.auth.application.usecase.OAuthSignUpUseCase;
+import com.blackcompany.eeos.auth.application.usecase.ReissueUsecase;
+import com.blackcompany.eeos.auth.application.usecase.WithDrawUsecase;
 import com.blackcompany.eeos.auth.presentation.docs.AuthApi;
 import com.blackcompany.eeos.auth.presentation.dto.AdditionalInfoRequest;
 import com.blackcompany.eeos.auth.presentation.dto.EeosSignUpRequest;
@@ -23,6 +28,7 @@ import com.blackcompany.eeos.common.presentation.support.CookieManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
@@ -130,7 +136,12 @@ public class AuthController implements AuthApi {
 						request.getGeneration(),
 						request.getName(),
 						request.getActiveStatus());
-		TokenModel tokenModel = eeosSignUpUseCase.signUp(command);
+
+		TokenModel tokenModel =
+				Optional.ofNullable(request.getSlackMemberId())
+						.map(id -> eeosSignUpUseCase.signUp(command, id))
+						.orElseGet(() -> eeosSignUpUseCase.signUp(command));
+
 		TokenResponse response = generateTokenResponse(tokenModel, httpResponse);
 		return ApiResponseGenerator.success(response, HttpStatus.CREATED, MessageCode.CREATE);
 	}

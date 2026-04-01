@@ -18,7 +18,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @Tag(name = "인증", description = "인증 관련 API")
 public interface AuthApi {
-	@Operation(summary = "회원가입", description = "id, password, 기수, 성함, 활동상태로 회원가입하고 토큰을 반환한다.")
+	@Operation(
+			summary = "회원가입",
+			description =
+					"id, password, 기수, 성함, 활동상태로 회원가입하고 토큰을 반환한다.\n\n"
+							+ "`slackMemberId`를 함께 전달하면 기존 Slack OAuth 회원에 EEOS 계정을 연결하는 방식으로 가입한다."
+							+ " `slackMemberId`가 없으면 새 회원을 생성하는 기존 로직을 따른다.")
 	@ApiResponses({
 		@io.swagger.v3.oas.annotations.responses.ApiResponse(
 				responseCode = "201",
@@ -42,8 +47,16 @@ public interface AuthApi {
 								+ "| 3001 | {status}는 존재하지 않는 활동 상태입니다 |",
 				content = @Content),
 		@io.swagger.v3.oas.annotations.responses.ApiResponse(
+				responseCode = "404",
+				description = "4200: 존재하지 않는 Slack 회원 ID입니다",
+				content = @Content),
+		@io.swagger.v3.oas.annotations.responses.ApiResponse(
 				responseCode = "409",
-				description = "4009: 이미 사용 중인 아이디입니다",
+				description =
+						"| 코드 | 메시지 |\n"
+								+ "|------|--------|\n"
+								+ "| 4009 | 이미 사용 중인 아이디입니다 |\n"
+								+ "| 4201 | 이미 계정이 연결된 회원입니다 |",
 				content = @Content)
 	})
 	ApiResponse<SuccessBody<TokenResponse>> signUp(
