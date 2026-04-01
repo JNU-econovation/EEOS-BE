@@ -3,13 +3,13 @@ spring:
     activate:
       on-profile: local-mysql
   datasource:
-    url: jdbc:mysql://localhost:3306/eeos?useSSL=false&serverTimezone=Asia/Seoul&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:13308/eeos?useSSL=false&serverTimezone=Asia/Seoul&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true
     username: root
-    password: gksktodaud1!
+    password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: create
     properties:
       hibernate:
         format_sql: true
@@ -18,13 +18,13 @@ spring:
     generate-ddl: false
     open-in-view: false
   flyway:
-    baseline-on-migrate: false
-    enabled: true
+    baseline-on-migrate: true
+    enabled: false
     baseline-version: 0
     out-of-order: true
-    url: jdbc:mysql://localhost:3306/eeos?useSSL=false&serverTimezone=Asia/Seoul&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:13308/eeos?useSSL=false&serverTimezone=Asia/Seoul&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true
     user: root
-    password: gksktodaud1!
+    password: root
 
 logging:
   level:
