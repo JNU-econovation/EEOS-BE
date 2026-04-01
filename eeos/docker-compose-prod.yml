@@ -10,7 +10,7 @@ services:
     volumes:
       - ./proxy/nginx.conf:/etc/nginx/templates/nginx.conf.template:ro
     environment:
-      - DEV_SERVER_IP=${DEV_SERVER_IP}
+      - DEV_SERVER_IP=${DEV_SERVER_IP:?DEV_SERVER_IP is required}
     command: >
       /bin/sh -c "envsubst '$$DEV_SERVER_IP' < /etc/nginx/templates/nginx.conf.template > /etc/nginx/nginx.conf && nginx -g 'daemon off;'"
     restart: always
