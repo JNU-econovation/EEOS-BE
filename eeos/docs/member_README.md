@@ -23,7 +23,48 @@
 - **인증 연계**: `CreateAdminMemberService`는 `AccountJpaRepository`, `AuthorityRepository`, `OAuthMemberRepository`와 연동해 멤버-계정-권한을 동시에 구성하고 `Role.ROLE_ADMIN` 권한을 부여합니다.
 - **검증 책임 분리**: Bean Validation(`ChangeActiveStatusRequest`, `ChangeDepartment` 파라미터)와 도메인 검증(`MemberModel.canEdit`)을 분리해 유지보수성을 높입니다.
 
+## API 명세 (추가 엔드포인트)
+
+### POST `/api/members/admin/slack-signup-dm`
+
+Slack OAuth2로만 가입된(EEOS ID/PW 계정이 없는) 회원 전체에게 EEOS 회원가입 링크를 Slack DM으로 발송합니다.
+
+- 인증: JWT 필수 (관리자 권한)
+- 요청 본문: 없음
+
+#### 응답
+
+```json
+{
+  "totalCount": 12,
+  "successCount": 11,
+  "failCount": 1
+}
+```
+
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| `totalCount` | int | DM 발송 대상 총 인원 수 |
+| `successCount` | int | DM 발송 성공 인원 수 |
+| `failCount` | int | DM 발송 실패 인원 수 |
+
+#### 오류
+
+| HTTP | 코드 | 메시지 |
+|------|------|--------|
+| 403 | 3000 | 관리자 권한이 없습니다 |
+
+#### 내부 흐름
+
+1. `validateAdmin`으로 호출자 관리자 여부 검증
+2. `MemberRepository`에서 Account가 없는 Slack OAuth 회원 목록 조회
+3. 각 회원 Slack ID로 DM 발송 (`SlackDmNotificationService`)
+4. 성공/실패 집계 후 `SlackSignupDmResponse` 반환
+
 ## 연관 컴포넌트
-- `member/application/dto/*` : 멤버 리스트, 단건, 부서 응답 스펙.
+- `member/application/dto/*` : 멤버 리스트, 단건, 부서, `SlackSignupDmResponse` 응답 스펙.
 - `member/application/model/*` : `ActiveStatus`, `Department`, `MemberModel`, `AdminInfo`.
+- `member/application/service/SendSignupLinkService` : Slack 전용 회원 조회 및 DM 발송 오케스트레이션.
+- `member/application/service/SlackDmNotificationService` : Slack DM 전송 인프라 어댑터.
+- `member/application/usecase/SendSignupLinkToSlackOnlyMembersUsecase` : DM 발송 유스케이스 인터페이스.
 - `member/persistence/*Repository` : JPA 저장소 어댑터(`JpaMemberRepository`, `JpaMemberCustomRepository`, `MemberRepositoryImpl`).
