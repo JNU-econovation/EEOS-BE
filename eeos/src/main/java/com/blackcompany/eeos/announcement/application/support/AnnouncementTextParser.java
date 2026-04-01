@@ -1,5 +1,6 @@
 package com.blackcompany.eeos.announcement.application.support;
 
+import com.blackcompany.eeos.announcement.application.model.ParsedAnnouncement;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.springframework.stereotype.Component;

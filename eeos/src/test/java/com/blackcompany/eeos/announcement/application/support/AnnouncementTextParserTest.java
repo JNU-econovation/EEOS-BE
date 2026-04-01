@@ -2,6 +2,7 @@ package com.blackcompany.eeos.announcement.application.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.blackcompany.eeos.announcement.application.model.ParsedAnnouncement;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
