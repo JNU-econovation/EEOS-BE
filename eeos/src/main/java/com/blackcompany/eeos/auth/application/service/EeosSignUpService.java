@@ -1,7 +1,7 @@
 package com.blackcompany.eeos.auth.application.service;
 
-import com.blackcompany.eeos.auth.application.domain.OauthServerType;
 import com.blackcompany.eeos.auth.application.domain.OauthMemberModel;
+import com.blackcompany.eeos.auth.application.domain.OauthServerType;
 import com.blackcompany.eeos.auth.application.domain.TokenModel;
 import com.blackcompany.eeos.auth.application.dto.request.EeosSignUpCommand;
 import com.blackcompany.eeos.auth.application.exception.AlreadyLinkedAccountException;

@@ -64,10 +64,7 @@ public class SlackDmNotificationService {
 
 			String dmChannelId = openResponse.getChannelId();
 			if (dmChannelId == null || dmChannelId.isBlank()) {
-				log.error(
-						"Slack DM 채널 ID가 비어있습니다. memberId={}, oauthId={}",
-						member.getId(),
-						oauthId);
+				log.error("Slack DM 채널 ID가 비어있습니다. memberId={}, oauthId={}", member.getId(), oauthId);
 				throw new RuntimeException("Slack DM 채널 ID가 비어있습니다.");
 			}
 

@@ -154,8 +154,7 @@ class EeosSignUpServiceTest {
 		when(accountRepository.existsByMemberId(memberId)).thenReturn(true);
 
 		assertThrows(
-				AlreadyLinkedAccountException.class,
-				() -> eeosSignUpService.signUp(command, slackUserId));
+				AlreadyLinkedAccountException.class, () -> eeosSignUpService.signUp(command, slackUserId));
 
 		verify(accountRepository, never()).save(any());
 		verify(tokenGenerator, never()).execute(any(), any());
