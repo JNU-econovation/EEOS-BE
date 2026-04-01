@@ -7,6 +7,8 @@ import java.util.Optional;
 public interface OAuthMemberRepository {
 	Optional<OauthMemberModel> findByOauthId(String oauthId);
 
+	Optional<OauthMemberModel> findByMemberId(Long memberId);
+
 	Optional<OAuthMemberEntity> findByAccount(String loginId);
 
 	OauthMemberModel save(OauthMemberModel model);

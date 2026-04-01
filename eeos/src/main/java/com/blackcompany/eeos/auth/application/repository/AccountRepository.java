@@ -9,4 +9,6 @@ public interface AccountRepository {
 	AccountModel save(AccountModel model);
 
 	boolean existsByLoginId(String loginId);
+
+	boolean existsByMemberId(Long memberId);
 }
