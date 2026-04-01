@@ -45,4 +45,14 @@ public class MemberFixture {
 				.isAdmin(true)
 				.build();
 	}
+
+	public static MemberModel 슬랙온리_모델(Long memberId, String slackUserId) {
+		return MemberModel.builder()
+				.id(memberId)
+				.name(String.valueOf(memberId))
+				.oauthServerType(OauthServerType.SLACK)
+				.activeStatus(ActiveStatus.AM)
+				.isAdmin(false)
+				.build();
+	}
 }
