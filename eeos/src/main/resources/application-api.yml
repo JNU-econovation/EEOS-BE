@@ -14,6 +14,8 @@ token:
 
 eeos:
   internal-api-key: ${EEOS_INTERNAL_API_KEY:}
+  signup:
+    url: ${EEOS_SIGNUP_URL:https://auth.econovation.kr/signup}
 
 auth:
   login-page-url: ${AUTH_LOGIN_PAGE_URL:http://localhost:3000/login}

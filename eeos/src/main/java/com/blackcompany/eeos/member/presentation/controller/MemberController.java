@@ -10,11 +10,13 @@ import com.blackcompany.eeos.member.application.dto.CommandMemberResponse;
 import com.blackcompany.eeos.member.application.dto.DepartmentResponse;
 import com.blackcompany.eeos.member.application.dto.QueryMemberResponse;
 import com.blackcompany.eeos.member.application.dto.QueryMembersResponse;
+import com.blackcompany.eeos.member.application.dto.SlackSignupDmResponse;
 import com.blackcompany.eeos.member.application.model.Department;
 import com.blackcompany.eeos.member.application.usecase.ChangeActiveStatusUsecase;
 import com.blackcompany.eeos.member.application.usecase.DepartmentUsecase;
 import com.blackcompany.eeos.member.application.usecase.GetMemberByActiveStatus;
 import com.blackcompany.eeos.member.application.usecase.GetMembersByActiveStatus;
+import com.blackcompany.eeos.member.application.usecase.SendSignupLinkToSlackOnlyMembersUsecase;
 import com.blackcompany.eeos.member.presentation.docs.MemberApi;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -23,6 +25,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +40,7 @@ public class MemberController implements MemberApi {
 	private final GetMembersByActiveStatus getMembersByActiveStatus;
 	private final GetMemberByActiveStatus getMemberByActiveStatus;
 	private final DepartmentUsecase departmentUsecase;
+	private final SendSignupLinkToSlackOnlyMembersUsecase sendSignupLinkToSlackOnlyMembersUsecase;
 
 	@Override
 	@PutMapping("/activeStatus/{memberId}")
@@ -86,5 +90,14 @@ public class MemberController implements MemberApi {
 		List<DepartmentResponse> responses =
 				departments.stream().map(DepartmentResponse::from).toList();
 		return ApiResponseGenerator.success(responses, HttpStatus.OK, MessageCode.GET);
+	}
+
+	@Override
+	@PostMapping("/admin/slack-signup-dm")
+	public ApiResponse<SuccessBody<SlackSignupDmResponse>> sendSlackSignupDm(
+			@Member Long adminMemberId) {
+		SlackSignupDmResponse response =
+				sendSignupLinkToSlackOnlyMembersUsecase.sendSignupLinks(adminMemberId);
+		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.CREATE);
 	}
 }
