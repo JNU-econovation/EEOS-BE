@@ -23,8 +23,7 @@ public class SlackSignupCodeEncoder {
 	public SlackSignupCodeEncoder(@Value("${eeos.signup.code-secret}") String secret) {
 		byte[] keyBytes = secret.getBytes(StandardCharsets.UTF_8);
 		if (keyBytes.length != 16 && keyBytes.length != 24 && keyBytes.length != 32) {
-			throw new IllegalArgumentException(
-					"eeos.slack.signup.code-secret must be 16, 24, or 32 bytes");
+			throw new IllegalArgumentException("암호화 시크릿 키 length 오류 (16/24/32 바이트 중 하나)");
 		}
 		this.secretKey = new SecretKeySpec(keyBytes, "AES");
 	}
