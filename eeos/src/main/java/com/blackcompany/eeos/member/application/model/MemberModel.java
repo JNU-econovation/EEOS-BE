@@ -36,6 +36,10 @@ public class MemberModel implements AbstractModel, MemberIdModel {
 		return this;
 	}
 
+	public boolean isSlackOnly() {
+		return OauthServerType.SLACK.equals(oauthServerType);
+	}
+
 	// TODO : Equals 재정의로 고민
 	public boolean validateSame(Long memberId) {
 		return id.equals(memberId);
