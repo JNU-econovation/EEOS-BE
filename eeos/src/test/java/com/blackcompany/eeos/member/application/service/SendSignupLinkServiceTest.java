@@ -1,6 +1,7 @@
 package com.blackcompany.eeos.member.application.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -11,6 +12,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.blackcompany.eeos.member.application.dto.SlackSignupDmResponse;
+import com.blackcompany.eeos.member.application.exception.NotSlackOnlyMemberException;
 import com.blackcompany.eeos.member.application.model.MemberModel;
 import com.blackcompany.eeos.member.application.repository.MemberRepository;
 import com.blackcompany.eeos.member.fixture.MemberFixture;
@@ -102,5 +104,72 @@ class SendSignupLinkServiceTest {
 		assertEquals(2, result.getSuccessCount());
 		assertEquals(1, result.getFailCount());
 		verify(slackDmNotificationService, times(3)).sendSignupLink(any(), anyString());
+	}
+
+	@Test
+	@DisplayName("Slack Only 회원에게 단건 DM 발송 성공 시 successCount=1 결과를 반환한다.")
+	void sendSignupLink_성공_슬랙온리회원에게_DM발송_성공() {
+		// given
+		Long adminMemberId = 1L;
+		Long targetMemberId = 2L;
+		MemberModel admin = MemberFixture.어드민_모델(adminMemberId);
+		MemberModel target = MemberFixture.슬랙온리_모델(targetMemberId, "U_SLACK_001");
+
+		when(memberRepository.findById(adminMemberId)).thenReturn(admin);
+		when(memberRepository.findById(targetMemberId)).thenReturn(target);
+
+		// when
+		SlackSignupDmResponse result =
+				sendSignupLinkService.sendSignupLink(adminMemberId, targetMemberId);
+
+		// then
+		assertEquals(1, result.getTotalCount());
+		assertEquals(1, result.getSuccessCount());
+		assertEquals(0, result.getFailCount());
+		verify(slackDmNotificationService, times(1)).sendSignupLink(eq(target), anyString());
+	}
+
+	@Test
+	@DisplayName("대상 회원이 Slack Only가 아닌 경우 NotSlackOnlyMemberException이 발생한다.")
+	void sendSignupLink_실패_슬랙온리아닌회원_예외발생() {
+		// given
+		Long adminMemberId = 1L;
+		Long targetMemberId = 3L;
+		MemberModel admin = MemberFixture.어드민_모델(adminMemberId);
+		MemberModel nonSlackOnlyMember = MemberFixture.비슬랙온리_모델(targetMemberId);
+
+		when(memberRepository.findById(adminMemberId)).thenReturn(admin);
+		when(memberRepository.findById(targetMemberId)).thenReturn(nonSlackOnlyMember);
+
+		// when & then
+		assertThrows(
+				NotSlackOnlyMemberException.class,
+				() -> sendSignupLinkService.sendSignupLink(adminMemberId, targetMemberId));
+		verify(slackDmNotificationService, never()).sendSignupLink(any(), anyString());
+	}
+
+	@Test
+	@DisplayName("단건 DM 발송 중 슬랙 API 예외 발생 시 failCount=1 결과를 반환한다.")
+	void sendSignupLink_실패_DM발송_예외_failCount증가() {
+		// given
+		Long adminMemberId = 1L;
+		Long targetMemberId = 2L;
+		MemberModel admin = MemberFixture.어드민_모델(adminMemberId);
+		MemberModel target = MemberFixture.슬랙온리_모델(targetMemberId, "U_SLACK_001");
+
+		when(memberRepository.findById(adminMemberId)).thenReturn(admin);
+		when(memberRepository.findById(targetMemberId)).thenReturn(target);
+		doThrow(new RuntimeException("Slack API error"))
+				.when(slackDmNotificationService)
+				.sendSignupLink(eq(target), anyString());
+
+		// when
+		SlackSignupDmResponse result =
+				sendSignupLinkService.sendSignupLink(adminMemberId, targetMemberId);
+
+		// then
+		assertEquals(1, result.getTotalCount());
+		assertEquals(0, result.getSuccessCount());
+		assertEquals(1, result.getFailCount());
 	}
 }

@@ -11,6 +11,7 @@ import com.blackcompany.eeos.member.application.usecase.ChangeActiveStatusUsecas
 import com.blackcompany.eeos.member.application.usecase.DepartmentUsecase;
 import com.blackcompany.eeos.member.application.usecase.GetMemberByActiveStatus;
 import com.blackcompany.eeos.member.application.usecase.GetMembersByActiveStatus;
+import com.blackcompany.eeos.member.application.usecase.SendSignupLinkToSlackOnlyMemberUsecase;
 import com.blackcompany.eeos.member.application.usecase.SendSignupLinkToSlackOnlyMembersUsecase;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,7 @@ class MemberControllerTest {
 	@Mock private GetMemberByActiveStatus getMemberByActiveStatus;
 	@Mock private DepartmentUsecase departmentUsecase;
 	@Mock private SendSignupLinkToSlackOnlyMembersUsecase sendSignupLinkToSlackOnlyMembersUsecase;
+	@Mock private SendSignupLinkToSlackOnlyMemberUsecase sendSignupLinkToSlackOnlyMemberUsecase;
 
 	@InjectMocks private MemberController memberController;
 
@@ -46,5 +48,29 @@ class MemberControllerTest {
 		assertEquals(11, result.getBody().getData().getSuccessCount());
 		assertEquals(1, result.getBody().getData().getFailCount());
 		verify(sendSignupLinkToSlackOnlyMembersUsecase).sendSignupLinks(1L);
+	}
+
+	@Test
+	@DisplayName("특정 회원에게 Slack 회원가입 DM 발송 요청 시 집계 결과를 반환한다.")
+	void sendSlackSignupDmToMember_성공_집계결과_반환() {
+		// given
+		Long adminMemberId = 1L;
+		Long targetMemberId = 2L;
+		SlackSignupDmResponse response =
+				SlackSignupDmResponse.builder().totalCount(1).successCount(1).failCount(0).build();
+		when(sendSignupLinkToSlackOnlyMemberUsecase.sendSignupLink(adminMemberId, targetMemberId))
+				.thenReturn(response);
+
+		// when
+		ApiResponse<SuccessBody<SlackSignupDmResponse>> result =
+				memberController.sendSlackSignupDmToMember(adminMemberId, targetMemberId);
+
+		// then
+		assertEquals(HttpStatus.OK, result.getStatusCode());
+		assertEquals("201", result.getBody().getCode());
+		assertEquals(1, result.getBody().getData().getTotalCount());
+		assertEquals(1, result.getBody().getData().getSuccessCount());
+		assertEquals(0, result.getBody().getData().getFailCount());
+		verify(sendSignupLinkToSlackOnlyMemberUsecase).sendSignupLink(adminMemberId, targetMemberId);
 	}
 }

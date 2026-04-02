@@ -55,4 +55,14 @@ public class MemberFixture {
 				.isAdmin(false)
 				.build();
 	}
+
+	public static MemberModel 비슬랙온리_모델(Long memberId) {
+		return MemberModel.builder()
+				.id(memberId)
+				.name(String.valueOf(memberId))
+				.oauthServerType(OauthServerType.EEOS)
+				.activeStatus(ActiveStatus.AM)
+				.isAdmin(false)
+				.build();
+	}
 }
