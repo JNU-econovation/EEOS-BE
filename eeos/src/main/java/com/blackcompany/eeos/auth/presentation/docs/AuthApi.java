@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "인증", description = "인증 관련 API")
 public interface AuthApi {
@@ -62,6 +63,11 @@ public interface AuthApi {
 	ApiResponse<SuccessBody<TokenResponse>> signUp(
 			@Parameter(description = "회원가입 요청 정보", required = true) @Valid @RequestBody
 					EeosSignUpRequest request,
+			@Parameter(
+							description = "Slack 연동 가입 코드. Slack DM으로 전달된 링크의 ?code= 값. 일반 신규 가입 시 생략.",
+							required = false)
+					@RequestParam(required = false)
+					String code,
 			HttpServletResponse httpResponse);
 
 	@Operation(

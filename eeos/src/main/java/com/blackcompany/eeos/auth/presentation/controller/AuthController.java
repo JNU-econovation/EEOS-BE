@@ -37,6 +37,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -128,7 +129,9 @@ public class AuthController implements AuthApi {
 	@Override
 	@PostMapping("/signup")
 	public ApiResponse<SuccessBody<TokenResponse>> signUp(
-			@Valid @RequestBody EeosSignUpRequest request, HttpServletResponse httpResponse) {
+			@Valid @RequestBody EeosSignUpRequest request,
+			@RequestParam(required = false) String code,
+			HttpServletResponse httpResponse) {
 		EeosSignUpCommand command =
 				new EeosSignUpCommand(
 						request.getId(),
@@ -138,8 +141,8 @@ public class AuthController implements AuthApi {
 						request.getActiveStatus());
 
 		TokenModel tokenModel =
-				Optional.ofNullable(request.getSlackMemberId())
-						.map(id -> eeosSignUpUseCase.signUp(command, id))
+				Optional.ofNullable(code)
+						.map(c -> eeosSignUpUseCase.signUp(command, c))
 						.orElseGet(() -> eeosSignUpUseCase.signUp(command));
 
 		TokenResponse response = generateTokenResponse(tokenModel, httpResponse);

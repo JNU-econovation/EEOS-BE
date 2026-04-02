@@ -50,12 +50,6 @@ public class EeosSignUpRequest {
 			requiredMode = Schema.RequiredMode.REQUIRED)
 	private String activeStatus;
 
-	@Schema(
-			description = "Slack 회원 ID. Slack OAuth2로만 가입된 회원이 EEOS 계정을 연결할 때 사용합니다. 일반 신규 가입 시에는 생략합니다.",
-			example = "U08ABCDE123",
-			nullable = true)
-	private String slackMemberId;
-
 	public EeosSignUpRequest(
 			String id, String password, Integer generation, String name, String activeStatus) {
 		this.id = id;
@@ -63,20 +57,5 @@ public class EeosSignUpRequest {
 		this.generation = generation;
 		this.name = name;
 		this.activeStatus = activeStatus;
-	}
-
-	public EeosSignUpRequest(
-			String id,
-			String password,
-			Integer generation,
-			String name,
-			String activeStatus,
-			String slackMemberId) {
-		this.id = id;
-		this.password = password;
-		this.generation = generation;
-		this.name = name;
-		this.activeStatus = activeStatus;
-		this.slackMemberId = slackMemberId;
 	}
 }
