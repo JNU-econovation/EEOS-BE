@@ -1,5 +1,6 @@
 package com.blackcompany.eeos.auth.presentation.docs;
 
+import com.blackcompany.eeos.auth.application.dto.request.EEOSLoginRequest;
 import com.blackcompany.eeos.auth.application.dto.response.TokenResponse;
 import com.blackcompany.eeos.auth.presentation.dto.EeosSignUpRequest;
 import com.blackcompany.eeos.auth.presentation.support.Member;
@@ -14,11 +15,37 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "인증", description = "인증 관련 API")
 public interface AuthApi {
+	@Operation(
+			summary = "OAuth 로그인",
+			description = "PathVariable에 담긴 redirect_url, code를 받아 액세스 토큰과 리프레시 토큰을 발급한다.")
+	ApiResponse<SuccessBody<TokenResponse>> login(
+			@Parameter(description = "OAuth 서버 타입 (예: slack)", required = true) @PathVariable
+					String oauthServerType,
+			@Parameter(description = "OAuth 인증 코드", required = true) @RequestParam("code") String code,
+			@Parameter(description = "리다이렉트 URI", required = true) @RequestParam("redirect_uri")
+					String uri,
+			HttpServletResponse httpResponse);
+
+	@Operation(summary = "일반 로그인", description = "사용자가 id와 password를 이용하여 로그인한다.")
+	@ApiResponses({
+		@io.swagger.v3.oas.annotations.responses.ApiResponse(
+				responseCode = "200",
+				description = "로그인 성공"),
+		@io.swagger.v3.oas.annotations.responses.ApiResponse(
+				responseCode = "401",
+				description = "4008: ID 또는 비밀번호가 일치하지 않습니다",
+				content = @Content)
+	})
+	ApiResponse<SuccessBody<TokenResponse>> login(
+			@Parameter(description = "로그인 요청 정보", required = true) @RequestBody EEOSLoginRequest request,
+			HttpServletResponse httpResponse);
+
 	@Operation(
 			summary = "회원가입",
 			description =
