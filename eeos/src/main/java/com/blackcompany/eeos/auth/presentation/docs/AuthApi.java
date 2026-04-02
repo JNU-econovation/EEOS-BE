@@ -23,8 +23,8 @@ public interface AuthApi {
 			summary = "회원가입",
 			description =
 					"id, password, 기수, 성함, 활동상태로 회원가입하고 토큰을 반환한다.\n\n"
-							+ "`slackMemberId`를 함께 전달하면 기존 Slack OAuth 회원에 EEOS 계정을 연결하는 방식으로 가입한다."
-							+ " `slackMemberId`가 없으면 새 회원을 생성하는 기존 로직을 따른다.")
+							+ "쿼리 파라미터 `code`를 함께 전달하면 기존 Slack OAuth 회원에 EEOS 계정을 연결하는 방식으로 가입한다."
+							+ " `code`가 없으면 새 회원을 생성하는 기존 로직을 따른다.")
 	@ApiResponses({
 		@io.swagger.v3.oas.annotations.responses.ApiResponse(
 				responseCode = "201",
