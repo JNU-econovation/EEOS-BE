@@ -94,8 +94,18 @@ public class EeosSignUpService implements EeosSignUpUseCase {
 		try {
 			accountRepository.save(accountModel);
 		} catch (DataIntegrityViolationException e) {
-			log.warn("loginId 중복 저장 시도 발생");
-			throw new DuplicateLoginIdException();
+
+			String cause = e.getMostSpecificCause().getMessage();
+
+			if (cause != null && cause.contains("account_login_id")) {
+				log.warn("loginId 중복 저장 시도 발생");
+				throw new DuplicateLoginIdException();
+			}
+
+			throw e;
+		} catch (Exception e) {
+			log.error("회원가입 실패", e);
+			throw e;
 		}
 	}
 

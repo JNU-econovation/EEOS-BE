@@ -6,25 +6,24 @@ import com.blackcompany.eeos.member.application.model.MemberModel;
 import com.blackcompany.eeos.member.application.repository.MemberRepository;
 import com.blackcompany.eeos.member.application.usecase.SendSignupLinkToSlackOnlyMembersUsecase;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class SendSignupLinkService implements SendSignupLinkToSlackOnlyMembersUsecase {
 
 	private final MemberRepository memberRepository;
 	private final SlackDmNotificationService slackDmNotificationService;
+	private final String signupUrl;
 
-	private String signupUrl = "https://eeos.econovation.kr/signup";
-
-	@Value("${eeos.signup.url:https://eeos.econovation.kr/signup}")
-	public void setSignupUrl(String signupUrl) {
+	public SendSignupLinkService(
+			MemberRepository memberRepository,
+			SlackDmNotificationService slackDmNotificationService,
+			@Value("${eeos.signup.url:https://auth.econovation.kr}") String signupUrl) {
+		this.memberRepository = memberRepository;
+		this.slackDmNotificationService = slackDmNotificationService;
 		this.signupUrl = signupUrl;
 	}
 
