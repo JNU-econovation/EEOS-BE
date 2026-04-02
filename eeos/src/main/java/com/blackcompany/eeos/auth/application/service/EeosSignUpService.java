@@ -15,6 +15,7 @@ import com.blackcompany.eeos.auth.application.repository.AuthorityRepository;
 import com.blackcompany.eeos.auth.application.repository.OAuthMemberRepository;
 import com.blackcompany.eeos.auth.application.support.AuthenticationTokenGenerator;
 import com.blackcompany.eeos.auth.application.support.EncryptHelper;
+import com.blackcompany.eeos.auth.application.support.SlackSignupCodeEncoder;
 import com.blackcompany.eeos.auth.application.usecase.EeosSignUpUseCase;
 import com.blackcompany.eeos.member.application.model.ActiveStatus;
 import com.blackcompany.eeos.member.application.model.MemberModel;
@@ -38,6 +39,7 @@ public class EeosSignUpService implements EeosSignUpUseCase {
 	private final OAuthMemberRepository oAuthMemberRepository;
 	private final EncryptHelper encryptHelper;
 	private final AuthenticationTokenGenerator tokenGenerator;
+	private final SlackSignupCodeEncoder slackSignupCodeEncoder;
 
 	@Override
 	@Transactional
@@ -51,13 +53,12 @@ public class EeosSignUpService implements EeosSignUpUseCase {
 
 	@Override
 	@Transactional
-	public TokenModel signUp(EeosSignUpCommand command, String slackMemberId) {
+	public TokenModel signUp(EeosSignUpCommand command, String code) {
 		validateDuplicateLoginId(command.getLoginId());
 
+		String oauthId = slackSignupCodeEncoder.decode(code);
 		OauthMemberModel oauthMember =
-				oAuthMemberRepository
-						.findByOauthId(slackMemberId)
-						.orElseThrow(SlackMemberNotFoundException::new);
+				oAuthMemberRepository.findByOauthId(oauthId).orElseThrow(SlackMemberNotFoundException::new);
 		Long memberId = oauthMember.getMemberId();
 		if (accountRepository.existsByMemberId(memberId)) {
 			throw new AlreadyLinkedAccountException();

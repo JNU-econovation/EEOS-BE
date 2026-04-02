@@ -2,6 +2,7 @@ package com.blackcompany.eeos.member.application.service;
 
 import com.blackcompany.eeos.auth.application.exception.SlackMemberNotFoundException;
 import com.blackcompany.eeos.auth.application.repository.OAuthMemberRepository;
+import com.blackcompany.eeos.auth.application.support.SlackSignupCodeEncoder;
 import com.blackcompany.eeos.auth.infra.oauth.slack.exception.SlackApiException;
 import com.blackcompany.eeos.member.application.model.MemberModel;
 import com.blackcompany.eeos.program.infra.api.slack.chat.client.SlackChatApiClient;
@@ -25,12 +26,15 @@ public class SlackDmNotificationService {
 	private final SlackChatApiClient slackChatApiClient;
 	private final ObjectMapper objectMapper;
 	private final OAuthMemberRepository oAuthMemberRepository;
+	private final SlackSignupCodeEncoder slackSignupCodeEncoder;
 
 	@Value("${slack.bot.dm.token}")
 	private String dmBotToken;
 
 	public void sendSignupLink(MemberModel member, String signupUrl) {
 		String oauthId = resolveOauthId(member);
+		String code = slackSignupCodeEncoder.encode(oauthId);
+		String separator = signupUrl.contains("?") ? "&" : "?";
 		String message =
 				String.format(
 						"*EEOS 회원가입 안내*\n\n"
@@ -38,7 +42,7 @@ public class SlackDmNotificationService {
 								+ "EEOS가 새롭게 돌아왔습니다!\n\n"
 								+ "아래 링크를 통해 EEOS 계정을 등록해 주세요.\n\n"
 								+ "가입 링크: %s",
-						member.getName(), String.format("%s?slackUserId=%s", signupUrl, oauthId));
+						member.getName(), String.format("%s%scode=%s", signupUrl, separator, code));
 
 		String blocks = buildBlocks(message);
 		try {
