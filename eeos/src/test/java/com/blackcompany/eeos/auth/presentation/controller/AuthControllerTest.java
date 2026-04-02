@@ -121,6 +121,7 @@ class AuthControllerTest {
 		mockMvc
 				.perform(
 						post("/api/auth/signup")
+								.param("code", "U08ABCDE123")
 								.contentType(MediaType.APPLICATION_JSON)
 								.content(
 										objectMapper.writeValueAsString(
@@ -129,8 +130,7 @@ class AuthControllerTest {
 														"password", "test1234",
 														"generation", 30,
 														"name", "홍길동",
-														"activeStatus", "am",
-														"slackMemberId", "U08ABCDE123"))))
+														"activeStatus", "am"))))
 				.andExpect(status().isCreated())
 				.andExpect(jsonPath("$.data.accessToken").value("test-at"))
 				.andExpect(header().string("Set-Cookie", org.hamcrest.Matchers.containsString("test-rt")));

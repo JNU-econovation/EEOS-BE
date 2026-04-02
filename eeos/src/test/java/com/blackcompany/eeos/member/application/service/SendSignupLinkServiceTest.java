@@ -16,10 +16,10 @@ import com.blackcompany.eeos.member.application.repository.MemberRepository;
 import com.blackcompany.eeos.member.fixture.MemberFixture;
 import java.util.Collections;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
@@ -32,7 +32,14 @@ class SendSignupLinkServiceTest {
 	@Mock MemberRepository memberRepository;
 	@Mock SlackDmNotificationService slackDmNotificationService;
 
-	@InjectMocks SendSignupLinkService sendSignupLinkService;
+	SendSignupLinkService sendSignupLinkService;
+
+	@BeforeEach
+	void setUp() {
+		sendSignupLinkService =
+				new SendSignupLinkService(
+						memberRepository, slackDmNotificationService, "https://auth.econovation.kr");
+	}
 
 	@Test
 	@DisplayName("Slack Only 회원이 0명일 때 DM 발송 없이 totalCount=0 결과를 반환한다.")
