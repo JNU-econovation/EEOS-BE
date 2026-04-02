@@ -64,7 +64,8 @@ public class EeosSignUpService implements EeosSignUpUseCase {
 			throw new AlreadyLinkedAccountException();
 		}
 
-		return signUpWithExistingMember(command, memberId);
+		saveAccount(command.getLoginId(), command.getPassword(), memberId);
+		return tokenGenerator.execute(memberId, Set.of(Role.ROLE_USER.name()));
 	}
 
 	private void validateDuplicateLoginId(String loginId) {
