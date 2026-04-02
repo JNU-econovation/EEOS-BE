@@ -16,6 +16,7 @@ import com.blackcompany.eeos.member.application.usecase.ChangeActiveStatusUsecas
 import com.blackcompany.eeos.member.application.usecase.DepartmentUsecase;
 import com.blackcompany.eeos.member.application.usecase.GetMemberByActiveStatus;
 import com.blackcompany.eeos.member.application.usecase.GetMembersByActiveStatus;
+import com.blackcompany.eeos.member.application.usecase.SendSignupLinkToSlackOnlyMemberUsecase;
 import com.blackcompany.eeos.member.application.usecase.SendSignupLinkToSlackOnlyMembersUsecase;
 import com.blackcompany.eeos.member.presentation.docs.MemberApi;
 import jakarta.validation.Valid;
@@ -41,6 +42,7 @@ public class MemberController implements MemberApi {
 	private final GetMemberByActiveStatus getMemberByActiveStatus;
 	private final DepartmentUsecase departmentUsecase;
 	private final SendSignupLinkToSlackOnlyMembersUsecase sendSignupLinkToSlackOnlyMembersUsecase;
+	private final SendSignupLinkToSlackOnlyMemberUsecase sendSignupLinkToSlackOnlyMemberUsecase;
 
 	@Override
 	@PutMapping("/activeStatus/{memberId}")
@@ -98,6 +100,15 @@ public class MemberController implements MemberApi {
 			@Member Long adminMemberId) {
 		SlackSignupDmResponse response =
 				sendSignupLinkToSlackOnlyMembersUsecase.sendSignupLinks(adminMemberId);
+		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.CREATE);
+	}
+
+	@Override
+	@PostMapping("/admin/{memberId}/slack-signup-dm")
+	public ApiResponse<SuccessBody<SlackSignupDmResponse>> sendSlackSignupDmToMember(
+			@Member Long adminMemberId, @PathVariable("memberId") Long memberId) {
+		SlackSignupDmResponse response =
+				sendSignupLinkToSlackOnlyMemberUsecase.sendSignupLink(adminMemberId, memberId);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.CREATE);
 	}
 }
