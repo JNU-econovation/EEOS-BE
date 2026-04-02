@@ -124,7 +124,7 @@ class EeosSignUpServiceTest {
 
 		assertEquals(expectedToken, result);
 		verify(accountRepository).save(any(AccountModel.class));
-		verify(authorityRepository).save(any(AuthorityModel.class));
+		verify(authorityRepository, never()).save(any(AuthorityModel.class));
 	}
 
 	@Test
