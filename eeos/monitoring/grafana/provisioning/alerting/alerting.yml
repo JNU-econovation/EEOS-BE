@@ -1,5 +1,16 @@
 apiVersion: 1
 
+templates:
+  - name: slack_message
+    template: |
+      {{ range .Alerts }}
+      *환경:* {{ .Labels.environment }}
+      *상태:* {{ if eq .Status "firing" }}🔴중단발생{{ else }}✅ 해제{{ end }}
+      *대상:* {{ .Labels.job }}
+      *인스턴스:* {{ .Labels.instance }}
+      *심각도:* {{ .Labels.severity }}
+      {{ end }}
+
 contactPoints:
   - orgId: 1
     name: Slack
@@ -9,12 +20,7 @@ contactPoints:
         settings:
           url: ${SLACK_WEBHOOK_URL}
           title: '[{{ .Status | toUpper }}] {{ .CommonLabels.alertname }}'
-          text: |
-            {{ range .Alerts }}
-            *Alert:* {{ .Annotations.summary }}
-            *Description:* {{ .Annotations.description }}
-            *Severity:* {{ .Labels.severity }}
-            {{ end }}
+          text: '{{ template "slack_message" . }}'
 
 policies:
   - orgId: 1
@@ -37,8 +43,8 @@ groups:
         noDataState: Alerting
         execErrState: Alerting
         annotations:
-          summary: 'EEOS 서비스 다운'
-          description: '{{ $labels.job }} 서비스가 응답하지 않습니다. (instance: {{ $labels.instance }})'
+          summary: 'EEOS 서비스 장애 발생'
+          description: '서비스 상태를 확인하세요.'
         labels:
           severity: critical
         data:
@@ -58,10 +64,51 @@ groups:
             model:
               type: threshold
               refId: C
+              expression: A
               conditions:
                 - evaluator:
                     params: [1]
                     type: lt
+                  operator:
+                    type: and
+                  query:
+                    params: [A]
+                  reducer:
+                    type: last
+
+      - uid: eeos-service-restarting
+        title: 'EEOS Service Restarting'
+        condition: C
+        for: 0s
+        noDataState: NoData
+        execErrState: Alerting
+        annotations:
+          summary: 'EEOS 서비스 재시작 반복 중'
+          description: '서비스 상태를 확인하세요.'
+        labels:
+          severity: warning
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: 'changes(up{job=~"eeos.*"}[5m])'
+              instant: true
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: A
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              type: threshold
+              refId: C
+              expression: A
+              conditions:
+                - evaluator:
+                    params: [2]
+                    type: gt
                   operator:
                     type: and
                   query:
