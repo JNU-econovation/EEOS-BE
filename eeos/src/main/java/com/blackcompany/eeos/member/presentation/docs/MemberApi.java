@@ -65,7 +65,7 @@ public interface MemberApi {
 				description = "DM 발송 완료. 성공/실패 건수를 반환합니다."),
 		@io.swagger.v3.oas.annotations.responses.ApiResponse(
 				responseCode = "403",
-				description = "3000: 관리자 권한이 없습니다",
+				description = "3004: 관리자 권한이 없습니다",
 				content = @Content)
 	})
 	ApiResponse<SuccessBody<SlackSignupDmResponse>> sendSlackSignupDm(
