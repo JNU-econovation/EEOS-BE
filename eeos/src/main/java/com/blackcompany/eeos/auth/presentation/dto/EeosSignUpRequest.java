@@ -21,8 +21,8 @@ public class EeosSignUpRequest {
 
 	@NotBlank(message = "4102:비밀번호는 필수 입력값입니다")
 	@Pattern(
-			regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,20}$",
-			message = "4103:비밀번호는 8~20자이며, 영문과 숫자를 포함해야 합니다")
+			regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{8,20}$",
+			message = "4103:비밀번호는 8~20자이며, 영문·숫자·특수기호를 포함해야 합니다")
 	private String password;
 
 	@NotNull(message = "4104:기수는 필수 입력값입니다")
