@@ -12,6 +12,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.blackcompany.eeos.member.application.dto.SlackSignupDmResponse;
+import com.blackcompany.eeos.member.application.exception.DeniedMemberEditException;
 import com.blackcompany.eeos.member.application.exception.NotSlackOnlyMemberException;
 import com.blackcompany.eeos.member.application.model.MemberModel;
 import com.blackcompany.eeos.member.application.repository.MemberRepository;
@@ -171,5 +172,106 @@ class SendSignupLinkServiceTest {
 		assertEquals(1, result.getTotalCount());
 		assertEquals(0, result.getSuccessCount());
 		assertEquals(1, result.getFailCount());
+	}
+
+	// =====================================================================
+	// 기수별 Slack 회원가입 DM 발송 테스트
+	// =====================================================================
+
+	@Test
+	@DisplayName("해당 기수에 Slack 전용 회원이 있을 때 해당 인원에게 DM을 성공적으로 발송한다.")
+	void sendSignupLinksByGeneration_성공_해당기수_슬랙온리회원_DM발송() {
+		// given
+		int generation = 12;
+		Long adminMemberId = 1L;
+		MemberModel admin = MemberFixture.어드민_모델(adminMemberId);
+		List<MemberModel> targets =
+				List.of(
+						MemberFixture.기수별_슬랙온리_모델(2L, generation, "홍길동"),
+						MemberFixture.기수별_슬랙온리_모델(3L, generation, "김철수"));
+
+		when(memberRepository.findById(adminMemberId)).thenReturn(admin);
+		when(memberRepository.findSlackOnlyMembersByGeneration(generation)).thenReturn(targets);
+
+		// when
+		SlackSignupDmResponse result =
+				sendSignupLinkService.sendSignupLinksByGeneration(adminMemberId, generation);
+
+		// then
+		assertEquals(2, result.getTotalCount());
+		assertEquals(2, result.getSuccessCount());
+		assertEquals(0, result.getFailCount());
+		verify(slackDmNotificationService, times(2)).sendSignupLink(any(), anyString());
+	}
+
+	@Test
+	@DisplayName("해당 기수에 Slack 전용 회원이 없을 때 DM 발송 없이 totalCount=0 결과를 반환한다.")
+	void sendSignupLinksByGeneration_성공_대상없음_빈결과반환() {
+		// given
+		int generation = 99;
+		Long adminMemberId = 1L;
+		MemberModel admin = MemberFixture.어드민_모델(adminMemberId);
+
+		when(memberRepository.findById(adminMemberId)).thenReturn(admin);
+		when(memberRepository.findSlackOnlyMembersByGeneration(generation))
+				.thenReturn(Collections.emptyList());
+
+		// when
+		SlackSignupDmResponse result =
+				sendSignupLinkService.sendSignupLinksByGeneration(adminMemberId, generation);
+
+		// then
+		assertEquals(0, result.getTotalCount());
+		assertEquals(0, result.getSuccessCount());
+		assertEquals(0, result.getFailCount());
+		verify(slackDmNotificationService, never()).sendSignupLink(any(), anyString());
+	}
+
+	@Test
+	@DisplayName("기수별 DM 발송 중 일부 Slack API 호출이 실패하면 failCount가 증가하고 나머지 발송은 계속된다.")
+	void sendSignupLinksByGeneration_부분실패_failCount증가_발송중단없음() {
+		// given
+		int generation = 12;
+		Long adminMemberId = 1L;
+		MemberModel admin = MemberFixture.어드민_모델(adminMemberId);
+		MemberModel member1 = MemberFixture.기수별_슬랙온리_모델(2L, generation, "홍길동");
+		MemberModel member2 = MemberFixture.기수별_슬랙온리_모델(3L, generation, "김철수");
+		MemberModel member3 = MemberFixture.기수별_슬랙온리_모델(4L, generation, "이영희");
+
+		when(memberRepository.findById(adminMemberId)).thenReturn(admin);
+		when(memberRepository.findSlackOnlyMembersByGeneration(generation))
+				.thenReturn(List.of(member1, member2, member3));
+		doThrow(new RuntimeException("Slack API error"))
+				.when(slackDmNotificationService)
+				.sendSignupLink(eq(member2), anyString());
+
+		// when
+		SlackSignupDmResponse result =
+				sendSignupLinkService.sendSignupLinksByGeneration(adminMemberId, generation);
+
+		// then
+		assertEquals(3, result.getTotalCount());
+		assertEquals(2, result.getSuccessCount());
+		assertEquals(1, result.getFailCount());
+		verify(slackDmNotificationService, times(3)).sendSignupLink(any(), anyString());
+	}
+
+	@Test
+	@DisplayName("관리자가 아닌 회원이 기수별 DM 발송을 요청하면 DeniedMemberEditException이 발생한다.")
+	void sendSignupLinksByGeneration_실패_관리자아닌회원_예외발생() {
+		// given
+		int generation = 12;
+		Long nonAdminMemberId = 5L;
+		MemberModel nonAdmin =
+				MemberFixture.멤버_모델(
+						nonAdminMemberId, com.blackcompany.eeos.member.application.model.ActiveStatus.AM);
+
+		when(memberRepository.findById(nonAdminMemberId)).thenReturn(nonAdmin);
+
+		// when & then
+		assertThrows(
+				DeniedMemberEditException.class,
+				() -> sendSignupLinkService.sendSignupLinksByGeneration(nonAdminMemberId, generation));
+		verify(slackDmNotificationService, never()).sendSignupLink(any(), anyString());
 	}
 }
