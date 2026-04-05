@@ -98,7 +98,7 @@ class AuthControllerTest {
 										objectMapper.writeValueAsString(
 												Map.of(
 														"id", "testuser",
-														"password", "test1234",
+														"password", "test1234!",
 														"generation", 30,
 														"name", "홍길동",
 														"activeStatus", "am"))))
@@ -127,7 +127,7 @@ class AuthControllerTest {
 										objectMapper.writeValueAsString(
 												Map.of(
 														"id", "testuser",
-														"password", "test1234",
+														"password", "test1234!",
 														"generation", 30,
 														"name", "홍길동",
 														"activeStatus", "am"))))
