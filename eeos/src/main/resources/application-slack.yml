@@ -17,6 +17,8 @@ slack:
       eeos: ${BLACK_COMPANY_EEOS_BOT_TOKEN}
     econovation:
       eeos: ${ECONOVATION_EEOS_BOT_TOKEN}
+    dm:
+      token: ${SLACK_DM_BOT_TOKEN:${ECONOVATION_EEOS_BOT_TOKEN}}
 
   channel:
     black-company:

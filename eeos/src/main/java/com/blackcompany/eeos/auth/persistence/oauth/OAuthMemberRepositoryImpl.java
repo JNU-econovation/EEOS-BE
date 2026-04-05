@@ -19,6 +19,11 @@ public class OAuthMemberRepositoryImpl implements OAuthMemberRepository {
 	}
 
 	@Override
+	public Optional<OauthMemberModel> findByMemberId(Long memberId) {
+		return jpaRepository.findByMemberId(memberId).map(converter::from);
+	}
+
+	@Override
 	public Optional<OAuthMemberEntity> findByAccount(String loginId) {
 		return jpaRepository.findByAccount(loginId);
 	}

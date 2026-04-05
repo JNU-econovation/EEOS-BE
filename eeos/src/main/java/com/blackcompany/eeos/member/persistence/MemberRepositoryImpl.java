@@ -1,5 +1,6 @@
 package com.blackcompany.eeos.member.persistence;
 
+import com.blackcompany.eeos.auth.application.domain.OauthServerType;
 import com.blackcompany.eeos.member.application.exception.NotFoundMemberException;
 import com.blackcompany.eeos.member.application.model.ActiveStatus;
 import com.blackcompany.eeos.member.application.model.MemberModel;
@@ -71,5 +72,22 @@ public class MemberRepositoryImpl implements MemberRepository {
 	@Override
 	public String findNameById(Long memberId) {
 		return jpaRepository.findNameById(memberId).orElseThrow(NotFoundMemberException::new);
+	}
+
+	@Override
+	public List<MemberModel> findSlackOnlyMembers() {
+		return jpaRepository.findSlackOnlyMembers(OauthServerType.SLACK).stream()
+				.map(converter::from)
+				.toList();
+	}
+
+	@Override
+	public List<MemberModel> findSlackOnlyMembersByGeneration(int generation) {
+		String generationPrefix = generation + "기 %";
+		return jpaRepository
+				.findSlackOnlyMembersByGeneration(OauthServerType.SLACK, generationPrefix)
+				.stream()
+				.map(converter::from)
+				.toList();
 	}
 }

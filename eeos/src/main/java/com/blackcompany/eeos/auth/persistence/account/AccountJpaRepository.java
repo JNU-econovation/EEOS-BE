@@ -14,4 +14,6 @@ public interface AccountJpaRepository extends JpaRepository<AccountEntity, Long>
 	Optional<AccountEntity> findByLoginId(@Param("loginId") String loginId);
 
 	boolean existsByLoginId(String loginId);
+
+	boolean existsByMemberId(Long memberId);
 }

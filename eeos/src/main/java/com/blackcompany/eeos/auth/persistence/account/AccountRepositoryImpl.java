@@ -36,4 +36,9 @@ public class AccountRepositoryImpl implements AccountRepository {
 	public boolean existsByLoginId(String loginId) {
 		return jpaRepository.existsByLoginId(loginId);
 	}
+
+	@Override
+	public boolean existsByMemberId(Long memberId) {
+		return jpaRepository.existsByMemberId(memberId);
+	}
 }

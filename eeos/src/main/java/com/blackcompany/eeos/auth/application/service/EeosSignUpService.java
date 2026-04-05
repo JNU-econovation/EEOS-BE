@@ -1,16 +1,21 @@
 package com.blackcompany.eeos.auth.application.service;
 
+import com.blackcompany.eeos.auth.application.domain.OauthMemberModel;
 import com.blackcompany.eeos.auth.application.domain.OauthServerType;
 import com.blackcompany.eeos.auth.application.domain.TokenModel;
 import com.blackcompany.eeos.auth.application.dto.request.EeosSignUpCommand;
+import com.blackcompany.eeos.auth.application.exception.AlreadyLinkedAccountException;
 import com.blackcompany.eeos.auth.application.exception.DuplicateLoginIdException;
+import com.blackcompany.eeos.auth.application.exception.SlackMemberNotFoundException;
 import com.blackcompany.eeos.auth.application.model.AccountModel;
 import com.blackcompany.eeos.auth.application.model.AuthorityModel;
 import com.blackcompany.eeos.auth.application.model.Role;
 import com.blackcompany.eeos.auth.application.repository.AccountRepository;
 import com.blackcompany.eeos.auth.application.repository.AuthorityRepository;
+import com.blackcompany.eeos.auth.application.repository.OAuthMemberRepository;
 import com.blackcompany.eeos.auth.application.support.AuthenticationTokenGenerator;
 import com.blackcompany.eeos.auth.application.support.EncryptHelper;
+import com.blackcompany.eeos.auth.application.support.SlackSignupCodeEncoder;
 import com.blackcompany.eeos.auth.application.usecase.EeosSignUpUseCase;
 import com.blackcompany.eeos.member.application.model.ActiveStatus;
 import com.blackcompany.eeos.member.application.model.MemberModel;
@@ -31,8 +36,10 @@ public class EeosSignUpService implements EeosSignUpUseCase {
 	private final MemberRepository memberRepository;
 	private final AccountRepository accountRepository;
 	private final AuthorityRepository authorityRepository;
+	private final OAuthMemberRepository oAuthMemberRepository;
 	private final EncryptHelper encryptHelper;
 	private final AuthenticationTokenGenerator tokenGenerator;
+	private final SlackSignupCodeEncoder slackSignupCodeEncoder;
 
 	@Override
 	@Transactional
@@ -41,10 +48,24 @@ public class EeosSignUpService implements EeosSignUpUseCase {
 
 		MemberModel savedMember =
 				saveMember(command.getName(), command.getGeneration(), command.getActiveStatus());
-		saveAccount(command.getLoginId(), command.getPassword(), savedMember.getMemberId());
-		saveAuthority(savedMember.getMemberId());
+		return signUpWithExistingMember(command, savedMember.getMemberId());
+	}
 
-		return tokenGenerator.execute(savedMember.getMemberId(), Set.of(Role.ROLE_USER.name()));
+	@Override
+	@Transactional
+	public TokenModel signUp(EeosSignUpCommand command, String code) {
+		validateDuplicateLoginId(command.getLoginId());
+
+		String oauthId = slackSignupCodeEncoder.decode(code);
+		OauthMemberModel oauthMember =
+				oAuthMemberRepository.findByOauthId(oauthId).orElseThrow(SlackMemberNotFoundException::new);
+		Long memberId = oauthMember.getMemberId();
+		if (accountRepository.existsByMemberId(memberId)) {
+			throw new AlreadyLinkedAccountException();
+		}
+
+		saveAccount(command.getLoginId(), command.getPassword(), memberId);
+		return tokenGenerator.execute(memberId, Set.of(Role.ROLE_USER.name()));
 	}
 
 	private void validateDuplicateLoginId(String loginId) {
@@ -74,12 +95,28 @@ public class EeosSignUpService implements EeosSignUpUseCase {
 		try {
 			accountRepository.save(accountModel);
 		} catch (DataIntegrityViolationException e) {
-			log.warn("loginId 중복 저장 시도 발생");
-			throw new DuplicateLoginIdException();
+
+			String cause = e.getMostSpecificCause().getMessage();
+
+			if (cause != null && cause.contains("account_login_id")) {
+				log.warn("loginId 중복 저장 시도 발생");
+				throw new DuplicateLoginIdException();
+			}
+
+			throw e;
+		} catch (Exception e) {
+			log.error("회원가입 실패", e);
+			throw e;
 		}
 	}
 
 	private void saveAuthority(Long memberId) {
 		authorityRepository.save(AuthorityModel.create(memberId, Role.ROLE_USER));
+	}
+
+	private TokenModel signUpWithExistingMember(EeosSignUpCommand command, Long memberId) {
+		saveAccount(command.getLoginId(), command.getPassword(), memberId);
+		saveAuthority(memberId);
+		return tokenGenerator.execute(memberId, Set.of(Role.ROLE_USER.name()));
 	}
 }
