@@ -80,4 +80,14 @@ public class MemberRepositoryImpl implements MemberRepository {
 				.map(converter::from)
 				.toList();
 	}
+
+	@Override
+	public List<MemberModel> findSlackOnlyMembersByGeneration(int generation) {
+		String generationPrefix = generation + "기 %";
+		return jpaRepository
+				.findSlackOnlyMembersByGeneration(OauthServerType.SLACK, generationPrefix)
+				.stream()
+				.map(converter::from)
+				.toList();
+	}
 }

@@ -97,4 +97,23 @@ public interface MemberApi {
 	ApiResponse<SuccessBody<SlackSignupDmResponse>> sendSlackSignupDmToMember(
 			@Parameter(hidden = true) @Member Long adminMemberId,
 			@PathVariable("memberId") Long memberId);
+
+	@Operation(
+			summary = "관리자_기수별 Slack 전용 회원 회원가입 링크 DM 발송",
+			description =
+					"지정한 기수의 Slack 전용(EEOS 계정 없음) 회원 전체에게 EEOS 회원가입 링크를 Slack DM으로 발송합니다."
+							+ " 관리자 권한이 필요합니다.",
+			security = @SecurityRequirement(name = "bearerAuth"))
+	@ApiResponses({
+		@io.swagger.v3.oas.annotations.responses.ApiResponse(
+				responseCode = "200",
+				description = "DM 발송 완료. 성공/실패 건수를 반환합니다."),
+		@io.swagger.v3.oas.annotations.responses.ApiResponse(
+				responseCode = "403",
+				description = "3004: 관리자 권한이 없습니다",
+				content = @Content)
+	})
+	ApiResponse<SuccessBody<SlackSignupDmResponse>> sendSlackSignupDmByGeneration(
+			@Parameter(hidden = true) @Member Long adminMemberId,
+			@PathVariable("generation") int generation);
 }

@@ -17,6 +17,7 @@ import com.blackcompany.eeos.member.application.usecase.DepartmentUsecase;
 import com.blackcompany.eeos.member.application.usecase.GetMemberByActiveStatus;
 import com.blackcompany.eeos.member.application.usecase.GetMembersByActiveStatus;
 import com.blackcompany.eeos.member.application.usecase.SendSignupLinkToSlackOnlyMemberUsecase;
+import com.blackcompany.eeos.member.application.usecase.SendSignupLinkToSlackOnlyMembersByGenerationUsecase;
 import com.blackcompany.eeos.member.application.usecase.SendSignupLinkToSlackOnlyMembersUsecase;
 import com.blackcompany.eeos.member.presentation.docs.MemberApi;
 import jakarta.validation.Valid;
@@ -43,6 +44,8 @@ public class MemberController implements MemberApi {
 	private final DepartmentUsecase departmentUsecase;
 	private final SendSignupLinkToSlackOnlyMembersUsecase sendSignupLinkToSlackOnlyMembersUsecase;
 	private final SendSignupLinkToSlackOnlyMemberUsecase sendSignupLinkToSlackOnlyMemberUsecase;
+	private final SendSignupLinkToSlackOnlyMembersByGenerationUsecase
+			sendSignupLinkToSlackOnlyMembersByGenerationUsecase;
 
 	@Override
 	@PutMapping("/activeStatus/{memberId}")
@@ -95,7 +98,7 @@ public class MemberController implements MemberApi {
 	}
 
 	@Override
-	@PostMapping("/admin/slack-signup-dm")
+	@PostMapping("/admin/signup-dm")
 	public ApiResponse<SuccessBody<SlackSignupDmResponse>> sendSlackSignupDm(
 			@Member Long adminMemberId) {
 		SlackSignupDmResponse response =
@@ -104,11 +107,21 @@ public class MemberController implements MemberApi {
 	}
 
 	@Override
-	@PostMapping("/admin/{memberId}/slack-signup-dm")
+	@PostMapping("/admin/signup-dm/{memberId}")
 	public ApiResponse<SuccessBody<SlackSignupDmResponse>> sendSlackSignupDmToMember(
 			@Member Long adminMemberId, @PathVariable("memberId") Long memberId) {
 		SlackSignupDmResponse response =
 				sendSignupLinkToSlackOnlyMemberUsecase.sendSignupLink(adminMemberId, memberId);
+		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.CREATE);
+	}
+
+	@Override
+	@PostMapping("/admin/signup-dm/gen/{generation}")
+	public ApiResponse<SuccessBody<SlackSignupDmResponse>> sendSlackSignupDmByGeneration(
+			@Member Long adminMemberId, @PathVariable("generation") int generation) {
+		SlackSignupDmResponse response =
+				sendSignupLinkToSlackOnlyMembersByGenerationUsecase.sendSignupLinksByGeneration(
+						adminMemberId, generation);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.CREATE);
 	}
 }

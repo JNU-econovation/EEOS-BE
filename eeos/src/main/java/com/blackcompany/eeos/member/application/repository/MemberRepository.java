@@ -30,4 +30,6 @@ public interface MemberRepository {
 	String findNameById(Long memberId);
 
 	List<MemberModel> findSlackOnlyMembers();
+
+	List<MemberModel> findSlackOnlyMembersByGeneration(int generation);
 }
