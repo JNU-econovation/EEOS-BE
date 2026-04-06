@@ -28,4 +28,8 @@ public interface MemberRepository {
 	void deleteById(Long memberId);
 
 	String findNameById(Long memberId);
+
+	List<MemberModel> findSlackOnlyMembers();
+
+	List<MemberModel> findSlackOnlyMembersByGeneration(int generation);
 }

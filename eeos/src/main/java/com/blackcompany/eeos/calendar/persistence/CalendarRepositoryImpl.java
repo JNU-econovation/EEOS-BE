@@ -43,4 +43,12 @@ public class CalendarRepositoryImpl implements CalendarRepository {
 	public void delete(Long id) {
 		jpaRepository.deleteById(id);
 	}
+
+	@Override
+	public List<CalendarModel> findByStartDate(
+			LocalDateTime startOfDay, LocalDateTime startOfNextDay) {
+		return jpaRepository.findByStartDate(startOfDay, startOfNextDay).stream()
+				.map(CalendarEntity::toModel)
+				.toList();
+	}
 }

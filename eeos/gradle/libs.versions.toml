@@ -7,9 +7,10 @@ spring-doc-openapi = "2.3.0"
 
 # Plugins
 spotless = "7.2.1"
-asciidoctor = "4.0.2"
+asciidoctor = "4.0.5"
 epages-restdocs = "0.18.2"
 swagger = "5.10.3"
+firebase-admin = "9.2.0"
 
 # Security
 jwt = "0.12.6"
@@ -20,6 +21,13 @@ spring-security-test="6.5.2"
 
 # Database
 flyway = "10.7.1"
+
+# Retry
+spring-retry = "2.0.5"
+
+# Google Gen AI
+google-genai = "1.0.0"
+
 
 [libraries]
 # Spring Boot
@@ -56,6 +64,20 @@ jbcrypt = { group = "org.mindrot", name = "jbcrypt", version.ref = "jbcrypt" }
 
 # Lombok
 lombok = { group = "org.projectlombok", name = "lombok" }
+
+# Firebase Admin SDK
+firebase-admin = { group = "com.google.firebase", name = "firebase-admin", version.ref = "firebase-admin" }
+
+# Retry
+spring-retry = { group = "org.springframework.retry", name = "spring-retry", version.ref = "spring-retry" }
+spring-aspects = { group = "org.springframework", name = "spring-aspects" }
+
+# Google Gen AI
+google-genai = { group = "com.google.genai", name = "google-genai", version.ref = "google-genai" }
+
+# Monitoring
+micrometer-registry-prometheus = { group = "io.micrometer", name = "micrometer-registry-prometheus" }
+
 
 [plugins]
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }

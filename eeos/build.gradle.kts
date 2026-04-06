@@ -24,7 +24,6 @@ repositories {
 }
 
 apply(from = "gradle/git-hooks.gradle.kts")
-apply(from = "gradle/integration-test.gradle.kts")
 apply(from = "gradle/asciidoctor.gradle.kts")
 
 dependencies {
@@ -35,6 +34,9 @@ dependencies {
     implementation(libs.spring.boot.starter.data.jpa)
     implementation(libs.spring.boot.starter.data.redis)
     implementation(libs.spring.boot.starter.security)
+
+    // Monitoring
+    implementation(libs.micrometer.registry.prometheus)
 
     // Database
     implementation(libs.mysql.connector)
@@ -63,6 +65,18 @@ dependencies {
 
     // OpenFeign
     implementation(libs.spring.cloud.starter.openfeign)
+
+    // Firebase Admin SDK
+    implementation(libs.firebase.admin)
+
+    implementation(libs.spring.retry)
+    implementation(libs.spring.aspects)
+
+    // Google Gen AI SDK
+    implementation(libs.google.genai)
+
+
+
 }
 
 dependencyManagement {

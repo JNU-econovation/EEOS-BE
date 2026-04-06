@@ -11,3 +11,12 @@ token:
   cookie:
     domain: ${COOKIE_TOKEN_DOMAIN}
     path: ${COOKIE_TOKEN_PATH}
+
+eeos:
+  internal-api-key: ${EEOS_INTERNAL_API_KEY:}
+  signup:
+    url: ${EEOS_SIGNUP_URL:https://auth.econovation.kr}
+    code-secret: ${EEOS_SLACK_SIGNUP_CODE_SECRET}
+
+auth:
+  login-page-url: ${AUTH_LOGIN_PAGE_URL:http://localhost:3000/login}

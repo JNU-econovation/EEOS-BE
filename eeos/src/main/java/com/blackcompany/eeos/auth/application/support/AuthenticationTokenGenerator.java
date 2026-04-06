@@ -26,6 +26,17 @@ public class AuthenticationTokenGenerator {
 				tokenResolver.getExpiredDateByRefreshToken(refreshToken));
 	}
 
+	public TokenModel execute(final Long memberId, final String clientType, final String clientId) {
+		String accessToken = tokenProvider.createAccessToken(memberId);
+		String refreshToken = tokenProvider.createRefreshToken(memberId, clientType, clientId);
+
+		return tokenModelConverter.from(
+				accessToken,
+				tokenResolver.getExpiredDateByAccessToken(accessToken),
+				refreshToken,
+				tokenResolver.getExpiredDateByRefreshToken(refreshToken));
+	}
+
 	public TokenModel execute(final Long memberId, Set<String> authorities) {
 		String accessToken = tokenProvider.createAccessToken(memberId, authorities);
 		String refreshToken = tokenProvider.createRefreshToken(memberId, authorities);

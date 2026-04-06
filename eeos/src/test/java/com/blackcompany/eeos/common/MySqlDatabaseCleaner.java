@@ -29,7 +29,7 @@ public class MySqlDatabaseCleaner implements DatabaseCleaner {
 
 	private List<String> getTableNames() {
 		String query =
-				"SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = DATABASE()";
+				"SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME != 'flyway_schema_history'";
 		return entityManager.createNativeQuery(query).getResultList();
 	}
 

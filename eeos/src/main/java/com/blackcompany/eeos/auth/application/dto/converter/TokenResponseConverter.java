@@ -11,4 +11,12 @@ public class TokenResponseConverter {
 				.accessExpiredTime(accessExpiredTime)
 				.build();
 	}
+
+	public TokenResponse from(String accessToken, Long accessExpiredTime, String refreshToken) {
+		return TokenResponse.builder()
+				.accessToken(accessToken)
+				.accessExpiredTime(accessExpiredTime)
+				.refreshToken(refreshToken)
+				.build();
+	}
 }

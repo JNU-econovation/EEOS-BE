@@ -24,8 +24,55 @@ public class AuthCookieManager implements CookieManager {
 	@Value("${token.cookie.path}")
 	private String path;
 
+	@Value("${security.jwt.access.validTime}")
+	private Long accessValidTime;
+
 	@Value("${security.jwt.refresh.validTime}")
 	private Long validTime;
+
+	public ResponseCookie setAccessTokenCookie(String value) {
+		return ResponseCookie.from(AuthConstants.ACCESS_TOKEN_KEY, value)
+				.path("/api")
+				.domain(domain)
+				.httpOnly(HTTP_ONLY)
+				.secure(SECURE)
+				.sameSite(SAMESITE)
+				.maxAge(TimeUtil.convertSecondsFromMillis(accessValidTime))
+				.build();
+	}
+
+	public ResponseCookie setRefreshTokenCookie(String value) {
+		return ResponseCookie.from(AuthConstants.REFRESH_TOKEN_KEY, value)
+				.path("/api/auth")
+				.domain(domain)
+				.httpOnly(HTTP_ONLY)
+				.secure(SECURE)
+				.sameSite(SAMESITE)
+				.maxAge(TimeUtil.convertSecondsFromMillis(validTime))
+				.build();
+	}
+
+	public ResponseCookie deleteAccessTokenCookie() {
+		return ResponseCookie.from(AuthConstants.ACCESS_TOKEN_KEY, "")
+				.path("/api")
+				.domain(domain)
+				.httpOnly(HTTP_ONLY)
+				.secure(SECURE)
+				.sameSite(SAMESITE)
+				.maxAge(0)
+				.build();
+	}
+
+	public ResponseCookie deleteRefreshTokenCookie() {
+		return ResponseCookie.from(AuthConstants.REFRESH_TOKEN_KEY, "")
+				.path("/api/auth")
+				.domain(domain)
+				.httpOnly(HTTP_ONLY)
+				.secure(SECURE)
+				.sameSite(SAMESITE)
+				.maxAge(0)
+				.build();
+	}
 
 	@Override
 	public ResponseCookie setCookie(String key, String value) {

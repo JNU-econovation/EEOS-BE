@@ -1,0 +1,36 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: []
+
+rule_files: []
+
+scrape_configs:
+  # Prometheus 자체 모니터링
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # EEOS 운영 서버 모니터링 : 상태 모니터링 (Nginx 경유)
+  - job_name: 'eeos-prod'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['${PROD_SERVER_IP}:50001']
+        labels:
+          environment: 'production'
+          application: 'eeos'
+
+  # EEOS 개발 서버 모니터링 : 부하테스트
+  - job_name: 'eeos-dev'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['eeos-backend:8080']
+        labels:
+          environment: 'development'
+          application: 'eeos'

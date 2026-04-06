@@ -12,4 +12,8 @@ public interface AccountJpaRepository extends JpaRepository<AccountEntity, Long>
 
 	@Query("SELECT a FROM AccountEntity a WHERE a.loginId=:loginId")
 	Optional<AccountEntity> findByLoginId(@Param("loginId") String loginId);
+
+	boolean existsByLoginId(String loginId);
+
+	boolean existsByMemberId(Long memberId);
 }

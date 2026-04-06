@@ -1,9 +1,9 @@
 name: backend develop ci
 on:
   push:
-    branches: [ "main", "develop", "**/feat/**" ]
+    branches: [ "main", "develop", "**/feat/**", "**/fix/**", "**/refactor/**", "**/chore/**", "**/docs/**", "**/test/**" ]
   pull_request:
-    branches: [ "main", "develop", "**/feat/**" ]
+    branches: [ "main", "develop", "**/feat/**", "**/fix/**", "**/refactor/**", "**/chore/**", "**/docs/**", "**/test/**" ]
 permissions:
   contents: read
   checks: write

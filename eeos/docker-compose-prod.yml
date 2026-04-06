@@ -8,7 +8,11 @@ services:
     ports:
       - "50001:80"
     volumes:
-      - ./proxy/nginx.conf:/etc/nginx/nginx.conf
+      - ./proxy/nginx.conf:/etc/nginx/templates/nginx.conf.template:ro
+    environment:
+      - DEV_SERVER_IP=${DEV_SERVER_IP:?DEV_SERVER_IP is required}
+    command: >
+      /bin/sh -c "envsubst '$$DEV_SERVER_IP' < /etc/nginx/templates/nginx.conf.template > /etc/nginx/nginx.conf && nginx -g 'daemon off;'"
     restart: always
     networks:
       - external-network
@@ -24,15 +28,21 @@ services:
       - "3306"
     volumes:
       - ./resources/local-develop-environment/mysql-data:/var/lib/mysql
+    restart: always
     networks:
       - internal-network
   eeos-flyway:
     container_name: eeos-flyway
     image: flyway/flyway:latest
-    command: -url=jdbc:mysql://eeos-mysql:3306/eeos?useSSL=false&allowPublicKeyRetrieval=true  -user=root -password=root migrate
+    command: [
+      "-url=jdbc:mysql://eeos-mysql:3306/eeos?useSSL=false&allowPublicKeyRetrieval=true",
+      "-user=root",
+      "-password=root",
+      "-connectRetries=60",
+      "migrate"
+    ]
     volumes:
-      - ./flyway/conf/:/flyway/conf
-      - ./flyway/sql/:/flyway/sql
+      - ./src/main/resources/db/migration/:/flyway/sql
     networks:
       - internal-network
     depends_on:
@@ -44,6 +54,7 @@ services:
       - "6379"
     environment:
       - REDIS_PASSWORD=root
+    restart: always
     networks:
       - internal-network
   eeos-backend:

@@ -45,4 +45,34 @@ public class MemberFixture {
 				.isAdmin(true)
 				.build();
 	}
+
+	public static MemberModel 슬랙온리_모델(Long memberId, String slackUserId) {
+		return MemberModel.builder()
+				.id(memberId)
+				.name(String.valueOf(memberId))
+				.oauthServerType(OauthServerType.SLACK)
+				.activeStatus(ActiveStatus.AM)
+				.isAdmin(false)
+				.build();
+	}
+
+	public static MemberModel 비슬랙온리_모델(Long memberId) {
+		return MemberModel.builder()
+				.id(memberId)
+				.name(String.valueOf(memberId))
+				.oauthServerType(OauthServerType.EEOS)
+				.activeStatus(ActiveStatus.AM)
+				.isAdmin(false)
+				.build();
+	}
+
+	public static MemberModel 기수별_슬랙온리_모델(Long memberId, int generation, String memberName) {
+		return MemberModel.builder()
+				.id(memberId)
+				.name(generation + "기 " + memberName)
+				.oauthServerType(OauthServerType.SLACK)
+				.activeStatus(ActiveStatus.AM)
+				.isAdmin(false)
+				.build();
+	}
 }

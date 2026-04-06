@@ -1,42 +1,35 @@
 package com.blackcompany.eeos.auth.application.service;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
+import com.blackcompany.eeos.auth.application.domain.TokenModel;
 import com.blackcompany.eeos.auth.application.domain.token.TokenResolver;
 import com.blackcompany.eeos.auth.application.exception.InvalidTokenException;
 import com.blackcompany.eeos.auth.application.support.AuthenticationTokenGenerator;
 import com.blackcompany.eeos.auth.persistence.InvalidTokenRepository;
-import com.blackcompany.eeos.common.DataClearExtension;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@SpringBootTest
-@ExtendWith(DataClearExtension.class)
+@ExtendWith(MockitoExtension.class)
 class ReissueServiceTest {
 
-	@SpyBean AuthenticationTokenGenerator authenticationTokenGenerator;
-	@Autowired InvalidTokenRepository invalidTokenRepository;
-	@MockBean TokenResolver tokenResolver;
-	@Autowired ReissueService reissueService;
+	@Mock AuthenticationTokenGenerator authenticationTokenGenerator;
+	@Mock InvalidTokenRepository invalidTokenRepository;
+	@Mock TokenResolver tokenResolver;
+
+	@InjectMocks ReissueService reissueService;
 
 	@Test
 	@DisplayName("블랙리스트에 등록된 토큰이라면 예외가 발생한다.")
-	@Disabled("임시로 테스트 제외, 원인 파악")
 	void exception_when_token_invalid() {
 		// given
 		String token = "token";
-		Long memberId = 2L;
-		Long validTime = 1000L * 1;
-
-		invalidTokenRepository.save(token, memberId, validTime);
+		when(invalidTokenRepository.isExistToken(token)).thenReturn(true);
 
 		// when & then
 		assertThrows(InvalidTokenException.class, () -> reissueService.execute(token));
@@ -48,17 +41,52 @@ class ReissueServiceTest {
 		// given
 		String token = "token";
 		Long memberId = 2L;
-		Long validTime = 1000L * 1;
+		Long expiredTime = System.currentTimeMillis() + 60000L;
+		TokenModel expectedToken = TokenModel.builder().accessToken("at").refreshToken("rt").build();
 
+		when(invalidTokenRepository.isExistToken(token)).thenReturn(false);
 		when(tokenResolver.getUserDataByRefreshToken(token)).thenReturn(memberId);
-		when(tokenResolver.getExpiredDateByRefreshToken(token)).thenReturn(validTime);
+		when(tokenResolver.getExpiredDateByRefreshToken(token)).thenReturn(expiredTime);
+		when(tokenResolver.getClientTypeByRefreshToken(token)).thenReturn(null);
+		when(authenticationTokenGenerator.execute(memberId)).thenReturn(expectedToken);
 
 		// when
-		reissueService.execute(token);
+		TokenModel result = reissueService.execute(token);
 
 		// then
 		assertAll(
-				() -> assertTrue(invalidTokenRepository.isExistToken(token)),
-				() -> verify(authenticationTokenGenerator).execute(memberId));
+				() -> verify(invalidTokenRepository).save(token, memberId, expiredTime),
+				() -> verify(authenticationTokenGenerator).execute(memberId),
+				() -> assertEquals(expectedToken, result));
+	}
+
+	@Test
+	@DisplayName("client claims가 있는 RT로 재발급하면 clientType/clientId가 보존된다.")
+	void reissue_preserves_client_claims() {
+		// given
+		String token = "token-with-client";
+		Long memberId = 3L;
+		Long expiredTime = System.currentTimeMillis() + 60000L;
+		String clientType = "WEB";
+		String clientId = "web-client-id";
+		TokenModel expectedToken = TokenModel.builder().accessToken("at").refreshToken("rt").build();
+
+		when(invalidTokenRepository.isExistToken(token)).thenReturn(false);
+		when(tokenResolver.getUserDataByRefreshToken(token)).thenReturn(memberId);
+		when(tokenResolver.getExpiredDateByRefreshToken(token)).thenReturn(expiredTime);
+		when(tokenResolver.getClientTypeByRefreshToken(token)).thenReturn(clientType);
+		when(tokenResolver.getClientIdByRefreshToken(token)).thenReturn(clientId);
+		when(authenticationTokenGenerator.execute(memberId, clientType, clientId))
+				.thenReturn(expectedToken);
+
+		// when
+		TokenModel result = reissueService.execute(token);
+
+		// then
+		assertAll(
+				() -> verify(invalidTokenRepository).save(token, memberId, expiredTime),
+				() -> verify(authenticationTokenGenerator).execute(memberId, clientType, clientId),
+				() -> verify(authenticationTokenGenerator, never()).execute(memberId),
+				() -> assertEquals(expectedToken, result));
 	}
 }

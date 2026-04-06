@@ -4,16 +4,28 @@ spring:
       on-profile: slack
 
 slack:
+  event:
+    signing-secret: ${SLACK_SIGNING_SECRET:test-signing-secret}
+    allowed-time-skew-seconds: ${SLACK_ALLOWED_TIME_SKEW_SECONDS:300}
+    forward:
+      base-url: ${EEOS_SLACK_FORWARD_BASE_URL:http://localhost:8080}
+      path: ${EEOS_SLACK_FORWARD_PATH:/api/internal/slack/announcements}
+      api-key: ${eeos.internal-api-key:}
+
   bot:
     black-company:
       eeos: ${BLACK_COMPANY_EEOS_BOT_TOKEN}
     econovation:
       eeos: ${ECONOVATION_EEOS_BOT_TOKEN}
+    dm:
+      token: ${SLACK_DM_BOT_TOKEN:${ECONOVATION_EEOS_BOT_TOKEN}}
 
   channel:
     black-company:
       slack-message-test: ${BLACK_COMPANY_TEST_CHANNEL_ID}
       notification : ${BLACK_COMPANY_NOTIFICATION_CHANNEL_ID}
+      error-report : ${BLACK_COMPANY_ERROR_REPORT_CHANNEL_ID}
+
     econovation:
       notification: ${ECONOVATION_NOTIFICATION_CHANNEL_ID}
       small_talk: ${ECONOVATION_SMALL_TALK_CHANNEL_ID}

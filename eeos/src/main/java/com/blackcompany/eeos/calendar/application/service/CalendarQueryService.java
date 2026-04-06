@@ -68,4 +68,13 @@ public class CalendarQueryService implements GetCalendarUsecase {
 			throw new IllegalStateException("달력 작성자 이름 매핑 중 에러가 발생했습니다.");
 		}
 	}
+
+	@Override
+	public List<CalendarResponse> getCalendarByStartAt(LocalDateTime startAt) {
+		LocalDateTime startOfDay = startAt.toLocalDate().atStartOfDay();
+		LocalDateTime startOfNextDay = startOfDay.plusDays(1);
+		return repository.findByStartDate(startOfDay, startOfNextDay).stream()
+				.map(this::createResponse)
+				.toList();
+	}
 }
