@@ -81,7 +81,7 @@ public class SecurityFilterChainConfig {
 							.requestMatchers(HttpMethod.POST, "/api/v2/auth/clients")
 							.requestMatchers("/api/guest/**")
 							.requestMatchers("/api/health-check")
-						.requestMatchers("/actuator/**");
+							.requestMatchers("/actuator/**");
 				});
 
 		commonConfiguration(httpSecurity);
