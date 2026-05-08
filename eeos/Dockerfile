@@ -1,4 +1,4 @@
-FROM eclipse-temurin:21-jdk
+FROM eclipse-temurin:21.0.11_10-jdk
 RUN mkdir -p /logs
 
 ENV	PROFILE defaultgi
