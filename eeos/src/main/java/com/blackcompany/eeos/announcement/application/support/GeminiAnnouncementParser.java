@@ -22,15 +22,21 @@ public class GeminiAnnouncementParser implements AnnouncementParser {
 
 	private static final String PROMPT_TEMPLATE =
 			"""
-			다음 Slack 공지 메시지를 분석하여 JSON 형식으로 파싱하세요.
+			다음 Slack 공지 메시지를 분석하여 핵심 내용만 요약한 후, 반드시 지정된 JSON 형식으로만 반환하세요.
 
 			규칙:
-			- title: 공지의 제목 (없으면 null)
-			- body: 공지의 본문 내용
-			- deadline: 마감기한이 명시된 경우 "YYYY-MM-DD" 형식으로 추출, 없으면 null
+			1. title: 공지의 제목 (예시: "[ 깃행사 사후 과제 안내 ]"), 제목으로 볼 만한 문구가 없으면 null
+			2. body: 공지의 본문 내용을 다음 4가지 항목(내용, 대상, 기한, 링크)을 포함하여 1~2줄씩 핵심만 요약한 문장 (불필요한 인사말이나 미사여구는 모두 제외할 것)
+			3. deadline: 마감기한이 명시된 경우 "YYYY-MM-DD" 형식으로 추출, 없으면 null
+			4. URL은 Slack이 감싼 < > 기호를 모두 제거하고 순수 URL만 사용할 것 (예: <https://example.com> → https://example.com)
+			5. 슬랙 유저 아이디값 (예시 : @U08PZVC89P9)은 제거할것
 
-			반드시 아래 JSON 형식만 반환하세요 (다른 텍스트 없이):
-			{"title": "...", "body": "...", "deadline": "YYYY-MM-DD 또는 null"}
+			반드시 다른 텍스트나 설명 없이 아래 JSON 객체만 반환하세요:
+			{
+				"title": "...",
+				"body": "내용: ...\\n대상: ...\\n기한: ...\\n링크: ...",
+				"deadline": "YYYY-MM-DD 또는 null"
+			}
 
 			메시지:
 			%s
