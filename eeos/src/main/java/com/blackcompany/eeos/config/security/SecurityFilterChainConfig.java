@@ -74,11 +74,6 @@ public class SecurityFilterChainConfig {
 							.requestMatchers(HttpMethod.POST, "/api/slack/events")
 							// v1
 							.requestMatchers(HttpMethod.POST, "/api/v1/auth/login")
-							// v2 (OAuth2 흐름)
-							.requestMatchers(HttpMethod.GET, "/api/v2/auth/authorize")
-							.requestMatchers(HttpMethod.POST, "/api/v2/auth/login")
-							.requestMatchers(HttpMethod.POST, "/api/v2/auth/token")
-							.requestMatchers(HttpMethod.POST, "/api/v2/auth/clients")
 							.requestMatchers("/api/guest/**")
 							.requestMatchers("/api/health-check")
 							.requestMatchers("/actuator/prometheus")
@@ -150,6 +145,9 @@ public class SecurityFilterChainConfig {
 				httpSecurityCorsConfigurer ->
 						httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource));
 
+		// PassportFilter: @Component 없이 Security 체인에만 등록
+		// SecurityContextHolderFilter 이후에 실행되어야 리셋 문제가 없음
+		httpSecurity.addFilterBefore(new PassportAuthenticationFilter(), LogoutFilter.class);
 		httpSecurity.addFilterAt(authFilter, LogoutFilter.class);
 		httpSecurity.exceptionHandling(ex -> ex.authenticationEntryPoint(accessTokenEntryPoint));
 		httpSecurity.addFilterAfter(optionsFilter, CorsFilter.class);

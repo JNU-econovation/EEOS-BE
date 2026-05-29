@@ -35,15 +35,25 @@ public class AccessTokenFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(
 			HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
+		// Passport 필터(Gateway 경유)가 이미 인증을 설정했으면 스킵
+		if (SecurityContextHolder.getContext().getAuthentication() instanceof JwtAuthentication) {
+			request.setAttribute("eeos.securityChainProcessed", Boolean.TRUE);
+			filterChain.doFilter(request, response);
+			return;
+		}
 		try {
 			String token = extractToken(request);
 
 			createAuthentication(token)
 					.ifPresentOrElse(this::setAuthentication, SecurityContextHolder::clearContext);
 
+			// Security 체인에서 처리됨을 표시 — UnknownEndpointFilter가 직접 필터로 동작 시 스킵
+			request.setAttribute("eeos.securityChainProcessed", Boolean.TRUE);
 			filterChain.doFilter(request, response);
 		} catch (NotFoundHeaderTokenException | JwtException e) {
 			SecurityContextHolder.clearContext();
+			// 예외 시에도 Security 체인 처리됨 표시
+			request.setAttribute("eeos.securityChainProcessed", Boolean.TRUE);
 			filterChain.doFilter(request, response);
 		}
 	}
@@ -82,6 +92,9 @@ public class AccessTokenFilter extends OncePerRequestFilter {
 	}
 
 	private Optional<Long> parseToken(String token) {
+		if (token == null) {
+			return Optional.empty();
+		}
 		try {
 			return Optional.of(tokenResolver.getUserDataByAccessToken(token));
 		} catch (Exception e) {
