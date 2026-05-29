@@ -87,6 +87,14 @@ public class GlobalExceptionHandler {
 		return ApiResponseGenerator.fail(e.getMessage(), e.getCode(), e.getHttpStatus(), headers);
 	}
 
+	/** 잘못된 인자값 예외 — enum 변환 실패 등 */
+	@ExceptionHandler(IllegalArgumentException.class)
+	protected ApiResponse<FailureBody> handleIllegalArgumentException(IllegalArgumentException e) {
+		log.warn("IllegalArgumentException", e);
+		String code = String.valueOf(HttpStatus.BAD_REQUEST.value());
+		return ApiResponseGenerator.fail(e.getMessage(), code, HttpStatus.BAD_REQUEST);
+	}
+
 	/** 나머지 예외 발생 */
 	@ExceptionHandler(Exception.class)
 	protected ApiResponse<FailureBody> handleException(Exception e) {

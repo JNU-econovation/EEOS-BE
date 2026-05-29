@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TokenResponseConverter {
+
 	public TokenResponse from(String accessToken, Long accessExpiredTime) {
 		return TokenResponse.builder()
 				.accessToken(accessToken)

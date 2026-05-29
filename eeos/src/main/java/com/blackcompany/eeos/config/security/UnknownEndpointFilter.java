@@ -23,6 +23,13 @@ public class UnknownEndpointFilter extends OncePerRequestFilter {
 	}
 
 	@Override
+	protected boolean shouldNotFilter(HttpServletRequest request) {
+		// AccessTokenFilter 또는 다른 Security 체인이 이미 이 요청을 처리한 경우 스킵
+		// (직접 서블릿 필터로 등록될 때 인증된 요청을 방해하지 않도록)
+		return request.getAttribute("eeos.securityChainProcessed") != null;
+	}
+
+	@Override
 	protected void doFilterInternal(
 			HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws IOException {

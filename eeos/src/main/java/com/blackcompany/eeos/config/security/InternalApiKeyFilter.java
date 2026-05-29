@@ -18,6 +18,12 @@ public class InternalApiKeyFilter extends OncePerRequestFilter {
 	private String internalApiKey;
 
 	@Override
+	protected boolean shouldNotFilter(jakarta.servlet.http.HttpServletRequest request) {
+		// SecurityConfig 없이 직접 서블릿 필터로 등록될 때 /api/internal/** 이외 경로는 스킵
+		return !request.getRequestURI().startsWith("/api/internal/");
+	}
+
+	@Override
 	protected void doFilterInternal(
 			HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws ServletException, IOException {
