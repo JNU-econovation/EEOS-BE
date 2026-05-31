@@ -16,8 +16,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class FCMNotificationSender implements NotificationSender {
@@ -75,7 +77,9 @@ public class FCMNotificationSender implements NotificationSender {
 				if (sendResponse.isSuccessful()) {
 					results.put(token, NotificationResult.success());
 				} else {
-					NotificationErrorCode errorCode = fcmErrorMapper.map(sendResponse.getException());
+					FirebaseMessagingException exception = sendResponse.getException();
+					log.warn("FCM 발송 실패 - token={}, message={}", token, exception.getMessage());
+					NotificationErrorCode errorCode = fcmErrorMapper.map(exception);
 					results.put(token, NotificationResult.fail(errorCode));
 				}
 			}
