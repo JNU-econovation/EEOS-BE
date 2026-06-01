@@ -1,4 +1,3 @@
-version: '3.1'
 services:
   nginx-proxy:
     container_name: nginx-proxy
@@ -79,9 +78,13 @@ services:
       SPRING_REDIS_PASSWORD: root
     networks:
       - internal-network
+      - monitoring-shared
       - external-network
 
 networks:
   internal-network:
   external-network:
+  monitoring-shared:
+    external: true
+    name: monitoring-shared
 
