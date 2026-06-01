@@ -87,4 +87,25 @@ class AccessTokenFilterTest {
 		assertNull(SecurityContextHolder.getContext().getAuthentication());
 		verify(filterChain).doFilter(request, response);
 	}
+
+	@Test
+	@DisplayName("PassportFilter가 먼저 JwtAuthentication을 설정한 경우 — 토큰 추출 없이 그대로 통과")
+	void skip_token_extraction_when_passport_already_authenticated() throws Exception {
+		// given — PassportAuthenticationFilter가 먼저 JwtAuthentication을 설정한 상황
+		JwtAuthentication passportAuth =
+				new JwtAuthentication(
+						42L,
+						List.of(
+								new org.springframework.security.core.authority.SimpleGrantedAuthority("USER")));
+		SecurityContextHolder.getContext().setAuthentication(passportAuth);
+
+		// when
+		filter.doFilterInternal(request, response, filterChain);
+
+		// then — headerExtractor 호출 없이 기존 인증 유지
+		verify(headerExtractor, never()).extract(any());
+		assertNotNull(SecurityContextHolder.getContext().getAuthentication());
+		assertEquals(42L, SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+		verify(filterChain).doFilter(request, response);
+	}
 }
