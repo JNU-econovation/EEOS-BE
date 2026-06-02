@@ -156,8 +156,7 @@ class SecurityFilterChainTest {
 		@DisplayName("[관리자] 관리자 권한은 관리자 API에 접근 가능_1")
 		void 관리자_패스포트로_관리자_API_접근시_200응답() throws Exception {
 			mockMvc
-					.perform(
-							get("/api/admin/test").header("X-User-Passport", passportHeader(1L, "ADMIN")))
+					.perform(get("/api/admin/test").header("X-User-Passport", passportHeader(1L, "ADMIN")))
 					.andExpect(status().isOk());
 		}
 	}
