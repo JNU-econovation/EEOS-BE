@@ -18,8 +18,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 /**
  * Gateway가 주입한 X-User-Passport 헤더를 읽어 SecurityContext를 설정하는 필터.
  *
- * <p>Passport의 roles는 "USER", "ADMIN" 형태로 전달된다. Spring Security의 hasAnyRole()은 "ROLE_" 접두사를
- * 자동으로 붙여 비교하므로, 여기서 "ROLE_" 접두사를 추가해준다.
+ * <p>Passport roles("USER", "ADMIN")에 "ROLE_" 접두사를 붙여 Spring Security hasAnyRole()과 호환되도록
+ * 한다.
  */
 @Slf4j
 public class PassportAuthenticationFilter extends OncePerRequestFilter {
