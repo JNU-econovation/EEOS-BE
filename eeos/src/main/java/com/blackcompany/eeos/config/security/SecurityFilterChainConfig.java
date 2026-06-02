@@ -18,7 +18,6 @@ import org.springframework.web.filter.CorsFilter;
 public class SecurityFilterChainConfig {
 
 	private static final String ADMIN = Role.ROLE_ADMIN.getRole();
-	private final AccessTokenFilter authFilter;
 	private final OptionsFilter optionsFilter;
 	private final DynamicCorsConfigurationSource corsConfigurationSource;
 	private final AccessTokenEntryPoint accessTokenEntryPoint;
@@ -148,7 +147,6 @@ public class SecurityFilterChainConfig {
 		// PassportFilter: @Component 없이 Security 체인에만 등록
 		// SecurityContextHolderFilter 이후에 실행되어야 리셋 문제가 없음
 		httpSecurity.addFilterBefore(new PassportAuthenticationFilter(), LogoutFilter.class);
-		httpSecurity.addFilterAt(authFilter, LogoutFilter.class);
 		httpSecurity.exceptionHandling(ex -> ex.authenticationEntryPoint(accessTokenEntryPoint));
 		httpSecurity.addFilterAfter(optionsFilter, CorsFilter.class);
 
