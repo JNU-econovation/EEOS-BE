@@ -83,7 +83,7 @@ class PassportAuthenticationFilterTest {
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			assertThat(auth.getAuthorities())
 					.extracting("authority")
-					.containsExactlyInAnyOrder("USER", "ADMIN");
+					.containsExactlyInAnyOrder("ROLE_USER", "ROLE_ADMIN");
 		}
 
 		@Test
