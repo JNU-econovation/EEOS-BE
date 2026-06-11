@@ -1,4 +1,3 @@
-version: '3.1'
 services:
   prometheus:
     build:
@@ -17,8 +16,8 @@ services:
       -c "envsubst '$$PROD_SERVER_IP' < /etc/prometheus/prometheus.yml.template > /etc/prometheus/prometheus.yml && /bin/prometheus --config.file=/etc/prometheus/prometheus.yml --storage.tsdb.path=/prometheus --web.enable-lifecycle"
     restart: always
     networks:
-      - internal-network
-      - external-network
+      - monitoring-internal
+      - monitoring-shared
 
   grafana:
     image: grafana/grafana:latest
@@ -37,11 +36,11 @@ services:
       - prometheus
     restart: always
     networks:
-      - internal-network
-      - external-network
+      - monitoring-internal
 networks:
-  internal-network:
-  external-network:
+  monitoring-internal:
+  monitoring-shared:
+    name: monitoring-shared
 
 volumes:
   prometheus-data:

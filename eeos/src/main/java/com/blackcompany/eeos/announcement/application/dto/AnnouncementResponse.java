@@ -16,7 +16,9 @@ public class AnnouncementResponse {
 	@Schema(description = "공지 제목 (없으면 null)", example = "에코노베이션 31기 신입모집 면접 도우미 모집", nullable = true)
 	private String title;
 
-	@Schema(description = "공지 본문", example = "안녕하세요! 면접 도우미를 모집합니다.")
+	@Schema(
+			description = "공지 본문 (\\n으로 줄 구분된 plain text.)",
+			example = "내용: 면접 도우미를 모집합니다.\n대상: 30기 신입 전원\n기한: 2026-05-22\n링크: https://...")
 	private String body;
 
 	@Schema(description = "Slack 메시지 발송 시각 (epoch milliseconds, KST)", example = "1774187000000")
