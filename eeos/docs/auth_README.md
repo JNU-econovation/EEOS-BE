@@ -122,3 +122,85 @@ Slack OAuth2 로그인 후 추가 정보(성함, 기수, 활동상태)를 제출
 - `auth/application/exception/AlreadyLinkedAccountException` : 에러 코드 4201
 - `auth/application/exception/SlackMemberNotFoundException` : 에러 코드 4200
 - `auth/presentation/dto/EeosSignUpRequest` : 회원가입 요청 DTO
+
+---
+
+## OAuth 클라이언트 등록 (ADMIN 전용)
+
+### POST `/api/v2/auth/clients`
+
+OAuth2 클라이언트를 등록한다. `WEB` 타입은 BCrypt 해시된 `clientSecret`이 발급되고, `APP` 타입은 발급되지 않는다.
+
+- 인증: JWT 필수 (ADMIN 역할)
+- 구현: `ClientController` → `ClientService`
+
+#### 요청
+
+```json
+{
+  "clientName": "eeos-web-app",
+  "clientType": "WEB",
+  "redirectUris": [
+    "https://eeos.econovation.kr/callback",
+    "http://localhost:3000/callback"
+  ]
+}
+```
+
+| 필드 | 타입 | 필수 | 설명 |
+|------|------|------|------|
+| `clientName` | string | O | 클라이언트 이름 (공백 불가) |
+| `clientType` | string | O | `WEB` 또는 `APP` (대소문자 무관) |
+| `redirectUris` | string[] | O | 허용 리다이렉트 URI 목록. 1개 이상, 최대 10개, URI당 최대 512자 |
+
+#### clientType 동작 차이
+
+| clientType | 기밀 클라이언트 | clientSecret 발급 |
+|------------|--------------|-----------------|
+| `WEB` | O | O (BCrypt 해시 저장, 원본 1회 반환) |
+| `APP` | X | X (null 반환) |
+
+#### 응답
+
+**HTTP 201 Created**
+
+`clientSecret`는 `WEB` 타입일 때만 포함된다. 이후 재조회 불가 — 최초 응답에서 반드시 저장할 것.
+
+```json
+{
+  "success": true,
+  "code": "CREATE",
+  "data": {
+    "clientId": "a3f7c2d1-85b4-4e9a-bf32-1c0e7d9fa821",
+    "clientSecret": "xKz3Qp9mRvLs7wNt2YhJ4dUiOeAn0BfCgXvPqWmE5c"
+  }
+}
+```
+
+#### 오류
+
+| HTTP | 코드 | 메시지 | 발생 조건 |
+|------|------|--------|-----------|
+| 400 | 4015 | 등록되지 않은 redirect URI입니다. | `redirectUris`가 비어있거나 10개 초과, 또는 URI가 512자 초과 |
+| 403 | — | 관리자 권한 필요 | ADMIN 역할 없음 |
+
+#### 보안 설정 근거
+
+`SecurityFilterChainConfig`의 `authenticated` 체인에서 다음과 같이 설정되어 있다.
+
+```java
+// 매처: POST /api/v2/auth/clients를 authenticated 체인에 포함
+.requestMatchers(HttpMethod.POST, "/api/v2/auth/clients")
+
+// 권한: ADMIN 역할만 허용
+requests.requestMatchers(HttpMethod.POST, "/api/v2/auth/clients").hasAnyRole(ADMIN);
+```
+
+#### 연관 컴포넌트
+
+- `auth/presentation/controller/ClientController` : 진입점
+- `auth/presentation/docs/ClientApi` : Swagger 인터페이스 (`@Tag`, `@Operation`, `@ApiResponses`)
+- `auth/application/service/ClientService` : 등록 로직, 시크릿 생성 (`SecureRandom`, 32바이트, Base64url)
+- `auth/application/domain/ClientType` : `WEB(confidential=true)`, `APP(confidential=false)`
+- `auth/application/exception/InvalidRedirectUriException` : 에러 코드 4015
+- `auth/persistence/client/ClientEntity` : JPA 엔티티 (클라이언트 + 리다이렉트 URI)

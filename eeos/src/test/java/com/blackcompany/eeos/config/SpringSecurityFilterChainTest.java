@@ -1,24 +1,17 @@
 package com.blackcompany.eeos.config;
 
-import static org.mockito.BDDMockito.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.blackcompany.eeos.auth.application.domain.token.JwtTestUtil;
 import com.blackcompany.eeos.auth.application.domain.token.TokenProvider;
 import com.blackcompany.eeos.auth.application.domain.token.TokenResolver;
-import com.blackcompany.eeos.auth.application.model.Role;
 import com.blackcompany.eeos.auth.application.service.AuthService;
-import com.blackcompany.eeos.member.application.model.ActiveStatus;
-import com.blackcompany.eeos.member.application.model.MemberModel;
-import com.blackcompany.eeos.member.fixture.MemberFixture;
-import java.sql.Date;
-import java.time.Instant;
-import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.util.Base64;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -26,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -42,19 +34,22 @@ class SecurityFilterChainTest {
 	@MockBean private TokenResolver tokenResolver;
 	@MockBean private AuthService authService;
 
+	private String passportHeader(long memberId, String... roles) {
+		String roleJson = "[\"" + String.join("\",\"", roles) + "\"]";
+		String json =
+				String.format(
+						"{\"memberId\":%d,\"loginId\":\"user%d\",\"name\":\"테스터\",\"generation\":30,\"status\":\"AM\",\"roles\":%s,\"issuedAt\":\"%s\",\"expiresAt\":\"%s\"}",
+						memberId, memberId, roleJson, LocalDateTime.now(), LocalDateTime.now().plusHours(1));
+		return Base64.getEncoder().encodeToString(json.getBytes(StandardCharsets.UTF_8));
+	}
+
 	@Nested
 	@DisplayName("1. 인증 필요 없는 엔드포인트")
 	class NonAuthorizedEndpoints {
 
-		private final String id = "user";
-		private final String password = "password";
-
-		private final MemberModel testMember = MemberFixture.멤버_모델(1L, ActiveStatus.AM);
-
 		@Test
 		@DisplayName("인증 없이 /api/auth/login 접근 가능 (400 또는 303 반환)")
 		void loginShouldReturn200() throws Exception {
-			// /api/auth/login은 비인증 엔드포인트이므로 400 또는 303이 반환되어야 한다 (401/403이 아님)
 			mockMvc
 					.perform(
 							post("/api/auth/login")
@@ -62,8 +57,8 @@ class SecurityFilterChainTest {
 									.param("client_id", "unknown")
 									.param("redirect_uri", "http://test.com")
 									.param("state", "test")
-									.param("email", id)
-									.param("password", password))
+									.param("email", "user")
+									.param("password", "password"))
 					.andExpect(status().is(org.hamcrest.Matchers.not(401)))
 					.andExpect(status().is(org.hamcrest.Matchers.not(403)));
 		}
@@ -78,128 +73,98 @@ class SecurityFilterChainTest {
 	@DisplayName("2-1. 인증이 필요한 엔드포인트 - 일반 유저")
 	class UserEndpoints {
 
-		private final String VALID_JWT = JwtTestUtil.createToken(1L, Role.ROLE_USER);
-
-		@BeforeEach
-		void setAccessToken() {
-			given(tokenProvider.createAccessToken(any(), any())).willReturn(VALID_JWT);
-
-			given(tokenResolver.getUserDataByAccessToken(VALID_JWT)).willReturn(1L);
-
-			given(tokenResolver.getExpiredDateByAccessToken(VALID_JWT))
-					.willReturn(Date.from(Instant.now()).getTime());
-			given(tokenResolver.getRoles(VALID_JWT)).willReturn(List.of(Role.ROLE_USER.getRole()));
-		}
-
 		@Test
-		@DisplayName("[일반유저] 토큰이 존재하지 않으면 401 반환")
-		void 일반유저_토큰이_존재하지_않으면_401반환() throws Exception {
-
+		@DisplayName("[일반유저] Passport 헤더가 없으면 401 반환")
+		void 일반유저_패스포트_없으면_401반환() throws Exception {
 			mockMvc.perform(get("/api/programs")).andExpect(status().isUnauthorized());
 		}
 
 		@Test
-		@DisplayName("[일반유저] 토큰이 있으면 200 반환")
-		void 일반유저_올바른_토큰이_있으면_200응답() throws Exception {
+		@DisplayName("[일반유저] Passport 헤더가 있으면 200 반환")
+		void 일반유저_올바른_패스포트가_있으면_200응답() throws Exception {
 			mockMvc
-					.perform(get("/api/members?activeStatus=all").header("Authorization", bearerToken()))
+					.perform(
+							get("/api/members?activeStatus=all")
+									.header("X-User-Passport", passportHeader(1L, "USER")))
 					.andExpect(status().isOk());
 		}
 
 		@Test
 		@DisplayName("[일반유저] 일반 유저 권한은 관리자 API에 접근 불가능_1")
-		void 일반유저_토큰으로_관리자_API_접근시_403응답_1() throws Exception {
+		void 일반유저_패스포트로_관리자_API_접근시_403응답_1() throws Exception {
 			mockMvc
-					.perform(post("/api/programs").header(HttpHeaders.AUTHORIZATION, bearerToken()))
+					.perform(post("/api/programs").header("X-User-Passport", passportHeader(1L, "USER")))
 					.andExpect(status().isForbidden());
 		}
 
 		@Test
 		@DisplayName("[일반유저] 일반 유저 권한은 관리자 API에 접근 불가능_2")
-		void 일반유저_토큰으로_관리자_API_접근시_403응답_2() throws Exception {
+		void 일반유저_패스포트로_관리자_API_접근시_403응답_2() throws Exception {
 			mockMvc
-					.perform(delete("/api/programs").header(HttpHeaders.AUTHORIZATION, bearerToken()))
+					.perform(delete("/api/programs").header("X-User-Passport", passportHeader(1L, "USER")))
 					.andExpect(status().isForbidden());
 		}
 
 		@Test
 		@DisplayName("[일반유저] 일반 유저 권한은 관리자 API에 접근 불가능_3")
-		void 일반유저_토큰으로_관리자_API_접근시_403응답_1_3() throws Exception {
+		void 일반유저_패스포트로_관리자_API_접근시_403응답_3() throws Exception {
 			mockMvc
-					.perform(delete("/api/members/1").header(HttpHeaders.AUTHORIZATION, bearerToken()))
+					.perform(delete("/api/members/1").header("X-User-Passport", passportHeader(1L, "USER")))
 					.andExpect(status().isForbidden());
 		}
 
 		@Test
 		@DisplayName("[일반유저] 일반 유저 권한은 관리자 API에 접근 불가능_4")
-		void 일반유저_토큰으로_관리자_API_접근시_403응답_1_4() throws Exception {
+		void 일반유저_패스포트로_관리자_API_접근시_403응답_4() throws Exception {
 			mockMvc
 					.perform(
-							put("/api/members/activeStatus/1").header(HttpHeaders.AUTHORIZATION, bearerToken()))
+							put("/api/members/activeStatus/1")
+									.header("X-User-Passport", passportHeader(1L, "USER")))
 					.andExpect(status().isForbidden());
 		}
 
 		@Test
 		@DisplayName("[일반유저] 일반 유저 권한은 관리자 API에 접근 불가능_5")
-		void 일반유저_토큰으로_관리자_API_접근시_403응답_1_5() throws Exception {
+		void 일반유저_패스포트로_관리자_API_접근시_403응답_5() throws Exception {
 			mockMvc
-					.perform(post("/api/teams").header(HttpHeaders.AUTHORIZATION, bearerToken()))
+					.perform(post("/api/teams").header("X-User-Passport", passportHeader(1L, "USER")))
 					.andExpect(status().isForbidden());
 		}
 
 		@Test
 		@DisplayName("[일반유저] 일반 유저 권한은 관리자 API에 접근 불가능_6")
-		void 일반유저_토큰으로_관리자_API_접근시_403응답_1_6() throws Exception {
+		void 일반유저_패스포트로_관리자_API_접근시_403응답_6() throws Exception {
 			mockMvc
-					.perform(delete("/api/teams/1").header(HttpHeaders.AUTHORIZATION, bearerToken()))
+					.perform(delete("/api/teams/1").header("X-User-Passport", passportHeader(1L, "USER")))
 					.andExpect(status().isForbidden());
 		}
 
 		@Test
 		@DisplayName("[일반유저] 일반 유저 권한은 관리자 API에 접근 불가능_7")
-		void 일반유저_토큰으로_관리자_API_접근시_403응답_1_7() throws Exception {
+		void 일반유저_패스포트로_관리자_API_접근시_403응답_7() throws Exception {
 			mockMvc
-					.perform(get("/api/admin/test").header(HttpHeaders.AUTHORIZATION, bearerToken()))
+					.perform(get("/api/admin/test").header("X-User-Passport", passportHeader(1L, "USER")))
 					.andExpect(status().isForbidden());
-		}
-
-		private String bearerToken() {
-			return String.format("Bearer %s", VALID_JWT);
 		}
 	}
 
 	@Nested
 	@DisplayName("2-2. 인증이 필요한 엔드포인트 - 관리자")
 	class AdminEndPoint {
-		private final String VALID_JWT = JwtTestUtil.createToken(1L, Role.ROLE_ADMIN);
-
-		@BeforeEach
-		void setAccessToken() {
-			given(tokenProvider.createAccessToken(any(), any())).willReturn(VALID_JWT);
-
-			given(tokenResolver.getUserDataByAccessToken(VALID_JWT)).willReturn(1L);
-
-			given(tokenResolver.getExpiredDateByAccessToken(VALID_JWT))
-					.willReturn(Date.from(Instant.now()).getTime());
-			given(tokenResolver.getRoles(VALID_JWT)).willReturn(List.of(Role.ROLE_ADMIN.name()));
-		}
 
 		@Test
 		@DisplayName("[관리자] 관리자 권한은 관리자 API에 접근 가능_1")
-		void 관리자_토큰으로_관리자_API_접근시_200응답_1() throws Exception {
+		void 관리자_패스포트로_관리자_API_접근시_200응답() throws Exception {
 			mockMvc
-					.perform(get("/api/admin/test").header(HttpHeaders.AUTHORIZATION, bearerToken()))
+					.perform(get("/api/admin/test").header("X-User-Passport", passportHeader(1L, "ADMIN")))
 					.andExpect(status().isOk());
-		}
-
-		private String bearerToken() {
-			return String.format("Bearer %s", VALID_JWT);
 		}
 	}
 
 	@Nested
 	@DisplayName("3. 존재하지 않는 엔드포인트(UnknownEndpointFilter)")
 	class UnknownEndpoint {
+
 		@Test
 		void nonExistentShouldReturn404() throws Exception {
 			mockMvc.perform(get("/api/does-not-exist")).andExpect(status().isNotFound());
