@@ -76,7 +76,7 @@ public class OAuth2Controller implements OAuth2Api {
 
 	@Override
 	@PostMapping("/login")
-	public ResponseEntity<Void> login(
+	public ResponseEntity<Map<String, String>> login(
 			@RequestParam("client_id") String clientId,
 			@RequestParam("redirect_uri") String redirectUri,
 			@RequestParam("state") String state,
@@ -89,7 +89,7 @@ public class OAuth2Controller implements OAuth2Api {
 
 		var client = validateClientOrBadRequest(clientId, redirectUri);
 		if (client == null) {
-			return ResponseEntity.badRequest().build();
+			return ResponseEntity.badRequest().body(Map.of("error", "invalid_client"));
 		}
 
 		String ip = request.getRemoteAddr();
@@ -141,7 +141,7 @@ public class OAuth2Controller implements OAuth2Api {
 		}
 	}
 
-	private ResponseEntity<Void> handleWebLogin(
+	private ResponseEntity<Map<String, String>> handleWebLogin(
 			String clientId,
 			String redirectUri,
 			String state,
@@ -157,18 +157,16 @@ public class OAuth2Controller implements OAuth2Api {
 		response.addHeader(HttpHeaders.SET_COOKIE, atCookie.toString());
 		response.addHeader(HttpHeaders.SET_COOKIE, rtCookie.toString());
 
-		String location =
+		String redirectUrl =
 				UriComponentsBuilder.fromUriString(redirectUri)
 						.queryParam("state", state)
 						.build()
 						.toUriString();
 
-		return ResponseEntity.status(HttpStatus.SEE_OTHER)
-				.header(HttpHeaders.LOCATION, location)
-				.build();
+		return ResponseEntity.ok(Map.of("redirectUrl", redirectUrl));
 	}
 
-	private ResponseEntity<Void> handleAppLogin(
+	private ResponseEntity<Map<String, String>> handleAppLogin(
 			String clientId,
 			String redirectUri,
 			String state,
@@ -181,25 +179,23 @@ public class OAuth2Controller implements OAuth2Api {
 				oAuth2LoginService.loginForApp(
 						clientId, redirectUri, email, password, ip, codeChallenge, codeChallengeMethod);
 
-		String location =
+		String redirectUrl =
 				UriComponentsBuilder.fromUriString(redirectUri)
 						.queryParam("code", code)
 						.queryParam("state", state)
 						.build()
 						.toUriString();
 
-		return ResponseEntity.status(HttpStatus.SEE_OTHER)
-				.header(HttpHeaders.LOCATION, location)
-				.build();
+		return ResponseEntity.ok(Map.of("redirectUrl", redirectUrl));
 	}
 
-	private ResponseEntity<Void> redirectToLoginPageWithError(
+	private ResponseEntity<Map<String, String>> redirectToLoginPageWithError(
 			String clientId,
 			String redirectUri,
 			String state,
 			String codeChallenge,
 			String codeChallengeMethod) {
-		String location =
+		String redirectUrl =
 				UriComponentsBuilder.fromUriString(loginPageUrl)
 						.queryParam("client_id", clientId)
 						.queryParam("redirect_uri", redirectUri)
@@ -211,8 +207,6 @@ public class OAuth2Controller implements OAuth2Api {
 						.build()
 						.toUriString();
 
-		return ResponseEntity.status(HttpStatus.SEE_OTHER)
-				.header(HttpHeaders.LOCATION, location)
-				.build();
+		return ResponseEntity.ok(Map.of("redirectUrl", redirectUrl, "error", "invalid_credentials"));
 	}
 }
