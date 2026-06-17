@@ -43,13 +43,14 @@ public interface OAuth2Api {
 			summary = "OAuth2 로그인",
 			description =
 					"credentials를 검증하고 clientType에 따라 분기한다. "
-							+ "WEB: eeos_access_token / eeos_refresh_token 쿠키 설정 후 303 redirect. "
-							+ "APP: authorization_code 발급 후 303 redirect. "
-							+ "credentials 실패 시 로그인 페이지로 303 redirect (error=invalid_credentials).")
+							+ "WEB: eeos_access_token / eeos_refresh_token 쿠키 설정 후 200 + { \"redirectUrl\": \"...\" } 반환. "
+							+ "APP: authorization_code 발급 후 200 + { \"redirectUrl\": \"...\" } 반환. "
+							+ "클라이언트가 redirectUrl로 window.location.href 이동해야 한다. "
+							+ "credentials 실패 시 200 + { \"redirectUrl\": \"...\", \"error\": \"invalid_credentials\" } 반환.")
 	@ApiResponses({
 		@io.swagger.v3.oas.annotations.responses.ApiResponse(
-				responseCode = "303",
-				description = "인증 성공 후 redirect_uri로 리다이렉트"),
+				responseCode = "200",
+				description = "인증 처리 완료. redirectUrl로 클라이언트가 직접 이동해야 함"),
 		@io.swagger.v3.oas.annotations.responses.ApiResponse(
 				responseCode = "400",
 				description =
@@ -63,7 +64,7 @@ public interface OAuth2Api {
 				description = "| 코드 | 메시지 |\n" + "|------|--------|\n" + "| 4290 | 로그인 시도 횟수를 초과했습니다 |",
 				content = @Content)
 	})
-	ResponseEntity<Void> login(
+	ResponseEntity<Map<String, String>> login(
 			@Parameter(description = "클라이언트 ID", required = true) String clientId,
 			@Parameter(description = "리다이렉트 URI", required = true) String redirectUri,
 			@Parameter(description = "CSRF 방지용 상태값", required = true) String state,

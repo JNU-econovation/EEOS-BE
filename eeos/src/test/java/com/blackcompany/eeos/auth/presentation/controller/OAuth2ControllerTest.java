@@ -98,7 +98,7 @@ class OAuth2ControllerTest {
 			when(clientService.findAndValidateRedirectUri("bad", "http://x"))
 					.thenThrow(new InvalidClientException());
 
-			ResponseEntity<Void> result =
+			ResponseEntity<Map<String, String>> result =
 					controller.login(
 							"bad",
 							"http://x",
@@ -114,8 +114,8 @@ class OAuth2ControllerTest {
 		}
 
 		@Test
-		@DisplayName("WEB 클라이언트 로그인 성공 시 쿠키 설정 + 303 리다이렉트")
-		void web_login_sets_cookies_and_redirects() {
+		@DisplayName("WEB 클라이언트 로그인 성공 시 쿠키 설정 + 200 + redirectUrl 반환")
+		void web_login_sets_cookies_and_returns_redirect_url() {
 			ClientEntity webClient =
 					ClientEntity.builder().clientId("web1").clientType(ClientType.WEB).build();
 			when(clientService.findAndValidateRedirectUri("web1", "http://web/callback"))
@@ -139,7 +139,7 @@ class OAuth2ControllerTest {
 			request.setRemoteAddr("127.0.0.1");
 			MockHttpServletResponse response = new MockHttpServletResponse();
 
-			ResponseEntity<Void> result =
+			ResponseEntity<Map<String, String>> result =
 					controller.login(
 							"web1",
 							"http://web/callback",
@@ -151,15 +151,15 @@ class OAuth2ControllerTest {
 							request,
 							response);
 
-			assertEquals(HttpStatus.SEE_OTHER, result.getStatusCode());
-			assertTrue(
-					result.getHeaders().get(HttpHeaders.LOCATION).get(0).contains("http://web/callback"));
+			assertEquals(HttpStatus.OK, result.getStatusCode());
+			assertTrue(result.getBody().get("redirectUrl").contains("http://web/callback"));
+			assertTrue(result.getBody().get("redirectUrl").contains("state=state1"));
 			assertTrue(response.getHeader(HttpHeaders.SET_COOKIE).contains("eeos_access_token"));
 		}
 
 		@Test
-		@DisplayName("APP 클라이언트 로그인 성공 시 authorization_code + 303 리다이렉트")
-		void app_login_returns_code_and_redirects() {
+		@DisplayName("APP 클라이언트 로그인 성공 시 200 + redirectUrl(authorization_code 포함) 반환")
+		void app_login_returns_redirect_url_with_code() {
 			ClientEntity appClient =
 					ClientEntity.builder().clientId("app1").clientType(ClientType.APP).build();
 			when(clientService.findAndValidateRedirectUri("app1", "http://app/callback"))
@@ -177,7 +177,7 @@ class OAuth2ControllerTest {
 			MockHttpServletRequest request = new MockHttpServletRequest();
 			request.setRemoteAddr("127.0.0.1");
 
-			ResponseEntity<Void> result =
+			ResponseEntity<Map<String, String>> result =
 					controller.login(
 							"app1",
 							"http://app/callback",
@@ -189,9 +189,9 @@ class OAuth2ControllerTest {
 							request,
 							new MockHttpServletResponse());
 
-			assertEquals(HttpStatus.SEE_OTHER, result.getStatusCode());
-			assertTrue(
-					result.getHeaders().get(HttpHeaders.LOCATION).get(0).contains("code=auth-code-123"));
+			assertEquals(HttpStatus.OK, result.getStatusCode());
+			assertTrue(result.getBody().get("redirectUrl").contains("code=auth-code-123"));
+			assertTrue(result.getBody().get("redirectUrl").contains("state=state1"));
 		}
 	}
 
