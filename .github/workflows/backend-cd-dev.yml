@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: SSH 접속 및 배포 실행
         id: deploy
-        uses: appleboy/ssh-action@v0.1.10
+        uses: appleboy/ssh-action@v1.2.5
         with:
           host: ${{ secrets.DEV_HOST }}
           username: ${{ secrets.DEV_USERNAME }}
