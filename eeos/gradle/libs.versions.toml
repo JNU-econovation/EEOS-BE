@@ -1,6 +1,6 @@
 [versions]
 # Spring
-spring-boot = "3.2.2"
+spring-boot = "3.5.16"
 spring-dependency-management = "1.1.7"
 spring-cloud = "2023.0.0"
 spring-doc-openapi = "2.3.0"
@@ -15,7 +15,7 @@ firebase-admin = "9.2.0"
 # Security
 jwt = "0.12.6"
 jbcrypt = "0.4"
-spring-boot-starter-security = "3.5.0"
+spring-boot-starter-security = "3.5.16"
 spring-security-test="6.5.2"
 #testImplementation("org.springframework.security:spring-security-test:6.5.1")
 
