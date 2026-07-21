@@ -23,7 +23,7 @@ spring-security-test="6.5.2"
 flyway = "10.7.1"
 
 # Retry
-spring-retry = "2.0.5"
+spring-retry = "2.0.13"
 
 # Google Gen AI
 google-genai = "1.0.0"
