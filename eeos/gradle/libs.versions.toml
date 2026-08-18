@@ -10,7 +10,7 @@ spotless = "7.2.1"
 asciidoctor = "4.0.5"
 epages-restdocs = "0.18.2"
 swagger = "5.10.3"
-firebase-admin = "9.2.0"
+firebase-admin = "9.10.0"
 
 # Security
 jwt = "0.12.6"
