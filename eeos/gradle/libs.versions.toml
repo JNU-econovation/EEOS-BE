@@ -2,7 +2,7 @@
 # Spring
 spring-boot = "3.2.2"
 spring-dependency-management = "1.1.7"
-spring-cloud = "2023.0.0"
+spring-cloud = "2025.1.3"
 spring-doc-openapi = "2.3.0"
 
 # Plugins
