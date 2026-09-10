@@ -20,7 +20,7 @@ spring-security-test="6.5.2"
 #testImplementation("org.springframework.security:spring-security-test:6.5.1")
 
 # Database
-flyway = "10.7.1"
+flyway = "13.6.0"
 
 # Retry
 spring-retry = "2.0.5"
